@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual do Administrador — Plataforma de Avaliações</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #00236f; --purple: #6b38d4; --green: #27c38a; --amber: #f59e0b; --red: #ef4444;
+      --border: #e5eeff; --dark: #0b1c30; --gray: #757682; --gray2: #444651;
+      --bg: #f7f8fc; --white: #ffffff;
+      --card-shadow: 0 4px 20px rgba(0,35,111,0.06);
+      --gradient: linear-gradient(135deg, #00236f 0%, #6b38d4 100%);
+      --sidebar-w: 260px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--dark); background: var(--bg); display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar { position: fixed; top:0; left:0; bottom:0; width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--border); overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo .logo-mark { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sidebar-logo .manual-tag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); margin-top: 4px; }
+    .sidebar-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray); padding: 20px 20px 8px; }
+    .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 13.5px; font-weight: 500; color: var(--gray2); text-decoration: none; border-left: 3px solid transparent; transition: all 0.18s; }
+    .sidebar nav a:hover { background: #f0f4ff; color: var(--navy); border-left-color: var(--border); }
+    .sidebar nav a.active { background: linear-gradient(90deg,#e8f0ff,#f3edff); color: var(--navy); border-left-color: var(--purple); font-weight: 600; }
+    .sidebar nav a .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+    .sidebar-footer { margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--gray); }
+    .sidebar-footer a { color: var(--purple); text-decoration: none; }
+
+    /* MAIN */
+    .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
+
+    /* HERO */
+    .hero { background: var(--gradient); padding: 60px 48px 56px; color: white; position: relative; overflow: hidden; }
+    .hero::before { content:''; position: absolute; top:-80px; right:-80px; width:320px; height:320px; background: rgba(255,255,255,0.05); border-radius:50%; }
+    .hero::after { content:''; position: absolute; bottom:-100px; right:120px; width:220px; height:220px; background: rgba(255,255,255,0.04); border-radius:50%; }
+    .hero-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:18px; }
+    .hero h1 { font-family:'Space Grotesk',sans-serif; font-size:38px; font-weight:700; line-height:1.15; margin-bottom:14px; position:relative; }
+    .hero p { font-size:16px; line-height:1.7; opacity:0.88; max-width:540px; position:relative; }
+    .hero-cards { display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; position:relative; }
+    .hero-card { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:10px; font-size:13px; font-weight:500; }
+
+    /* PROGRESS BAR */
+    .progress-bar-wrap { background: var(--white); border-bottom:1px solid var(--border); padding:0 48px; display:flex; align-items:center; gap:16px; height:48px; font-size:12px; color:var(--gray); font-weight:500; position:sticky; top:0; z-index:50; }
+    .progress-track { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+    .progress-fill { height:100%; background:var(--gradient); border-radius:2px; transition:width 0.2s; width:0%; }
+
+    /* SECTIONS */
+    .section { padding: 52px 48px; border-bottom: 1px solid var(--border); }
+    .section:last-of-type { border-bottom: none; }
+    .section-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:28px; }
+    .section-number { width:40px; height:40px; border-radius:50%; background:var(--gradient); color:white; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+    .section h2 { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; color:var(--navy); line-height:1.2; }
+    .section h3 { font-size:17px; font-weight:600; color:var(--dark); margin:28px 0 10px; }
+    .section p { font-size:14.5px; line-height:1.75; color:var(--gray2); margin-bottom:14px; max-width:680px; }
+    .section ul, .section ol { padding-left:20px; margin-bottom:14px; max-width:680px; }
+    .section li { font-size:14px; line-height:1.8; color:var(--gray2); }
+
+    /* CALLOUTS */
+    .callout { border-radius:10px; padding:14px 18px; margin:18px 0; display:flex; gap:12px; align-items:flex-start; font-size:13.5px; line-height:1.65; max-width:680px; }
+    .callout-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+    .callout.tip { background:#eafaf4; border:1px solid #a7ecd3; color:#0e6646; }
+    .callout.warning { background:#fffbeb; border:1px solid #fcd34d; color:#78420a; }
+    .callout.note { background:#eff3ff; border:1px solid #c7d7ff; color:#2a3d8f; }
+    .callout.danger { background:#fef2f2; border:1px solid #fca5a5; color:#7f1d1d; }
+
+    /* STEPS */
+    .steps { margin:20px 0; max-width:680px; }
+    .step { display:flex; gap:16px; margin-bottom:20px; position:relative; }
+    .step:not(:last-child)::after { content:''; position:absolute; left:19px; top:42px; width:2px; height:calc(100% - 10px); background:var(--border); }
+    .step-num { width:40px; height:40px; border-radius:50%; background:var(--gradient); color:white; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .step-body { flex:1; padding-top:8px; }
+    .step-title { font-size:14.5px; font-weight:600; color:var(--dark); margin-bottom:4px; }
+    .step-desc { font-size:13.5px; color:var(--gray2); line-height:1.65; }
+
+    /* ROADMAP CARDS */
+    .roadmap-card { background:var(--white); border:1px solid var(--border); border-radius:14px; margin:24px 0; max-width:720px; overflow:hidden; box-shadow:var(--card-shadow); }
+    .roadmap-card-header { background:var(--gradient); padding:18px 24px; display:flex; align-items:flex-start; gap:14px; }
+    .roadmap-card-header .rc-icon { font-size:24px; margin-top:2px; }
+    .roadmap-card-header h4 { font-family:'Space Grotesk',sans-serif; font-size:17px; font-weight:700; color:white; margin:0 0 4px; }
+    .roadmap-card-header p { font-size:12.5px; color:rgba(255,255,255,0.82); margin:0; }
+    .roadmap-card-body { padding:22px 24px; }
+    .roadmap-result { margin-top:18px; padding:13px 16px; background:#eafaf4; border:1px solid #a7ecd3; border-radius:8px; font-size:13px; color:#0e6646; display:flex; gap:10px; align-items:flex-start; }
+    .roadmap-result strong { font-weight:700; }
+
+    /* GRID */
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:720px; margin:16px 0; }
+    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; max-width:720px; margin:16px 0; }
+    .info-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:18px 20px; box-shadow:var(--card-shadow); }
+    .info-card .ic-icon { font-size:24px; margin-bottom:8px; }
+    .info-card h4 { font-size:14px; font-weight:600; color:var(--dark); margin-bottom:6px; }
+    .info-card p { font-size:13px; color:var(--gray2); line-height:1.6; margin:0; }
+
+    /* BADGES */
+    .badge { display:inline-flex; align-items:center; padding:2px 10px; border-radius:20px; font-size:11.5px; font-weight:600; }
+    .badge-blue { background:#e8f0ff; color:var(--navy); }
+    .badge-purple { background:#f0ebff; color:var(--purple); }
+    .badge-green { background:#e6faf3; color:#0e6646; }
+    .badge-amber { background:#fff8e6; color:#78420a; }
+    .badge-red { background:#fef2f2; color:#991b1b; }
+
+    /* TABLE */
+    .data-table { width:100%; border-collapse:collapse; margin:16px 0; max-width:720px; font-size:13.5px; }
+    .data-table th { text-align:left; padding:10px 14px; font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:0.05em; border-bottom:2px solid var(--border); background:var(--bg); }
+    .data-table td { padding:11px 14px; color:var(--gray2); border-bottom:1px solid var(--border); vertical-align:middle; }
+    .data-table tr:last-child td { border-bottom:none; }
+    .data-table tr:hover td { background:#f7f9ff; }
+
+    /* FAQ */
+    .faq-item { border:1px solid var(--border); border-radius:10px; margin-bottom:8px; overflow:hidden; max-width:680px; }
+    .faq-q { padding:15px 18px; font-weight:600; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; background:var(--white); user-select:none; transition:background 0.15s; color:var(--dark); }
+    .faq-q:hover { background:#f7f8ff; }
+    .faq-arrow { color:var(--purple); transition:transform 0.2s; font-size:16px; }
+    .faq-item.open .faq-arrow { transform:rotate(180deg); }
+    .faq-a { display:none; padding:0 18px 14px; font-size:13.5px; line-height:1.7; color:var(--gray2); background:var(--white); }
+    .faq-item.open .faq-a { display:block; }
+
+    /* FOOTER NAV */
+    .footer-nav { padding:32px 48px; background:var(--white); border-top:1px solid var(--border); display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+    .footer-nav a { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:8px; border:1px solid var(--border); background:var(--white); color:var(--navy); text-decoration:none; font-size:13.5px; font-weight:600; transition:all 0.18s; }
+    .footer-nav a:hover { background:#f0f4ff; border-color:var(--purple); }
+
+    /* ALERT CARD */
+    .alert-card { border-radius:10px; padding:14px 18px; margin:10px 0; display:flex; gap:12px; align-items:flex-start; font-size:13.5px; line-height:1.6; max-width:680px; }
+    .alert-card.high { background:#fef2f2; border:1px solid #fca5a5; }
+    .alert-card.medium { background:#fffbeb; border:1px solid #fcd34d; }
+    .alert-card .alert-icon { font-size:20px; flex-shrink:0; }
+    .alert-card .alert-title { font-weight:700; color:var(--dark); margin-bottom:2px; font-size:13.5px; }
+    .alert-card .alert-desc { color:var(--gray2); font-size:13px; }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">Avaliações</div>
+    <div class="manual-tag">Manual do Administrador</div>
+  </div>
+  <div class="sidebar-section-title">Conteúdo</div>
+  <nav>
+    <a href="#dashboard" class="active"><span class="nav-icon">📊</span> Dashboard</a>
+    <a href="#instituicao"><span class="nav-icon">🏫</span> Minha Instituição</a>
+    <a href="#professores"><span class="nav-icon">👩‍🏫</span> Professores</a>
+    <a href="#alunos"><span class="nav-icon">🎓</span> Alunos</a>
+    <a href="#materias"><span class="nav-icon">📚</span> Matérias e Turmas</a>
+    <a href="#roadmap"><span class="nav-icon">🗺️</span> Roadmap de Tarefas</a>
+    <a href="#car"><span class="nav-icon">🤖</span> Acesso CAR</a>
+    <a href="#faq"><span class="nav-icon">❓</span> Perguntas Frequentes</a>
+  </nav>
+  <div class="sidebar-footer">
+    Outros manuais:<br>
+    <a href="manual-professor.html">👩‍🏫 Manual do Professor</a><br>
+    <a href="manual-aluno.html">🎓 Manual do Aluno</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="hero">
+    <div class="hero-badge">👑 Administrador</div>
+    <h1>Manual do<br>Administrador</h1>
+    <p>Gerencie sua instituição, professores, alunos e turmas. Monitore o desempenho e configure o acesso às funcionalidades avançadas de IA.</p>
+    <div class="hero-cards">
+      <div class="hero-card">🏫 Gestão Completa</div>
+      <div class="hero-card">📊 Monitoramento</div>
+      <div class="hero-card">⚙️ Configuração Inicial</div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <span id="pct">0%</span>
+    <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+    <span>Progresso de leitura</span>
+  </div>
+
+  <!-- SECTION 1: DASHBOARD -->
+  <section class="section" id="dashboard">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div><h2>Dashboard Administrativo</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Visão geral da sua instituição em tempo real</p></div>
+    </div>
+
+    <p>O dashboard é a central de informações da sua instituição. Ao fazer login como administrador, você vê imediatamente o estado atual de tudo: quantos professores e alunos estão ativos, quantas provas foram criadas, e quais correções estão pendentes.</p>
+
+    <h3>Painéis de métricas</h3>
+    <div class="grid-3">
+      <div class="info-card">
+        <div class="ic-icon">👩‍🏫</div>
+        <h4>Usuários</h4>
+        <p>Total de professores e alunos ativos cadastrados na instituição.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">📋</div>
+        <h4>Provas e Questões</h4>
+        <p>Quantidade de provas criadas e questões no banco, por matéria.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">📬</div>
+        <h4>Submissões</h4>
+        <p>Respostas de alunos distribuídas por status: Pendente, Corrigindo, Concluído, Liberado.</p>
+      </div>
+    </div>
+
+    <h3>Pipeline de correções</h3>
+    <p>O painel de submissões mostra o fluxo de correções em tempo real. Cada status representa uma etapa:</p>
+    <table class="data-table">
+      <thead><tr><th>Status</th><th>Significado</th><th>Próxima ação</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-amber">Pendente</span></td><td>Aluno enviou a prova, aguarda correção</td><td>Professor inicia correção com IA</td></tr>
+        <tr><td><span class="badge badge-purple">Corrigindo</span></td><td>IA está processando as respostas</td><td>Aguardar automaticamente</td></tr>
+        <tr><td><span class="badge badge-blue">Concluído</span></td><td>Correção finalizada pelo professor</td><td>Professor libera para o aluno</td></tr>
+        <tr><td><span class="badge badge-green">Liberado</span></td><td>Aluno pode visualizar nota e feedback</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Alertas de monitoramento</h3>
+    <p>O sistema gera alertas automáticos quando identifica situações que precisam de atenção:</p>
+
+    <div class="alert-card high">
+      <div class="alert-icon">🔴</div>
+      <div>
+        <div class="alert-title">Backlog de correção</div>
+        <div class="alert-desc">Mais de 5 submissões pendentes há mais de 3 dias. Verifique se o professor está com dificuldade para corrigir.</div>
+      </div>
+    </div>
+    <div class="alert-card high">
+      <div class="alert-icon">🔴</div>
+      <div>
+        <div class="alert-title">Taxa de aprovação baixa</div>
+        <div class="alert-desc">Uma prova com taxa de aprovação abaixo de 50%. Pode indicar prova muito difícil ou problema no conteúdo ensinado.</div>
+      </div>
+    </div>
+    <div class="alert-card medium">
+      <div class="alert-icon">🟡</div>
+      <div>
+        <div class="alert-title">Taxa de entrega baixa</div>
+        <div class="alert-desc">Menos de 60% dos alunos de uma turma enviaram a prova. Verifique se os alunos têm acesso correto à plataforma.</div>
+      </div>
+    </div>
+
+    <h3>Desempenho por professor e por turma</h3>
+    <p>A seção de monitoramento detalha, para cada professor: número de provas criadas, correções pendentes mais antigas (em dias) e taxa média de aprovação. Para cada turma: número de alunos, taxa de entrega e média geral. Use essas informações para identificar onde a plataforma está sendo bem utilizada e onde precisa de suporte.</p>
+
+    <h3>Atividade recente</h3>
+    <p>O feed de atividade recente mostra as últimas submissões e correções, com nome do aluno, prova, turma e nota (quando disponível). Útil para acompanhar o ritmo de uso do dia a dia.</p>
+  </section>
+
+  <!-- SECTION 2: INSTITUIÇÃO -->
+  <section class="section" id="instituicao">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div><h2>Minha Instituição</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Configurações gerais e identidade visual</p></div>
+    </div>
+
+    <p>Acesse <strong>Configurações → Minha Instituição</strong> para ajustar as informações da sua escola ou colégio.</p>
+
+    <h3>Dados cadastrais</h3>
+    <div class="grid-2">
+      <div class="info-card">
+        <div class="ic-icon">🏫</div>
+        <h4>Nome da Instituição</h4>
+        <p>Nome exibido em PDFs de provas, relatórios e cabeçalhos do sistema.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">📄</div>
+        <h4>CNPJ</h4>
+        <p>Opcional. Aparece nos documentos gerados pela plataforma.</p>
+      </div>
+    </div>
+
+    <h3>Logotipo</h3>
+    <p>Faça upload do logotipo da sua instituição para que ele apareça nos PDFs de provas e na tela de login dos alunos.</p>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div><strong>Formato recomendado:</strong> PNG com fundo transparente, dimensões mínimas de 200×200 px. O sistema redimensiona automaticamente para os contextos de uso.</div>
+    </div>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div>Arquivos maiores que 2 MB podem demorar para carregar. Prefira logos otimizadas para web.</div>
+    </div>
+
+    <h3>Plano da instituição</h3>
+    <p>O plano atual determina quais funcionalidades estão disponíveis (número de professores, limite de correções por IA, acesso ao CAR). Contate o suporte para alterar o plano.</p>
+  </section>
+
+  <!-- SECTION 3: PROFESSORES -->
+  <section class="section" id="professores">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div><h2>Gestão de Professores</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Cadastrar, editar e controlar o acesso dos professores</p></div>
+    </div>
+
+    <p>No menu <strong>Professores</strong> você encontra a lista completa de docentes da instituição, com status de atividade, badge CAR, contagem de provas criadas e ações disponíveis.</p>
+
+    <h3>Cadastrar novo professor</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Clique em "Novo Professor"</div>
+          <div class="step-desc">Botão no canto superior direito da página de Professores.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Preencha os dados</div>
+          <div class="step-desc">Nome completo, e-mail institucional e senha provisória. O professor pode alterar a senha após o primeiro acesso.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Configure o acesso CAR (opcional)</div>
+          <div class="step-desc">Se o professor for criar e corrigir avaliações de redação com IA, ative o toggle "Acesso CAR".</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Salve e atribua às turmas</div>
+          <div class="step-desc">O professor já pode fazer login. Lembre de atribuí-lo a uma matéria e turma para que ele possa criar provas.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Editar professor</h3>
+    <p>Clique no ícone de edição (lápis) ao lado do professor para:</p>
+    <ul>
+      <li>Alterar nome e e-mail</li>
+      <li>Redefinir senha</li>
+      <li>Ativar ou desativar o acesso CAR</li>
+      <li>Desativar temporariamente a conta (o professor não consegue mais fazer login, mas seus dados são preservados)</li>
+    </ul>
+
+    <div class="callout note">
+      <span class="callout-icon">ℹ️</span>
+      <div>Professores desativados não são excluídos — suas questões, provas e correções continuam no sistema. Para reativar, edite o professor e ative o status.</div>
+    </div>
+
+    <h3>Indicadores do professor</h3>
+    <table class="data-table">
+      <thead><tr><th>Coluna</th><th>O que significa</th></tr></thead>
+      <tbody>
+        <tr><td>Status</td><td>🟢 Ativo / ⚫ Inativo</td></tr>
+        <tr><td>Badge CAR</td><td>Indica se o professor tem acesso à correção de redações com IA</td></tr>
+        <tr><td>Provas</td><td>Total de provas criadas pelo professor</td></tr>
+        <tr><td>Correções pendentes</td><td>Submissões aguardando correção (visível no monitoramento)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SECTION 4: ALUNOS -->
+  <section class="section" id="alunos">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div><h2>Gestão de Alunos</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Convite por e-mail e matrícula em turmas</p></div>
+    </div>
+
+    <p>Alunos são convidados à plataforma por e-mail. O sistema usa um <strong>magic link</strong>: o aluno clica no link do e-mail, define sua senha e já tem acesso. Nenhuma senha provisória precisa ser comunicada manualmente.</p>
+
+    <h3>Convidar um aluno</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Clique em "Convidar Aluno"</div>
+          <div class="step-desc">Menu Alunos → botão "Convidar Aluno" no canto superior direito.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Preencha nome e e-mail</div>
+          <div class="step-desc">O e-mail deve ser válido — é para ele que o link de acesso será enviado.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Aguarde o aluno aceitar</div>
+          <div class="step-desc">O status do convite fica visível na lista. Após aceitar, matricule o aluno em uma turma.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Status do convite</h3>
+    <table class="data-table">
+      <thead><tr><th>Status</th><th>Significado</th><th>Ação disponível</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-amber">Pendente</span></td><td>E-mail enviado, aluno ainda não clicou</td><td>Reenviar convite</td></tr>
+        <tr><td><span class="badge badge-purple">Link Aberto</span></td><td>Aluno clicou no link mas não definiu senha</td><td>Reenviar convite</td></tr>
+        <tr><td><span class="badge badge-green">Aceito</span></td><td>Aluno definiu senha e tem conta ativa</td><td>Matricular em turmas</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div>O link de convite expira em <strong>7 dias</strong>. Se o aluno não acessar nesse prazo, use o botão "Reenviar Convite" para gerar um novo link.</div>
+    </div>
+
+    <h3>Matricular aluno em turma</h3>
+    <p>Após o aluno aceitar o convite, acesse <strong>Turmas → selecione a turma → aba "Alunos" → "Adicionar Aluno"</strong>. Um aluno pode estar matriculado em mais de uma turma simultaneamente — por exemplo, em Matemática 1º Ano e em um curso de reforço.</p>
+  </section>
+
+  <!-- SECTION 5: MATÉRIAS E TURMAS -->
+  <section class="section" id="materias">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div><h2>Matérias e Turmas</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Estrutura pedagógica da instituição</p></div>
+    </div>
+
+    <h3>Matérias</h3>
+    <p>Matérias são as disciplinas lecionadas na sua instituição (ex: Matemática, Língua Portuguesa, Química, História). Cada questão e cada prova está associada a uma matéria.</p>
+    <p>Para criar: <strong>Menu Matérias → "Nova Matéria"</strong> → informe o nome → Salvar.</p>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div>Crie as matérias antes de cadastrar professores e provas. A hierarquia é: Matéria → Professor vinculado → Prova criada nessa matéria.</div>
+    </div>
+
+    <h3>Turmas</h3>
+    <p>Turmas agrupam os alunos por ano/período (ex: 1º Ano EM 2026, 2º Ano EM 2026, Turma B — Vespertino). Cada turma tem um ano letivo associado.</p>
+    <p>Para criar: <strong>Menu Turmas → "Nova Turma"</strong> → informe nome e ano → Salvar.</p>
+
+    <h3>Atribuições de ensino</h3>
+    <p>Uma atribuição conecta um <strong>professor + matéria + turma</strong>. Sem essa conexão, o professor não consegue criar provas para aquela turma naquela matéria. Uma turma pode ter vários professores (um para cada matéria).</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Acesse a turma</div>
+          <div class="step-desc">Menu Turmas → clique no nome da turma desejada.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Aba "Atribuições" → "Nova Atribuição"</div>
+          <div class="step-desc">Selecione o professor e a matéria que ele leciona nessa turma.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Salve</div>
+          <div class="step-desc">O professor imediatamente passa a ver a turma em seu dashboard e pode criar provas para ela.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Lista de alunos da turma</h3>
+    <p>Na aba "Alunos" da turma você visualiza todos os matriculados, com status de convite e ações de remover. Também é onde você adiciona novos alunos à turma.</p>
+  </section>
+
+  <!-- SECTION 6: ROADMAP -->
+  <section class="section" id="roadmap">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div><h2>Roadmap de Tarefas</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Sequências passo a passo para as tarefas mais comuns</p></div>
+    </div>
+
+    <p>Use os fluxos abaixo como guia para executar as tarefas administrativas mais frequentes. Cada fluxo indica a sequência exata de telas e ações.</p>
+
+    <!-- FLUXO 1 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">🚀</div>
+        <div>
+          <h4>Fluxo 1 — Configuração inicial da instituição</h4>
+          <p>Execute este fluxo ao usar a plataforma pela primeira vez</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Configure a instituição</div>
+              <div class="step-desc">Menu Configurações → preencha nome, CNPJ e faça upload do logotipo (PNG, mín. 200×200 px).</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Crie as matérias</div>
+              <div class="step-desc">Menu Matérias → "Nova Matéria" → repita para cada disciplina (ex: Matemática, Português, Química, História, Biologia).</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Crie as turmas</div>
+              <div class="step-desc">Menu Turmas → "Nova Turma" → informe nome e ano letivo para cada turma (ex: "1º Ano EM", ano 2026).</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Cadastre os professores</div>
+              <div class="step-desc">Menu Professores → "Novo Professor" → preencha dados de cada docente. Ative CAR para quem vai corrigir redações.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <div class="step-title">Crie as atribuições de ensino</div>
+              <div class="step-desc">Menu Turmas → para cada turma → aba "Atribuições" → vincule professor + matéria. Repita para todas as combinações.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-body">
+              <div class="step-title">Convide os alunos</div>
+              <div class="step-desc">Menu Alunos → "Convidar Aluno" → preencha nome e e-mail de cada aluno. Os convites são enviados automaticamente.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">7</div>
+            <div class="step-body">
+              <div class="step-title">Matricule os alunos nas turmas</div>
+              <div class="step-desc">Após os alunos aceitarem o convite: Menu Turmas → turma desejada → "Adicionar Aluno". Repita para cada aluno e turma.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Instituição 100% configurada. Professores podem criar provas e alunos podem acessar e responder.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 2 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">👩‍🏫</div>
+        <div>
+          <h4>Fluxo 2 — Cadastrar novo professor</h4>
+          <p>Para adicionar um docente durante o ano letivo</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Acesse Menu Professores → "Novo Professor"</div>
+              <div class="step-desc">Preencha nome completo, e-mail institucional e senha provisória.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Configure o acesso CAR (se necessário)</div>
+              <div class="step-desc">Ative o toggle se o professor for criar avaliações de redação com correção por IA.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Salve e comunique as credenciais</div>
+              <div class="step-desc">O professor pode fazer login imediatamente com o e-mail e senha cadastrados.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Crie a atribuição de ensino</div>
+              <div class="step-desc">Menu Turmas → turma desejada → "Nova Atribuição" → selecione o novo professor e a matéria.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Professor cadastrado, com acesso ao sistema e vinculado às turmas que leciona.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 3 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">🎓</div>
+        <div>
+          <h4>Fluxo 3 — Matricular alunos em uma turma</h4>
+          <p>Processo de convite, aceite e matrícula</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Convide o aluno</div>
+              <div class="step-desc">Menu Alunos → "Convidar Aluno" → preencha nome e e-mail → Enviar. O sistema dispara o e-mail com o magic link automaticamente.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Acompanhe o status do convite</div>
+              <div class="step-desc">Na lista de Alunos, o status muda de "Pendente" → "Link Aberto" → "Aceito" conforme o aluno interage com o e-mail.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Após status "Aceito" — matricule na turma</div>
+              <div class="step-desc">Menu Turmas → selecione a turma → aba "Alunos" → "Adicionar Aluno" → pesquise o nome → Confirmar.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Repita para todas as turmas do aluno</div>
+              <div class="step-desc">Se o aluno cursa mais de uma matéria em turmas diferentes, adicione-o em cada turma correspondente.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Aluno matriculado e visualizando as provas disponíveis no dashboard dele.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 4 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">📚</div>
+        <div>
+          <h4>Fluxo 4 — Atribuir professor a matéria e turma</h4>
+          <p>Necessário para que o professor crie e corrija provas</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Acesse a turma</div>
+              <div class="step-desc">Menu Turmas → clique no nome da turma que receberá o professor.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Aba "Atribuições" → "Nova Atribuição"</div>
+              <div class="step-desc">No dropdown "Professor" escolha o docente. No dropdown "Matéria" escolha a disciplina que ele leciona nessa turma.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Salve</div>
+              <div class="step-desc">A atribuição é criada instantaneamente. O professor já consegue criar provas para essa turma nessa matéria.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Repita para outras combinações</div>
+              <div class="step-desc">Se o mesmo professor leciona Matemática no 1º e no 2º Ano, crie uma atribuição para cada turma separadamente.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Professor habilitado a criar provas, corrigir submissões e visualizar alunos dessa turma.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 5 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">🤖</div>
+        <div>
+          <h4>Fluxo 5 — Habilitar correção de redação com IA (CAR)</h4>
+          <p>Para professores que vão criar Avaliações de Redação</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Verifique se o plano inclui CAR</div>
+              <div class="step-desc">O CAR é uma funcionalidade premium. Confirme no Dashboard → Configurações que a instituição tem o módulo CAR ativo.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Edite o professor</div>
+              <div class="step-desc">Menu Professores → ícone de edição (lápis) ao lado do professor desejado.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Ative o toggle "Acesso CAR"</div>
+              <div class="step-desc">Marque a opção "Acesso CAR — Avaliações de Redação com IA" → Salvar.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Professor já tem acesso</div>
+              <div class="step-desc">Da próxima vez que o professor criar uma prova, verá a opção "✍️ Avaliação de Redação" além de "📝 Prova Regular".</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Professor habilitado para criar e corrigir avaliações de redação com IA de visão computacional.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 6 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">📊</div>
+        <div>
+          <h4>Fluxo 6 — Monitorar desempenho da instituição</h4>
+          <p>Acompanhamento semanal recomendado</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Acesse o Dashboard → painel "Monitoramento"</div>
+              <div class="step-desc">Os alertas em vermelho indicam situações críticas (backlog de correção, taxa de aprovação baixa). Alertas amarelos são atenção.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Analise os alertas de backlog</div>
+              <div class="step-desc">Identifique qual professor tem correções pendentes há mais de 3 dias. Entre em contato ou verifique se ele precisa de suporte.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Verifique "Desempenho por Turma"</div>
+              <div class="step-desc">Turmas com taxa de entrega abaixo de 60% merecem atenção: os alunos podem estar com dificuldade de acesso ou sem motivação.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Verifique "Desempenho por Professor"</div>
+              <div class="step-desc">Professores com muitas provas liberadas e alta taxa de aprovação estão usando bem a plataforma. Identifique boas práticas para compartilhar.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Visão clara do uso da plataforma com pontos de atenção identificados e ações tomadas.</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SECTION 7: CAR -->
+  <section class="section" id="car">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div><h2>Acesso CAR — Correção de Redação com IA</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Funcionalidade premium de avaliação de redação manuscrita</p></div>
+    </div>
+
+    <p>O <strong>CAR (Correção Automática de Redação)</strong> é o módulo de avaliação de redações com inteligência artificial. Com ele, professores podem criar provas do tipo "Avaliação de Redação", onde o aluno escreve à mão e envia uma foto — a IA transcreve e avalia o texto.</p>
+
+    <h3>Como funciona</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Professor cria a Avaliação de Redação</div>
+          <div class="step-desc">Define o tema/proposta da redação, os critérios de avaliação e a pontuação máxima.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Aluno responde</div>
+          <div class="step-desc">Pode digitar diretamente na plataforma ou tirar uma foto da redação manuscrita em papel.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">IA transcreve e avalia</div>
+          <div class="step-desc">Um modelo de visão computacional transcreve o texto exatamente como escrito. Um segundo modelo avalia o texto e gera nota + feedback.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Professor revisa e ajusta</div>
+          <div class="step-desc">O professor vê a foto, a transcrição e a nota sugerida. Pode ajustar manualmente se necessário. Ao liberar, o aluno vê tudo.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Níveis de acesso</h3>
+    <p>O CAR tem dois níveis de controle:</p>
+    <div class="grid-2">
+      <div class="info-card">
+        <div class="ic-icon">🏫</div>
+        <h4>Nível Instituição</h4>
+        <p>O plano contratado deve incluir o módulo CAR. Sem isso, nenhum professor da instituição pode usar.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">👩‍🏫</div>
+        <h4>Nível Professor</h4>
+        <p>Mesmo com o módulo ativo, o admin deve habilitar CAR individualmente para cada professor que vai usar.</p>
+      </div>
+    </div>
+
+    <div class="callout note">
+      <span class="callout-icon">ℹ️</span>
+      <div>Para habilitar o CAR na instituição, entre em contato com o suporte. Para habilitar por professor, use o fluxo descrito na seção de Roadmap (Fluxo 5).</div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: FAQ -->
+  <section class="section" id="faq">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div><h2>Perguntas Frequentes</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Dúvidas comuns da administração</p></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">O que é o CAR e quem pode usar? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">O CAR (Correção Automática de Redação) é o módulo de IA que transcreve e avalia redações manuscritas fotografadas. Está disponível apenas para instituições com o módulo contratado, e individualmente para professores com acesso habilitado pelo administrador. Entre em contato com o suporte para ativar o módulo na sua instituição.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como reativar um professor desativado? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Acesse Menu Professores → localize o professor (ele aparece com ícone de inativo) → clique em Editar → ative o toggle "Ativo" → Salvar. O professor recupera o acesso imediatamente, com todos os dados preservados (questões, provas, histórico de correções).</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Um professor pode lecionar mais de uma matéria? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Sim. Basta criar atribuições diferentes para o mesmo professor. Por exemplo: "Prof. João → Matemática → 1º Ano EM" e "Prof. João → Física → 1º Ano EM". O professor verá e poderá criar provas em ambas as matérias e turmas.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como remover um aluno de uma turma? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Menu Turmas → selecione a turma → aba "Alunos" → localize o aluno → ícone de remover (lixeira). O aluno é desmatriculado da turma mas continua existindo no sistema. Ele pode ser rematriculado em outra turma a qualquer momento.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">O que acontece se o aluno não aceitar o convite? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">O link de convite expira em 7 dias. Se o aluno não acessar nesse prazo, use o botão "Reenviar Convite" na lista de Alunos. Um novo e-mail com link válido será enviado. Verifique se o e-mail cadastrado está correto antes de reenviar.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como alterar o logotipo da instituição? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Menu Configurações → seção "Logotipo" → clique em "Alterar Logo" → selecione o arquivo PNG → Salvar. Para remover o logotipo atual sem substituir, use o botão "Remover Logo". O novo logotipo aparecerá em todos os PDFs gerados a partir desse momento.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Posso excluir uma turma que já tem alunos? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Sim, mas com cuidado: ao excluir uma turma, as atribuições de ensino e matrículas são removidas. As provas e submissões vinculadas à turma permanecem no histórico. Recomendamos desativar ou renomear turmas antigas ao invés de excluí-las, para preservar o histórico.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">O que são os alertas de monitoramento? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">São notificações automáticas geradas pelo sistema quando detecta situações que merecem atenção: backlog de correções (professor com muitas correções pendentes há mais de 3 dias), taxa de aprovação baixa (abaixo de 50% em uma prova) e taxa de entrega baixa (menos de 60% dos alunos enviaram a prova). Os alertas aparecem no Dashboard e são atualizados diariamente.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Qual a diferença entre status "Concluído" e "Liberado"? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">"Concluído" significa que o professor terminou de corrigir a prova mas o aluno ainda NÃO pode ver a nota. "Liberado" significa que o professor clicou em "Liberar" e o aluno agora pode acessar nota, gabarito e feedback. Isso permite que o professor revise todas as correções antes de divulgar os resultados.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como exportar as notas dos alunos? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Na página de submissões de qualquer prova, o botão "XLSX" no canto superior direito baixa uma planilha Excel com o nome de todos os alunos e suas respectivas notas. A planilha inclui nome do aluno, turma, data de envio, nota total e nota por questão.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como funciona o limite de correções por IA? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Cada plano tem um limite mensal de correções por IA por professor. Quando um professor atinge o limite, o sistema exibe um aviso e bloqueia novas correções automáticas (correções manuais continuam funcionando). O limite reinicia todo mês. Para aumentar o limite, entre em contato com o suporte para contratar pacotes adicionais.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Um aluno pode estar em mais de uma turma? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Sim. Um aluno pode ser matriculado em quantas turmas forem necessárias. Isso é útil em casos como turmas de reforço, aulas optativas ou quando o mesmo aluno faz matérias com professores diferentes em turmas distintas. As provas de cada turma aparecem separadamente no dashboard do aluno.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como redefinir a senha de um professor? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Menu Professores → Editar professor → campo "Nova Senha" → preencha a nova senha → Salvar. O professor receberá a nova senha por comunicação direta (a plataforma não envia e-mail de redefinição automaticamente para professores, apenas para alunos via convite). O professor pode alterar a própria senha pelo menu de Perfil após o login.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">O que fazer se o e-mail de convite do aluno não chegou? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Primeiro, peça ao aluno para verificar a caixa de spam/lixo eletrônico — e-mails automáticos às vezes são filtrados. Se não encontrar, verifique se o e-mail cadastrado está correto (Menu Alunos → editar). Em seguida, use "Reenviar Convite". Se o problema persistir, entre em contato com o suporte — pode haver um problema de entrega de e-mail para aquele domínio.</div>
+    </div>
+  </section>
+
+  <div class="footer-nav">
+    <a href="manual-professor.html">👩‍🏫 Manual do Professor →</a>
+    <a href="manual-aluno.html">🎓 Manual do Aluno →</a>
+  </div>
+</main>
+
+<script>
+  // Progress bar
+  const fill = document.getElementById('pfill');
+  const pct = document.getElementById('pct');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    const v = Math.round(p * 100);
+    fill.style.width = v + '%';
+    pct.textContent = v + '%';
+  });
+
+  // Sidebar active link
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.sidebar nav a');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+    navLinks.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + cur) a.classList.add('active');
+    });
+  });
+
+  // FAQ toggle
+  function toggle(el) {
+    const item = el.parentElement;
+    item.classList.toggle('open');
+  }
+</script>
+</body>
+</html>

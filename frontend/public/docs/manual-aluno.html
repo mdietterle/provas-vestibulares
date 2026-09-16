@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual do Aluno — Plataforma de Avaliações</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #00236f; --purple: #6b38d4; --green: #27c38a; --amber: #f59e0b;
+      --border: #e5eeff; --dark: #0b1c30; --gray: #757682; --gray2: #444651;
+      --bg: #f7f8fc; --white: #ffffff;
+      --card-shadow: 0 4px 20px rgba(0,35,111,0.06);
+      --gradient: linear-gradient(135deg, #00236f 0%, #6b38d4 100%);
+      --sidebar-w: 260px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--dark); background: var(--bg); display: flex; min-height: 100vh; }
+    .sidebar { position: fixed; top:0; left:0; bottom:0; width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--border); overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo .logo-mark { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sidebar-logo .manual-tag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--green); margin-top: 4px; }
+    .sidebar-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray); padding: 20px 20px 8px; }
+    .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 13.5px; font-weight: 500; color: var(--gray2); text-decoration: none; border-left: 3px solid transparent; transition: all 0.18s; }
+    .sidebar nav a:hover { background: #f0f4ff; color: var(--navy); border-left-color: var(--border); }
+    .sidebar nav a.active { background: linear-gradient(90deg,#e8f0ff,#f3edff); color: var(--navy); border-left-color: var(--purple); font-weight: 600; }
+    .sidebar nav a .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+    .sidebar-footer { margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--gray); }
+    .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
+    .hero { background: linear-gradient(135deg, #059669 0%, #00236f 100%); padding: 60px 48px 56px; color: white; position: relative; overflow: hidden; }
+    .hero::before { content:''; position: absolute; top:-80px; right:-80px; width:320px; height:320px; background: rgba(255,255,255,0.05); border-radius:50%; }
+    .hero::after { content:''; position: absolute; bottom:-100px; right:120px; width:220px; height:220px; background: rgba(255,255,255,0.04); border-radius:50%; }
+    .hero-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:18px; }
+    .hero h1 { font-family:'Space Grotesk',sans-serif; font-size:38px; font-weight:700; line-height:1.15; margin-bottom:14px; position:relative; }
+    .hero p { font-size:16px; line-height:1.7; opacity:0.88; max-width:540px; position:relative; }
+    .hero-cards { display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; position:relative; }
+    .hero-card { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:10px; font-size:13px; font-weight:500; }
+    .progress-bar-wrap { background: var(--white); border-bottom:1px solid var(--border); padding:0 48px; display:flex; align-items:center; gap:16px; height:48px; font-size:12px; color:var(--gray); font-weight:500; }
+    .progress-track { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+    .progress-fill { height:100%; background:var(--gradient); border-radius:2px; transition:width 0.4s; }
+    .section { padding: 52px 48px; border-bottom: 1px solid var(--border); }
+    .section:last-of-type { border-bottom: none; }
+    .section-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:28px; }
+    .section-number { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#059669,#00236f); color:white; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+    .section h2 { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; color:var(--navy); line-height:1.2; }
+    .section h3 { font-size:17px; font-weight:600; color:var(--dark); margin:28px 0 10px; }
+    .section p { font-size:14.5px; line-height:1.75; color:var(--gray2); margin-bottom:14px; max-width:680px; }
+    .callout { border-radius:10px; padding:14px 18px; margin:18px 0; display:flex; gap:12px; align-items:flex-start; font-size:13.5px; line-height:1.65; max-width:680px; }
+    .callout-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+    .callout.tip { background:#eafaf4; border:1px solid #a7ecd3; color:#0e6646; }
+    .callout.warning { background:#fffbeb; border:1px solid #fcd34d; color:#78420a; }
+    .callout.note { background:#eff3ff; border:1px solid #c7d7ff; color:#2a3d8f; }
+    .steps { margin:20px 0; max-width:680px; }
+    .step { display:flex; gap:16px; margin-bottom:20px; position:relative; }
+    .step:not(:last-child)::after { content:''; position:absolute; left:19px; top:42px; width:2px; height:calc(100% - 10px); background:var(--border); }
+    .step-num { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#059669,#00236f); color:white; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .step-body { flex:1; padding-top:8px; }
+    .step-title { font-size:14.5px; font-weight:600; color:var(--dark); margin-bottom:4px; }
+    .step-desc { font-size:13.5px; color:var(--gray2); line-height:1.65; }
+    .faq-item { border:1px solid var(--border); border-radius:10px; margin-bottom:10px; overflow:hidden; max-width:680px; }
+    .faq-q { padding:16px 20px; font-size:14px; font-weight:600; color:var(--dark); cursor:pointer; display:flex; justify-content:space-between; align-items:center; background:var(--white); user-select:none; }
+    .faq-q:hover { background:#f7f9ff; }
+    .faq-q .faq-icon { font-size:18px; color:var(--green); transition:transform 0.2s; }
+    .faq-a { padding:0 20px; font-size:13.5px; line-height:1.7; color:var(--gray2); max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s; }
+    .faq-item.open .faq-a { max-height:500px; padding:0 20px 16px; }
+    .faq-item.open .faq-icon { transform:rotate(45deg); }
+    .roadmap-card { background:var(--white); border:1px solid var(--border); border-radius:14px; margin:20px 0; max-width:720px; overflow:hidden; box-shadow:var(--card-shadow); }
+    .roadmap-card-header { background:linear-gradient(135deg,#059669,#00236f); padding:16px 24px; display:flex; align-items:center; gap:12px; }
+    .roadmap-card-header .rc-icon { font-size:22px; }
+    .roadmap-card-header h4 { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; color:white; margin:0; }
+    .roadmap-card-header p { font-size:12px; color:rgba(255,255,255,0.8); margin:2px 0 0; }
+    .roadmap-card-body { padding:20px 24px; }
+    .roadmap-result { margin-top:16px; padding:12px 16px; background:#eafaf4; border:1px solid #a7ecd3; border-radius:8px; font-size:13px; color:#0e6646; display:flex; gap:8px; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:720px; margin:16px 0; }
+    .info-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:18px 20px; box-shadow:var(--card-shadow); }
+    .info-card .ic-icon { font-size:24px; margin-bottom:8px; }
+    .info-card h4 { font-size:14px; font-weight:600; color:var(--dark); margin-bottom:6px; }
+    .info-card p { font-size:13px; color:var(--gray2); line-height:1.6; margin:0; }
+    .badge { display:inline-flex; align-items:center; padding:2px 10px; border-radius:20px; font-size:11.5px; font-weight:600; }
+    .badge-blue { background:#e8f0ff; color:var(--navy); }
+    .badge-green { background:#e6faf3; color:#0e6646; }
+    .badge-amber { background:#fff8e6; color:#78420a; }
+    .badge-purple { background:#f0ebff; color:var(--purple); }
+
+    /* roadmap steps inside cards */
+    .roadmap-step { display:flex; gap:12px; margin-bottom:14px; align-items:flex-start; position:relative; }
+    .roadmap-step:not(:last-child)::after { content:''; position:absolute; left:15px; top:34px; width:2px; height:calc(100% - 4px); background:var(--border); }
+    .roadmap-step-num { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#059669,#00236f); color:white; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .roadmap-step-body { flex:1; padding-top:5px; font-size:13.5px; color:var(--gray2); line-height:1.65; }
+
+    /* status flow */
+    .status-flow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:16px 0; max-width:680px; }
+    .status-flow .arrow { color:var(--gray); font-size:16px; }
+
+    /* question type table */
+    .qt-table { width:100%; max-width:680px; border-collapse:collapse; margin:16px 0; font-size:13.5px; }
+    .qt-table th { background:linear-gradient(135deg,#059669,#00236f); color:white; padding:10px 14px; text-align:left; font-weight:600; }
+    .qt-table th:first-child { border-radius:8px 0 0 0; }
+    .qt-table th:last-child { border-radius:0 8px 0 0; }
+    .qt-table td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--gray2); vertical-align:top; }
+    .qt-table tr:last-child td { border-bottom:none; }
+    .qt-table tr:nth-child(even) td { background:#f7f9ff; }
+
+    /* soma example */
+    .soma-example { background:#f7f9ff; border:1px solid var(--border); border-radius:8px; padding:14px 18px; margin:10px 0; max-width:500px; font-size:13px; color:var(--gray2); line-height:1.8; }
+    .soma-example strong { color:var(--dark); }
+
+    /* sidebar footer link */
+    .sidebar-footer a { color:var(--purple); text-decoration:none; }
+    .sidebar-footer a:hover { text-decoration:underline; }
+
+    @media (max-width: 800px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .hero { padding: 36px 24px 32px; }
+      .section { padding: 36px 24px; }
+      .progress-bar-wrap { padding: 0 24px; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">Avaliações</div>
+    <div class="manual-tag">Manual do Aluno</div>
+  </div>
+
+  <div class="sidebar-section-title">Navegação</div>
+  <nav>
+    <a href="#hero" class="nav-link active">
+      <span class="nav-icon">🏠</span> Início
+    </a>
+    <a href="#primeiro-acesso" class="nav-link">
+      <span class="nav-icon">📧</span> Primeiro Acesso
+    </a>
+    <a href="#dashboard" class="nav-link">
+      <span class="nav-icon">📊</span> Seu Dashboard
+    </a>
+    <a href="#realizando-prova" class="nav-link">
+      <span class="nav-icon">📝</span> Realizando uma Prova
+    </a>
+    <a href="#redacao" class="nav-link">
+      <span class="nav-icon">✍️</span> Avaliação de Redação
+    </a>
+    <a href="#resultados" class="nav-link">
+      <span class="nav-icon">📊</span> Consultando Resultados
+    </a>
+    <a href="#simulados" class="nav-link">
+      <span class="nav-icon">🎯</span> Simulados
+    </a>
+    <a href="#roteiro" class="nav-link">
+      <span class="nav-icon">🗺️</span> Roteiro de Uso
+    </a>
+    <a href="#perfil" class="nav-link">
+      <span class="nav-icon">👤</span> Perfil
+    </a>
+    <a href="#faq" class="nav-link">
+      <span class="nav-icon">❓</span> Perguntas Frequentes
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    Plataforma de Avaliações &copy; 2025<br>
+    <a href="manual-professor.html">Manual do Professor &rarr;</a>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-badge">🎓 Guia Completo para Alunos</div>
+    <h1>Manual do Aluno</h1>
+    <p>Tudo o que você precisa saber para acessar a plataforma, realizar provas, enviar redações, consultar seus resultados e praticar com simulados de vestibular — em um só lugar.</p>
+    <div class="hero-cards">
+      <div class="hero-card">📝 Provas Online</div>
+      <div class="hero-card">⚡ Resultados Imediatos</div>
+      <div class="hero-card">🎯 Simulados de Vestibular</div>
+    </div>
+  </section>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-bar-wrap">
+    <span>Progresso de leitura</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <span id="progressLabel">0%</span>
+  </div>
+
+  <!-- SECTION 1: PRIMEIRO ACESSO -->
+  <section class="section" id="primeiro-acesso">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div>
+        <h2>Primeiro Acesso</h2>
+        <p style="margin-bottom:0;color:var(--gray);font-size:13px;">Como entrar na plataforma pela primeira vez</p>
+      </div>
+    </div>
+
+    <p>O acesso à plataforma começa com um convite enviado pelo seu professor ou pela administração da escola. Não é necessário criar conta manualmente — você receberá tudo por email.</p>
+
+    <h3>Como funciona o convite por magic link</h3>
+    <p>Quando seu professor cadastra você na turma, um email de convite é enviado automaticamente para o endereço que ele informou. Esse email contém um <strong>link especial (magic link)</strong> — basta clicar nele para iniciar o processo de acesso à plataforma.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Abra o email de convite</div>
+          <div class="step-desc">Verifique sua caixa de entrada (e também a pasta de spam) por um email com assunto "Convite para a Plataforma de Avaliações" ou similar. O remetente é o endereço oficial da plataforma.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Clique no link "Acessar minha conta"</div>
+          <div class="step-desc">O link abre automaticamente uma página da plataforma no seu navegador. Você ainda não precisa de senha nessa etapa — o link valida sua identidade de forma segura.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Defina uma senha</div>
+          <div class="step-desc">A página que abre solicita que você crie uma senha pessoal (mínimo de 8 caracteres, com letras e números). Digite a senha desejada e confirme. Essa senha será usada em todos os próximos acessos.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Acesso automático ao dashboard</div>
+          <div class="step-desc">Após definir a senha, você é redirecionado automaticamente para o seu dashboard. Seu cadastro está completo e ativo — nenhuma outra ação é necessária.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⏰</span>
+      <div><strong>Link expirado?</strong> O magic link tem validade limitada (geralmente 24 a 48 horas). Se você demorar a clicar e o link já expirou, entre em contato com seu professor ou com a administração da escola e solicite o reenvio do convite.</div>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div><strong>Próximos acessos:</strong> A partir do segundo acesso, vá direto para a página de login da plataforma e use seu email + a senha que você criou. Se esquecer a senha, clique em "Esqueci minha senha" na tela de login.</div>
+    </div>
+
+    <div class="callout note">
+      <span class="callout-icon">ℹ️</span>
+      <div><strong>Dica de segurança:</strong> Nunca compartilhe seu magic link com outras pessoas — ele dá acesso direto à sua conta. Se suspeitar que outra pessoa usou seu link, troque sua senha imediatamente nas configurações de perfil e avise seu professor.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: DASHBOARD -->
+  <section class="section" id="dashboard">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div>
+        <h2>Seu Dashboard</h2>
+        <p style="margin-bottom:0;color:var(--gray);font-size:13px;">Visão geral do seu desempenho e atividades</p>
+      </div>
+    </div>
+
+    <p>O dashboard é a primeira tela que você vê ao entrar na plataforma. Ele reúne as informações mais importantes do seu desempenho escolar em um só lugar, de forma visual e sempre atualizada.</p>
+
+    <div class="grid-2">
+      <div class="info-card">
+        <div class="ic-icon">📈</div>
+        <h4>Média Geral</h4>
+        <p>Exibe sua média de notas em todas as provas já corrigidas e liberadas pelos professores. Atualizada automaticamente a cada nova correção.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🏆</div>
+        <h4>Posição no Ranking</h4>
+        <p>Mostra sua colocação dentro da turma com base na média geral. Por exemplo: "3º lugar de 28 alunos". Atualizado a cada prova liberada.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">✅</div>
+        <h4>Taxa de Conclusão</h4>
+        <p>Percentual de provas que você entregou em relação ao total disponível para a sua turma. Ajuda a garantir que você não está perdendo nenhuma avaliação.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">📉</div>
+        <h4>Evolução de Notas</h4>
+        <p>Gráfico com sua média mês a mês. Permite visualizar se seu desempenho está melhorando, estável ou caindo ao longo do período letivo.</p>
+      </div>
+    </div>
+
+    <h3>Provas Pendentes</h3>
+    <p>Na parte inferior do dashboard você encontra a seção <strong>Provas Pendentes</strong>, que lista todas as avaliações disponíveis para você responder. Cada item mostra o nome da prova, a disciplina, a turma e a data limite (se houver). Clique diretamente no botão "Iniciar Prova" para começar sem precisar navegar por outros menus.</p>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div>Provas que estão próximas do prazo aparecem destacadas com uma indicação visual de urgência. Fique atento para não perder nenhuma avaliação.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: REALIZANDO UMA PROVA -->
+  <section class="section" id="realizando-prova">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div>
+        <h2>Realizando uma Prova</h2>
+        <p style="margin-bottom:0;color:var(--gray);font-size:13px;">Como responder cada tipo de questão e enviar sua prova</p>
+      </div>
+    </div>
+
+    <p>Quando um professor atribui uma prova à sua turma, ela aparece automaticamente na seção "Provas Pendentes" do seu dashboard. Você pode iniciar a prova a qualquer momento dentro do período definido pelo professor.</p>
+
+    <h3>Iniciando a prova</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Localize a prova no dashboard</div>
+          <div class="step-desc">Na seção "Provas Pendentes", encontre a avaliação desejada. Verifique o prazo e a disciplina antes de começar.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Clique em "Iniciar Prova"</div>
+          <div class="step-desc">Um diálogo de confirmação será exibido. Confirme que deseja iniciar — a partir desse momento, se houver cronômetro, ele começa a contar.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Responda as questões</div>
+          <div class="step-desc">Você pode navegar livremente entre as questões clicando nos números de questão ou usando os botões "Anterior" e "Próxima". Suas respostas são salvas automaticamente a cada interação.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Revise e envie</div>
+          <div class="step-desc">Antes de enviar, verifique se respondeu todas as questões. Clique em "Enviar Prova" e confirme no diálogo que aparece. A ação é irreversível.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Tipos de questão</h3>
+    <p>A plataforma suporta diferentes formatos de questão. Entender como cada um funciona evita erros na hora de responder.</p>
+
+    <table class="qt-table">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Como responder</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Múltipla Escolha</strong></td>
+          <td>Clique na alternativa correta (A, B, C, D ou E). Apenas uma alternativa pode ser marcada. Para trocar, basta clicar em outra opção antes de enviar.</td>
+        </tr>
+        <tr>
+          <td><strong>Discursiva (Dissertativa)</strong></td>
+          <td>Digite sua resposta no campo de texto disponível. Não há limite de caracteres, mas seja objetivo e responda ao que foi pedido no enunciado.</td>
+        </tr>
+        <tr>
+          <td><strong>Somatória</strong></td>
+          <td>Para cada afirmativa, marque se é Verdadeira ou Falsa. Sua nota final é a soma dos valores das afirmativas marcadas como verdadeiras (01, 02, 04, 08, 16, 32...).</td>
+        </tr>
+        <tr>
+          <td><strong>Verdadeiro ou Falso</strong></td>
+          <td>Para cada afirmativa listada, clique em "V" (Verdadeiro) ou "F" (Falso). Todas as afirmativas precisam ser respondidas para a questão ser considerada completa.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Como funciona a questão de Somatória</h3>
+    <p>Na somatória, cada afirmativa tem um valor específico: 01, 02, 04, 08, 16, 32... (potências de 2). Você deve marcar cada afirmativa como verdadeira ou falsa, e sua resposta final é a <strong>soma dos valores das afirmativas verdadeiras</strong>.</p>
+
+    <div class="soma-example">
+      <strong>Exemplo prático:</strong><br><br>
+      Suponha que a questão tenha 5 afirmativas com os valores 01, 02, 04, 08 e 16.<br>
+      Você julga que as afirmativas 01, 04 e 08 são verdadeiras.<br><br>
+      <strong>Cálculo:</strong> 01 + 04 + 08 = <strong>13</strong><br><br>
+      Portanto, sua resposta para essa questão é <strong>13</strong>. A plataforma calcula isso automaticamente conforme você marca as afirmativas — você apenas escolhe V ou F para cada uma.
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div>A plataforma calcula o valor da somatória automaticamente enquanto você marca as afirmativas. Você não precisa fazer a soma manualmente — apenas marque cada afirmativa como V ou F e o total aparecerá na tela em tempo real.</div>
+    </div>
+
+    <h3>Cronômetro (tempo limite)</h3>
+    <p>Alguns professores definem um tempo máximo para a realização da prova. Se houver limite de tempo, um cronômetro regressivo aparece no topo da tela durante a prova. Quando o tempo se esgota, a prova é enviada automaticamente com as respostas preenchidas até aquele momento.</p>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div>
+        <strong>Atenção antes de iniciar:</strong>
+        <ul style="margin-top:8px; padding-left:16px; line-height:1.9;">
+          <li>Verifique sua conexão com a internet — instabilidade pode causar problemas durante a prova.</li>
+          <li><strong>Não é possível alterar as respostas após enviar</strong> — revise tudo antes de confirmar.</li>
+          <li>Responda todas as questões antes de enviar. Questões em branco valem zero.</li>
+          <li>Se houver cronômetro, não saia da aba — o tempo continua correndo mesmo em segundo plano.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: REDAÇÃO -->
+  <section class="section" id="redacao">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div>
+        <h2>Avaliação de Redação</h2>
+        <p style="margin-bottom:0;color:var(--gray);font-size:13px;">Como enviar redações digitadas ou manuscritas</p>
+      </div>
+    </div>
+
+    <p>Alguns professores podem criar avaliações do tipo <strong>redação</strong>, nas quais você deve produzir um texto com base em uma proposta ou tema apresentado. A plataforma oferece duas formas de entrega: digitar o texto diretamente ou enviar uma foto de redação manuscrita.</p>
+
+    <h3>Opção 1 — Digitar a redação</h3>
+    <p>Na tela da avaliação, leia atentamente a proposta/tema e as instruções fornecidas pelo professor. Em seguida, clique na aba <strong>"Redigir"</strong> e escreva seu texto no campo disponível. A digitação é salva automaticamente conforme você escreve.</p>
+
+    <div class="callout tip">
+      <span class="callout-icon">✏️</span>
+      <div>Prefira escrever seu rascunho em um editor de texto (como Word ou Google Docs) antes de colar na plataforma. Assim você evita perder o texto em caso de instabilidade na conexão ou fechamento acidental do navegador.</div>
+    </div>
+
+    <h3>Opção 2 — Foto de redação manuscrita</h3>
+    <p>Se preferir escrever à mão, você pode fotografar a folha e enviar a imagem diretamente pela plataforma. Siga os passos abaixo:</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Escreva a redação em papel</div>
+          <div class="step-desc">Utilize papel pautado e caneta de tinta azul ou preta. Escreva de forma legível, com letra clara. Evite rasuras excessivas que possam dificultar a leitura pela inteligência artificial.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Clique na aba "Foto da redação"</div>
+          <div class="step-desc">Na tela da avaliação, selecione a aba correspondente à entrega por imagem.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Tire a foto ou arraste o arquivo</div>
+          <div class="step-desc">Clique em "Tirar foto" (abre a câmera do dispositivo) ou arraste o arquivo de imagem diretamente para a área indicada. Formatos aceitos: JPG, PNG e PDF.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Verifique a qualidade da imagem</div>
+          <div class="step-desc">Uma prévia da imagem aparece na tela. Certifique-se de que o texto está completamente legível, bem iluminado e sem sombras ou reflexos. Se a imagem estiver ruim, remova-a e tire outra foto.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Envie a prova</div>
+          <div class="step-desc">Clique em "Enviar Prova" e confirme no diálogo. A imagem será enviada ao servidor e processada pela inteligência artificial.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Correção por Inteligência Artificial</h3>
+    <p>Após o envio, a IA da plataforma processa sua redação automaticamente. No caso de imagem manuscrita, ela realiza a <strong>transcrição do texto</strong> (converte a escrita manual para texto digital) e em seguida faz a avaliação completa. Os resultados disponíveis após a liberação incluem:</p>
+    <ul style="margin:8px 0 16px 20px; line-height:1.9; font-size:14px; color:var(--gray2); max-width:680px;">
+      <li>Transcrição completa do texto manuscrito (quando enviado por foto)</li>
+      <li>Nota atribuída pela IA com base nos critérios da avaliação</li>
+      <li>Feedback detalhado por critério (coesão, coerência, argumentação, adequação ao tema, etc.)</li>
+    </ul>
+
+    <div class="callout warning">
+      <span class="callout-icon">📷</span>
+      <div><strong>Imagem borrada ou ilegível?</strong> Se a IA não conseguir ler o texto por problemas de qualidade de imagem, a correção pode ser comprometida. Sempre verifique a prévia antes de confirmar o envio. Em caso de problemas após o envio, entre em contato imediatamente com seu professor.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: RESULTADOS -->
+  <section class="section" id="resultados">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div>
+        <h2>Consultando Resultados</h2>
+        <p style="margin-bottom:0;color:var(--gray);font-size:13px;">Como acessar suas notas e o gabarito</p>
+      </div>
+    </div>
+
+    <p>Após enviar uma prova, o resultado passa por diferentes etapas antes de ficar disponível para você. Acompanhe o status da sua prova pelo menu <strong>Provas</strong>.</p>
+
+    <h3>Fluxo de status da prova</h3>
+    <div class="status-flow">
+      <span class="badge badge-blue">Enviado</span>
+      <span class="arrow">&#8594;</span>
+      <span class="badge badge-amber">Corrigindo</span>
+      <span class="arrow">&#8594;</span>
+      <span class="badge badge-purple">Concluído</span>
+      <span class="arrow">&#8594;</span>
+      <span class="badge badge-green">Liberado</span>
+    </div>
+
+    <div class="grid-2" style="margin-top:8px;">
+      <div class="info-card">
+        <div class="ic-icon">📤</div>
+        <h4>Enviado</h4>
+        <p>Sua prova foi recebida pelo servidor com sucesso. Aguardando início da correção.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🔄</div>
+        <h4>Corrigindo</h4>
+        <p>A prova está sendo processada. Questões objetivas são corrigidas automaticamente; discursivas e redações passam pela IA ou revisão do professor.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">✔️</div>
+        <h4>Concluído</h4>
+        <p>A correção foi finalizada pelo sistema. Aguardando o professor liberar o resultado para os alunos da turma.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🟢</div>
+        <h4>Liberado</h4>
+        <p>O professor liberou o resultado. Agora você pode visualizar sua nota, o gabarito e o feedback completo.</p>
+      </div>
+    </div>
+
+    <div class="callout note">
+      <span class="callout-icon">ℹ️</span>
+      <div>Os resultados só ficam visíveis para você após o professor liberar (status <span class="badge badge-green" style="font-size:11px;">Liberado</span>). Isso garante que todos os alunos da turma recebam o resultado ao mesmo tempo.</div>
+    </div>
+
+    <h3>O que você vê na tela de resultado</h3>
+    <p>Ao clicar em "Ver Resultado" de uma prova com status Liberado, você acessa a página de detalhes com:</p>
+    <ul style="margin:8px 0 16px 20px; line-height:2; font-size:14px; color:var(--gray2); max-width:680px;">
+      <li><strong>Nota total</strong> — sua pontuação final na prova</li>
+      <li><strong>Questões de múltipla escolha</strong> — sua resposta ao lado da resposta correta (correta em verde, incorreta destacada)</li>
+      <li><strong>Questões discursivas</strong> — seu texto completo, a nota atribuída e o feedback da IA ou do professor</li>
+      <li><strong>Questões de somatória e V/F</strong> — comparativo entre suas marcações e o gabarito, com o valor obtido em cada afirmativa</li>
+      <li><strong>Redação</strong> — transcrição do texto (se enviado por foto), nota e feedback detalhado por critério de avaliação</li>
+    </ul>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div>Use a tela de resultado como ferramenta de estudo: revise as questões que errou, leia o feedback das discursivas e identifique os conteúdos que precisam de reforço antes da próxima avaliação.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: SIMULADOS -->
+  <section class="section" id="simulados">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div>
+        <h2>Simulados</h2>
+        <p style="margin-bottom:0;color:var(--gray);font-size:13px;">Pratique com questões de vestibular a qualquer momento</p>
+      </div>
+    </div>
+
+    <p>O módulo de Simulados permite que você pratique com questões de vestibulares reais de forma independente, sem que isso interfira nas suas notas oficiais. É uma ferramenta de estudo pessoal, não uma avaliação formal.</p>
+
+    <h3>Como criar um simulado</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Acesse o menu "Simulados"</div>
+          <div class="step-desc">No menu principal da plataforma, clique em "Simulados" e em seguida no botão "Novo Simulado".</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Escolha a matéria</div>
+          <div class="step-desc">Selecione a disciplina que deseja praticar: Matemática, Português, Ciências da Natureza, Ciências Humanas, entre outras disponíveis no banco.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Defina a dificuldade e a quantidade</div>
+          <div class="step-desc">Escolha o nível de dificuldade (Fácil, Médio ou Difícil) e a quantidade de questões. Para um estudo rápido, 10 questões são suficientes; para simular uma prova completa, escolha 20 ou mais.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Responda no seu ritmo</div>
+          <div class="step-desc">Simulados não têm limite de tempo. Responda com calma, releia o enunciado quantas vezes precisar — o objetivo é aprender e praticar.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Veja o resultado imediato</div>
+          <div class="step-desc">Ao finalizar, o gabarito comentado aparece imediatamente, questão por questão, com a explicação de cada resposta correta e por que as alternativas incorretas estão erradas.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Banco de questões disponível</h3>
+    <p>As questões dos simulados são extraídas de bancos públicos de vestibulares reconhecidos:</p>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 20px;">
+      <span class="badge badge-blue">ENEM</span>
+      <span class="badge badge-purple">ACAFE</span>
+      <span class="badge badge-green">UFPR</span>
+      <span class="badge badge-amber">UFSC</span>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">🔁</span>
+      <div><strong>Refaça quantas vezes quiser.</strong> A cada novo simulado, o sistema sorteia questões diferentes do banco. Seu desempenho é registrado ao longo do tempo, permitindo acompanhar sua evolução por matéria.</div>
+    </div>
+
+    <div class="callout note">
+      <span class="callout-icon">ℹ️</span>
+      <div><strong>Simulados não contam como nota.</strong> Os resultados dos simulados são apenas para seu acompanhamento pessoal e não são visíveis para professores ou administradores da escola.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 7: ROTEIRO -->
+  <section class="section" id="roteiro">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div>
+        <h2>Roteiro de Uso</h2>
+        <p style="margin-bottom:0;color:var(--gray);font-size:13px;">Fluxos passo a passo para as situações mais comuns</p>
+      </div>
+    </div>
+
+    <p>Use os roteiros abaixo como guia rápido para as tarefas mais frequentes na plataforma. Cada roteiro mostra exatamente o que fazer, do início ao fim, sem precisar navegar pelo resto do manual.</p>
+
+    <!-- Roteiro 1 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <span class="rc-icon">🚀</span>
+        <div>
+          <h4>Roteiro 1 — Fazer login pela primeira vez</h4>
+          <p>Para alunos que acabaram de receber o convite por email</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">1</div>
+          <div class="roadmap-step-body">Abra o email recebido da plataforma e clique no link <strong>"Acessar minha conta"</strong>.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">2</div>
+          <div class="roadmap-step-body">Na página que abre, defina uma senha segura (mínimo 8 caracteres) e clique em <strong>Confirmar</strong>.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">3</div>
+          <div class="roadmap-step-body">Você será redirecionado automaticamente para o seu dashboard — seu acesso está ativo.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">4</div>
+          <div class="roadmap-step-body">Veja as provas disponíveis na seção <strong>"Provas Pendentes"</strong> do dashboard.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">5</div>
+          <div class="roadmap-step-body">Atualize seu perfil: clique no avatar (canto superior direito) &rarr; <strong>"Meu Perfil"</strong> &rarr; adicione uma foto se quiser.</div>
+        </div>
+        <div class="roadmap-result">
+          <span>&#10003;</span>
+          <span><strong>Resultado:</strong> Conta ativa e acesso completo à plataforma.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roteiro 2 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <span class="rc-icon">📝</span>
+        <div>
+          <h4>Roteiro 2 — Responder uma prova de múltipla escolha</h4>
+          <p>Passo a passo completo para responder e enviar uma prova</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">1</div>
+          <div class="roadmap-step-body">No dashboard, localize a prova na seção "Provas Pendentes" &rarr; clique em <strong>"Iniciar Prova"</strong>.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">2</div>
+          <div class="roadmap-step-body">Leia cada questão com atenção antes de responder.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">3</div>
+          <div class="roadmap-step-body"><strong>Para múltipla escolha:</strong> clique na alternativa desejada (A, B, C, D ou E).</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">4</div>
+          <div class="roadmap-step-body"><strong>Para discursiva:</strong> clique no campo de texto e escreva sua resposta com clareza e objetividade.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">5</div>
+          <div class="roadmap-step-body"><strong>Para somatória:</strong> marque cada afirmativa como Verdadeira ou Falsa — o valor total é calculado automaticamente.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">6</div>
+          <div class="roadmap-step-body">Revise todas as respostas antes de enviar — navegue pelos números de questão para garantir que nenhuma ficou em branco.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">7</div>
+          <div class="roadmap-step-body">Clique em <strong>"Enviar Prova"</strong> &rarr; confirme no diálogo &rarr; aguarde a mensagem de confirmação de envio.</div>
+        </div>
+        <div class="roadmap-result">
+          <span>&#10003;</span>
+          <span><strong>Resultado:</strong> Prova enviada com sucesso — aguarde a correção do professor.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roteiro 3 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <span class="rc-icon">✍️</span>
+        <div>
+          <h4>Roteiro 3 — Enviar uma redação com foto</h4>
+          <p>Quando preferir escrever à mão e enviar a imagem</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">1</div>
+          <div class="roadmap-step-body">No dashboard, localize a avaliação de redação &rarr; clique em <strong>"Iniciar Prova"</strong>.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">2</div>
+          <div class="roadmap-step-body">Leia atentamente a proposta/tema da redação e todas as instruções fornecidas pelo professor.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">3</div>
+          <div class="roadmap-step-body">Escreva sua redação em folha de papel (de preferência pautado), com letra legível e caneta azul ou preta.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">4</div>
+          <div class="roadmap-step-body">Clique na aba <strong>"Foto da redação"</strong> &rarr; toque em "Tirar foto" (ou arraste o arquivo de imagem para a área indicada).</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">5</div>
+          <div class="roadmap-step-body">Verifique se a imagem está legível e bem iluminada na prévia — ajuste o enquadramento ou a iluminação se necessário antes de confirmar.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">6</div>
+          <div class="roadmap-step-body">Clique em <strong>"Enviar Prova"</strong> &rarr; confirme no diálogo.</div>
+        </div>
+        <div class="roadmap-result">
+          <span>&#10003;</span>
+          <span><strong>Resultado:</strong> Redação enviada — a IA irá transcrever e avaliar o texto.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roteiro 4 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <span class="rc-icon">📊</span>
+        <div>
+          <h4>Roteiro 4 — Verificar resultado de uma prova</h4>
+          <p>Consultar nota e gabarito após a liberação pelo professor</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">1</div>
+          <div class="roadmap-step-body">Clique no menu <strong>"Provas"</strong> &rarr; localize a prova (deve estar com badge <span class="badge badge-green" style="font-size:11px;">Liberado</span>).</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">2</div>
+          <div class="roadmap-step-body">Clique em <strong>"Ver Resultado"</strong>.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">3</div>
+          <div class="roadmap-step-body">Veja sua <strong>nota total</strong> exibida no topo da página de resultado.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">4</div>
+          <div class="roadmap-step-body">Role para baixo &rarr; veja cada questão com: sua resposta, a resposta correta e o gabarito comentado (quando disponível).</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">5</div>
+          <div class="roadmap-step-body">Para questões discursivas e redação: leia o <strong>feedback da IA</strong> e a nota atribuída por critério de avaliação.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">6</div>
+          <div class="roadmap-step-body">Se tiver dúvida sobre alguma correção, entre em contato diretamente com o professor responsável pela disciplina.</div>
+        </div>
+        <div class="roadmap-result">
+          <span>&#10003;</span>
+          <span><strong>Resultado:</strong> Desempenho completo visualizado questão por questão.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roteiro 5 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <span class="rc-icon">🎯</span>
+        <div>
+          <h4>Roteiro 5 — Fazer um simulado de vestibular</h4>
+          <p>Praticar com questões reais de vestibulares a qualquer hora</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">1</div>
+          <div class="roadmap-step-body">Clique em <strong>"Simulados"</strong> no menu principal &rarr; botão <strong>"Novo Simulado"</strong>.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">2</div>
+          <div class="roadmap-step-body">Selecione a matéria (ex: Matemática) e o nível de dificuldade desejado.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">3</div>
+          <div class="roadmap-step-body">Escolha a quantidade de questões (sugestão: 10 questões para estudo rápido; mais para uma simulação completa).</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">4</div>
+          <div class="roadmap-step-body">Responda as questões no seu próprio ritmo — <strong>sem limite de tempo</strong>. Concentre-se em entender cada questão.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">5</div>
+          <div class="roadmap-step-body">Ao finalizar &rarr; veja o resultado imediato com <strong>gabarito comentado</strong> questão por questão.</div>
+        </div>
+        <div class="roadmap-step">
+          <div class="roadmap-step-num">6</div>
+          <div class="roadmap-step-body">Repita quantas vezes quiser — a cada novo simulado, novas questões são sorteadas do banco.</div>
+        </div>
+        <div class="roadmap-result">
+          <span>&#10003;</span>
+          <span><strong>Resultado:</strong> Prática com questões de vestibular e feedback imediato para orientar seus estudos.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: PERFIL -->
+  <section class="section" id="perfil">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div>
+        <h2>Perfil</h2>
+        <p style="margin-bottom:0;color:var(--gray);font-size:13px;">Gerencie suas informações pessoais</p>
+      </div>
+    </div>
+
+    <p>Para acessar seu perfil, clique no seu avatar ou nome no canto superior direito da tela e selecione <strong>"Meu Perfil"</strong>.</p>
+
+    <h3>O que você pode fazer no perfil</h3>
+
+    <div class="grid-2">
+      <div class="info-card">
+        <div class="ic-icon">📷</div>
+        <h4>Foto e Nome</h4>
+        <p>Atualize seu nome de exibição e sua foto de perfil. A foto aparece no ranking de turma e no cabeçalho da plataforma.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🔑</div>
+        <h4>Alterar Senha</h4>
+        <p>Para trocar sua senha, informe a senha atual (para confirmar sua identidade) e em seguida a nova senha desejada. A alteração entra em vigor imediatamente.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🏫</div>
+        <h4>Turmas Matriculadas</h4>
+        <p>Visualize todas as turmas em que você está matriculado, os professores responsáveis e as disciplinas correspondentes a cada turma.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">📧</div>
+        <h4>Email de Acesso</h4>
+        <p>O email cadastrado é o mesmo que recebeu o convite de acesso. Para alterá-lo, entre em contato com o administrador da escola.</p>
+      </div>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">🔐</span>
+      <div><strong>Dica de segurança:</strong> Use uma senha forte e exclusiva para esta plataforma. Em caso de suspeita de acesso não autorizado à sua conta, troque sua senha imediatamente e avise seu professor ou a administração da escola.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: FAQ -->
+  <section class="section" id="faq">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <div>
+        <h2>Perguntas Frequentes</h2>
+        <p style="margin-bottom:0;color:var(--gray);font-size:13px;">Respostas para as dúvidas mais comuns dos alunos</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Como acesso a plataforma pela primeira vez?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Você receberá um email de convite com um link especial (magic link). Basta clicar no link, definir uma senha e você terá acesso imediato à plataforma. Não é necessário criar conta manualmente. Se não encontrar o email, verifique a pasta de spam. Se o link expirou, solicite um novo convite ao seu professor ou à administração da escola.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Esqueci minha senha — o que faço?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Na tela de login, clique em "Esqueci minha senha". Informe seu email cadastrado e você receberá um link para redefinir a senha. Se o email não aparecer em alguns minutos, verifique também a pasta de spam.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Posso voltar atrás depois de enviar a prova?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Não. Após confirmar o envio da prova, não é possível alterar nenhuma resposta. O sistema exibe um diálogo de confirmação antes do envio justamente para que você tenha a chance de revisar tudo. Por isso, revise cuidadosamente antes de clicar em "Enviar Prova".
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Por que minha prova ainda aparece como "Corrigindo"?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        O status "Corrigindo" indica que a prova está sendo processada. Questões objetivas (múltipla escolha, V/F, somatória) são corrigidas automaticamente em segundos. Questões discursivas e redações podem levar alguns minutos, pois dependem do processamento da inteligência artificial. Se o status não mudar após 15 minutos, entre em contato com o professor.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Quando vou poder ver minha nota?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Você só pode ver sua nota quando o professor liberar o resultado (status Liberado). Mesmo que a correção já esteja concluída, o professor pode optar por liberar todos os resultados de uma vez, após revisar toda a turma. Aguarde a liberação e fique de olho no status da prova no menu "Provas".
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Como funciona a questão de somatória?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Na somatória, cada afirmativa tem um valor pré-definido (01, 02, 04, 08, 16, 32...). Você deve marcar cada afirmativa como verdadeira ou falsa. Sua resposta final é a soma dos valores das afirmativas que você marcou como verdadeiras. Por exemplo: se marcou as afirmativas 01 e 04 como verdadeiras, sua resposta é 01 + 04 = 05. A plataforma calcula isso automaticamente enquanto você responde — basta marcar V ou F em cada afirmativa.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Posso refazer uma prova?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Provas oficiais não podem ser refeitas. Uma vez enviadas, são finalizadas. Se houve algum problema técnico durante a realização (como queda de internet), entre em contato imediatamente com seu professor explicando a situação — ele pode avaliar o caso e, se necessário, pedir ao administrador que reabra a prova para você.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        O simulado conta como nota?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Não. Os simulados são exclusivamente uma ferramenta de estudo pessoal. Os resultados não são enviados aos professores, não aparecem no ranking de turma e não interferem na sua média escolar. Use-os à vontade para praticar, quantas vezes quiser.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Como envio uma redação manuscrita?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Na tela da avaliação de redação, selecione a aba "Foto da redação". Você pode tirar uma foto diretamente com a câmera do seu celular ou computador, ou arrastar um arquivo de imagem (JPG, PNG ou PDF) para a área indicada. Após o upload, uma prévia da imagem será exibida para você verificar a qualidade antes de confirmar o envio.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        A foto da minha redação ficou borrada — o que faço?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Antes de confirmar o envio, sempre verifique a prévia da imagem. Se a foto estiver borrada, escura ou com o texto cortado, remova-a clicando no botão de exclusão e tire uma nova foto. Certifique-se de ter boa iluminação (luz natural é ideal), manter o celular firme e enquadrar toda a folha. Se já enviou uma imagem com problemas, entre em contato com o professor o quanto antes.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Minha nota parece errada — como contesto?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Entre em contato diretamente com o professor da disciplina, explicando qual questão você acredita estar incorreta e o motivo. O professor tem acesso ao painel de correções e pode revisar e ajustar a nota manualmente se necessário. Procure fazer isso logo após a liberação do resultado, enquanto o contexto ainda está fresco.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Posso ver as questões que errei após a correção?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Sim, desde que o professor tenha liberado o resultado (status Liberado). Na página de resultado da prova, cada questão é exibida com sua resposta, a resposta correta e, em muitos casos, um comentário explicativo. Você pode revisar todas as questões que errou para estudar os conteúdos correspondentes.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Como funciona o ranking de turma?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        O ranking é calculado com base na média geral de cada aluno, considerando todas as provas com status Liberado. Quanto maior a média, melhor a colocação. O ranking é atualizado automaticamente cada vez que uma nova prova tem o resultado liberado. Você pode ver sua posição atual diretamente no dashboard.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        Não recebi o email de convite — o que fazer?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">
+        Primeiro, verifique sua pasta de spam ou lixo eletrônico — emails automáticos às vezes são filtrados por provedores de email. Confira também se o endereço que você informou ao professor está correto. Se mesmo assim não encontrar o convite, peça ao professor ou à administração da escola que reenvie o convite para o seu endereço de email correto.
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  // Progress bar on scroll
+  function updateProgress() {
+    var doc = document.documentElement;
+    var scrollTop = doc.scrollTop || document.body.scrollTop;
+    var scrollHeight = doc.scrollHeight - doc.clientHeight;
+    var progress = scrollHeight > 0 ? Math.round((scrollTop / scrollHeight) * 100) : 0;
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('progressLabel').textContent = progress + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+
+  // Sidebar active link on scroll
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = document.querySelectorAll('.nav-link');
+
+  function updateActiveLink() {
+    var scrollY = window.scrollY + 80;
+    var current = '';
+    sections.forEach(function(section) {
+      if (section.offsetTop <= scrollY) {
+        current = section.getAttribute('id');
+      }
+    });
+    navLinks.forEach(function(link) {
+      link.classList.remove('active');
+      var href = link.getAttribute('href').replace('#', '');
+      if (href === current || (current === '' && href === 'hero')) {
+        link.classList.add('active');
+      }
+    });
+  }
+  window.addEventListener('scroll', updateActiveLink, { passive: true });
+  updateActiveLink();
+
+  // FAQ accordion toggle
+  document.querySelectorAll('.faq-q').forEach(function(q) {
+    q.addEventListener('click', function() {
+      var item = q.parentElement;
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+      if (!isOpen) { item.classList.add('open'); }
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,4181 @@
+{
+  "info": {
+    "_postman_id": "be413bf3-0cf0-4083-b498-f5a21ebd3923",
+    "name": "Provas — Importadores de Questões",
+    "description": "Coleção para disparar as importações de bancos de questões de vestibular na API em produção.\n\n**Como usar:**\n1. Preencha as variáveis `owner_email` e `owner_password` da coleção.\n2. Rode a requisição 'Login (Owner)' na pasta Auth — ela salva automaticamente o token em `access_token`.\n3. Rode qualquer requisição de importação abaixo — todas já usam Bearer `{{access_token}}`.\n\nPastas removidas nesta atualização: instituições cujo importador ainda era placeholder (retornava sucesso/`not_implemented` sem registrar nenhuma questão de verdade) foram tiradas da coleção até terem um scraper real implementado — evita disparar uma importação que não faz nada. As pastas UFJF, UFPA, UNIOESTE, PUC Minas, UFAM, PUC-Campinas, UNIMONTES, UNICENTRO e UNAERP ganharam scraper real nesta sessão e continuam na coleção, com os novos parâmetros opcionais `since_year`/`until_year`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31755994"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (Owner)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access_token) {",
+                  "    pm.collectionVariables.set('access_token', data.access_token);",
+                  "    console.log('access_token salvo na variável da coleção.');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "type": "text",
+                  "value": "{{owner_email}}",
+                  "key": "username"
+                },
+                {
+                  "type": "text",
+                  "value": "{{owner_password}}",
+                  "key": "password"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Owner - Administração",
+      "item": [
+        {
+          "name": "Deletar Questões (por Universidade e Ano)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/owner/questions/ita?year=2024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "owner",
+                "questions",
+                "ita"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2024",
+                  "description": "opcional - apaga apenas deste ano"
+                },
+                {
+                  "key": "since_year",
+                  "value": "2020",
+                  "description": "opcional - apaga a partir deste ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "2025",
+                  "description": "opcional - apaga até este ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Endpoint global do owner para remover questões de uma universidade específica do banco de dados (ex: 'ita', 'enem', 'ufpr').\n\n- Se `year` for informado, deleta exatamente o ano informado.\n- Se `since_year` e/se `until_year` forem informados, deleta dentro do intervalo.\n- Se nenhum filtro de ano for enviado, deletará TODAS as questões da universidade."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ENEM",
+      "item": [
+        {
+          "name": "Run Seed (JSONs locais do repo)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions/admin/run-seed",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions",
+                "admin",
+                "run-seed"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Import PDF/URL (MEC)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "type": "text",
+                  "description": "obrigatório",
+                  "key": "year",
+                  "value": "2024"
+                },
+                {
+                  "type": "text",
+                  "description": "1 ou 2",
+                  "key": "day",
+                  "value": "1"
+                },
+                {
+                  "type": "text",
+                  "description": "opcional — detectado automaticamente se possível",
+                  "key": "color",
+                  "value": "<OPCIONAL_COR_DO_CADERNO>",
+                  "disabled": true
+                },
+                {
+                  "type": "text",
+                  "description": "opcional",
+                  "key": "module",
+                  "value": "<OPCIONAL>",
+                  "disabled": true
+                },
+                {
+                  "type": "text",
+                  "description": "opcional — alternativa ao upload de arquivo",
+                  "key": "prova_url",
+                  "value": "<OPCIONAL_URL_DIRETA_DO_PDF_DA_PROVA>",
+                  "disabled": true
+                },
+                {
+                  "type": "text",
+                  "description": "opcional",
+                  "key": "gabarito_url",
+                  "value": "<OPCIONAL_URL_DIRETA_DO_PDF_DO_GABARITO>",
+                  "disabled": true
+                },
+                {
+                  "type": "text",
+                  "description": "opcional — página oficial do MEC (o backend resolve os links de prova/gabarito automaticamente)",
+                  "key": "mec_page_url",
+                  "value": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos"
+                },
+                {
+                  "type": "file",
+                  "description": "opcional — anexe o PDF da prova aqui como alternativa às URLs acima",
+                  "key": "prova",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "type": "file",
+                  "description": "opcional — anexe o PDF do gabarito",
+                  "key": "gabarito",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/enem-questions/admin/import-pdf",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions",
+                "admin",
+                "import-pdf"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por ano",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pelo ano desejado",
+                  "key": "year",
+                  "value": "2023"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por matéria",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pela matéria desejada",
+                  "value": "Matemática",
+                  "key": "area"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por cor do caderno",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pela cor desejada",
+                  "key": "color",
+                  "value": "Azul"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por dia",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pelo dia desejado",
+                  "value": "Dia 1",
+                  "key": "day"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por texto no enunciado",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions"
+              ],
+              "query": [
+                {
+                  "value": "Brasil",
+                  "description": "troque pelo termo desejado",
+                  "key": "search"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar anos disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions/years",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions",
+                "years"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar matérias disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions/areas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions",
+                "areas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar cores disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions/colors",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions",
+                "colors"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar dias disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions/days",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions",
+                "days"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions",
+                "1"
+              ]
+            },
+            "description": "Troque o \"1\" no final da URL pelo ID da questão desejada."
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial INEP)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/enem-questions/admin/import-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "enem-questions",
+                "admin",
+                "import-all"
+              ],
+              "query": [
+                {
+                  "description": "importa a partir desse ano (padrão: 2015 — limite de estabilidade do padrão de nome de arquivo reconhecido pelo scraper)",
+                  "value": "2015",
+                  "key": "since_year",
+                  "disabled": true
+                },
+                {
+                  "description": "opcional — importa só até esse ano (padrão: 2025, última edição confirmada)",
+                  "value": "2025",
+                  "key": "until_year",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Varre https://www.gov.br/inep/.../enem/provas-e-gabaritos/{ANO} de 2025 até 2015 e importa, pra cada ano, a prova \"regular impressa\" de cada dia (1 cor por dia — todas as cores têm as mesmas 180 questões só embaralhadas, importar mais de uma seria duplicata). Reaproveita `import_enem_pdf` (mesma classificação de matéria/dificuldade via Groq, mesmo rate limit).\n\nNão importa: reaplicação/PPL nem variantes de acessibilidade (ampliada, superampliada, braile, NVDA/DOSVOX) — mesmo conteúdo das provas regulares. Também ignora aplicações regionais extras que reaproveitam o padrão de nome com D3/D4... (ex.: 2025 teve uma aplicação especial em Belém/Ananindeua/Marituba, listada com esse mesmo padrão) — só os 2 dias da aplicação nacional regular são importados.\n\n⚠️ ANOS ANTERIORES A 2015 usam nomes de arquivo sem o padrão que o scraper reconhece (`{ano}_PV_impresso_D{dia}_CD{cor}.pdf`) — são detectados e pulados automaticamente, reportados em \"exams\" com skipped=true, não travam o lote.\n\n⚠️ PODE DEMORAR MUITO — até 11 anos × 2 dias, cada um com dezenas de questões classificadas via Groq (rate-limited). Aumente o timeout do Postman antes de rodar (Settings → General → \"Request timeout in ms\" → 0) e considere usar since_year/until_year pra dividir em lotes menores."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ACAFE",
+      "item": [
+        {
+          "name": "Import por URL",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://storage.acafe.org.br/concurso/vestibular/2026/2/02 - prova/01 - Prova objetiva oficial - comentada-.pdf\",\n  \"year\": 2026,\n  \"period\": \"Inverno\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/acafe-questions/admin/import-url",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions",
+                "admin",
+                "import-url"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por ano",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions"
+              ],
+              "query": [
+                {
+                  "value": "2026",
+                  "description": "troque pelo ano desejado",
+                  "key": "year"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por período (Verão/Inverno)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions"
+              ],
+              "query": [
+                {
+                  "description": "Verão ou Inverno",
+                  "value": "Inverno",
+                  "key": "period"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por matéria",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pela matéria desejada",
+                  "value": "Biologia",
+                  "key": "area"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por texto no enunciado",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pelo termo desejado",
+                  "value": "célula",
+                  "key": "search"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar anos disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions/years",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions",
+                "years"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar períodos disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions/periods",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions",
+                "periods"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar matérias disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions/areas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions",
+                "areas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions",
+                "1"
+              ]
+            },
+            "description": "Troque o \"1\" no final da URL pelo ID da questão desejada."
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/acafe-questions/admin/run-seed",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "acafe-questions",
+                "admin",
+                "run-seed"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "description": "opcional — importa só a partir desse ano (padrão: 2014)",
+                  "value": "2014",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "description": "opcional — importa só até esse ano (padrão: 2026)",
+                  "value": "2026",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Varre https://storage.acafe.org.br/concurso/vestibular/documentos.php (a página pública anteriores/?a=ANO&s=SEMESTRE só embute essa URL num iframe) de 2026 até 2020, ano a ano e semestre a semestre (s=1 Verão, s=2 Inverno), e importa cada edição — prova \"objetiva/comentada\" + Gabarito Oficial, quando existem. O Gabarito Oficial sobrescreve a resposta que o parser já detecta pelo destaque na prova comentada (mais confiável para questões anuladas). Em 2020 a prova saiu em .zip por versão (Medicina A/B/C) — cada uma vira uma edição própria; o pacote \"Outros Cursos\" é ignorado.\n\n⚠️ COBERTURA: o formato \"comentada\" com os marcadores que o parser lê (\"Dados da questão\" / \"Alternativa correta letra: X\") só existe de forma consistente a partir de ~2022/2023 em diante. Edições de 2020-2022 (e Inverno de 2023) usam um layout de PDF mais antigo, sem esses marcadores — são detectadas e puladas automaticamente (reportadas em \"exams\" com skipped=true e o motivo), não interrompem o lote nem importam dado incorreto.\n\n⚠️ PODE DEMORAR VÁRIOS MINUTOS (várias provas baixadas e processadas em sequência, ~70 questões cada). Aumente o timeout do Postman antes de rodar: Settings (⚙️) → General → \"Request timeout in ms\" → 0 (sem limite) ou um valor bem alto."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UFPR",
+      "item": [
+        {
+          "name": "Run Seed (PDFs locais do repo)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpr-questions/admin/run-seed",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpr-questions",
+                "admin",
+                "run-seed"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpr-questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por ano",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpr-questions"
+              ],
+              "query": [
+                {
+                  "value": "2024",
+                  "key": "year",
+                  "description": "troque pelo ano desejado"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por matéria",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpr-questions"
+              ],
+              "query": [
+                {
+                  "value": "História",
+                  "description": "troque pela matéria desejada",
+                  "key": "area"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por texto no enunciado",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpr-questions"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "description": "troque pelo termo desejado",
+                  "value": "Paraná"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar anos disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpr-questions/years",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpr-questions",
+                "years"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar matérias disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpr-questions/areas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpr-questions",
+                "areas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpr-questions/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpr-questions",
+                "1"
+              ]
+            },
+            "description": "Troque o \"1\" no final da URL pelo ID da questão desejada."
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial NC-UFPR)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpr-questions/admin/import-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpr-questions",
+                "admin",
+                "import-all"
+              ],
+              "query": [
+                {
+                  "description": "opcional — importa só a partir desse ano (padrão: 2009 — 2009 sempre é pulado, formato de alternativas sem letra não reconhecido)",
+                  "value": "2009",
+                  "key": "since_year",
+                  "disabled": true
+                },
+                {
+                  "description": "opcional — importa só até esse ano (padrão: 2026)",
+                  "value": "2026",
+                  "key": "until_year",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "NOVO — importa direto do site oficial do Núcleo de Concursos (NC-UFPR), um PDF por ano, em vez de depender só da coletânea local (Run Seed) que cobre uma faixa fixa e precisa ser atualizada manualmente a cada novo vestibular.\n\nO site do NC-UFPR passou por ~3 padrões de URL diferentes ao longo dos anos e removeu alguns links de páginas ao vivo mesmo com o arquivo continuando acessível — por isso o scraper tenta uma lista de candidatos de URL conhecidos por ano (não raspa uma página-índice) e usa o primeiro que responder com um PDF de verdade.\n\nA resposta correta vem de um marcador no próprio texto da prova (\"*\" nos anos mais antigos, \"►\" nos mais recentes, antes da letra da alternativa) — diferente da coletânea local, que precisa de OCR numa página de gabarito escaneada. Validado contra 2010-2020 e 2022-2026: 100% de taxa de acerto do gabarito em todos os anos testados.\n\n⚠️ EXCEÇÕES CONHECIDAS:\n- 2021: aplicação fora do padrão (PDFs separados por idioma, sem um \"Geral\" único) — não suportada, sempre pulada.\n- 2009: formato de alternativas sem letra (\"Resposta correta: <texto>\" no fim da questão, em vez de marcador inline) — não reconhecido por este scraper, sempre pulado.\n- 2022: foi uma edição de \"Fase Única\" cujo conteúdo é só Língua Estrangeira (não o \"Conhecimentos Gerais\" completo das outras edições) — importa normalmente, só com bem menos questões (~58 em vez de ~80-90).\n\nAnos sem URL reconhecida entre os candidatos, ou com PDF em formato inesperado, são reportados em \"exams\" com skipped=true, sem travar o lote.\n\n⚠️ PODE DEMORAR — até 18 anos, cada um com ~80-90 questões processadas (parsing de PDF + associação de imagens). Aumente o timeout do Postman antes de rodar."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UFSC",
+      "item": [
+        {
+          "name": "Run Seed (PDFs locais do repo)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions/admin/run-seed",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions",
+                "admin",
+                "run-seed"
+              ]
+            },
+            "description": "Importa só os PDFs já commitados localmente no repositório (backend/provas/ufsc/). Para importar as provas publicadas no site oficial da UFSC, use \"Import PDF (upload)\" (uma por vez) ou \"Importar TODAS as provas (site oficial)\" (o lote completo), nesta mesma pasta."
+          },
+          "response": []
+        },
+        {
+          "name": "Import PDF (upload)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "description": "obrigatório",
+                  "type": "text",
+                  "key": "year",
+                  "value": "2025"
+                },
+                {
+                  "description": "Prova 1, 2 ou 3",
+                  "type": "text",
+                  "key": "phase",
+                  "value": "1"
+                },
+                {
+                  "description": "opcional — cor do caderno",
+                  "type": "text",
+                  "key": "color",
+                  "value": "<OPCIONAL_EX_AMARELA>",
+                  "disabled": true
+                },
+                {
+                  "description": "OBRIGATÓRIO — anexe aqui o PDF da prova",
+                  "type": "file",
+                  "key": "prova",
+                  "value": ""
+                },
+                {
+                  "description": "opcional — PDF ou HTML do gabarito",
+                  "type": "file",
+                  "key": "gabarito",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions/admin/import-pdf",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions",
+                "admin",
+                "import-pdf"
+              ]
+            },
+            "description": "Importa uma prova UFSC específica enviando os arquivos manualmente (upload). Para importar todas as provas publicadas no site oficial de uma vez, use \"Importar TODAS as provas (site oficial)\" nesta mesma pasta — não precisa baixar/anexar nada na mão."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por ano",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pelo ano desejado",
+                  "value": "2025",
+                  "key": "year"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por fase",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions"
+              ],
+              "query": [
+                {
+                  "description": "Prova 1, 2 ou 3",
+                  "value": "1",
+                  "key": "phase"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por matéria",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pela matéria desejada",
+                  "value": "Física",
+                  "key": "area"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por tipo de questão (somatória/discursiva)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions"
+              ],
+              "query": [
+                {
+                  "value": "summation",
+                  "description": "\"summation\" (somatória) ou \"discursive\" (discursiva)",
+                  "key": "question_type"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por texto no enunciado",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions"
+              ],
+              "query": [
+                {
+                  "value": "energia",
+                  "key": "search",
+                  "description": "troque pelo termo desejado"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar anos disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions/years",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions",
+                "years"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar matérias disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions/areas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions",
+                "areas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions",
+                "1"
+              ]
+            },
+            "description": "Troque o \"1\" no final da URL pelo ID da questão desejada."
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufsc-questions/admin/import-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufsc-questions",
+                "admin",
+                "import-all"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "description": "opcional — importa só provas desse ano em diante, pra dividir o lote em partes menores. Desabilitado = importa TODAS (~200 provas, 2003-2024).",
+                  "value": "2020",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Varre https://vestibularunificado2025.ufsc.br/provas-anteriores/, encontra ~200 pares prova+gabarito (2003-2024, PDF ou HTML) e importa cada um. Falha individual (host fora do ar, prova antiga escaneada sem texto) não interrompe o lote — é só reportada em \"exams\".\n\n⚠️ É O LOTE MAIS PESADO DA COLEÇÃO — bem maior que o da PUCPR (34 provas). Pode demorar MUITOS minutos (~200 provas × 2 downloads + parsing cada). Antes de rodar:\n1. Aumente o timeout do Postman: Settings (⚙️) → General → \"Request timeout in ms\" → 0 (sem limite).\n2. Se preferir ir em partes, habilite o parâmetro `since_year` (ex.: 2020) e rode de novo com anos menores depois — a importação é idempotente, não duplica provas já importadas."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UFRGS",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufrgs-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufrgs-questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por ano",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufrgs-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufrgs-questions"
+              ],
+              "query": [
+                {
+                  "value": "2024",
+                  "key": "year",
+                  "description": "troque pelo ano desejado"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por dia",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufrgs-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufrgs-questions"
+              ],
+              "query": [
+                {
+                  "description": "1 ou 2",
+                  "key": "day",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por matéria",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufrgs-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufrgs-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pela matéria desejada",
+                  "value": "Geografia",
+                  "key": "area"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por texto no enunciado",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufrgs-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufrgs-questions"
+              ],
+              "query": [
+                {
+                  "value": "Porto Alegre",
+                  "key": "search",
+                  "description": "troque pelo termo desejado"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar anos disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufrgs-questions/years",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufrgs-questions",
+                "years"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar matérias disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufrgs-questions/areas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufrgs-questions",
+                "areas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufrgs-questions/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufrgs-questions",
+                "1"
+              ]
+            },
+            "description": "Troque o \"1\" no final da URL pelo ID da questão desejada."
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial COPERSE)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufrgs-questions/admin/import-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufrgs-questions",
+                "admin",
+                "import-all"
+              ],
+              "query": [
+                {
+                  "value": "2011",
+                  "key": "since_year",
+                  "description": "opcional — importa só a partir desse ano (padrão: todos os anos listados no site, 2011-2026)",
+                  "disabled": true
+                },
+                {
+                  "value": "2026",
+                  "key": "until_year",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                },
+                {
+                  "value": "Inglês",
+                  "key": "language",
+                  "description": "variante de Língua Estrangeira Moderna a importar quando o dia tiver mais de uma opção (padrão: Inglês)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "NOVO — a UFRGS agora tem endpoint de importação em produção (a nota \"sem endpoint ainda\" no nome da pasta não vale mais pra este request específico).\n\nVarre https://www.ufrgs.br/coperse/aquisicao-de-provas/ (lista as edições cv-2011 até cv-2026, exceto cv-2021, que não existe) e importa a prova de cada dia de cada ano. O gabarito é lido automaticamente de https://www.ufrgs.br/vestibular/cvANO/gabaritos/ (tabela HTML, não precisa mais colar texto manualmente) — reconhece os dois formatos usados historicamente (tabela nova desde ~2019, tabela antiga \"NN- letra\" nos anos anteriores).\n\nQuando um dia tem Língua Estrangeira Moderna com mais de uma variante (Inglês/Espanhol/Alemão/Francês/Italiano — cada uma é um PDF completo separado, só a seção de idioma muda), importa só uma (`language`, padrão Inglês) — as demais têm o mesmo conteúdo nas outras matérias e criariam duplicata sob os mesmos números de questão.\n\n⚠️ ANOS 2011-2013 usam um esquema de arquivo por matéria, sem indicação de \"dia\" no texto do link — não reconhecidos por este scraper, pulados e reportados em \"exams\" com skipped=true.\n\n⚠️ A estrutura do exame mudou de 4 dias (até ~2021) pra 2 dias (2022+) e o conjunto de matérias por dia variou nesse meio tempo (ex.: em 2024 o 1º dia inclui Português+Literatura+História+Matemática) — o scraper não assume um layout fixo, ele descobre as matérias direto do PDF baixado."
+          },
+          "response": []
+        }
+      ],
+      "description": "Varre https://www.ufrgs.br/coperse/aquisicao-de-provas/ e importa as provas publicadas ano a ano, lendo o gabarito diretamente do HTML oficial. Ver a descrição do request 'Importar TODAS as provas' para as limitações conhecidas (2011-2013 sem suporte, variantes de língua estrangeira)."
+    },
+    {
+      "name": "PUCPR",
+      "item": [
+        {
+          "name": "Import por URL",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://static.pucpr.br/pucpr/2026/06/gabarito-vestibular-de-inverno-2026-prova-2-amarela-_ok-1.pdf\",\n  \"year\": 2026,\n  \"season\": \"Inverno\",\n  \"course\": \"Medicina\",\n  \"color\": \"Amarela\",\n  \"gabarito_text\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions/admin/import-url",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions",
+                "admin",
+                "import-url"
+              ]
+            },
+            "description": "Importa uma única prova por URL. O gabarito é detectado automaticamente pelo destaque/grifo colorido na própria prova — gabarito_text agora é só um reforço opcional para questões em que o grifo não for reconhecido (pode deixar vazio \"\").\n\nPara importar todas as provas do site de uma vez, use a requisição \"Importar TODAS as provas (site oficial)\" nesta mesma pasta."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por ano",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions"
+              ],
+              "query": [
+                {
+                  "value": "2026",
+                  "key": "year",
+                  "description": "troque pelo ano desejado"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por temporada (Verão/Inverno)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions"
+              ],
+              "query": [
+                {
+                  "description": "Verão ou Inverno",
+                  "value": "Inverno",
+                  "key": "season"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por curso (Medicina/Demais Cursos)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions"
+              ],
+              "query": [
+                {
+                  "description": "Medicina ou Demais Cursos",
+                  "key": "course",
+                  "value": "Medicina"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Por matéria",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions"
+              ],
+              "query": [
+                {
+                  "value": "Química",
+                  "key": "area",
+                  "description": "troque pela matéria desejada"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por texto no enunciado",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions"
+              ],
+              "query": [
+                {
+                  "description": "troque pelo termo desejado",
+                  "value": "reação",
+                  "key": "search"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar anos disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions/years",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions",
+                "years"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar matérias disponíveis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions/areas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions",
+                "areas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions",
+                "1"
+              ]
+            },
+            "description": "Troque o \"1\" no final da URL pelo ID da questão desejada."
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucpr-questions/admin/import-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucpr-questions",
+                "admin",
+                "import-all"
+              ]
+            },
+            "description": "Varre https://www.pucpr.br/vestibular/editais/, encontra TODOS os links \"[GABARITO DEFINITIVO]\" (34 no momento, edições 2022-2026) e importa cada prova. O gabarito é detectado automaticamente pelo destaque/grifo colorido na própria prova — não precisa colar nada.\n\n⚠️ PODE DEMORAR VÁRIOS MINUTOS (dezenas de PDFs baixados e processados em sequência). Antes de rodar, aumente o timeout do Postman: Settings (⚙️) → General → \"Request timeout in ms\" → mude para 0 (sem limite) ou um valor bem alto (ex.: 600000 = 10 min). O timeout de download por PDF no backend também foi aumentado para 120s por arquivo."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "FUVEST",
+      "item": [
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/fuvest-questions/admin/import-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fuvest-questions",
+                "admin",
+                "import-all"
+              ],
+              "query": [
+                {
+                  "description": "importa a partir desse ano (padrão: 2015)",
+                  "value": "2015",
+                  "key": "since_year",
+                  "disabled": true
+                },
+                {
+                  "description": "opcional — importa só até esse ano (padrão: ano mais recente listado no acervo)",
+                  "value": "2026",
+                  "key": "until_year",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "NOVO — instituição adicionada nesta sessão (USP/FUVEST). Varre https://www.fuvest.br/acervo-vestibular-{ANO} e importa a prova objetiva da 1ª fase de cada ano + gabarito.\n\nCada edição publica a prova em várias \"versões\" (cadernos com as mesmas ~90 questões embaralhadas — V1-V4 nos anos recentes, V/K/Q/X/Z em anos mais antigos); importa só a primeira versão listada na página, as demais têm o mesmo conteúdo. Não há \"comentada\" — o gabarito vem sempre de um PDF separado, com uma tabela por versão lida por posição de token (não por rótulo colado ao número, que muda de formato ano a ano).\n\nNão importa: 2ª fase (discursiva), simulados, provas de treineiros.\n\nCobertura validada (sem gravar no banco, testado ano a ano contra o site real):\n- ✅ ~90/90 questões + gabarito conferido: 2019, 2022, 2023, 2024, 2025, 2026\n- ⚠️ Parcial (67-83/90): 2016, 2017, 2020 — pequenas perdas pontuais do parser, não sistemáticas\n- ❌ 2015, 2018, 2021 — não reconhecidos: esses PDFs específicos não expõem o número da questão como texto legível (fonte customizada em 2018, texto extraído sem espaços entre palavras em 2015, conteúdo aparentemente escaneado/corrompido em 2021). Detectados automaticamente (menos de 20 questões reconhecidas) e pulados, reportados em \"exams\" com skipped=true — não gravam exame incompleto no banco nem travam o lote.\n\n⚠️ PODE DEMORAR — até 12 anos, cada um com prova (PDF grande, várias páginas) + gabarito baixados e processados."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/fuvest/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fuvest",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UNICAMP",
+      "item": [
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unicamp-questions/admin/import-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unicamp-questions",
+                "admin",
+                "import-all"
+              ],
+              "query": [
+                {
+                  "description": "importa a partir desse ano",
+                  "value": "2024",
+                  "key": "since_year",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Importa provas da UNICAMP (1ª fase, modelos Q/Z), raspando o gabarito tabular oficial diretamente. Atualmente configurado para as provas mais recentes (2024/2025)."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unicamp/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unicamp",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ITA",
+      "item": [
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ita-questions/admin/import-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ita-questions",
+                "admin",
+                "import-all"
+              ],
+              "query": [
+                {
+                  "description": "importa a partir desse ano",
+                  "value": "2020",
+                  "key": "since_year",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Importa provas do ITA (Instituto Tecnológico de Aeronáutica). Realiza o parse dinâmico da 1ª fase (questões de múltipla escolha) lendo provas e gabaritos."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ita/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ita",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UnB (Cebraspe)",
+      "item": [
+        {
+          "name": "Import por URL (Cebraspe / PasseandoUnB)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exam_name\": \"Vestibular UnB\",\n  \"year\": 2025,\n  \"pdf_url\": \"https://cdn.cebraspe.org.br/vestibulares/VESTUNB_25/arquivos/009_VEST_UNB_2025_001_01.PDF\",\n  \"gabarito_url\": \"https://cdn.cebraspe.org.br/vestibulares/VESTUNB_25/arquivos/GAB_DEFINITIVO_009_VEST_UNB_2025_003_01.PDF\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/unb/admin/import-url",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unb",
+                "admin",
+                "import-url"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Import PDF",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "exam_name",
+                  "value": "Vestibular UnB",
+                  "type": "text"
+                },
+                {
+                  "key": "year",
+                  "value": "2025",
+                  "type": "text"
+                },
+                {
+                  "key": "pdf_file",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "gabarito_file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/unb/admin/import-pdf",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unb",
+                "admin",
+                "import-pdf"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cebraspe/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cebraspe",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UERJ",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/uerj/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uerj",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/uerj/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uerj",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para UERJ."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UFGD",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufgd/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufgd",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufgd/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufgd",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para UFGD."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UEM",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/uem/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uem",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/uem/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uem",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para UEM."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UFMS",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufms/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufms",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufms/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufms",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para UFMS."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUCRIO",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucrio/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucrio",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucrio/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucrio",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para PUCRIO."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UDESC",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/udesc/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "udesc",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/udesc/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "udesc",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para UDESC."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UNESP",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unesp/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unesp",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unesp/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unesp",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para UNESP."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UNIFESP",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unifesp/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unifesp",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unifesp/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unifesp",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para UNIFESP."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ESPM",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/espm/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "espm",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/espm/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "espm",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para ESPM."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "FGV",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/fgv/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fgv",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/fgv/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fgv",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para FGV."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUCRS",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucrs/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucrs",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucrs/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucrs",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para PUCRS."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UFPEL",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpel/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpel",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpel/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpel",
+                "import"
+              ]
+            },
+            "description": "Inicia a importação de provas para UFPEL."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UFJF",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufjf/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufjf",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufjf/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufjf",
+                "import"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "value": "",
+                  "description": "opcional — importa só a partir desse ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Implementado de verdade (não é mais placeholder): scraper real contra COPESE (www2.ufjf.br/copese) — PISM. Baixa prova+gabarito, extrai questões/alternativas/resposta correta e persiste no banco. Anos/edições que não podem ser recuperados (prova escaneada, formato antigo incompatível, fonte corrompida no PDF) são pulados e reportados no resultado da task — não são fingidos como importados."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UFPA",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpa/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpa",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufpa/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufpa",
+                "import"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "value": "",
+                  "description": "opcional — importa só a partir desse ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Implementado de verdade (não é mais placeholder): scraper real contra CEPS (só existe prova própria 2011-2013; de 2014 em diante a UFPA usa só ENEM/SISU). Baixa prova+gabarito, extrai questões/alternativas/resposta correta e persiste no banco. Anos/edições que não podem ser recuperados (prova escaneada, formato antigo incompatível, fonte corrompida no PDF) são pulados e reportados no resultado da task — não são fingidos como importados."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UNIOESTE",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unioeste/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unioeste",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unioeste/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unioeste",
+                "import"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "value": "",
+                  "description": "opcional — importa só a partir desse ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Implementado de verdade (não é mais placeholder): scraper real contra portal institucional da UNIOESTE (unioeste.br/portal/vestibular). Baixa prova+gabarito, extrai questões/alternativas/resposta correta e persiste no banco. Anos/edições que não podem ser recuperados (prova escaneada, formato antigo incompatível, fonte corrompida no PDF) são pulados e reportados no resultado da task — não são fingidos como importados."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUCMINAS",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucminas/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucminas",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pucminas/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pucminas",
+                "import"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "value": "",
+                  "description": "opcional — importa só a partir desse ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Implementado de verdade (não é mais placeholder): scraper real contra site oficial da PUC Minas (provas e gabaritos). Baixa prova+gabarito, extrai questões/alternativas/resposta correta e persiste no banco. Anos/edições que não podem ser recuperados (prova escaneada, formato antigo incompatível, fonte corrompida no PDF) são pulados e reportados no resultado da task — não são fingidos como importados."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UFAM",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufam/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufam",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ufam/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ufam",
+                "import"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "value": "",
+                  "description": "opcional — importa só a partir desse ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Implementado de verdade (não é mais placeholder): scraper real contra COMPEC (compec.ufam.edu.br) — PSC, com histórico no repositório DSpace. Baixa prova+gabarito, extrai questões/alternativas/resposta correta e persiste no banco. Anos/edições que não podem ser recuperados (prova escaneada, formato antigo incompatível, fonte corrompida no PDF) são pulados e reportados no resultado da task — não são fingidos como importados."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUCCAMPINAS",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/puccampinas/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "puccampinas",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/puccampinas/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "puccampinas",
+                "import"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "value": "",
+                  "description": "opcional — importa só a partir desse ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Implementado de verdade (não é mais placeholder): scraper real contra vestibular.puc-campinas.edu.br (provas anteriores). Baixa prova+gabarito, extrai questões/alternativas/resposta correta e persiste no banco. Anos/edições que não podem ser recuperados (prova escaneada, formato antigo incompatível, fonte corrompida no PDF) são pulados e reportados no resultado da task — não são fingidos como importados."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UNIMONTES",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unimontes/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unimontes",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unimontes/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unimontes",
+                "import"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "value": "",
+                  "description": "opcional — importa só a partir desse ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Implementado de verdade (não é mais placeholder): scraper real contra coteps.unimontes.br — Vestibular Próprio. Baixa prova+gabarito, extrai questões/alternativas/resposta correta e persiste no banco. Anos/edições que não podem ser recuperados (prova escaneada, formato antigo incompatível, fonte corrompida no PDF) são pulados e reportados no resultado da task — não são fingidos como importados."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UNICENTRO",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unicentro/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unicentro",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unicentro/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unicentro",
+                "import"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "value": "",
+                  "description": "opcional — importa só a partir desse ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Implementado de verdade (não é mais placeholder): scraper real contra www3.unicentro.br/vestibular/anteriores. Baixa prova+gabarito, extrai questões/alternativas/resposta correta e persiste no banco. Anos/edições que não podem ser recuperados (prova escaneada, formato antigo incompatível, fonte corrompida no PDF) são pulados e reportados no resultado da task — não são fingidos como importados."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UNAERP",
+      "item": [
+        {
+          "name": "Listar todas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unaerp/questions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unaerp",
+                "questions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Importar TODAS as provas (site oficial)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/unaerp/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "unaerp",
+                "import"
+              ],
+              "query": [
+                {
+                  "key": "since_year",
+                  "value": "",
+                  "description": "opcional — importa só a partir desse ano",
+                  "disabled": true
+                },
+                {
+                  "key": "until_year",
+                  "value": "",
+                  "description": "opcional — importa só até esse ano",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Implementado de verdade (não é mais placeholder): scraper real contra conteudo.unaerp.br/provas-anteriores. Baixa prova+gabarito, extrai questões/alternativas/resposta correta e persiste no banco. Anos/edições que não podem ser recuperados (prova escaneada, formato antigo incompatível, fonte corrompida no PDF) são pulados e reportados no resultado da task — não são fingidos como importados."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://provas-khsq.onrender.com/api"
+    },
+    {
+      "key": "owner_email",
+      "value": "<PREENCHA_O_EMAIL_DO_OWNER>",
+      "description": "E-mail da conta owner — substitua pelo e-mail real"
+    },
+    {
+      "key": "owner_password",
+      "value": "<PREENCHA_A_SENHA_DO_OWNER>",
+      "description": "Senha da conta owner — substitua pela senha real"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "description": "Preenchido automaticamente pelo script de teste do Login — não precisa editar"
+    }
+  ]
+}

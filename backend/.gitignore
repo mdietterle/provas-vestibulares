@@ -1,0 +1,11 @@
+.env
+owner_keys.txt*
+import_all_state.json
+import_all_errors.jsonl
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.db
+.vercel

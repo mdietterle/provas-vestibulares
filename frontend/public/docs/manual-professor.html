@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual do Professor — Plataforma de Avaliações</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #00236f; --purple: #6b38d4; --green: #27c38a; --amber: #f59e0b; --red: #ef4444;
+      --border: #e5eeff; --dark: #0b1c30; --gray: #757682; --gray2: #444651;
+      --bg: #f7f8fc; --white: #ffffff;
+      --card-shadow: 0 4px 20px rgba(0,35,111,0.06);
+      --gradient: linear-gradient(135deg, #6b38d4 0%, #00236f 100%);
+      --sidebar-w: 260px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--dark); background: var(--bg); display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar { position: fixed; top:0; left:0; bottom:0; width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--border); overflow-y: auto; z-index: 100; display: flex; flex-direction: column; }
+    .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo .logo-mark { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sidebar-logo .manual-tag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--purple); margin-top: 4px; }
+    .sidebar-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray); padding: 20px 20px 8px; }
+    .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 13.5px; font-weight: 500; color: var(--gray2); text-decoration: none; border-left: 3px solid transparent; transition: all 0.18s; }
+    .sidebar nav a:hover { background: #f5f0ff; color: var(--purple); border-left-color: var(--border); }
+    .sidebar nav a.active { background: linear-gradient(90deg,#f3edff,#eff3ff); color: var(--purple); border-left-color: var(--purple); font-weight: 600; }
+    .sidebar nav a .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+    .sidebar-footer { margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--gray); }
+    .sidebar-footer a { color: var(--navy); text-decoration: none; }
+
+    /* MAIN */
+    .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; }
+
+    /* HERO */
+    .hero { background: var(--gradient); padding: 60px 48px 56px; color: white; position: relative; overflow: hidden; }
+    .hero::before { content:''; position: absolute; top:-80px; right:-80px; width:320px; height:320px; background: rgba(255,255,255,0.05); border-radius:50%; }
+    .hero::after { content:''; position: absolute; bottom:-100px; right:120px; width:220px; height:220px; background: rgba(255,255,255,0.04); border-radius:50%; }
+    .hero-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; margin-bottom:18px; }
+    .hero h1 { font-family:'Space Grotesk',sans-serif; font-size:38px; font-weight:700; line-height:1.15; margin-bottom:14px; position:relative; }
+    .hero p { font-size:16px; line-height:1.7; opacity:0.88; max-width:540px; position:relative; }
+    .hero-cards { display:flex; gap:14px; margin-top:32px; flex-wrap:wrap; position:relative; }
+    .hero-card { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:10px; font-size:13px; font-weight:500; }
+
+    /* PROGRESS BAR */
+    .progress-bar-wrap { background: var(--white); border-bottom:1px solid var(--border); padding:0 48px; display:flex; align-items:center; gap:16px; height:48px; font-size:12px; color:var(--gray); font-weight:500; position:sticky; top:0; z-index:50; }
+    .progress-track { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+    .progress-fill { height:100%; background:var(--gradient); border-radius:2px; transition:width 0.2s; width:0%; }
+
+    /* SECTIONS */
+    .section { padding: 52px 48px; border-bottom: 1px solid var(--border); }
+    .section:last-of-type { border-bottom: none; }
+    .section-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:28px; }
+    .section-number { width:40px; height:40px; border-radius:50%; background:var(--gradient); color:white; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+    .section h2 { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; color:var(--navy); line-height:1.2; }
+    .section h3 { font-size:17px; font-weight:600; color:var(--dark); margin:28px 0 10px; }
+    .section p { font-size:14.5px; line-height:1.75; color:var(--gray2); margin-bottom:14px; max-width:680px; }
+    .section ul, .section ol { padding-left:20px; margin-bottom:14px; max-width:680px; }
+    .section li { font-size:14px; line-height:1.8; color:var(--gray2); }
+
+    /* CALLOUTS */
+    .callout { border-radius:10px; padding:14px 18px; margin:18px 0; display:flex; gap:12px; align-items:flex-start; font-size:13.5px; line-height:1.65; max-width:680px; }
+    .callout-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+    .callout.tip { background:#eafaf4; border:1px solid #a7ecd3; color:#0e6646; }
+    .callout.warning { background:#fffbeb; border:1px solid #fcd34d; color:#78420a; }
+    .callout.note { background:#eff3ff; border:1px solid #c7d7ff; color:#2a3d8f; }
+    .callout.danger { background:#fef2f2; border:1px solid #fca5a5; color:#7f1d1d; }
+
+    /* STEPS */
+    .steps { margin:20px 0; max-width:680px; }
+    .step { display:flex; gap:16px; margin-bottom:20px; position:relative; }
+    .step:not(:last-child)::after { content:''; position:absolute; left:19px; top:42px; width:2px; height:calc(100% - 10px); background:var(--border); }
+    .step-num { width:40px; height:40px; border-radius:50%; background:var(--gradient); color:white; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .step-body { flex:1; padding-top:8px; }
+    .step-title { font-size:14.5px; font-weight:600; color:var(--dark); margin-bottom:4px; }
+    .step-desc { font-size:13.5px; color:var(--gray2); line-height:1.65; }
+
+    /* ROADMAP CARDS */
+    .roadmap-card { background:var(--white); border:1px solid var(--border); border-radius:14px; margin:24px 0; max-width:720px; overflow:hidden; box-shadow:var(--card-shadow); }
+    .roadmap-card-header { background:var(--gradient); padding:18px 24px; display:flex; align-items:flex-start; gap:14px; }
+    .roadmap-card-header .rc-icon { font-size:24px; margin-top:2px; }
+    .roadmap-card-header h4 { font-family:'Space Grotesk',sans-serif; font-size:17px; font-weight:700; color:white; margin:0 0 4px; }
+    .roadmap-card-header p { font-size:12.5px; color:rgba(255,255,255,0.82); margin:0; }
+    .roadmap-card-body { padding:22px 24px; }
+    .roadmap-result { margin-top:18px; padding:13px 16px; background:#eafaf4; border:1px solid #a7ecd3; border-radius:8px; font-size:13px; color:#0e6646; display:flex; gap:10px; align-items:flex-start; }
+    .roadmap-result strong { font-weight:700; }
+
+    /* GRID */
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:720px; margin:16px 0; }
+    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; max-width:720px; margin:16px 0; }
+    .info-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:18px 20px; box-shadow:var(--card-shadow); }
+    .info-card .ic-icon { font-size:24px; margin-bottom:8px; }
+    .info-card h4 { font-size:14px; font-weight:600; color:var(--dark); margin-bottom:6px; }
+    .info-card p { font-size:13px; color:var(--gray2); line-height:1.6; margin:0; }
+
+    /* BADGES */
+    .badge { display:inline-flex; align-items:center; padding:2px 10px; border-radius:20px; font-size:11.5px; font-weight:600; }
+    .badge-blue { background:#e8f0ff; color:var(--navy); }
+    .badge-purple { background:#f0ebff; color:var(--purple); }
+    .badge-green { background:#e6faf3; color:#0e6646; }
+    .badge-amber { background:#fff8e6; color:#78420a; }
+    .badge-red { background:#fef2f2; color:#991b1b; }
+
+    /* TABLE */
+    .data-table { width:100%; border-collapse:collapse; margin:16px 0; max-width:720px; font-size:13.5px; }
+    .data-table th { text-align:left; padding:10px 14px; font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:0.05em; border-bottom:2px solid var(--border); background:var(--bg); }
+    .data-table td { padding:11px 14px; color:var(--gray2); border-bottom:1px solid var(--border); vertical-align:middle; }
+    .data-table tr:last-child td { border-bottom:none; }
+    .data-table tr:hover td { background:#faf7ff; }
+
+    /* FAQ */
+    .faq-item { border:1px solid var(--border); border-radius:10px; margin-bottom:8px; overflow:hidden; max-width:680px; }
+    .faq-q { padding:15px 18px; font-weight:600; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; background:var(--white); user-select:none; transition:background 0.15s; color:var(--dark); }
+    .faq-q:hover { background:#faf7ff; }
+    .faq-arrow { color:var(--purple); transition:transform 0.2s; font-size:16px; }
+    .faq-item.open .faq-arrow { transform:rotate(180deg); }
+    .faq-a { display:none; padding:0 18px 14px; font-size:13.5px; line-height:1.7; color:var(--gray2); background:var(--white); }
+    .faq-item.open .faq-a { display:block; }
+
+    /* FOOTER NAV */
+    .footer-nav { padding:32px 48px; background:var(--white); border-top:1px solid var(--border); display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+    .footer-nav a { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:8px; border:1px solid var(--border); background:var(--white); color:var(--navy); text-decoration:none; font-size:13.5px; font-weight:600; transition:all 0.18s; }
+    .footer-nav a:hover { background:#f5f0ff; border-color:var(--purple); }
+
+    /* TIPO-QUESTÃO TAGS */
+    .q-type { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:6px; font-size:12px; font-weight:600; margin-right:6px; margin-bottom:4px; }
+    .q-mc { background:#e8f0ff; color:var(--navy); }
+    .q-essay { background:#f0ebff; color:var(--purple); }
+    .q-tf { background:#e6faf3; color:#0e6646; }
+    .q-sum { background:#fff8e6; color:#78420a; }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">Avaliações</div>
+    <div class="manual-tag">Manual do Professor</div>
+  </div>
+  <div class="sidebar-section-title">Conteúdo</div>
+  <nav>
+    <a href="#dashboard" class="active"><span class="nav-icon">📊</span> Dashboard</a>
+    <a href="#questoes"><span class="nav-icon">📝</span> Banco de Questões</a>
+    <a href="#provas"><span class="nav-icon">📋</span> Criação de Provas</a>
+    <a href="#aplicacao"><span class="nav-icon">🎯</span> Aplicação e Prazos</a>
+    <a href="#correcao"><span class="nav-icon">✅</span> Correção com IA</a>
+    <a href="#car"><span class="nav-icon">✍️</span> Avaliação de Redação</a>
+    <a href="#simulados"><span class="nav-icon">🔄</span> Simulados</a>
+    <a href="#resultados"><span class="nav-icon">📤</span> Liberação de Resultados</a>
+    <a href="#roadmap"><span class="nav-icon">🗺️</span> Roadmap de Tarefas</a>
+    <a href="#faq"><span class="nav-icon">❓</span> Perguntas Frequentes</a>
+  </nav>
+  <div class="sidebar-footer">
+    Outros manuais:<br>
+    <a href="manual-administrador.html">👑 Manual do Admin</a><br>
+    <a href="manual-aluno.html">🎓 Manual do Aluno</a>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="hero">
+    <div class="hero-badge">👩‍🏫 Professor</div>
+    <h1>Manual do<br>Professor</h1>
+    <p>Crie provas, gerencie o banco de questões, corrija com IA e acompanhe o desempenho dos seus alunos com facilidade.</p>
+    <div class="hero-cards">
+      <div class="hero-card">📝 Banco de Questões</div>
+      <div class="hero-card">🤖 Correção com IA</div>
+      <div class="hero-card">✍️ Avaliação de Redação</div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <span id="pct">0%</span>
+    <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+    <span>Progresso de leitura</span>
+  </div>
+
+  <!-- SECTION 1: DASHBOARD -->
+  <section class="section" id="dashboard">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div><h2>Dashboard do Professor</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Central de controle das suas aulas e avaliações</p></div>
+    </div>
+
+    <p>O dashboard do professor reúne em uma tela as informações mais importantes sobre as suas aulas: turmas, provas aplicadas, submissões pendentes de correção e desempenho geral dos alunos.</p>
+
+    <h3>Métricas principais</h3>
+    <div class="grid-3">
+      <div class="info-card">
+        <div class="ic-icon">📋</div>
+        <h4>Minhas Provas</h4>
+        <p>Total de provas criadas, separadas por matéria e status (ativa, encerrada, rascunho).</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">📬</div>
+        <h4>Submissões</h4>
+        <p>Respostas recebidas de alunos, com destaque para as que aguardam correção.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">📚</div>
+        <h4>Banco de Questões</h4>
+        <p>Total de questões criadas por você, filtrável por tipo e matéria.</p>
+      </div>
+    </div>
+
+    <h3>Provas ativas</h3>
+    <p>A seção "Provas Ativas" exibe as provas com prazo aberto. Para cada prova você vê: nome, turma, prazo, quantos alunos entregaram e quantos faltam.</p>
+
+    <h3>Correções pendentes</h3>
+    <p>A seção "Pendentes de Correção" lista todas as submissões que chegaram mas ainda não foram corrigidas. Clique em qualquer item para ir diretamente à tela de correção.</p>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div>Revise as correções pendentes pelo menos uma vez por semana. Alunos ficam aguardando as notas para continuar estudando.</div>
+    </div>
+
+    <h3>Atividade recente</h3>
+    <p>O feed de atividade recente mostra as últimas entregas: nome do aluno, prova e horário. Útil para confirmar se a prova está sendo respondida normalmente.</p>
+  </section>
+
+  <!-- SECTION 2: BANCO DE QUESTÕES -->
+  <section class="section" id="questoes">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div><h2>Banco de Questões</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Crie, organize e reutilize suas questões</p></div>
+    </div>
+
+    <p>O banco de questões é o repositório de toda a sua inteligência pedagógica na plataforma. Cada questão criada pode ser reutilizada em múltiplas provas e simulados.</p>
+
+    <h3>Tipos de questão disponíveis</h3>
+    <div class="grid-2">
+      <div class="info-card">
+        <div class="q-type q-mc">● Múltipla Escolha</div>
+        <h4>Múltipla Escolha</h4>
+        <p>Uma única alternativa correta entre 2–8 opções. Corrigida automaticamente pela plataforma.</p>
+      </div>
+      <div class="info-card">
+        <div class="q-type q-tf">● Verdadeiro ou Falso</div>
+        <h4>Verdadeiro ou Falso</h4>
+        <p>Alternativas classificadas como V ou F. A pontuação é proporcional ao número de acertos.</p>
+      </div>
+      <div class="info-card">
+        <div class="q-type q-sum">● Somatório</div>
+        <h4>Somatório</h4>
+        <p>Alternativas com valor (1, 2, 4, 8, 16…). O aluno informa a soma dos itens verdadeiros.</p>
+      </div>
+      <div class="info-card">
+        <div class="q-type q-essay">● Dissertativa</div>
+        <h4>Dissertativa / Redação</h4>
+        <p>Resposta em texto ou foto. Corrigida manualmente ou com IA (CAR). Ideal para avaliação de argumentação.</p>
+      </div>
+    </div>
+
+    <h3>Criar nova questão</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Menu Questões → "Nova Questão"</div>
+          <div class="step-desc">Escolha o tipo de questão no seletor de tipo no topo do formulário.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Escreva o enunciado</div>
+          <div class="step-desc">Use o editor de texto rico para formatar equações, negrito, listas, etc. O enunciado é exibido ao aluno exatamente como você o formata aqui.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Adicione as alternativas (se aplicável)</div>
+          <div class="step-desc">Para múltipla escolha e V/F: escreva cada alternativa e marque a(s) correta(s). Para dissertativa: defina os critérios de correção.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Selecione a matéria e a fonte (opcional)</div>
+          <div class="step-desc">A matéria categoriza a questão no banco. A "fonte" (ex: ENEM 2022) aparece como badge na prova e no resultado do aluno.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Salve</div>
+          <div class="step-desc">A questão fica disponível imediatamente no banco para ser adicionada a qualquer prova.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Fonte da questão</h3>
+    <p>O campo "Fonte" permite indicar a origem de uma questão, como <em>ENEM 2022</em>, <em>FUVEST 2023</em> ou <em>Própria — 2024</em>. Esse dado aparece como um badge colorido na prova e no resultado do aluno.</p>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div>Não altere o gabarito de uma questão que já gerou correções automáticas. Isso pode mudar notas já finalizadas de forma inesperada.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: CRIAÇÃO DE PROVAS -->
+  <section class="section" id="provas">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div><h2>Criação de Provas</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Monte provas a partir do banco de questões</p></div>
+    </div>
+
+    <p>Uma prova é composta por questões do banco, associada a uma turma e com prazo definido. Você pode criar provas regulares (objetivas/dissertativas) ou avaliações de redação (CAR).</p>
+
+    <h3>Tipos de prova</h3>
+    <div class="grid-2">
+      <div class="info-card">
+        <div class="ic-icon">📝</div>
+        <h4>Prova Regular</h4>
+        <p>Questões objetivas (múltipla escolha, V/F, somatório) ou dissertativas. Disponível para todos os professores.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">✍️</div>
+        <h4>Avaliação de Redação (CAR)</h4>
+        <p>Prova com questão dissertativa onde o aluno envia foto da redação manuscrita. Requer acesso CAR habilitado pelo admin.</p>
+      </div>
+    </div>
+
+    <h3>Criar uma prova</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Menu Provas → "Nova Prova"</div>
+          <div class="step-desc">Você será redirecionado ao formulário de criação de prova.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Defina nome, matéria e turma</div>
+          <div class="step-desc">O nome aparece para o aluno. Selecione a matéria e a turma que receberá a prova.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Configure datas e prazo</div>
+          <div class="step-desc">Data de início (quando a prova aparece para o aluno) e data de fim (limite de entrega).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Adicione questões do banco</div>
+          <div class="step-desc">Clique em "Adicionar Questão" e pesquise/filtre no banco. Defina a pontuação de cada questão nesta prova.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Publique</div>
+          <div class="step-desc">Clique em "Publicar". A prova estará disponível para os alunos da turma a partir da data de início configurada.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Configurações avançadas</h3>
+    <table class="data-table">
+      <thead><tr><th>Opção</th><th>Descrição</th></tr></thead>
+      <tbody>
+        <tr><td>Embaralhar questões</td><td>Cada aluno recebe as questões em ordem diferente, dificultando cola</td></tr>
+        <tr><td>Embaralhar alternativas</td><td>A ordem das alternativas de múltipla escolha é aleatória por aluno</td></tr>
+        <tr><td>Limite de tempo</td><td>Define quantos minutos o aluno tem após começar a prova</td></tr>
+        <tr><td>Mostrar gabarito</td><td>Se o gabarito fica visível ao aluno após a correção ser liberada</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note">
+      <span class="callout-icon">ℹ️</span>
+      <div>Para reordenar as questões na prova, arraste-as pelo ícone de handle (⠿) na lista. A ordem definida aqui é a ordem em que o aluno verá as questões (se o embaralhamento estiver desativado).</div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: APLICAÇÃO -->
+  <section class="section" id="aplicacao">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div><h2>Aplicação e Prazos</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Como os alunos acessam e entregam as provas</p></div>
+    </div>
+
+    <p>Após publicar a prova, os alunos da turma selecionada a verão automaticamente no dashboard deles. Nenhuma ação adicional do professor é necessária.</p>
+
+    <h3>Ciclo de vida da prova</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Publicada — aguardando data de início</div>
+          <div class="step-desc">A prova existe mas os alunos ainda não conseguem acessar. Aparece como "em breve" no dashboard deles.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Ativa — alunos podem responder</div>
+          <div class="step-desc">A data de início chegou. Alunos veem o botão "Iniciar Prova". Cada aluno pode entregar apenas uma vez.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Encerrada — prazo expirou</div>
+          <div class="step-desc">Nenhum aluno pode mais enviar respostas. O professor pode corrigir as submissões recebidas.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Resultados liberados</div>
+          <div class="step-desc">O professor liberou as correções. Alunos agora veem a nota, o gabarito e o feedback.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Monitoramento de entregas</h3>
+    <p>Na página da prova, a aba "Submissões" lista todos os alunos da turma com status de entrega. Você vê quem entregou, quem ainda não entregou e quem não tem acesso à plataforma.</p>
+
+    <h3>Estender prazo</h3>
+    <p>Se precisar dar mais tempo, edite a prova e altere a data de término. Alunos que já entregaram não são afetados.</p>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div>Comunique a aplicação da prova por outros canais (grupo de WhatsApp, e-mail) além da plataforma. Alunos que raramente acessam o sistema podem perder o prazo.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: CORREÇÃO COM IA -->
+  <section class="section" id="correcao">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div><h2>Correção com Inteligência Artificial</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Corrija questões dissertativas em segundos com IA</p></div>
+    </div>
+
+    <p>Para questões dissertativas (resposta aberta), a plataforma oferece correção automática via IA. A IA lê o enunciado, os critérios que você definiu e a resposta do aluno, e sugere uma nota com feedback.</p>
+
+    <h3>Como corrigir com IA</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Acesse a submissão</div>
+          <div class="step-desc">Menu Submissões → clique na submissão do aluno desejado.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Localize a questão dissertativa</div>
+          <div class="step-desc">Role até a questão com resposta aberta. Você verá o texto respondido pelo aluno.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Clique no botão "✨ Corrigir com IA"</div>
+          <div class="step-desc">A IA processa a resposta e retorna nota e feedback em segundos.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Revise a sugestão</div>
+          <div class="step-desc">A nota sugerida pela IA é editável. Ajuste manualmente se discordar. O feedback também pode ser editado.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Salve e avance</div>
+          <div class="step-desc">Após salvar, a nota é registrada. Continue corrigindo as demais submissões da prova.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Critérios de correção</h3>
+    <p>A qualidade da correção por IA depende diretamente dos critérios que você define na questão. Quanto mais específicos os critérios, mais precisa a IA.</p>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div><strong>Exemplo de critério eficaz:</strong> "O aluno deve citar pelo menos 2 causas da Revolução Industrial, mencionando a mecanização do trabalho e a migração campo-cidade. Respostas sem exemplos devem receber no máximo 60% da pontuação."</div>
+    </div>
+
+    <h3>Limite de correções por IA</h3>
+    <p>Cada professor tem um limite mensal de correções automáticas definido pelo plano da instituição. Quando o limite é atingido, um aviso é exibido e as correções passam a ser apenas manuais. O limite reinicia todo mês.</p>
+  </section>
+
+  <!-- SECTION 6: CAR -->
+  <section class="section" id="car">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div><h2>Avaliação de Redação (CAR)</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Corrija redações manuscritas com IA de visão computacional</p></div>
+    </div>
+
+    <p>O <strong>CAR (Correção Automática de Redação)</strong> permite que alunos enviem fotos de redações manuscritas. A IA transcreve o texto com fidelidade absoluta (sem correções ou melhorias) e avalia o conteúdo, gerando nota e feedback.</p>
+
+    <div class="callout note">
+      <span class="callout-icon">ℹ️</span>
+      <div>O CAR é uma funcionalidade premium. Para tê-la disponível, o administrador da sua instituição precisa ativar o módulo CAR e habilitar o seu acesso individualmente.</div>
+    </div>
+
+    <h3>Criar uma Avaliação de Redação</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Crie uma questão do tipo "Dissertativa"</div>
+          <div class="step-desc">Menu Questões → "Nova Questão" → tipo "Dissertativa". No enunciado, escreva a proposta da redação completa (tema, textos motivadores, instruções).</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Defina os critérios de avaliação</div>
+          <div class="step-desc">No campo "Critérios de Correção", liste os critérios que a IA usará: adequação ao tema, coesão, coerência, norma culta, proposta de intervenção.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Crie uma prova com essa questão</div>
+          <div class="step-desc">Menu Provas → "Nova Prova" → adicione a questão dissertativa. Configure prazo e turma normalmente.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Publique</div>
+          <div class="step-desc">Os alunos poderão digitar ou enviar uma foto da redação manuscrita.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Corrigir uma redação com IA</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Acesse a submissão do aluno</div>
+          <div class="step-desc">Menu Submissões → clique no aluno. Se ele enviou foto, você verá a imagem da redação manuscrita.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Amplie a imagem para leitura</div>
+          <div class="step-desc">Clique na foto da redação para abrir o lightbox com zoom. Use o scroll para ampliar (até 8×) e arraste para navegar pelo texto. Pressione ESC ou ✕ para fechar.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Clique em "✨ Corrigir redação com IA"</div>
+          <div class="step-desc">O botão azul aparece sempre que há foto da redação. A IA processa em 10–30 segundos e exibe transcrição + nota + feedback.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Revise transcrição e nota</div>
+          <div class="step-desc">Compare a transcrição com a foto (use o lightbox para verificar passagens específicas). Ajuste a nota manualmente se necessário.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Salve</div>
+          <div class="step-desc">A transcrição e o feedback ficam registrados e serão exibidos ao aluno quando você liberar os resultados.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>A transcrição é fiel ao manuscrito</h3>
+    <p>A IA é configurada para transcrever o texto exatamente como o aluno escreveu — incluindo erros ortográficos, rasuras e palavras cortadas. Nenhuma palavra é substituída ou "melhorada". Se uma palavra for ilegível, a IA insere <code>[ilegível]</code> no lugar.</p>
+
+    <h3>Re-corrigir uma redação</h3>
+    <p>Se a correção automática não ficou satisfatória, clique em <strong>"Re-corrigir redação com IA"</strong>. A IA faz uma nova tentativa e substitui a transcrição e nota anterior. Após a re-correção, ajuste a nota manualmente se necessário antes de liberar.</p>
+
+    <h3>Dicas para fotos de qualidade</h3>
+    <p>Oriente os alunos a:</p>
+    <ul>
+      <li>Fotografar em ambiente com boa iluminação (sem sombras sobre o papel)</li>
+      <li>Manter o celular paralelo ao papel (sem ângulo inclinado)</li>
+      <li>Garantir que todo o texto esteja visível na foto</li>
+      <li>Usar papel branco ou levemente amarelo</li>
+      <li>Escrever com caneta ou lápis que dê contraste com o papel</li>
+    </ul>
+  </section>
+
+  <!-- SECTION 7: SIMULADOS -->
+  <section class="section" id="simulados">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div><h2>Simulados</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Geração automática de simulados para os alunos</p></div>
+    </div>
+
+    <p>Simulados são provas de prática geradas automaticamente a partir do banco de questões. Os alunos usam simulados para estudar, sem precisar de intervenção do professor.</p>
+
+    <div class="grid-2">
+      <div class="info-card">
+        <div class="ic-icon">🔄</div>
+        <h4>Gerado pelo aluno</h4>
+        <p>O aluno acessa "Simulados", escolhe a matéria e o número de questões — o sistema monta a prova automaticamente.</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">⚡</div>
+        <h4>Corrigido na hora</h4>
+        <p>As respostas são corrigidas automaticamente ao final. O aluno vê o gabarito e o percentual de acertos imediatamente.</p>
+      </div>
+    </div>
+
+    <p>O professor não precisa criar simulados individualmente. O processo é automático: quanto mais questões você adicionar ao banco, mais variados os simulados dos alunos.</p>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <div>Adicione questões com a fonte de vestibulares e concursos. Os alunos valorizam muito praticar com questões reais de provas anteriores.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: LIBERAÇÃO DE RESULTADOS -->
+  <section class="section" id="resultados">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div><h2>Liberação de Resultados</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Quando e como devolver as provas corrigidas aos alunos</p></div>
+    </div>
+
+    <p>Após corrigir todas as submissões, você decide quando liberar os resultados aos alunos. Essa separação permite que você revise tudo antes de tornar as notas públicas.</p>
+
+    <h3>Liberar uma submissão individual</h3>
+    <p>Na página de detalhes de uma submissão, clique em <strong>"Liberar para o aluno"</strong>. Apenas aquele aluno passa a ver sua nota e feedback.</p>
+
+    <h3>Liberar toda a turma de uma vez</h3>
+    <p>Na página da prova, aba "Submissões", clique em <strong>"Liberar todas"</strong>. Todas as submissões corrigidas são liberadas simultaneamente.</p>
+
+    <h3>O que o aluno vê após a liberação</h3>
+    <ul>
+      <li>Nota total e percentual de aproveitamento</li>
+      <li>Gabarito de cada questão objetiva (se habilitado nas configurações da prova)</li>
+      <li>Sua resposta dissertativa, transcrição da IA (se CAR) e o feedback do professor</li>
+      <li>Gráfico de desempenho por tipo de questão</li>
+      <li>Opção de exportar o resultado em PDF</li>
+    </ul>
+
+    <h3>Exportar notas para planilha</h3>
+    <p>Na página de submissões de qualquer prova, o botão <strong>"XLSX"</strong> no canto superior direito baixa uma planilha Excel com todos os alunos, notas e datas de entrega.</p>
+  </section>
+
+  <!-- SECTION 9: ROADMAP -->
+  <section class="section" id="roadmap">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <div><h2>Roadmap de Tarefas</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Sequências passo a passo para as tarefas mais comuns</p></div>
+    </div>
+
+    <p>Use os fluxos abaixo como guia nas tarefas do dia a dia. Cada fluxo mostra a sequência exata de telas e cliques necessários.</p>
+
+    <!-- FLUXO 1 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">📝</div>
+        <div>
+          <h4>Fluxo 1 — Criar e publicar uma prova</h4>
+          <p>Do zero à prova disponível para os alunos</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Crie as questões no banco</div>
+              <div class="step-desc">Menu Questões → "Nova Questão" → escreva o enunciado, adicione alternativas, marque a correta. Repita para todas as questões da prova.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Crie a prova</div>
+              <div class="step-desc">Menu Provas → "Nova Prova" → preencha nome, matéria, turma, data de início e data de fim.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Adicione as questões</div>
+              <div class="step-desc">Clique em "Adicionar Questão" → pesquise e selecione as questões do banco → defina a pontuação de cada uma.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Configure opções (opcional)</div>
+              <div class="step-desc">Ative embaralhamento de questões/alternativas, defina limite de tempo, configure se o gabarito será exibido após correção.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <div class="step-title">Publique</div>
+              <div class="step-desc">Clique em "Publicar". Os alunos da turma verão a prova no dashboard a partir da data de início.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Prova publicada e disponível para os alunos da turma. Você pode acompanhar as entregas em tempo real.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 2 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">✅</div>
+        <div>
+          <h4>Fluxo 2 — Corrigir e liberar resultados</h4>
+          <p>Da submissão do aluno à nota disponível no dashboard</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Acesse as submissões da prova</div>
+              <div class="step-desc">Menu Provas → clique na prova → aba "Submissões". Você verá a lista de alunos que entregaram.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Questões objetivas já estão corrigidas</div>
+              <div class="step-desc">Múltipla escolha, V/F e somatório não precisam de ação. Você só precisa intervir nas dissertativas.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Corrija as dissertativas com IA</div>
+              <div class="step-desc">Clique no aluno → localize a questão dissertativa → "✨ Corrigir com IA" → revise a nota sugerida → Salvar. Repita para cada aluno.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Libere os resultados</div>
+              <div class="step-desc">Na aba "Submissões" → clique "Liberar todas". Os alunos passam a ver as notas imediatamente.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Todos os alunos com notas liberadas e feedback acessível. Exporte o XLSX com as notas da turma.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 3 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">✍️</div>
+        <div>
+          <h4>Fluxo 3 — Criar e corrigir uma Avaliação de Redação (CAR)</h4>
+          <p>Prova de redação manuscrita com correção por IA</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Crie a questão dissertativa com proposta</div>
+              <div class="step-desc">Menu Questões → "Nova Questão" → tipo "Dissertativa" → escreva a proposta de redação completa no enunciado → defina os critérios de avaliação.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Monte a prova com essa questão</div>
+              <div class="step-desc">Menu Provas → "Nova Prova" → adicione a questão dissertativa → defina prazo (ex: 3 dias, para o aluno ter tempo de fazer em casa e fotografar).</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Aguarde as entregas</div>
+              <div class="step-desc">Os alunos entregam digitando ou fotografando a redação. Você acompanha o progresso no dashboard.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Corrija com IA — submissão por submissão</div>
+              <div class="step-desc">Clique no aluno → clique na foto para ampliar (lightbox) → "✨ Corrigir redação com IA" → veja a transcrição e a nota sugerida.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <div class="step-title">Ajuste e libere</div>
+              <div class="step-desc">Corrija a nota se necessário → Salvar → repita para todos os alunos → "Liberar todas" ao final.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Redações corrigidas com transcrição fiel e feedback detalhado, resultado visível para os alunos.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 4 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">📚</div>
+        <div>
+          <h4>Fluxo 4 — Criar banco de questões de vestibular</h4>
+          <p>Preparar materiais de estudo com questões reais de provas anteriores</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Menu Questões → "Nova Questão"</div>
+              <div class="step-desc">Selecione o tipo "Múltipla Escolha" para a maioria das questões de vestibular.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Copie o enunciado e as alternativas</div>
+              <div class="step-desc">Use o editor rico para formatar equações, gráficos e texto. Marque a alternativa correta.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Preencha o campo "Fonte"</div>
+              <div class="step-desc">Escreva a origem: "ENEM 2022", "FUVEST 2023", "UNICAMP 2023 — 1ª fase", etc. Isso aparece como badge na prova e nos simulados.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Salve e repita</div>
+              <div class="step-desc">Com várias questões de vestibulares no banco, os simulados dos alunos serão compostos por questões reais de provas anteriores.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Banco rico com questões de vestibular. Alunos têm acesso a simulados com material real de provas anteriores.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 5 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">🔄</div>
+        <div>
+          <h4>Fluxo 5 — Reutilizar questões em uma nova prova</h4>
+          <p>Economize tempo reaproveitando questões existentes</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Crie a nova prova</div>
+              <div class="step-desc">Menu Provas → "Nova Prova" → preencha nome, matéria, turma e prazo.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">"Adicionar Questão" → pesquise no banco</div>
+              <div class="step-desc">Use os filtros de matéria, tipo e fonte para localizar as questões que já tem. Não é necessário reescrever nada.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Selecione e defina pontuação</div>
+              <div class="step-desc">Clique em "Adicionar" para cada questão e defina a pontuação nesta prova (pode ser diferente da vez anterior).</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Publique</div>
+              <div class="step-desc">Ative o embaralhamento para que alunos que já fizeram a prova antes não tenham vantagem.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Nova prova criada em minutos, reutilizando questões do banco sem precisar redigitar nada.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 6 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">📊</div>
+        <div>
+          <h4>Fluxo 6 — Analisar o desempenho da turma</h4>
+          <p>Identificar onde os alunos estão com dificuldade</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Acesse a prova → aba "Estatísticas"</div>
+              <div class="step-desc">Após liberar os resultados, a aba de estatísticas mostra médias, taxa de acerto por questão e distribuição de notas da turma.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Identifique questões com baixo acerto</div>
+              <div class="step-desc">Questões com menos de 40% de acerto indicam conteúdos que a turma não domina. Considere revisar esse conteúdo em aula.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Exporte as notas em XLSX</div>
+              <div class="step-desc">Botão "XLSX" na aba de submissões. Identifique alunos abaixo da média que precisam de acompanhamento individual.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Diagnóstico claro dos pontos de dificuldade da turma, com dados para direcionar as próximas aulas.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO 7 -->
+    <div class="roadmap-card">
+      <div class="roadmap-card-header">
+        <div class="rc-icon">⏰</div>
+        <div>
+          <h4>Fluxo 7 — Gerenciar prazo e corrigir provas em aberto</h4>
+          <p>O que fazer quando o prazo encerrou e ainda há submissões pendentes</p>
+        </div>
+      </div>
+      <div class="roadmap-card-body">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-title">Verifique quem não entregou</div>
+              <div class="step-desc">Menu Provas → clique na prova → aba "Submissões". Veja a coluna "Status" para identificar alunos sem entrega.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-title">Decida se estende o prazo</div>
+              <div class="step-desc">Se necessário, edite a prova e altere a data de término. Alunos sem entrega ganham mais tempo automaticamente.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-title">Corrija as submissões recebidas</div>
+              <div class="step-desc">Não precisa esperar todos entregarem. Corrija as que já chegaram e libere individualmente para quem já entregou.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-title">Após o prazo final, libere todos</div>
+              <div class="step-desc">Encerrado o prazo definitivo, corrija as submissões restantes e use "Liberar todas" para notificar a turma inteira de uma vez.</div>
+            </div>
+          </div>
+        </div>
+        <div class="roadmap-result">
+          ✅ <div><strong>Resultado esperado:</strong> Todos os alunos que entregaram têm acesso à nota. Alunos que não entregaram veem a prova como encerrada sem nota.</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SECTION 10: FAQ -->
+  <section class="section" id="faq">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <div><h2>Perguntas Frequentes</h2><p style="margin:6px 0 0;font-size:14px;color:var(--gray);">Dúvidas comuns de professores</p></div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Posso criar uma prova com questões de diferentes matérias? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Cada prova é associada a uma única matéria (para fins organizacionais e de relatório), mas você pode adicionar questões de qualquer matéria do banco. No entanto, recomendamos manter as provas coerentes com a matéria selecionada para não confundir os relatórios de desempenho.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">O que acontece se eu publicar uma prova e depois quiser editá-la? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Após publicar, você pode editar o prazo (data de início e fim) livremente. No entanto, as questões e o gabarito ficam bloqueados depois que o primeiro aluno começa a prova, para garantir a integridade da avaliação. Se precisar alterar questões, encerre a prova atual e crie uma nova versão.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">A correção por IA pode errar? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Sim. A IA tem uma precisão muito boa para a maioria das respostas, mas pode ser imprecisa em questões muito subjetivas, respostas muito longas ou conteúdos muito especializados. Sempre revise a nota sugerida antes de liberar ao aluno. A nota sugerida pela IA é um ponto de partida — a responsabilidade final é do professor.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como funciona o embaralhamento de questões? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Quando ativado, cada aluno recebe as questões em uma ordem diferente, gerada aleatoriamente no momento em que ele inicia a prova. O embaralhamento de alternativas funciona da mesma forma: as opções de cada questão aparecem em ordem diferente para cada aluno. Na correção, o sistema sempre sabe qual é a alternativa correta, independente da ordem apresentada.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">O aluno pode fazer a prova novamente? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Não. Por padrão, cada aluno pode enviar a prova apenas uma vez. Se o aluno precisar refazer por algum motivo justificado, o professor pode excluir a submissão existente (ação irreversível) para permitir uma nova entrega. Simulados, por outro lado, podem ser feitos quantas vezes o aluno quiser.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como corrigir questões de somatório? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">As questões de somatório são corrigidas automaticamente pela plataforma. O sistema verifica se a soma informada pelo aluno corresponde à soma dos valores das alternativas verdadeiras. A correção é toda-ou-nada: zero se a soma estiver errada, pontuação total se estiver correta.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como ver quais questões os alunos mais erraram? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Após liberar os resultados, acesse a prova → aba "Estatísticas". Você verá o percentual de acerto de cada questão. Questões com acerto abaixo de 40% indicam conteúdo que precisa de reforço. O botão XLSX também permite análise em planilha com as respostas de cada aluno por questão.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Posso criar provas para mais de uma turma ao mesmo tempo? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Cada prova é associada a uma turma específica. Para aplicar a mesma prova em duas turmas, crie a prova uma vez e depois acesse "Nova Prova" novamente, selecionando a segunda turma e adicionando as mesmas questões do banco (não precisa redigitar nada).</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">O aluno pode ver sua nota antes que eu libere? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Não. Até o professor clicar em "Liberar" (individual ou coletivo), o aluno vê apenas uma mensagem de "Aguardando liberação". O gabarito e o feedback também ficam ocultos até a liberação, mesmo se as questões objetivas já estiverem corrigidas automaticamente.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">A IA consegue ler qualquer tipo de caligrafia? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">A IA lida bem com caligrafia legível e iluminação adequada. Redações com letra muito cursiva, suja ou em papel de baixo contraste podem gerar transcrições incompletas, com partes marcadas como [ilegível]. Nesses casos, use o lightbox (zoom na imagem) para ler diretamente e ajuste a nota manualmente. Oriente os alunos a escrever de forma clara e fotografar com boa iluminação.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Como exportar as notas para o sistema de gestão escolar? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Na página de submissões de qualquer prova, clique no botão "XLSX" (Excel). A planilha gerada contém: nome do aluno, nota total, nota por questão, data de entrega e turma. Essa planilha pode ser importada em sistemas de gestão ou usada diretamente para lançamento de notas.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">Posso re-corrigir uma redação que a IA já avaliou? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Sim. Na submissão do aluno, o botão muda de "Corrigir redação com IA" para "Re-corrigir redação com IA" após a primeira correção. Clique para que a IA faça uma nova tentativa — a transcrição e a nota anterior são substituídas. Após a re-correção, você pode ainda ajustar a nota manualmente antes de liberar.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">O banco de questões é compartilhado entre professores? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Cada professor vê e edita apenas as suas próprias questões. O banco não é compartilhado entre professores da mesma instituição por padrão. Se quiser usar questões de um colega, ele precisará enviá-las para que você as cadastre no seu banco.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggle(this)">O aluno vê o gabarito antes da liberação? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Não. O gabarito só é exibido quando: (1) o professor liberou os resultados e (2) a opção "Mostrar gabarito" está ativa na configuração da prova. Se a opção estiver desativada, o aluno vê apenas a nota e o feedback, sem ver quais questões acertou ou errou individualmente.</div>
+    </div>
+  </section>
+
+  <div class="footer-nav">
+    <a href="manual-administrador.html">👑 Manual do Administrador →</a>
+    <a href="manual-aluno.html">🎓 Manual do Aluno →</a>
+  </div>
+</main>
+
+<script>
+  // Progress bar
+  const fill = document.getElementById('pfill');
+  const pct = document.getElementById('pct');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    const v = Math.round(p * 100);
+    fill.style.width = v + '%';
+    pct.textContent = v + '%';
+  });
+
+  // Sidebar active link
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.sidebar nav a');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+    navLinks.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + cur) a.classList.add('active');
+    });
+  });
+
+  // FAQ toggle
+  function toggle(el) {
+    const item = el.parentElement;
+    item.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
