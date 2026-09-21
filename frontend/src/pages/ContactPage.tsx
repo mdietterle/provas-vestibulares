@@ -84,7 +84,7 @@ export default function ContactPage() {
                   </svg>
                 ),
                 title: 'E-mail',
-                value: 'contato@aiassessmenthub.com.br',
+                value: 'dietterle@gmail.com',
                 sub: 'Respondemos em até 4h em dias úteis',
                 cls: 'bg-[#dce1ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]',
               },
