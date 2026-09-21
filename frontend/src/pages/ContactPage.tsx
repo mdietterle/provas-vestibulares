@@ -62,7 +62,7 @@ export default function ContactPage() {
         {/* Left — info */}
         <div className="lg:col-span-2 space-y-6">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-[#dce1ff] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8]">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-[#dce1ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
               Falar com Especialista
             </span>
@@ -86,7 +86,7 @@ export default function ContactPage() {
                 title: 'E-mail',
                 value: 'contato@aiassessmenthub.com.br',
                 sub: 'Respondemos em até 4h em dias úteis',
-                cls: 'bg-[#dce1ff] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8]',
+                cls: 'bg-[#dce1ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]',
               },
               {
                 icon: (
@@ -108,7 +108,7 @@ export default function ContactPage() {
                 title: 'Videochamada',
                 value: 'Agende uma demo',
                 sub: 'Demonstração gratuita de 30 min',
-                cls: 'bg-[#eef2ff] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8]',
+                cls: 'bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]',
               },
             ].map(c => (
               <div key={c.title} className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-[#131f37] border border-[#E2E8F0] dark:border-[#1e2d4a]">
@@ -134,7 +134,7 @@ export default function ContactPage() {
                   onClick={() => setForm(f => ({ ...f, topic: t }))}
                   className={`text-xs px-2.5 py-1 rounded-full border transition-all ${
                     form.topic === t
-                      ? 'bg-[#2563EB] dark:bg-[#3355c9] text-white border-[#2563EB] dark:border-[#3355c9]'
+                      ? 'bg-[#4f46e5] dark:bg-[#3355c9] text-white border-[#4f46e5] dark:border-[#3355c9]'
                       : 'bg-[#F4F6F9] dark:bg-[#1a2947] text-[#334155] dark:text-[#94a3b8] border-[#E2E8F0] dark:border-[#1e2d4a]'
                   }`}
                 >
@@ -175,10 +175,10 @@ export default function ContactPage() {
                 Recebemos sua mensagem e um especialista entrará em contato pelo canal escolhido em até 4 horas (dias úteis).
               </p>
               <div className="flex gap-3 justify-center flex-wrap">
-                <Link to="/login" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}>
+                <Link to="/login" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
                   Voltar ao início
                 </Link>
-                <Link to="/quote" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-[#2563EB] dark:text-[#818CF8] border border-[#dce1ff] dark:border-[#2a3a63] bg-[#EFF6FF] dark:bg-[#1a2947] hover:bg-[#E2E8F0] dark:hover:bg-[#20325a] transition-colors">
+                <Link to="/quote" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-[#4f46e5] dark:text-[#818CF8] border border-[#dce1ff] dark:border-[#2a3a63] bg-[#EFF6FF] dark:bg-[#1a2947] hover:bg-[#E2E8F0] dark:hover:bg-[#20325a] transition-colors">
                   Solicitar orçamento
                 </Link>
               </div>
@@ -192,7 +192,7 @@ export default function ContactPage() {
                   <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1.5">Nome *</label>
                   <input
                     required
-                    className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
+                    className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
                     placeholder="Seu nome"
                     value={form.name}
                     onChange={set('name')}
@@ -203,7 +203,7 @@ export default function ContactPage() {
                   <input
                     required
                     type="email"
-                    className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
+                    className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
                     placeholder="voce@escola.edu.br"
                     value={form.email}
                     onChange={set('email')}
@@ -214,7 +214,7 @@ export default function ContactPage() {
               <div>
                 <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1.5">Instituição</label>
                 <input
-                  className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
                   placeholder="Nome da escola / rede (opcional)"
                   value={form.institution}
                   onChange={set('institution')}
@@ -225,7 +225,7 @@ export default function ContactPage() {
                 <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1.5">Assunto *</label>
                 <select
                   required
-                  className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
                   value={form.topic}
                   onChange={set('topic')}
                 >
@@ -239,7 +239,7 @@ export default function ContactPage() {
                 <textarea
                   required
                   rows={5}
-                  className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all resize-none"
+                  className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all resize-none"
                   placeholder="Descreva sua dúvida com o máximo de detalhes. Quanto mais contexto você fornecer, melhor poderemos ajudar."
                   value={form.message}
                   onChange={set('message')}
@@ -259,7 +259,7 @@ export default function ContactPage() {
                       key={opt.value}
                       className={`flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border transition-all text-sm ${
                         form.preferred_contact === opt.value
-                          ? 'border-[#2563EB] dark:border-[#3355c9] bg-[#EFF6FF] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8]'
+                          ? 'border-[#4f46e5] dark:border-[#3355c9] bg-[#EFF6FF] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]'
                           : 'border-[#E2E8F0] dark:border-[#1e2d4a] bg-[#F4F6F9] dark:bg-[#0F172A] text-[#334155] dark:text-[#94a3b8]'
                       }`}
                     >
@@ -269,7 +269,7 @@ export default function ContactPage() {
                         value={opt.value}
                         checked={form.preferred_contact === opt.value}
                         onChange={set('preferred_contact')}
-                        className="accent-[#2563EB]"
+                        className="accent-[#4f46e5]"
                       />
                       {opt.label}
                     </label>
@@ -285,7 +285,7 @@ export default function ContactPage() {
                       <input
                         required
                         type="tel"
-                        className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
+                        className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
                         placeholder="(11) 9 0000-0000"
                         value={form.phone}
                         onChange={set('phone')}
@@ -295,7 +295,7 @@ export default function ContactPage() {
                   <div>
                     <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1.5">Melhor horário</label>
                     <select
-                      className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
+                      className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
                       value={form.best_time}
                       onChange={set('best_time')}
                     >
@@ -312,7 +312,7 @@ export default function ContactPage() {
                 type="submit"
                 disabled={loading}
                 className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
               >
                 {loading ? 'Enviando...' : 'Enviar mensagem →'}
               </button>

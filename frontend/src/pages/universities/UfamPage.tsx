@@ -40,14 +40,14 @@ export default function UfamPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">Seis campi pela Amazônia</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Seis campi pela Amazônia</h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-3">
           Além da sede, a UFAM tem unidades acadêmicas espalhadas pelo interior do estado, levando ensino federal
           pra municípios distantes da capital:
         </p>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -63,7 +63,7 @@ export default function UfamPage() {
       </p>
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Pesquisa, extensão e estrutura pra comunidade
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
@@ -84,7 +84,7 @@ export default function UfamPage() {
       />
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
           Como entrar: PSC ou SiSU, metade das vagas pra cada
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-4">
@@ -94,19 +94,19 @@ export default function UfamPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Isenção da taxa</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Isenção da taxa</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Fim de agosto a início de setembro, pra quem está no CadÚnico</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Inscrições PSC</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrições PSC</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Meados de setembro a início de outubro (taxa ~R$ 105)</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Prova das 3 etapas</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Prova das 3 etapas</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Fim de novembro, aplicada em ~22 municípios do Amazonas</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">SiSU</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">SiSU</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Segue o calendário nacional do MEC</dd>
           </div>
         </dl>

@@ -62,7 +62,7 @@ function SummaryCard({
       style={{ boxShadow: '0 2px 8px rgba(0,35,111,0.04)' }}
     >
       <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-1.5">{label}</p>
-      <p className="font-display text-2xl font-bold text-[#2563EB]">{value}</p>
+      <p className="font-display text-2xl font-bold text-[#4f46e5]">{value}</p>
       {sub && (
         <p className={`text-xs mt-1 ${accent === 'over' ? 'text-red-600 font-semibold' : 'text-[#64748B]'}`}>
           {sub}
@@ -113,14 +113,14 @@ export default function UsagePage() {
         </div>
         <div className="flex items-center gap-3">
           <span
-            className="px-3 py-1.5 rounded-full text-xs font-bold bg-[#e9ddff] dark:bg-[#3a2a5c] text-[#6366F1] dark:text-[#b89bff]"
+            className="px-3 py-1.5 rounded-full text-xs font-bold bg-[#e9ddff] dark:bg-[#3a2a5c] text-[#712ae2] dark:text-[#b89bff]"
           >
             Plano {data.plan.label}
           </span>
           <Link
             to="/plans"
             className="px-4 py-2 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
           >
             Fazer upgrade
           </Link>

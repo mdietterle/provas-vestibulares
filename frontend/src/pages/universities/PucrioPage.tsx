@@ -34,7 +34,7 @@ export default function PucrioPage() {
 
       {/* Seletor de abas (tabs) pras 4 modalidades de ingresso — formato interativo, único entre as páginas de universidade */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">4 formas de entrar — clique pra ver cada uma</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">4 formas de entrar — clique pra ver cada uma</h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {MODALIDADES.map(m => (
             <button
@@ -42,8 +42,8 @@ export default function PucrioPage() {
               onClick={() => setAtivo(m.id)}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
                 ativo === m.id
-                  ? 'bg-[#2563EB] dark:bg-[#6366F1] text-white border-transparent'
-                  : 'bg-white dark:bg-[#151f38] text-[#475569] dark:text-[#94a3b8] border-[#E2E8F0] dark:border-[#1e2d4a] hover:border-[#6366F1]'
+                  ? 'bg-[#4f46e5] dark:bg-[#712ae2] text-white border-transparent'
+                  : 'bg-white dark:bg-[#151f38] text-[#475569] dark:text-[#94a3b8] border-[#E2E8F0] dark:border-[#1e2d4a] hover:border-[#712ae2]'
               }`}
             >
               {m.nome}

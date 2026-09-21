@@ -6,12 +6,12 @@ export default {
     extend: {
       colors: {
         cognition: {
-          primary: '#2563EB',
-          'primary-container': '#1e3a8a',
+          primary: '#4f46e5',
+          'primary-container': '#3525cd',
           'on-primary': '#ffffff',
-          'on-primary-container': '#90a8ff',
-          secondary: '#6366F1',
-          'secondary-container': '#8455ef',
+          'on-primary-container': '#c3c0ff',
+          secondary: '#712ae2',
+          'secondary-container': '#8a4cfc',
           tertiary: '#10B981',
           bg: '#F4F6F9',
           surface: '#ffffff',
@@ -23,7 +23,7 @@ export default {
           'on-surface-variant': '#334155',
           outline: '#64748B',
           'outline-variant': '#c5c5d3',
-          'sidebar-text': '#b6c4ff',
+          'sidebar-text': '#c9bbff',
         },
       },
       fontFamily: {

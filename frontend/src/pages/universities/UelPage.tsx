@@ -28,19 +28,19 @@ export default function UelPage() {
       {/* Grade de números-chave, estilo diferente das outras páginas (sem tags de curso nem timeline) */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
         <div className="text-center">
-          <div className="text-2xl font-extrabold text-[#2563EB] dark:text-[#818CF8]">1970</div>
+          <div className="text-2xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">1970</div>
           <div className="text-[11px] text-[#64748B] dark:text-[#94a3b8] mt-1">Ano de fundação</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-extrabold text-[#2563EB] dark:text-[#818CF8]">9</div>
+          <div className="text-2xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">9</div>
           <div className="text-[11px] text-[#64748B] dark:text-[#94a3b8] mt-1">Centros de Estudo</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-extrabold text-[#2563EB] dark:text-[#818CF8]">53</div>
+          <div className="text-2xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">53</div>
           <div className="text-[11px] text-[#64748B] dark:text-[#94a3b8] mt-1">Cursos de graduação</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-extrabold text-[#2563EB] dark:text-[#818CF8]">191</div>
+          <div className="text-2xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">191</div>
           <div className="text-[11px] text-[#64748B] dark:text-[#94a3b8] mt-1">Cursos de pós-graduação</div>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function UelPage() {
 
       {/* Linha de processo seletivo em formato compacto (dias de prova), reaproveitando ideia de "linha única" mas com conteúdo próprio */}
       <div>
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">Como funciona o vestibular</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">Como funciona o vestibular</h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-4">
           Desde a reestruturação aprovada em dezembro de 2024, o processo seletivo da UEL foi concentrado numa única
           fase, aplicada em dois dias consecutivos — organizada pela COPS (Coordenadoria de Processos Seletivos).
@@ -75,9 +75,9 @@ export default function UelPage() {
           escola pública.
         </p>
         <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm border-y border-[#E2E8F0] dark:border-[#1e2d4a] py-4">
-          <div><span className="font-bold text-[#2563EB] dark:text-[#818CF8]">Prova de Habilidades Específicas: </span>1 dia (cursos que exigem)</div>
-          <div><span className="font-bold text-[#2563EB] dark:text-[#818CF8]">Dia 1 do vestibular geral: </span>Conhecimentos Gerais + Redação</div>
-          <div><span className="font-bold text-[#2563EB] dark:text-[#818CF8]">Dia 2 do vestibular geral: </span>Conhecimentos Específicos</div>
+          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Prova de Habilidades Específicas: </span>1 dia (cursos que exigem)</div>
+          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Dia 1 do vestibular geral: </span>Conhecimentos Gerais + Redação</div>
+          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Dia 2 do vestibular geral: </span>Conhecimentos Específicos</div>
         </div>
         <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-3">
           Inscrição exclusivamente online, pelo site da COPS. Datas e vagas mudam a cada edital — confirme sempre em{' '}

@@ -5,7 +5,7 @@ export default function EnemPage() {
   const customContent = (
     <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
       {/* Banner Principal */}
-      <div className="bg-gradient-to-br from-[#2563EB] via-[#1a3a8a] to-[#6366F1] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#4f46e5] via-[#1a3a8a] to-[#712ae2] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="relative z-10">
           <span className="inline-block text-xs font-semibold uppercase tracking-wider text-yellow-300 bg-white/10 px-3 py-1 rounded-full mb-3">
             Tudo o que você precisa saber
@@ -35,27 +35,27 @@ export default function EnemPage() {
         </div>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Inscrições</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrições</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">25 de maio a 12 de junho de 2026</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Pagamento da taxa (R$ 85)</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Pagamento da taxa (R$ 85)</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Até 17 de junho de 2026</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">1º dia de prova</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">1º dia de prova</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">8 de novembro — Linguagens, Ciências Humanas e Redação</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">2º dia de prova</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">2º dia de prova</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">15 de novembro — Ciências da Natureza e Matemática</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Gabarito oficial</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Gabarito oficial</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Até 30 de novembro de 2026</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Resultado individual (TRI)</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Resultado individual (TRI)</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Normalmente em janeiro do ano seguinte, seguido das chamadas do SiSU</dd>
           </div>
         </dl>
@@ -91,7 +91,7 @@ export default function EnemPage() {
             </p>
             <div className="flex flex-wrap gap-2 text-xs">
               {['UFRJ', 'UFMG', 'UFRGS', 'UNIFESP', 'UnB', 'UFPE', 'UFSC', 'UFPR', 'UFF', 'UFBA', 'UFG', 'UFCE', 'UFPA', 'UFAM', 'USP (via Enem-USP)', 'Unicamp (via Enem-Unicamp)'].map(u => (
-                <span key={u} className="bg-white dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#2563EB] dark:text-[#818CF8]">
+                <span key={u} className="bg-white dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
                   {u}
                 </span>
               ))}
@@ -154,7 +154,7 @@ export default function EnemPage() {
         </div>
 
         <div className="bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e] rounded-2xl p-5 space-y-3 mt-4">
-          <h3 className="font-bold text-base text-[#2563EB] dark:text-[#818CF8]">
+          <h3 className="font-bold text-base text-[#4f46e5] dark:text-[#818CF8]">
             A mágica da TRI: por que notas iguais não existem?
           </h3>
           <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">

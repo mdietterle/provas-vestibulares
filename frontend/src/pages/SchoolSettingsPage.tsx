@@ -86,7 +86,7 @@ export default function SchoolSettingsPage() {
 
   if (!inst) return (
     <div className="flex flex-col items-center justify-center py-24 text-gray-400">
-      <svg className="animate-spin mb-3" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg className="animate-spin mb-3" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#712ae2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 12a9 9 0 1 1-6.219-8.56" />
       </svg>
       <p className="text-sm">Carregando configurações...</p>
@@ -97,7 +97,7 @@ export default function SchoolSettingsPage() {
     <div className="space-y-6 max-w-2xl">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold font-display text-[#2563EB]">Configurações</h1>
+        <h1 className="text-2xl font-bold font-display text-[#4f46e5]">Configurações</h1>
         <p className="text-sm text-gray-500 mt-0.5">Gerencie as informações da sua instituição</p>
       </div>
 
@@ -147,7 +147,7 @@ export default function SchoolSettingsPage() {
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-semibold shadow-sm transition-all hover:opacity-90 active:scale-95 disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
               >
                 {uploading ? (
                   <>
@@ -233,7 +233,7 @@ export default function SchoolSettingsPage() {
               type="submit"
               disabled={saving}
               className="flex items-center gap-2 px-5 py-2 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 active:scale-95 disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
             >
               {saving ? (
                 <>
@@ -262,14 +262,14 @@ export default function SchoolSettingsPage() {
       <div className="rounded-2xl border border-[#E2E8F0] bg-white p-6" style={{ boxShadow: '0 0 0 2px rgba(107,56,212,0.08)' }}>
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6366F1, #2563EB)' }}>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #712ae2, #4f46e5)' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
             <h2 className="font-semibold text-gray-900">Configurações de IA</h2>
           </div>
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold" style={{ background: 'linear-gradient(135deg, #6366F1, #2563EB)', color: '#fff' }}>
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold" style={{ background: 'linear-gradient(135deg, #712ae2, #4f46e5)', color: '#fff' }}>
             Plano {usage?.plan.label ?? '...'}
           </span>
         </div>
@@ -281,7 +281,7 @@ export default function SchoolSettingsPage() {
             <p className="text-sm text-[#64748B]">Carregando...</p>
           ) : !usage.plan.ai_enabled ? (
             <p className="text-sm text-[#64748B]">
-              O plano {usage.plan.label} não inclui IA. <Link to="/plans" className="text-[#6366F1] font-semibold hover:underline">Ver planos com IA</Link>.
+              O plano {usage.plan.label} não inclui IA. <Link to="/plans" className="text-[#712ae2] font-semibold hover:underline">Ver planos com IA</Link>.
             </p>
           ) : (
             <>
@@ -291,7 +291,7 @@ export default function SchoolSettingsPage() {
                   <p className="text-[11px] text-[#64748B] uppercase tracking-wide">Usadas (geração + correção)</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-xl font-bold text-[#6366F1]">{aiAvailable !== null ? aiAvailable.toLocaleString('pt-BR') : '∞'}</p>
+                  <p className="text-xl font-bold text-[#712ae2]">{aiAvailable !== null ? aiAvailable.toLocaleString('pt-BR') : '∞'}</p>
                   <p className="text-[11px] text-[#64748B] uppercase tracking-wide">Disponíveis</p>
                 </div>
                 <div className="text-center">
@@ -305,14 +305,14 @@ export default function SchoolSettingsPage() {
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${aiPct}%`,
-                      background: aiPct > 85 ? '#ef4444' : aiPct > 60 ? '#f59e0b' : 'linear-gradient(90deg, #2563EB, #6366F1)',
+                      background: aiPct > 85 ? '#ef4444' : aiPct > 60 ? '#f59e0b' : 'linear-gradient(90deg, #4f46e5, #712ae2)',
                     }}
                   />
                 </div>
               )}
               <p className="text-xs text-[#64748B] mt-1.5">
                 Limite mensal soma o de cada professor ({activeProfessors} ativo{activeProfessors !== 1 ? 's' : ''}) — ajuste em{' '}
-                <Link to="/usage" className="text-[#6366F1] font-semibold hover:underline">Uso &amp; Limites</Link>.
+                <Link to="/usage" className="text-[#712ae2] font-semibold hover:underline">Uso &amp; Limites</Link>.
               </p>
             </>
           )}
@@ -327,7 +327,7 @@ export default function SchoolSettingsPage() {
           <button
             onClick={() => setAiAutoSuggest(v => !v)}
             className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${aiAutoSuggest ? '' : 'bg-[#d1d5db] dark:bg-[#334155]'}`}
-            style={aiAutoSuggest ? { background: 'linear-gradient(135deg, #2563EB, #6366F1)' } : undefined}
+            style={aiAutoSuggest ? { background: 'linear-gradient(135deg, #4f46e5, #712ae2)' } : undefined}
           >
             <span
               className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform"
@@ -342,7 +342,7 @@ export default function SchoolSettingsPage() {
         className="rounded-2xl border border-[#e0d9ff] dark:border-[#2e2660] p-5 bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a2947] dark:to-[#182643]"
       >
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6366F1, #2563EB)' }}>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #712ae2, #4f46e5)' }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="8" x2="12" y2="12" />
@@ -350,7 +350,7 @@ export default function SchoolSettingsPage() {
             </svg>
           </div>
           <div>
-            <p className="text-sm font-semibold mb-1 text-[#2563EB]">Sobre as configurações</p>
+            <p className="text-sm font-semibold mb-1 text-[#4f46e5]">Sobre as configurações</p>
             <p className="text-sm text-gray-600 leading-relaxed">
               O nome e o logo da instituição aparecem nos cabeçalhos das provas geradas em PDF e nos relatórios exportados. Mantenha os dados sempre atualizados para uma apresentação profissional.
             </p>
@@ -372,7 +372,7 @@ export default function SchoolSettingsPage() {
           <div className="flex items-center gap-4">
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-bold flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)', color: '#fff' }}
+              style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)', color: '#fff' }}
             >
               {user.name?.charAt(0).toUpperCase() ?? '?'}
             </div>

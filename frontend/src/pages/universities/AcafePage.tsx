@@ -5,7 +5,7 @@ export default function AcafePage() {
   const customContent = (
     <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
       {/* Banner Principal */}
-      <div className="bg-gradient-to-br from-[#2563EB] via-[#1a3a8a] to-[#6366F1] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#4f46e5] via-[#1a3a8a] to-[#712ae2] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="relative z-10">
           <span className="inline-block text-xs font-semibold uppercase tracking-wider text-yellow-300 bg-white/10 px-3 py-1 rounded-full mb-3">
             Tudo o que você precisa saber
@@ -52,7 +52,7 @@ export default function AcafePage() {
             </p>
             <div className="flex flex-wrap gap-2 text-xs">
               {['FURB', 'UNIVALI', 'UNOESC', 'UNESC', 'UNISUL', 'UNIVILLE', 'UnC', 'UNIDAVI', 'UNIFEBE', 'UNIPLAC', 'Uniarp', 'Unibave', 'Católica de SC'].map(u => (
-                <span key={u} className="bg-white dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#2563EB] dark:text-[#818CF8]">
+                <span key={u} className="bg-white dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
                   {u}
                 </span>
               ))}
@@ -105,11 +105,11 @@ export default function AcafePage() {
 
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Vestibular de Verão</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vestibular de Verão</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Inscrições em setembro do ano anterior, prova em novembro, ingresso no 1º semestre</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Vestibular de Inverno</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vestibular de Inverno</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Inscrições em abril, prova em junho, ingresso no 2º semestre</dd>
           </div>
         </dl>
@@ -145,7 +145,7 @@ export default function AcafePage() {
         </div>
 
         <div className="bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e] rounded-2xl p-5 space-y-3">
-          <h3 className="font-bold text-base text-[#2563EB] dark:text-[#818CF8]">
+          <h3 className="font-bold text-base text-[#4f46e5] dark:text-[#818CF8]">
             ACAFE não usa TRI — a correção é bem mais direta
           </h3>
           <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">

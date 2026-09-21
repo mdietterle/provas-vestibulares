@@ -15,7 +15,7 @@ export default function UlbraPage() {
       </p>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Vínculo com a Igreja Luterana
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
@@ -57,13 +57,13 @@ export default function UlbraPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">Oito campi no RS, mais seis em outros estados</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Oito campi no RS, mais seis em outros estados</h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-3">
           No Rio Grande do Sul, além da sede em Canoas:
         </p>
         <div className="flex flex-wrap gap-2 mb-4">
           {CAMPI_RS.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -71,7 +71,7 @@ export default function UlbraPage() {
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-3">Fora do RS:</p>
         <div className="flex flex-wrap gap-2">
           {CAMPI_OUTROS_ESTADOS.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8] bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e] rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -87,7 +87,7 @@ export default function UlbraPage() {
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Ingresso: vestibular contínuo, nota do ENEM ou transferência
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">

@@ -46,7 +46,7 @@ export default function FuvestPage() {
         <h2 className="text-xl font-bold text-[#1E293B] dark:text-white mb-4">Fase 1 x Fase 2: o duelo que define a nota</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="rounded-2xl border-2 border-[#E2E8F0] dark:border-[#1e2d4a] p-5">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">1ª Fase — a peneira</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">1ª Fase — a peneira</div>
             <ul className="text-sm text-[#475569] dark:text-[#94a3b8] space-y-1.5 leading-relaxed">
               <li>80 questões de múltipla escolha</li>
               <li>5 horas de duração</li>
@@ -55,8 +55,8 @@ export default function FuvestPage() {
               <li className="text-red-600 dark:text-red-400 font-semibold">Elimina quem não acerta 30% das questões</li>
             </ul>
           </div>
-          <div className="rounded-2xl border-2 border-[#6366F1] dark:border-[#818CF8] p-5 bg-[#F4F6F9] dark:bg-[#1a2542]">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">2ª Fase — o desempate</div>
+          <div className="rounded-2xl border-2 border-[#712ae2] dark:border-[#818CF8] p-5 bg-[#F4F6F9] dark:bg-[#1a2542]">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">2ª Fase — o desempate</div>
             <ul className="text-sm text-[#475569] dark:text-[#94a3b8] space-y-1.5 leading-relaxed">
               <li>Provas dissertativas em 2 dias</li>
               <li>Redação + questões por disciplina</li>
@@ -77,7 +77,7 @@ export default function FuvestPage() {
               <span>1ª Fase</span><span>peso 1</span>
             </div>
             <div className="h-3 rounded-full bg-[#E2E8F0] dark:bg-[#1e2d4a] overflow-hidden">
-              <div className="h-full bg-[#6366F1]" style={{ width: '33%' }} />
+              <div className="h-full bg-[#712ae2]" style={{ width: '33%' }} />
             </div>
           </div>
           <div>
@@ -85,7 +85,7 @@ export default function FuvestPage() {
               <span>2ª Fase</span><span>peso 2 (até peso 3 em alguns cursos)</span>
             </div>
             <div className="h-3 rounded-full bg-[#E2E8F0] dark:bg-[#1e2d4a] overflow-hidden">
-              <div className="h-full bg-[#2563EB] dark:bg-[#818CF8]" style={{ width: '66%' }} />
+              <div className="h-full bg-[#4f46e5] dark:bg-[#818CF8]" style={{ width: '66%' }} />
             </div>
           </div>
         </div>
@@ -99,10 +99,10 @@ export default function FuvestPage() {
       <div>
         <h2 className="text-xl font-bold text-[#1E293B] dark:text-white mb-4">Calendário (Vestibular Fuvest 2027)</h2>
         <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm border-y border-[#E2E8F0] dark:border-[#1e2d4a] py-4">
-          <div><span className="font-bold text-[#2563EB] dark:text-[#818CF8]">Inscrição: </span>17 de agosto a 9 de outubro</div>
-          <div><span className="font-bold text-[#2563EB] dark:text-[#818CF8]">1ª fase: </span>1º de novembro</div>
-          <div><span className="font-bold text-[#2563EB] dark:text-[#818CF8]">2ª fase: </span>6 e 7 de dezembro</div>
-          <div><span className="font-bold text-[#2563EB] dark:text-[#818CF8]">Vagas: </span>8.147</div>
+          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrição: </span>17 de agosto a 9 de outubro</div>
+          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">1ª fase: </span>1º de novembro</div>
+          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">2ª fase: </span>6 e 7 de dezembro</div>
+          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vagas: </span>8.147</div>
         </div>
         <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-3">
           Novidade da edição: provas também aplicadas em Fortaleza (CE), além dos locais tradicionais em São Paulo.

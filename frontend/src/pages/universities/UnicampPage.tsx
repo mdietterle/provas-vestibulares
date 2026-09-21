@@ -28,7 +28,7 @@ export default function UnicampPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#E2E8F0] dark:bg-[#1e2d4a] rounded-2xl overflow-hidden mb-8 border border-[#E2E8F0] dark:border-[#1e2d4a]">
         {STATS.map(s => (
           <div key={s.rotulo} className="bg-white dark:bg-[#151f38] p-4 text-center">
-            <div className="text-2xl sm:text-3xl font-extrabold text-[#2563EB] dark:text-[#818CF8]">{s.valor}</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">{s.valor}</div>
             <div className="text-[11px] text-[#64748B] dark:text-[#94a3b8] mt-1 leading-tight">{s.rotulo}</div>
           </div>
         ))}
@@ -70,11 +70,11 @@ export default function UnicampPage() {
       </div>
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">Três campi, um só estado</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">Três campi, um só estado</h3>
         <div className="space-y-3">
           {CAMPI.map(c => (
             <div key={c.nome} className="flex gap-4 p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-              <div className="font-bold text-[#2563EB] dark:text-[#818CF8] shrink-0 w-40">{c.nome}</div>
+              <div className="font-bold text-[#4f46e5] dark:text-[#818CF8] shrink-0 w-40">{c.nome}</div>
               <div className="text-sm text-[#475569] dark:text-[#94a3b8]">{c.desc}</div>
             </div>
           ))}
@@ -97,7 +97,7 @@ export default function UnicampPage() {
         produção científica da universidade.
       </p>
 
-      <div className="rounded-2xl border-l-4 border-[#6366F1] dark:border-[#818CF8] bg-[#F4F6F9] dark:bg-[#1a2542] p-5 mb-10">
+      <div className="rounded-2xl border-l-4 border-[#712ae2] dark:border-[#818CF8] bg-[#F4F6F9] dark:bg-[#1a2542] p-5 mb-10">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">Egresso que virou lenda da física brasileira</h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
           A UNICAMP formou 74 pesquisadores entre os mais influentes do mundo, segundo levantamentos internacionais.
@@ -109,13 +109,13 @@ export default function UnicampPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
           Como entrar: quatro portas de acesso
         </h3>
         <div className="space-y-4">
           {INGRESSO.map((i, idx) => (
             <div key={i.via} className="flex gap-3">
-              <span className="shrink-0 w-6 h-6 rounded-full bg-[#2563EB] dark:bg-[#6366F1] text-white text-xs font-bold flex items-center justify-center">{idx + 1}</span>
+              <span className="shrink-0 w-6 h-6 rounded-full bg-[#4f46e5] dark:bg-[#712ae2] text-white text-xs font-bold flex items-center justify-center">{idx + 1}</span>
               <div>
                 <div className="font-bold text-[#1E293B] dark:text-white text-sm">{i.via}</div>
                 <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">{i.texto}</p>

@@ -4,7 +4,7 @@ import CampusImage from '../../components/CampusImage'
 export default function UfpelPage() {
   const customContent = (
     <div className="mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
-      <blockquote className="border-l-4 border-[#6366F1] pl-5 italic text-lg text-[#1E293B] dark:text-white mb-6">
+      <blockquote className="border-l-4 border-[#712ae2] pl-5 italic text-lg text-[#1E293B] dark:text-white mb-6">
         "A escola de Agronomia mais antiga do Brasil segue funcionando dentro de uma universidade federal gaúcha."
       </blockquote>
 
@@ -45,7 +45,7 @@ export default function UfpelPage() {
       </p>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">Campi e unidades</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Campi e unidades</h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
           Além do Campus Capão do Leão (agrário) e do Campus Porto (centro histórico), a universidade tem unidades
           espalhadas pela cidade de Pelotas e mantém o Centro Agropecuário da Palma, na BR-116 — uma estrutura de
@@ -54,7 +54,7 @@ export default function UfpelPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Ingresso: SiSU + processos especiais
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">

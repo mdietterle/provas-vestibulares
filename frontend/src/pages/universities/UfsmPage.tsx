@@ -38,7 +38,7 @@ export default function UfsmPage() {
       </p>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Avaliação MEC: nota máxima mantida e cursos 5 estrelas
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
@@ -53,7 +53,7 @@ export default function UfsmPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Papel na região central do Rio Grande do Sul
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
@@ -67,7 +67,7 @@ export default function UfsmPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Ingresso: vestibular próprio ou SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">

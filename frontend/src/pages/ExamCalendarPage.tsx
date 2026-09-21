@@ -21,7 +21,7 @@ function SisuBadge({ slug }: { slug: string }) {
   return (
     <Link
       to="/calendario#enem"
-      className="text-[10px] uppercase font-bold text-[#2563EB] dark:text-[#818CF8] bg-[#eef1ff] dark:bg-[#241f3d] rounded-full px-2 py-0.5 tracking-wider hover:underline"
+      className="text-[10px] uppercase font-bold text-[#4f46e5] dark:text-[#818CF8] bg-[#eef1ff] dark:bg-[#241f3d] rounded-full px-2 py-0.5 tracking-wider hover:underline"
     >
       Via principal: SiSU/ENEM
     </Link>
@@ -106,7 +106,7 @@ export default function ExamCalendarPage() {
               return (
                 <div key={info.slug} className="rounded-xl border border-[#E2E8F0] bg-white p-5">
                   <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
-                    <Link to={`/universidades/${u.slug}`} className="font-display font-bold text-lg text-[#1E293B] hover:text-[#6366F1]">
+                    <Link to={`/universidades/${u.slug}`} className="font-display font-bold text-lg text-[#1E293B] hover:text-[#712ae2]">
                       {u.shortName}
                     </Link>
                     {open && (
@@ -134,7 +134,7 @@ export default function ExamCalendarPage() {
                       href={info.registrationUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs font-semibold text-[#6366F1] dark:text-[#818CF8] hover:underline whitespace-nowrap shrink-0"
+                      className="text-xs font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline whitespace-nowrap shrink-0"
                     >
                       Site oficial / inscrição →
                     </a>
@@ -159,7 +159,7 @@ export default function ExamCalendarPage() {
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Link to={`/universidades/${e.slug}`} className="font-display font-bold text-[#1E293B] hover:text-[#6366F1]">
+                    <Link to={`/universidades/${e.slug}`} className="font-display font-bold text-[#1E293B] hover:text-[#712ae2]">
                       {e.shortName}
                     </Link>
                     {e.allPhases.length > 1 && (
@@ -172,14 +172,14 @@ export default function ExamCalendarPage() {
                   <p className="text-xs text-[#64748B] mt-0.5">Etapas: {e.allPhases.join(' · ')}</p>
                 </div>
                 <div className="flex items-center gap-4 shrink-0">
-                  <span className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8] capitalize">
+                  <span className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] capitalize">
                     {formatMonthYear(e.date)}
                   </span>
                   <a
                     href={e.officialUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs font-semibold text-[#6366F1] dark:text-[#818CF8] hover:underline whitespace-nowrap"
+                    className="text-xs font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline whitespace-nowrap"
                   >
                     Site oficial →
                   </a>
@@ -203,7 +203,7 @@ export default function ExamCalendarPage() {
                 <div key={u.slug} className="flex items-center justify-between gap-4 rounded-xl border border-[#E2E8F0] bg-white p-4">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <Link to={`/universidades/${u.slug}`} className="font-display font-bold text-[#1E293B] hover:text-[#6366F1]">
+                      <Link to={`/universidades/${u.slug}`} className="font-display font-bold text-[#1E293B] hover:text-[#712ae2]">
                         {u.shortName}
                       </Link>
                       <SisuBadge slug={u.slug} />
@@ -214,7 +214,7 @@ export default function ExamCalendarPage() {
                     href={u.officialUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs font-semibold text-[#6366F1] dark:text-[#818CF8] hover:underline whitespace-nowrap shrink-0"
+                    className="text-xs font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline whitespace-nowrap shrink-0"
                   >
                     Site oficial →
                   </a>

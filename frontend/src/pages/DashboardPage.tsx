@@ -24,8 +24,8 @@ const TONE_BADGE: Record<Tone, string> = {
   green:  'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   blue:   'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
   gray:   'bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-slate-400',
-  navy:   'bg-[#dce1ff] text-[#2563EB] dark:bg-[#1a2947] dark:text-[#818CF8]',
-  purple: 'bg-[#e9ddff] text-[#6366F1] dark:bg-[#271a48] dark:text-[#b794f6]',
+  navy:   'bg-[#dce1ff] text-[#4f46e5] dark:bg-[#1a2947] dark:text-[#818CF8]',
+  purple: 'bg-[#e9ddff] text-[#712ae2] dark:bg-[#271a48] dark:text-[#b794f6]',
   orange: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
 }
 
@@ -35,8 +35,8 @@ const TONE_TEXT: Record<Tone, string> = {
   green:  'text-green-600 dark:text-green-500',
   blue:   'text-blue-600 dark:text-blue-400',
   gray:   'text-gray-500 dark:text-gray-400',
-  navy:   'text-[#2563EB] dark:text-[#818CF8]',
-  purple: 'text-[#6366F1] dark:text-[#b794f6]',
+  navy:   'text-[#4f46e5] dark:text-[#818CF8]',
+  purple: 'text-[#712ae2] dark:text-[#b794f6]',
   orange: 'text-orange-600 dark:text-orange-400',
 }
 
@@ -46,8 +46,8 @@ const TONE_DOT: Record<Tone, string> = {
   green:  'bg-green-500',
   blue:   'bg-blue-500',
   gray:   'bg-gray-400',
-  navy:   'bg-[#2563EB] dark:bg-[#818CF8]',
-  purple: 'bg-[#6366F1]',
+  navy:   'bg-[#4f46e5] dark:bg-[#818CF8]',
+  purple: 'bg-[#712ae2]',
   orange: 'bg-orange-500',
 }
 
@@ -96,7 +96,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   return <h2 className="font-display text-base font-semibold text-[#1E293B] mb-3">{children}</h2>
 }
 
-function CircleProgress({ pct, size = 80, stroke = 7, color = '#6366F1', label }: {
+function CircleProgress({ pct, size = 80, stroke = 7, color = '#712ae2', label }: {
   pct: number; size?: number; stroke?: number; color?: string; label?: string
 }) {
   const r = (size - stroke) / 2
@@ -120,14 +120,14 @@ function CircleProgress({ pct, size = 80, stroke = 7, color = '#6366F1', label }
 function ActionTile({ to, icon, label, sub }: { to: string; icon: React.ReactNode; label: string; sub: string }) {
   return (
     <Link to={to} className="flex items-center gap-4 bg-white rounded-2xl border border-[#E2E8F0] p-4 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-all group" style={{ boxShadow: '0 2px 12px rgba(0,35,111,0.04)' }}>
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#EFF6FF] text-[#2563EB]">
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#EFF6FF] text-[#4f46e5]">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-[#1E293B]">{label}</p>
         <p className="text-xs text-[#64748B] mt-0.5">{sub}</p>
       </div>
-      <svg className="w-4 h-4 text-[#c5c5d3] group-hover:text-[#6366F1] transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+      <svg className="w-4 h-4 text-[#c5c5d3] group-hover:text-[#712ae2] transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
     </Link>
   )
 }
@@ -137,8 +137,8 @@ function QuickAction({ to, icon, label, gradient }: { to: string; icon: React.Re
   return (
     <Link
       to={to}
-      className={gradient ? `${base} text-white` : `${base} bg-[#EFF6FF] text-[#2563EB]`}
-      style={gradient ? { background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' } : undefined}
+      className={gradient ? `${base} text-white` : `${base} bg-[#EFF6FF] text-[#4f46e5]`}
+      style={gradient ? { background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' } : undefined}
     >
       {icon}
       {label}
@@ -164,7 +164,7 @@ function DocBanner({
   return (
     <div
       className="relative overflow-hidden rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4"
-      style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)', boxShadow: '0 8px 32px rgba(107,56,212,0.25)' }}
+      style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)', boxShadow: '0 8px 32px rgba(107,56,212,0.25)' }}
     >
       {/* Decorative circle */}
       <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full opacity-10" style={{ background: '#fff' }} />
@@ -203,7 +203,7 @@ function DocBanner({
         href={docUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white hover:bg-white/90 z-10 text-[#2563EB]"
+        className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white hover:bg-white/90 z-10 text-[#4f46e5]"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -229,7 +229,7 @@ const STATUS_CFG: Record<string, { label: string; tone: Tone }> = {
 function AreaChart({
   data,
   valueKey,
-  color = '#6366F1',
+  color = '#712ae2',
   height = 80,
 }: {
   data: Record<string, number>[]
@@ -309,10 +309,10 @@ function SubjectBar({ subject, count, max }: { subject: string; count: number; m
       <div className="flex-1 h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
         <div
           className="h-full rounded-full transition-all"
-          style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#2563EB,#6366F1)' }}
+          style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#4f46e5,#712ae2)' }}
         />
       </div>
-      <span className="text-xs font-semibold text-[#2563EB] w-6 text-right shrink-0">{count}</span>
+      <span className="text-xs font-semibold text-[#4f46e5] w-6 text-right shrink-0">{count}</span>
     </div>
   )
 }
@@ -347,7 +347,7 @@ function MonitoringSection({ monitoring }: { monitoring: DashboardMonitoring }) 
               key={v}
               onClick={() => setTab(v)}
               className={tab === v
-                ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#1e2d4a] text-[#2563EB] dark:text-[#818CF8] shadow-sm'
+                ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#1e2d4a] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
                 : 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-gray-500 dark:text-slate-400'
               }
             >
@@ -396,7 +396,7 @@ function MonitoringSection({ monitoring }: { monitoring: DashboardMonitoring }) 
                   </div>
                   {alert.exam_id && (
                     <Link to={`/exams/${alert.exam_id}`}
-                      className="shrink-0 text-xs font-semibold text-[#6366F1] hover:underline whitespace-nowrap">
+                      className="shrink-0 text-xs font-semibold text-[#712ae2] hover:underline whitespace-nowrap">
                       Ver prova →
                     </Link>
                   )}
@@ -550,7 +550,7 @@ function AdminDashboard() {
   const rawExamGrowth = stats?.monthly_exam_growth ?? []
   const chartData = ((chartMode === 'users' ? rawUserGrowth : rawExamGrowth) as unknown as Record<string, number>[]).slice(-chartRange)
   const chartValueKey = chartMode === 'users' ? 'new_users' : 'new_exams'
-  const chartColor = chartMode === 'users' ? '#6366F1' : '#27c38a'
+  const chartColor = chartMode === 'users' ? '#712ae2' : '#27c38a'
   const chartTotal = chartData.reduce((s, d) => s + (Number((d as any)[chartValueKey]) || 0), 0)
   const userGrowthPct = growth.new_users_last_month > 0
     ? Math.round(((growth.new_users_this_month - growth.new_users_last_month) / growth.new_users_last_month) * 100)
@@ -563,7 +563,7 @@ function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#712ae2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 12a9 9 0 1 1-6.219-8.56" />
         </svg>
       </div>
@@ -581,7 +581,7 @@ function AdminDashboard() {
         <div className="flex gap-3 flex-wrap">
           <button
             onClick={() => stats && exportDashboardReport(stats)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border border-[#E2E8F0] bg-white text-[#2563EB] hover:bg-[#EFF6FF] transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border border-[#E2E8F0] bg-white text-[#4f46e5] hover:bg-[#EFF6FF] transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Relatório Gerencial PDF
@@ -633,7 +633,7 @@ function AdminDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Taxa de correção */}
             <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 flex items-center gap-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
-              <CircleProgress pct={correctionRate} size={72} stroke={7} color="#6366F1" />
+              <CircleProgress pct={correctionRate} size={72} stroke={7} color="#712ae2" />
               <div>
                 <p className="text-xs text-[#64748B] font-medium mb-0.5">Taxa de Correção</p>
                 <p className="text-sm font-semibold text-[#1E293B]">
@@ -707,7 +707,7 @@ function AdminDashboard() {
                   key={val}
                   onClick={() => setChartMode(val)}
                   className={chartMode === val
-                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#1e2d4a] text-[#2563EB] dark:text-[#818CF8] shadow-sm'
+                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#1e2d4a] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
                     : 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-gray-500 dark:text-slate-400'
                   }
                 >
@@ -722,7 +722,7 @@ function AdminDashboard() {
                   key={r}
                   onClick={() => setChartRange(r)}
                   className={chartRange === r
-                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#1e2d4a] text-[#2563EB] dark:text-[#818CF8] shadow-sm'
+                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#1e2d4a] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
                     : 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-gray-500 dark:text-slate-400'
                   }
                 >
@@ -741,7 +741,7 @@ function AdminDashboard() {
         <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Pipeline de Correções</SectionTitle>
-            <Link to="/corrections" className="text-xs font-semibold text-[#6366F1] hover:underline">Ver todas →</Link>
+            <Link to="/corrections" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver todas →</Link>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {(['pending','correcting','done','released'] as const).map(key => {
@@ -778,7 +778,7 @@ function AdminDashboard() {
         <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Provas por Matéria</SectionTitle>
-            <Link to="/exams" className="text-xs font-semibold text-[#6366F1] hover:underline">Ver provas →</Link>
+            <Link to="/exams" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver provas →</Link>
           </div>
           {(stats?.exams_by_subject ?? []).length === 0 ? (
             <p className="text-xs text-[#9ca3af] text-center py-6">Nenhuma prova cadastrada</p>
@@ -801,7 +801,7 @@ function AdminDashboard() {
         <div className="lg:col-span-2 bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Atividade Recente</SectionTitle>
-            <Link to="/corrections" className="text-xs font-semibold text-[#6366F1] hover:underline">Ver correções →</Link>
+            <Link to="/corrections" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver correções →</Link>
           </div>
           {(stats?.recent_activity ?? []).length === 0 ? (
             <div className="rounded-xl border border-dashed border-[#c5c5d3] p-6 text-center text-sm text-[#64748B]">
@@ -832,7 +832,7 @@ function AdminDashboard() {
                     </div>
                     {act.total_score != null && (
                       <div className="text-right shrink-0 w-12">
-                        <span className="text-sm font-bold text-[#2563EB]">{act.total_score}</span>
+                        <span className="text-sm font-bold text-[#4f46e5]">{act.total_score}</span>
                         <span className="text-xs text-[#9ca3af]"> pts</span>
                       </div>
                     )}
@@ -915,7 +915,7 @@ function ProfessorDashboard() {
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-[#1E293B]">Olá, Prof. {user?.name?.split(' ')[0]}! 👋</h1>
-          <p className="text-sm mt-0.5 flex items-center gap-1.5 text-[#6366F1] dark:text-[#b794f6]">
+          <p className="text-sm mt-0.5 flex items-center gap-1.5 text-[#712ae2] dark:text-[#b794f6]">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             {aiProgress > 0
               ? `Sua IA assistente já corrigiu ${aiProgress}% das provas desta semana`
@@ -960,7 +960,7 @@ function ProfessorDashboard() {
         <div className="lg:col-span-2 bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg,#2563EB,#6366F1)' }}>
+              <span className="w-7 h-7 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
               </span>
               <span className="text-sm font-semibold text-[#1E293B]">Correções IA — Esta Semana</span>
@@ -969,7 +969,7 @@ function ProfessorDashboard() {
           </div>
 
           <div className="flex items-center gap-6 mb-5">
-            <CircleProgress pct={aiProgress} size={88} stroke={8} color="#6366F1" label="corrigido" />
+            <CircleProgress pct={aiProgress} size={88} stroke={8} color="#712ae2" label="corrigido" />
             <div className="flex-1 space-y-1 text-sm">
               <p className="text-[#334155]">
                 <span className="font-bold text-[#1E293B]">{aiProgress}%</span> das submissões desta semana já foram processadas pela IA.
@@ -996,7 +996,7 @@ function ProfessorDashboard() {
                     <span className="text-[#64748B]">{t.corrigidos}/{t.total} alunos · <strong className={t.pct >= 80 ? TONE_TEXT.green : t.pct >= 50 ? TONE_TEXT.purple : TONE_TEXT.amber}>{t.pct}%</strong></span>
                   </div>
                   <div className="h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
-                    <div className="h-full rounded-full transition-all" style={{ width: `${t.pct}%`, background: t.pct >= 80 ? '#22c55e' : t.pct >= 50 ? '#6366F1' : '#f59e0b' }} />
+                    <div className="h-full rounded-full transition-all" style={{ width: `${t.pct}%`, background: t.pct >= 80 ? '#22c55e' : t.pct >= 50 ? '#712ae2' : '#f59e0b' }} />
                   </div>
                 </div>
               ))}
@@ -1008,18 +1008,18 @@ function ProfessorDashboard() {
         <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Provas Recentes</SectionTitle>
-            <Link to="/exams" className="text-xs font-semibold text-[#6366F1] hover:underline">Ver todas →</Link>
+            <Link to="/exams" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver todas →</Link>
           </div>
           <div className="space-y-2">
             {exams.length === 0 && (
               <div className="rounded-xl border border-dashed border-[#c5c5d3] p-5 text-center text-sm text-[#64748B]">
                 Nenhuma prova criada ainda.{' '}
-                <Link to="/exams" className="text-[#6366F1] font-medium hover:underline">Criar →</Link>
+                <Link to="/exams" className="text-[#712ae2] font-medium hover:underline">Criar →</Link>
               </div>
             )}
             {exams.map(exam => (
               <Link key={exam.id} to={`/exams/${exam.id}`} className="flex items-center gap-3 rounded-xl border border-[#E2E8F0] px-3 py-2.5 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-[#dce1ff] flex items-center justify-center shrink-0 text-[#2563EB]">
+                <div className="w-8 h-8 rounded-lg bg-[#dce1ff] flex items-center justify-center shrink-0 text-[#4f46e5]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -1097,7 +1097,7 @@ function StudentDashboard() {
         <div>
           <h1 className="font-display text-2xl font-bold text-[#1E293B]">Olá, {user?.name?.split(' ')[0]}! 👋</h1>
           <p className="text-sm text-[#64748B] mt-0.5">
-            Você tem <span className="font-semibold text-[#2563EB]">{totalAssessments} avaliações</span> disponíveis
+            Você tem <span className="font-semibold text-[#4f46e5]">{totalAssessments} avaliações</span> disponíveis
             ({allExams.length} {allExams.length === 1 ? 'prova' : 'provas'}, {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}).
           </p>
         </div>
@@ -1218,8 +1218,8 @@ function StudentDashboard() {
               </span>
             )}
             <div className="flex items-center gap-3 text-xs text-[#64748B]">
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#2563EB] inline-block"/>Prova formal</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#2563EB] opacity-55 inline-block" style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 2px, transparent 2px, transparent 4px)' }}/>Simulado</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#4f46e5] inline-block"/>Prova formal</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#4f46e5] opacity-55 inline-block" style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 2px, transparent 2px, transparent 4px)' }}/>Simulado</span>
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#27c38a] inline-block"/>Meta 7,0</span>
             </div>
           </div>
@@ -1273,7 +1273,7 @@ function StudentDashboard() {
                             style={{
                               height: `${h}%`,
                               minHeight: h > 0 ? 3 : 0,
-                              background: nota >= 7 ? 'linear-gradient(180deg,#2563EB,#6366F1)' : nota >= 5 ? '#f59e0b' : '#ef4444',
+                              background: nota >= 7 ? 'linear-gradient(180deg,#4f46e5,#712ae2)' : nota >= 5 ? '#f59e0b' : '#ef4444',
                               opacity: fonte === 'simulado' ? 0.55 : 1,
                               backgroundImage: fonte === 'simulado'
                                 ? 'repeating-linear-gradient(135deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 3px, transparent 3px, transparent 6px)'
@@ -1309,7 +1309,7 @@ function StudentDashboard() {
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-3">
             <SectionTitle>Provas Disponíveis</SectionTitle>
-            <Link to="/exams" className="text-xs font-semibold text-[#6366F1] hover:underline">Ver todas →</Link>
+            <Link to="/exams" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver todas →</Link>
           </div>
           <div className="space-y-2">
             {exams.length === 0 && (
@@ -1319,14 +1319,14 @@ function StudentDashboard() {
             )}
             {exams.map(exam => (
               <Link key={exam.id} to={`/exams/${exam.id}/submit`} className="flex items-center gap-4 bg-white rounded-xl border border-[#E2E8F0] px-4 py-3 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-colors group">
-                <div className="w-9 h-9 rounded-lg bg-[#dce1ff] flex items-center justify-center shrink-0 text-[#2563EB]">
+                <div className="w-9 h-9 rounded-lg bg-[#dce1ff] flex items-center justify-center shrink-0 text-[#4f46e5]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-[#1E293B] truncate">{exam.title}</p>
                   <p className="text-xs text-[#64748B]">{exam.subject?.name} · {exam.class_?.name}</p>
                 </div>
-                <span className="text-xs font-semibold text-white px-2.5 py-1 rounded-lg shrink-0" style={{ background: 'linear-gradient(135deg,#2563EB,#6366F1)' }}>
+                <span className="text-xs font-semibold text-white px-2.5 py-1 rounded-lg shrink-0" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}>
                   Realizar →
                 </span>
               </Link>

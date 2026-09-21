@@ -72,7 +72,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Digite 
   )
 
   return (
-    <div className="border border-[#c5c5d3] dark:border-[#253556] rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#2563EB] dark:focus-within:ring-[#6366F1] focus-within:border-transparent">
+    <div className="border border-[#c5c5d3] dark:border-[#253556] rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#4f46e5] dark:focus-within:ring-[#712ae2] focus-within:border-transparent">
       {/* Toolbar */}
       <div className="flex items-center gap-0.5 px-2 py-1.5 border-b border-[#e5e7eb] dark:border-[#253556] bg-gray-50 dark:bg-[#131f37] flex-wrap">
         <Btn active={editor.isActive('bold')} onClick={() => editor.chain().focus().toggleBold().run()} title="Negrito (Ctrl+B)">

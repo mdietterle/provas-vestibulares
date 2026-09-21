@@ -128,7 +128,7 @@ export default function EmptyState({ variant, title, description, action }: Empt
         <button
           onClick={action.onClick}
           className="mt-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
-          style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
         >
           {action.label}
         </button>

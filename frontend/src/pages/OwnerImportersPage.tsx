@@ -204,7 +204,7 @@ function QuestionImportPanel() {
           <button
             onClick={() => handleImport(selected)}
             disabled={running !== null}
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#2563EB] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
           >
             {running === selected.key ? 'Importando…' : 'Importar'}
           </button>
@@ -381,7 +381,7 @@ function EnemPdfImportPanel() {
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="px-4 py-2 rounded-lg bg-[#2563EB] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
+        className="px-4 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
       >
         {submitting ? 'Importando… isso pode levar alguns minutos' : 'Importar PDF'}
       </button>
@@ -499,7 +499,7 @@ function UfscPdfImportPanel() {
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="px-4 py-2 rounded-lg bg-[#2563EB] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
+        className="px-4 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
       >
         {submitting ? 'Importando… isso pode levar alguns minutos' : 'Importar PDF'}
       </button>
@@ -611,7 +611,7 @@ function ItaPdfImportPanel() {
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="px-4 py-2 rounded-lg bg-[#2563EB] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
+        className="px-4 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
       >
         {submitting ? 'Importando… isso pode levar alguns minutos' : 'Importar PDF'}
       </button>
@@ -659,7 +659,7 @@ function AcafeUrlImportPanel() {
         <h2 className="text-base font-bold text-[#1E293B]">Importar prova ACAFE por URL</h2>
         <p className="text-sm text-[#64748B]">
           Cole a URL do PDF oficial "objetiva comentada" publicado em{' '}
-          <a href="https://vestibular.acafe.org.br/provas-anteriores/" target="_blank" rel="noreferrer" className="text-[#6366F1] dark:text-[#818CF8] hover:underline">
+          <a href="https://vestibular.acafe.org.br/provas-anteriores/" target="_blank" rel="noreferrer" className="text-[#712ae2] dark:text-[#818CF8] hover:underline">
             vestibular.acafe.org.br
           </a>
           {' '}(ex.: storage.acafe.org.br/concurso/vestibular/.../02 - prova/....pdf). O gabarito já vem embutido no PDF —
@@ -701,7 +701,7 @@ function AcafeUrlImportPanel() {
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="px-4 py-2 rounded-lg bg-[#2563EB] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
+        className="px-4 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
       >
         {submitting ? 'Importando… isso pode levar alguns minutos' : 'Importar PDF'}
       </button>
@@ -759,7 +759,7 @@ function PucprUrlImportPanel() {
         <h2 className="text-base font-bold text-[#1E293B]">Importar prova PUCPR por URL</h2>
         <p className="text-sm text-[#64748B]">
           Cole a URL de um dos PDFs identificados como "Gabarito" em{' '}
-          <a href="https://www.pucpr.br/vestibular/editais/" target="_blank" rel="noreferrer" className="text-[#6366F1] dark:text-[#818CF8] hover:underline">
+          <a href="https://www.pucpr.br/vestibular/editais/" target="_blank" rel="noreferrer" className="text-[#712ae2] dark:text-[#818CF8] hover:underline">
             pucpr.br/vestibular/editais
           </a>
           {' '}(ex.: static.pucpr.br/.../gabarito-vestibular-....pdf). Atenção: esses PDFs são o caderno de prova
@@ -833,7 +833,7 @@ function PucprUrlImportPanel() {
       <button
         onClick={handleSubmit}
         disabled={submitting}
-        className="px-4 py-2 rounded-lg bg-[#2563EB] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
+        className="px-4 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
       >
         {submitting ? 'Importando… isso pode levar alguns minutos' : 'Importar PDF'}
       </button>

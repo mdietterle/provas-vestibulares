@@ -35,12 +35,12 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-[#131f37] rounded-2xl p-8" style={{ boxShadow: '0px 24px 60px rgba(0, 35, 111, 0.12)' }}>
           <div className="flex items-center justify-center gap-2 mb-6">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <span className="font-display font-bold text-[#2563EB] dark:text-[#818CF8] text-lg tracking-tight">Cognition AI</span>
+            <span className="font-display font-bold text-[#4f46e5] dark:text-[#818CF8] text-lg tracking-tight">Cognition AI</span>
           </div>
 
           {sent ? (
@@ -58,7 +58,7 @@ export default function ForgotPasswordPage() {
               <Link
                 to={loginPath}
                 className="inline-block w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all"
-                style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
               >
                 Voltar para o login
               </Link>
@@ -75,7 +75,7 @@ export default function ForgotPasswordPage() {
                   <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1">E-mail</label>
                   <input
                     type="email"
-                    className="w-full border border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
+                    className="w-full border border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="seu@email.com"
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
                   type="submit"
                   disabled={submitting}
                   className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-60 mt-1"
-                  style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
                 >
                   {submitting ? 'Enviando...' : 'Enviar link de redefinição'}
                 </button>
@@ -99,7 +99,7 @@ export default function ForgotPasswordPage() {
 
         <p className="text-center text-xs text-[#64748B] dark:text-[#94a3b8] mt-6">
           Lembrou a senha?{' '}
-          <Link to={loginPath} className="text-[#6366F1] dark:text-[#818CF8] font-semibold hover:underline">Voltar para o login</Link>
+          <Link to={loginPath} className="text-[#712ae2] dark:text-[#818CF8] font-semibold hover:underline">Voltar para o login</Link>
         </p>
       </div>
       </div>

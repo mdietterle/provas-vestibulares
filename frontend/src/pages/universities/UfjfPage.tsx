@@ -26,7 +26,7 @@ export default function UfjfPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">Dois campi, dois estados de formação</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Dois campi, dois estados de formação</h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
           Além da sede em Juiz de Fora, a UFJF mantém um campus avançado em <strong>Governador Valadares</strong>{' '}
           (também em Minas Gerais), levando ensino federal pra uma região mineira relativamente distante da capital
@@ -62,7 +62,7 @@ export default function UfjfPage() {
       />
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Ligação direta com a população: extensão como ponte
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
@@ -75,7 +75,7 @@ export default function UfjfPage() {
       </div>
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Egressos de destaque
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-3">
@@ -94,7 +94,7 @@ export default function UfjfPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
           Como entrar: PISM (seriado) ou SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-4">
@@ -105,19 +105,19 @@ export default function UfjfPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Isenção da taxa</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Isenção da taxa</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Meados de junho, resultado no início de julho</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Inscrições PISM</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrições PISM</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Fim de julho a meados de agosto</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Provas (3 módulos)</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Provas (3 módulos)</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Início de dezembro, mesma data pros três módulos</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Vagas</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vagas</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">~2.246 no total: 1.846 em Juiz de Fora, 400 em Governador Valadares</dd>
           </div>
         </dl>

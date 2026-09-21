@@ -16,7 +16,7 @@ function Avatar({ name }: { name: string }) {
   const initials = name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('')
   const colors = [
     ['#27c38a', '#004a31'],
-    ['#6366F1', '#23005c'],
+    ['#712ae2', '#23005c'],
     ['#d97706', '#78350f'],
     ['#dc2626', '#7f1d1d'],
     ['#0284c7', '#0c4a6e'],
@@ -260,7 +260,7 @@ export default function StudentsPage() {
               const label = filterStatus === 'all' ? 'Todos' : filterStatus === 'active' ? 'Ativos' : 'Inativos'
               exportStudents(filtered, label)
             }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border border-[#E2E8F0] bg-white text-[#2563EB] hover:bg-[#EFF6FF] transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border border-[#E2E8F0] bg-white text-[#4f46e5] hover:bg-[#EFF6FF] transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Exportar PDF
@@ -268,7 +268,7 @@ export default function StudentsPage() {
           <button
             onClick={openCreate}
             className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -281,7 +281,7 @@ export default function StudentsPage() {
       {/* Stats row */}
       <div className="grid grid-cols-4 gap-4">
         {[
-          { label: 'Total de Alunos', value: students.length, cls: 'bg-[#eef2ff] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8]' },
+          { label: 'Total de Alunos', value: students.length, cls: 'bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]' },
           { label: 'Ativos', value: activeCount, cls: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
           { label: 'Convite pendente', value: pendingInviteCount, cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' },
           { label: 'Inativos', value: inactiveCount, cls: 'bg-gray-100 text-gray-600 dark:bg-[#1e2d4a] dark:text-[#94a3b8]' },
@@ -306,7 +306,7 @@ export default function StudentsPage() {
             placeholder="Buscar por nome ou email..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-sm border border-[#c5c5d3] rounded-lg bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent"
+            className="w-full pl-9 pr-4 py-2 text-sm border border-[#c5c5d3] rounded-lg bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent"
           />
         </div>
 
@@ -317,7 +317,7 @@ export default function StudentsPage() {
               onClick={() => setFilterStatus(s)}
               className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
                 filterStatus === s
-                  ? 'bg-[#2563EB] text-white'
+                  ? 'bg-[#4f46e5] text-white'
                   : 'bg-[#EFF6FF] dark:bg-[#1a2947] text-[#334155] dark:text-[#e2e8f0]'
               }`}
             >
@@ -423,7 +423,7 @@ export default function StudentsPage() {
                       {search || filterStatus !== 'all' ? 'Nenhum aluno encontrado' : 'Nenhum aluno cadastrado'}
                     </p>
                     {!search && filterStatus === 'all' && (
-                      <button onClick={openCreate} className="text-sm font-semibold text-[#6366F1] dark:text-[#818CF8] hover:underline">
+                      <button onClick={openCreate} className="text-sm font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline">
                         Cadastrar primeiro aluno →
                       </button>
                     )}
@@ -460,13 +460,13 @@ export default function StudentsPage() {
 
       {/* AI Insights */}
       <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] dark:bg-[#1a2947] border-[#b6c4ff] dark:border-[#2d3f66]">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#2563EB,#6366F1)', color: '#fff' }}>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)', color: '#fff' }}>
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
         <div>
-          <p className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8]">Insights da IA</p>
+          <p className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8]">Insights da IA</p>
           <p className="text-xs text-[#334155] mt-0.5">
             {students.length === 0
               ? 'Comece cadastrando alunos para sua instituição.'
@@ -508,7 +508,7 @@ export default function StudentsPage() {
             </div>
             {editing ? (
               <p className="text-xs text-[#64748B] dark:text-[#94a3b8] bg-[#F4F6F9] dark:bg-[#1a2947] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-lg px-3 py-2">
-                Para redefinir a senha deste aluno, use <Link to="/user-access" className="font-semibold text-[#6366F1] dark:text-[#818CF8] hover:underline">Controle de Acesso</Link>.
+                Para redefinir a senha deste aluno, use <Link to="/user-access" className="font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline">Controle de Acesso</Link>.
               </p>
             ) : (
               <>
@@ -537,7 +537,7 @@ export default function StudentsPage() {
                   </div>
                 ) : (
                   <div className="flex items-start gap-3 p-3 rounded-lg border border-[#b6c4ff] dark:border-[#2d3f66] bg-[#EFF6FF] dark:bg-[#1a2947]">
-                    <svg className="w-5 h-5 text-[#6366F1] dark:text-[#818CF8] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="w-5 h-5 text-[#712ae2] dark:text-[#818CF8] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     <p className="text-xs text-[#334155] leading-relaxed">
@@ -588,7 +588,7 @@ export default function StudentsPage() {
                 type="submit"
                 disabled={saving}
                 className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg,#2563EB,#6366F1)' }}
+                style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}
               >
                 {saving ? 'Salvando...' : editing ? 'Salvar' : setPasswordNow ? 'Cadastrar' : 'Cadastrar e enviar convite'}
               </button>

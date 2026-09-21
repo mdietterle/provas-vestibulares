@@ -78,7 +78,7 @@ function RedacaoDetail({ id }: { id: number }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <svg className="w-8 h-8 animate-spin text-[#2563EB]" fill="none" viewBox="0 0 24 24">
+        <svg className="w-8 h-8 animate-spin text-[#4f46e5]" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
@@ -255,7 +255,7 @@ function RedacaoSubmitForm() {
             value={theme}
             onChange={e => setTheme(e.target.value)}
             placeholder="Ex: Os desafios da educação no Brasil contemporâneo"
-            className="w-full border border-[#c5ceff] dark:border-[#2d3f6a] rounded-xl px-4 py-2.5 text-sm text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#818CF8]"
+            className="w-full border border-[#c5ceff] dark:border-[#2d3f6a] rounded-xl px-4 py-2.5 text-sm text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8]"
           />
         </div>
 
@@ -269,7 +269,7 @@ function RedacaoSubmitForm() {
             onChange={e => setBody(e.target.value)}
             rows={18}
             placeholder="Escreva aqui o texto completo da sua redação…"
-            className="w-full border border-[#c5ceff] dark:border-[#2d3f6a] rounded-xl px-4 py-3 text-sm text-[#1E293B] leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#818CF8]"
+            className="w-full border border-[#c5ceff] dark:border-[#2d3f6a] rounded-xl px-4 py-3 text-sm text-[#1E293B] leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8]"
           />
         </div>
 
@@ -285,7 +285,7 @@ function RedacaoSubmitForm() {
             type="submit"
             disabled={submitting}
             className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
           >
             {submitting ? 'Enviando…' : 'Enviar para correção'}
           </button>

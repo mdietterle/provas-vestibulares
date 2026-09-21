@@ -32,7 +32,7 @@ export default function PucrsPage() {
 
       {/* Linha do tempo horizontal de reconhecimentos — diferente das listas/tabelas usadas nas outras páginas */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-4">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-4">
           Melhor universidade privada do Sul — quatro vezes seguidas
         </h3>
         <div className="relative">
@@ -40,7 +40,7 @@ export default function PucrsPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 relative">
             {PREMIOS.map(p => (
               <div key={p.ano} className="flex flex-col items-center text-center">
-                <div className="w-8 h-8 rounded-full bg-[#2563EB] dark:bg-[#6366F1] text-white text-xs font-bold flex items-center justify-center mb-3 z-10">
+                <div className="w-8 h-8 rounded-full bg-[#4f46e5] dark:bg-[#712ae2] text-white text-xs font-bold flex items-center justify-center mb-3 z-10">
                   {p.ano.slice(2)}
                 </div>
                 <div className="text-xs text-[#475569] dark:text-[#94a3b8] leading-relaxed">{p.texto}</div>
@@ -52,13 +52,13 @@ export default function PucrsPage() {
 
       {/* Infraestrutura como "amenidades de campus", formato de crachá/badge em vez de tags de curso */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
           O que cabe dentro do campus
         </h3>
         <div className="grid sm:grid-cols-2 gap-2">
           {INFRA.map(i => (
             <div key={i} className="flex items-center gap-2 text-sm text-[#475569] dark:text-[#94a3b8] bg-[#F4F6F9] dark:bg-[#1a2542] rounded-lg px-3 py-2">
-              <span className="text-[#6366F1] dark:text-[#818CF8]">✓</span>{i}
+              <span className="text-[#712ae2] dark:text-[#818CF8]">✓</span>{i}
             </div>
           ))}
         </div>

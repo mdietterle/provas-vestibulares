@@ -381,7 +381,7 @@ function Avatar({ name, avatar, size = 'md' }: { name: string; avatar?: string |
   return (
     <div
       className={`${sz} rounded-full flex items-center justify-center text-white font-bold select-none shrink-0 ring-2 ring-white shadow-sm`}
-      style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
     >
       {initials}
     </div>
@@ -389,7 +389,7 @@ function Avatar({ name, avatar, size = 'md' }: { name: string; avatar?: string |
 }
 
 const KIND_COLORS: Record<string, { className: string; label: string }> = {
-  submission: { className: 'bg-[#dce1ff] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8]', label: 'Enviada' },
+  submission: { className: 'bg-[#dce1ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]', label: 'Enviada' },
   correcting: { className: 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400', label: 'Corrigindo' },
   correction: { className: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400', label: 'Corrigida' },
   release: { className: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400', label: 'Liberada' },
@@ -555,7 +555,7 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs }
                 {({ isActive }) => (
                   <>
                     {isActive && (
-                      <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-gradient-to-b from-[#7c4de8] to-[#4d7fff]" />
+                      <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-gradient-to-b from-[#8a4cfc] to-[#712ae2]" />
                     )}
                     {entry.icon}
                     {entry.label}
@@ -698,7 +698,7 @@ export default function Layout() {
           {/* Hambúrguer — desktop fixa/solta o menu, mobile abre overlay */}
           <button
             onClick={() => isMobile ? setMobileSidebarOpen(o => !o) : setPinned(p => !p)}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-[#f0f4ff] hover:text-[#2563EB] dark:hover:bg-[#182643] dark:hover:text-[#93c5fd] transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-[#f0f4ff] hover:text-[#4f46e5] dark:hover:bg-[#182643] dark:hover:text-[#93c5fd] transition-colors"
             title={isMobile ? 'Menu' : pinned ? 'Soltar menu (auto-ocultar)' : 'Fixar menu aberto'}
             aria-label="Alternar menu"
           >
@@ -709,13 +709,13 @@ export default function Layout() {
           <div className="flex items-center gap-2">
             <div
               className="w-6 h-6 rounded-md flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
             >
               <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <span className="font-display font-bold text-[#2563EB] dark:text-[#93c5fd] text-sm tracking-tight hidden sm:block">
+            <span className="font-display font-bold text-[#4f46e5] dark:text-[#93c5fd] text-sm tracking-tight hidden sm:block">
               Cognition AI
             </span>
           </div>
@@ -730,7 +730,7 @@ export default function Layout() {
           <div className="relative" ref={bellRef}>
             <button
               onClick={() => { setBellOpen(o => !o); setUnread(0) }}
-              className="relative w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-[#f0f4ff] hover:text-[#2563EB] dark:hover:bg-[#182643] dark:hover:text-[#93c5fd] transition-colors"
+              className="relative w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-[#f0f4ff] hover:text-[#4f46e5] dark:hover:bg-[#182643] dark:hover:text-[#93c5fd] transition-colors"
             >
               <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -853,7 +853,7 @@ export default function Layout() {
               className="flex flex-col fixed top-[52px] bottom-0 left-0 z-40 overflow-y-auto overflow-x-hidden"
               style={{
                 width: 256,
-                background: 'linear-gradient(180deg, #0a2f85 0%, #2563EB 55%, #1E293B 100%)',
+                background: 'linear-gradient(180deg, #3525cd 0%, #4f46e5 55%, #1E293B 100%)',
                 transform: mobileSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
                 transition: 'transform 0.25s ease',
               }}
@@ -873,7 +873,7 @@ export default function Layout() {
               className="fixed top-[52px] bottom-0 left-0 flex flex-col overflow-y-auto overflow-x-hidden z-40"
               style={{
                 width: desktopExpanded ? 240 : 64,
-                background: 'linear-gradient(180deg, #0a2f85 0%, #2563EB 55%, #1E293B 100%)',
+                background: 'linear-gradient(180deg, #3525cd 0%, #4f46e5 55%, #1E293B 100%)',
                 transition: 'width 0.2s ease',
                 boxShadow: desktopExpanded && !pinned ? '4px 0 32px rgba(0,0,0,0.22)' : 'none',
               }}

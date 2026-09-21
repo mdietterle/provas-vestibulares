@@ -5,7 +5,7 @@ export default function CebraspePage() {
   const customContent = (
     <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
       {/* Banner Principal */}
-      <div className="bg-gradient-to-br from-[#2563EB] via-[#1a3a8a] to-[#6366F1] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#4f46e5] via-[#1a3a8a] to-[#712ae2] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="relative z-10">
           <span className="inline-block text-xs font-semibold uppercase tracking-wider text-yellow-300 bg-white/10 px-3 py-1 rounded-full mb-3">
             Tudo o que você precisa saber
@@ -49,7 +49,7 @@ export default function CebraspePage() {
             </h3>
             <div className="flex flex-wrap gap-2 text-xs">
               {['UnB (Universidade de Brasília)', 'Uncisal (Univ. Estadual de Ciências da Saúde de Alagoas)', 'UFV (Universidade Federal de Viçosa)', 'UESB (Univ. Estadual do Sudoeste da Bahia)', 'UERR (Univ. Estadual de Roraima)', 'UFAC (Univ. Federal do Acre — vestibular de Medicina)'].map(u => (
-                <span key={u} className="bg-white dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#2563EB] dark:text-[#818CF8]">
+                <span key={u} className="bg-white dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
                   {u}
                 </span>
               ))}
@@ -67,27 +67,27 @@ export default function CebraspePage() {
           </h3>
           <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3">
             <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
-              <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">UnB</dt>
+              <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UnB</dt>
               <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Vestibular tradicional de ampla concorrência para todos os cursos de graduação (além do Vestibular UnB 60mais).</dd>
             </div>
             <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
-              <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Uncisal</dt>
+              <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Uncisal</dt>
               <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Cursos de saúde — Medicina, Fisioterapia, Fonoaudiologia, Terapia Ocupacional, Enfermagem, além de tecnólogos como Radiologia e Gestão Hospitalar.</dd>
             </div>
             <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
-              <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">UFV</dt>
+              <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UFV</dt>
               <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">PASES — Programa de Avaliação Seriada para Ingresso na UFV, aplicado em etapas ao longo de um ciclo de três anos (ex.: 2025–2027), não uma prova única.</dd>
             </div>
             <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
-              <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">UESB</dt>
+              <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UESB</dt>
               <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Vestibular regular da universidade estadual baiana.</dd>
             </div>
             <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
-              <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">UERR</dt>
+              <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UERR</dt>
               <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Vestibular regular; passou a usar o Cebraspe a partir da edição 2026.</dd>
             </div>
             <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
-              <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">UFAC</dt>
+              <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UFAC</dt>
               <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Vestibular específico para o curso de Medicina, a partir de 2026.</dd>
             </div>
           </dl>
@@ -137,7 +137,7 @@ export default function CebraspePage() {
         </div>
 
         <div className="bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e] rounded-2xl p-5 space-y-3">
-          <h3 className="font-bold text-base text-[#2563EB] dark:text-[#818CF8]">
+          <h3 className="font-bold text-base text-[#4f46e5] dark:text-[#818CF8]">
             Sim, o vestibular da UnB usa TRI
           </h3>
           <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
@@ -167,19 +167,19 @@ export default function CebraspePage() {
         </div>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Inscrições</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrições</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">15 de agosto a 5 de setembro</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Pagamento da taxa (R$ 173)</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Pagamento da taxa (R$ 173)</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Até 25 de setembro</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">1º dia de prova</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">1º dia de prova</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Prova I (30 itens) + Prova II (120 itens) + Redação — até 5h de duração</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">2º dia de prova</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">2º dia de prova</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Prova III (150 itens) — até 5h de duração</dd>
           </div>
         </dl>

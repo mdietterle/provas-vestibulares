@@ -16,7 +16,7 @@ export default function UfrgsPage() {
       </p>
 
       <div className="flex items-center gap-3 mb-8">
-        <div className="text-3xl font-extrabold text-[#2563EB] dark:text-[#818CF8]">5º</div>
+        <div className="text-3xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">5º</div>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
           lugar no Ranking Universitário Folha (RUF) entre todas as universidades brasileiras — <strong>melhor
           universidade do Sul do país</strong> — e um dos maiores volumes de publicação científica do Brasil.
@@ -24,10 +24,10 @@ export default function UfrgsPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">Cinco campi em Porto Alegre e um no litoral</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Cinco campi em Porto Alegre e um no litoral</h3>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -61,7 +61,7 @@ export default function UfrgsPage() {
       />
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Ingresso: Concurso Vestibular ou SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">

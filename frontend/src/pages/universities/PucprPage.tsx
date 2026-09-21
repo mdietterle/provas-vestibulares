@@ -19,7 +19,7 @@ export default function PucprPage() {
   const customContent = (
     <div className="mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
       {/* Faixa de título simples, sem banner gradiente */}
-      <div className="border-l-4 border-[#6366F1] pl-4 mb-8">
+      <div className="border-l-4 border-[#712ae2] pl-4 mb-8">
         <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white">PUCPR: um só nome, quatro cidades</h2>
         <p className="text-sm text-[#64748B] dark:text-[#94a3b8] mt-1">
           Uma das maiores universidades privadas confessionais do Sul do país, com presença espalhada pelo Paraná.
@@ -28,7 +28,7 @@ export default function PucprPage() {
 
       {/* Explorador de campi — faixa horizontal roláveis, formato distinto das outras páginas */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">Onde a PUCPR está</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">Onde a PUCPR está</h3>
         <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1">
           {CAMPI.map(c => (
             <div key={c.cidade} className="shrink-0 w-64 rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#151f38] p-5">
@@ -64,11 +64,11 @@ export default function PucprPage() {
 
       {/* Lista simples de formas de ingresso, sem cards nem tabela */}
       <div>
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">Como entrar</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">Como entrar</h3>
         <ul className="divide-y divide-[#E2E8F0] dark:divide-[#1e2d4a] border-y border-[#E2E8F0] dark:border-[#1e2d4a]">
           {INGRESSO.map(i => (
             <li key={i} className="py-3 text-sm text-[#475569] dark:text-[#94a3b8] flex items-center gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1] shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#712ae2] shrink-0" />
               {i}
             </li>
           ))}

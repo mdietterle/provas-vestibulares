@@ -40,7 +40,7 @@ export default function UpfPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Sete campi, seis cidades do norte do RS
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-3">
@@ -48,7 +48,7 @@ export default function UpfPage() {
         </p>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -71,7 +71,7 @@ export default function UpfPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Papel no desenvolvimento do norte gaúcho: o Passo Fundo Valley
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
@@ -87,7 +87,7 @@ export default function UpfPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
           Como entrar: nota de redação, não vestibular objetivo
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-4">
@@ -96,19 +96,19 @@ export default function UpfPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-4">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Redação presencial</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Redação presencial</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Prova de redação aplicada no campus, em data marcada</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Redação on-line</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Redação on-line</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Feita pela internet, dentro de uma janela de datas</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Nota da redação do ENEM</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Nota da redação do ENEM</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Aproveita a nota de redação de qualquer edição do ENEM desde 2010</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Calendário</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Calendário</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Vestibular de Verão (2º semestre do ano anterior) e de Inverno (1º semestre)</dd>
           </div>
         </dl>

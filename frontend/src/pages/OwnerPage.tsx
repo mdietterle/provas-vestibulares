@@ -52,7 +52,7 @@ function MetricCard({
   )
 }
 
-export function MiniBar({ value, max, color = 'bg-[#2563EB]' }: { value: number; max: number; color?: string }) {
+export function MiniBar({ value, max, color = 'bg-[#4f46e5]' }: { value: number; max: number; color?: string }) {
   const pct = max > 0 ? Math.round((value / max) * 100) : 0
   return (
     <div className="flex items-center gap-2">
@@ -74,10 +74,10 @@ function GrowthChart({ data }: { data: GrowthPoint[] }) {
       <h3 className="text-sm font-semibold text-[#1E293B] mb-4">Crescimento (últimos 6 meses)</h3>
       <div className="flex gap-4 mb-3">
         <span className="flex items-center gap-1.5 text-xs text-[#64748B]">
-          <span className="w-3 h-3 rounded bg-[#2563EB] inline-block" /> Novas instituições
+          <span className="w-3 h-3 rounded bg-[#4f46e5] inline-block" /> Novas instituições
         </span>
         <span className="flex items-center gap-1.5 text-xs text-[#64748B]">
-          <span className="w-3 h-3 rounded bg-[#6366F1] inline-block" /> Novos usuários
+          <span className="w-3 h-3 rounded bg-[#712ae2] inline-block" /> Novos usuários
         </span>
       </div>
       <div className="space-y-3">
@@ -85,10 +85,10 @@ function GrowthChart({ data }: { data: GrowthPoint[] }) {
           <div key={d.month} className="grid grid-cols-[64px_1fr_1fr] gap-3 items-center">
             <span className="text-xs font-medium text-[#64748B]">{d.month}</span>
             <div>
-              <MiniBar value={d.new_institutions} max={maxInst} color="bg-[#2563EB]" />
+              <MiniBar value={d.new_institutions} max={maxInst} color="bg-[#4f46e5]" />
             </div>
             <div>
-              <MiniBar value={d.new_users} max={maxUsers} color="bg-[#6366F1]" />
+              <MiniBar value={d.new_users} max={maxUsers} color="bg-[#712ae2]" />
             </div>
           </div>
         ))}
@@ -105,7 +105,7 @@ function PlanSelector({ current, onSave }: { current: string; onSave: (p: string
       <select
         value={value}
         onChange={e => setValue(e.target.value)}
-        className="text-xs border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-2 py-1 bg-white dark:bg-[#131f37] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#2563EB]"
+        className="text-xs border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-2 py-1 bg-white dark:bg-[#131f37] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
       >
         {plans.map(p => (
           <option key={p} value={p}>{PLAN_LABELS[p]?.label ?? p}</option>
@@ -114,7 +114,7 @@ function PlanSelector({ current, onSave }: { current: string; onSave: (p: string
       {value !== current && (
         <button
           onClick={() => onSave(value)}
-          className="text-xs px-2 py-1 rounded-lg bg-[#2563EB] text-white hover:bg-[#1D4ED8] transition-colors"
+          className="text-xs px-2 py-1 rounded-lg bg-[#4f46e5] text-white hover:bg-[#1D4ED8] transition-colors"
         >
           Salvar
         </button>
@@ -172,7 +172,7 @@ export default function OwnerPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-[#4f46e5] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -198,7 +198,7 @@ export default function OwnerPage() {
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Exportar CSV
           </button>
-          <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[#2563EB] text-white">
+          <span className="px-3 py-1.5 rounded-full text-xs font-semibold bg-[#4f46e5] text-white">
             OWNER
           </span>
         </div>
@@ -241,7 +241,7 @@ export default function OwnerPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* LTV card */}
             <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-sm flex items-center gap-5">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
                 <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -258,7 +258,7 @@ export default function OwnerPage() {
             </div>
 
             {/* Tendência de crescimento (real, não é previsão) */}
-            <div className="rounded-2xl border border-[#E2E8F0] p-5 shadow-sm relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}>
+            <div className="rounded-2xl border border-[#E2E8F0] p-5 shadow-sm relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
               <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full opacity-10 bg-white" />
               <div className="relative">
                 <div className="flex items-center gap-2 mb-3">
@@ -355,7 +355,7 @@ export default function OwnerPage() {
 
             <div className="mt-5 pt-4 border-t border-[#E2E8F0] flex items-center justify-between">
               <span className="text-sm font-medium text-[#64748B]">MRR Total</span>
-              <span className="text-lg font-bold text-[#2563EB]">{fmtBrl(institutions.reduce((s, i) => s + i.mrr, 0))}/mês</span>
+              <span className="text-lg font-bold text-[#4f46e5]">{fmtBrl(institutions.reduce((s, i) => s + i.mrr, 0))}/mês</span>
             </div>
           </div>
         </div>
@@ -373,12 +373,12 @@ export default function OwnerPage() {
                 placeholder="Buscar instituição..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-1.5 bg-white dark:bg-[#131f37] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#2563EB] w-48"
+                className="text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-1.5 bg-white dark:bg-[#131f37] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5] w-48"
               />
               <select
                 value={planFilter}
                 onChange={e => setPlanFilter(e.target.value)}
-                className="text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-1.5 bg-white dark:bg-[#131f37] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#2563EB]"
+                className="text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-1.5 bg-white dark:bg-[#131f37] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
               >
                 <option value="todos">Todos os planos</option>
                 <option value="basic">Basic</option>
@@ -388,7 +388,7 @@ export default function OwnerPage() {
               <select
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
-                className="text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-1.5 bg-white dark:bg-[#131f37] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#2563EB]"
+                className="text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-1.5 bg-white dark:bg-[#131f37] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
               >
                 <option value="todos">Toda atividade</option>
                 <option value="ativo">Ativa recentemente</option>
@@ -435,7 +435,7 @@ export default function OwnerPage() {
                     <td className="px-4 py-3.5 text-center text-[#334155] dark:text-[#94a3b8]">{inst.professors}</td>
                     <td className="px-4 py-3.5 text-center text-[#334155] dark:text-[#94a3b8]">{inst.students}</td>
                     <td className="px-4 py-3.5 text-center text-[#334155] dark:text-[#94a3b8]">{inst.exams_total}</td>
-                    <td className="px-4 py-3.5 text-right font-semibold text-[#2563EB]">
+                    <td className="px-4 py-3.5 text-right font-semibold text-[#4f46e5]">
                       {fmtBrl(inst.mrr)}<span className="text-xs font-normal text-[#64748B]">/mês</span>
                     </td>
                     <td className="px-4 py-3.5 text-xs text-[#64748B]">
@@ -454,7 +454,7 @@ export default function OwnerPage() {
                         onClick={() => handleToggleCar(inst.id, inst.car_enabled)}
                         title={inst.car_enabled ? 'Desativar CAR (Correção Automática de Redações)' : 'Ativar CAR (Correção Automática de Redações)'}
                         className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${
-                          inst.car_enabled ? 'bg-[#6366F1]' : 'bg-[#d1d5db] dark:bg-[#1e2d4a]'
+                          inst.car_enabled ? 'bg-[#712ae2]' : 'bg-[#d1d5db] dark:bg-[#1e2d4a]'
                         }`}
                       >
                         <span

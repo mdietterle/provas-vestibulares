@@ -292,7 +292,7 @@ export default function QuestionsPage() {
           </button>
           <button
             onClick={() => { setShowAiModal(true); setAiResults([]); setAiSelected(new Set()) }}
-            className="btn-sm inline-flex items-center gap-1.5 font-medium text-[#6366F1] dark:text-[#b8a5ff] border border-[#e0d9ff] dark:border-[#332a5c] bg-[#f5f0ff] dark:bg-[#241a3d] hover:bg-[#ede9fe] dark:hover:bg-[#2a2050] rounded-lg transition-colors"
+            className="btn-sm inline-flex items-center gap-1.5 font-medium text-[#712ae2] dark:text-[#b8a5ff] border border-[#e0d9ff] dark:border-[#332a5c] bg-[#f5f0ff] dark:bg-[#241a3d] hover:bg-[#ede9fe] dark:hover:bg-[#2a2050] rounded-lg transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -311,7 +311,7 @@ export default function QuestionsPage() {
       {/* Stats — compact row */}
       <div className="grid grid-cols-5 gap-3">
         {[
-          { label: 'Total', value: questions.length, color: '#2563EB', bg: '#eef2ff' },
+          { label: 'Total', value: questions.length, color: '#4f46e5', bg: '#eef2ff' },
           { label: 'M. Escolha', value: counts.mc, color: '#4f46e5', bg: '#eef2ff' },
           { label: 'V/F', value: counts.tf, color: '#16a34a', bg: '#f0fdf4' },
           { label: 'Dissertativas', value: counts.essay, color: '#9333ea', bg: '#fdf4ff' },
@@ -360,7 +360,7 @@ export default function QuestionsPage() {
               key={opt.val}
               onClick={() => setFilterType(opt.val)}
               className={`px-2.5 py-1.5 text-[11px] font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0] dark:border-[#2a3a5c]' : ''} ${
-                filterType === opt.val ? 'bg-[#2563EB] text-white' : 'bg-white dark:bg-[#1e2d4a] text-[#5a6480] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
+                filterType === opt.val ? 'bg-[#4f46e5] text-white' : 'bg-white dark:bg-[#1e2d4a] text-[#5a6480] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
               }`}
             >
               {opt.label}
@@ -379,7 +379,7 @@ export default function QuestionsPage() {
               key={opt.val}
               onClick={() => setFilterDifficulty(opt.val)}
               className={`px-2.5 py-1.5 text-[11px] font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0] dark:border-[#2a3a5c]' : ''} ${
-                filterDifficulty === opt.val ? 'bg-[#2563EB] text-white' : 'bg-white dark:bg-[#1e2d4a] text-[#5a6480] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
+                filterDifficulty === opt.val ? 'bg-[#4f46e5] text-white' : 'bg-white dark:bg-[#1e2d4a] text-[#5a6480] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
               }`}
             >
               {opt.label}
@@ -439,7 +439,7 @@ export default function QuestionsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span
-                      className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8]"
+                      className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]"
                     >
                       {q.subject.name}
                     </span>
@@ -607,17 +607,17 @@ export default function QuestionsPage() {
       {/* AI Insights */}
       <div className="rounded-2xl border p-5 bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a1530] dark:to-[#1a2947] border-[#e0d9ff] dark:border-[#332a5c]">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#6366F1] to-[#2563EB]">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#712ae2] to-[#4f46e5]">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2a10 10 0 1 0 10 10" /><path d="M12 6v6l4 2" />
             </svg>
           </div>
-          <span className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8]">Análise do Banco</span>
-          <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-[#ede9fe] dark:bg-[#2a2050] text-[#6366F1] dark:text-[#b8a5ff]">IA</span>
+          <span className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8]">Análise do Banco</span>
+          <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-[#ede9fe] dark:bg-[#2a2050] text-[#712ae2] dark:text-[#b8a5ff]">IA</span>
         </div>
         <div className="grid grid-cols-4 gap-3 text-center">
           <div className="bg-white dark:bg-[#1e2d4a] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
-            <p className="text-lg font-bold text-[#2563EB] dark:text-[#818CF8]">{questions.length}</p>
+            <p className="text-lg font-bold text-[#4f46e5] dark:text-[#818CF8]">{questions.length}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Total</p>
           </div>
           <div className="bg-white dark:bg-[#1e2d4a] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
@@ -741,7 +741,7 @@ export default function QuestionsPage() {
                   </button>
                 </div>
               ) : (
-                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-gray-50 dark:hover:bg-[#1e2d4a] border-[#E2E8F0] dark:border-[#2a3a5c] text-[#6366F1] dark:text-[#b8a5ff]">
+                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-gray-50 dark:hover:bg-[#1e2d4a] border-[#E2E8F0] dark:border-[#2a3a5c] text-[#712ae2] dark:text-[#b8a5ff]">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" />
                     <polyline points="21 15 16 10 5 21" />
@@ -789,7 +789,7 @@ export default function QuestionsPage() {
                     <button
                       type="button"
                       onClick={addOption}
-                      className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors hover:bg-indigo-50 dark:hover:bg-[#1e2d4a] text-[#6366F1] dark:text-[#b8a5ff] border-[#e0d9ff] dark:border-[#332a5c]"
+                      className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors hover:bg-indigo-50 dark:hover:bg-[#1e2d4a] text-[#712ae2] dark:text-[#b8a5ff] border-[#e0d9ff] dark:border-[#332a5c]"
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -872,7 +872,7 @@ export default function QuestionsPage() {
               <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 bg-gradient-to-br from-[#2563EB] to-[#6366F1]"
+                className="px-5 py-2 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 bg-gradient-to-br from-[#4f46e5] to-[#712ae2]"
               >
                 {editing ? 'Salvar Alterações' : 'Criar Questão'}
               </button>
@@ -891,12 +891,12 @@ export default function QuestionsPage() {
           <div className="space-y-5">
             {/* Header badge */}
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a1530] dark:to-[#1a2947] border-[#e0d9ff] dark:border-[#332a5c]">
-              <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br from-[#6366F1] to-[#2563EB]">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br from-[#712ae2] to-[#4f46e5]">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <span className="text-xs font-semibold text-[#6366F1] dark:text-[#b8a5ff]">Powered by Groq — qwen3-32b</span>
+              <span className="text-xs font-semibold text-[#712ae2] dark:text-[#b8a5ff]">Powered by Groq — qwen3-32b</span>
               <span className="ml-auto text-xs text-gray-400">Revise e edite antes de salvar</span>
             </div>
 
@@ -964,7 +964,7 @@ export default function QuestionsPage() {
                       type="button"
                       onClick={() => setAiForm(f => ({ ...f, count: n }))}
                       className={`w-10 h-10 rounded-lg text-sm font-semibold transition-all border ${aiForm.count === n
-                        ? 'bg-[#2563EB] text-white border-[#2563EB]'
+                        ? 'bg-[#4f46e5] text-white border-[#4f46e5]'
                         : 'bg-[#F4F6F9] dark:bg-[#1e2d4a] text-[#334155] dark:text-gray-300 border-[#E2E8F0] dark:border-[#2a3a5c]'
                       }`}
                     >
@@ -1005,7 +1005,7 @@ export default function QuestionsPage() {
                     </button>
                   </div>
                 ) : (
-                  <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-indigo-50 dark:hover:bg-[#1e2d4a] border-[#e0d9ff] dark:border-[#332a5c] text-[#6366F1] dark:text-[#b8a5ff]">
+                  <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-indigo-50 dark:hover:bg-[#1e2d4a] border-[#e0d9ff] dark:border-[#332a5c] text-[#712ae2] dark:text-[#b8a5ff]">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" />
                       <polyline points="21 15 16 10 5 21" />
@@ -1036,7 +1036,7 @@ export default function QuestionsPage() {
               <button
                 type="submit"
                 disabled={aiGenerating}
-                className="w-full py-2.5 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-60 bg-gradient-to-br from-[#6366F1] to-[#2563EB]"
+                className="w-full py-2.5 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-60 bg-gradient-to-br from-[#712ae2] to-[#4f46e5]"
               >
                 {aiGenerating ? (
                   <>
@@ -1071,7 +1071,7 @@ export default function QuestionsPage() {
                     <button
                       type="button"
                       onClick={() => setAiSelected(new Set(aiResults.map((_, i) => i)))}
-                      className="text-xs font-semibold text-[#6366F1] dark:text-[#b8a5ff] hover:underline"
+                      className="text-xs font-semibold text-[#712ae2] dark:text-[#b8a5ff] hover:underline"
                     >
                       Todas
                     </button>
@@ -1100,7 +1100,7 @@ export default function QuestionsPage() {
                           return next
                         })}
                         className={`rounded-xl border p-4 cursor-pointer transition-all ${selected
-                          ? 'border-[#6366F1] bg-[#faf5ff] dark:bg-[#241a3d]'
+                          ? 'border-[#712ae2] bg-[#faf5ff] dark:bg-[#241a3d]'
                           : 'border-[#E2E8F0] dark:border-[#2a3a5c] bg-white dark:bg-[#1e2d4a]'
                         }`}
                       >
@@ -1108,7 +1108,7 @@ export default function QuestionsPage() {
                           {/* Checkbox */}
                           <div
                             className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${selected
-                              ? 'bg-[#6366F1] border-[#6366F1]'
+                              ? 'bg-[#712ae2] border-[#712ae2]'
                               : 'border-gray-300 dark:border-gray-600'
                             }`}
                           >
@@ -1160,7 +1160,7 @@ export default function QuestionsPage() {
                 <button
                   onClick={handleAiSave}
                   disabled={aiSaving || aiSelected.size === 0}
-                  className="w-full py-2.5 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-50 bg-gradient-to-br from-[#2563EB] to-[#6366F1]"
+                  className="w-full py-2.5 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-50 bg-gradient-to-br from-[#4f46e5] to-[#712ae2]"
                 >
                   {aiSaving ? (
                     <>

@@ -34,28 +34,28 @@
   }
   .btn-primary {
     @apply btn text-white active:scale-[0.98]
-           focus:ring-[#2563EB]/40 shadow-[0_2px_10px_rgba(0,35,111,0.25)]
+           focus:ring-[#4f46e5]/40 shadow-[0_2px_10px_rgba(0,35,111,0.25)]
            hover:shadow-[0_6px_20px_rgba(0,35,111,0.32)] hover:-translate-y-0.5;
-    background: linear-gradient(135deg, #0a2f85 0%, #2563EB 100%);
+    background: linear-gradient(135deg, #3525cd 0%, #4f46e5 100%);
   }
   .btn-primary:hover {
-    background: linear-gradient(135deg, #163c9e 0%, #0a2f85 100%);
+    background: linear-gradient(135deg, #3b2fb8 0%, #3525cd 100%);
   }
   .btn-secondary {
-    @apply btn bg-white text-[#2563EB] border border-[#d6e0ff]
-           hover:bg-[#f0f4ff] hover:border-[#b8c8ff] active:bg-[#e5ebff] focus:ring-[#2563EB]/30
+    @apply btn bg-white text-[#4f46e5] border border-[#d6e0ff]
+           hover:bg-[#f0f4ff] hover:border-[#b8c8ff] active:bg-[#e5ebff] focus:ring-[#4f46e5]/30
            hover:-translate-y-0.5
            dark:bg-[#131f37] dark:text-[#e2e8f0] dark:border-[#223254]
-           dark:hover:bg-[#1c2c4d] dark:hover:border-[#334670] dark:focus:ring-[#6366F1]/40;
+           dark:hover:bg-[#1c2c4d] dark:hover:border-[#334670] dark:focus:ring-[#712ae2]/40;
   }
   .btn-ai {
-    @apply btn text-white focus:ring-[#6366F1]/40 active:scale-[0.98]
+    @apply btn text-white focus:ring-[#712ae2]/40 active:scale-[0.98]
            shadow-[0_2px_14px_rgba(107,56,212,0.3)] hover:shadow-[0_8px_24px_rgba(107,56,212,0.4)]
            hover:-translate-y-0.5;
-    background: linear-gradient(135deg, #1a3cad 0%, #6366F1 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #712ae2 100%);
   }
   .btn-ai:hover {
-    background: linear-gradient(135deg, #22499e 0%, #7c4de8 100%);
+    background: linear-gradient(135deg, #5a1fd1 0%, #8a4cfc 100%);
   }
   .btn-danger {
     @apply btn bg-red-50 text-red-700 border border-red-200
@@ -72,7 +72,7 @@
     @apply px-2.5 py-1 text-xs rounded-md;
   }
   .btn-ghost {
-    @apply btn bg-transparent text-[#334155] hover:bg-[#f0f4ff] hover:text-[#2563EB] focus:ring-[#2563EB]/20
+    @apply btn bg-transparent text-[#334155] hover:bg-[#f0f4ff] hover:text-[#4f46e5] focus:ring-[#4f46e5]/20
            dark:text-[#94a3b8] dark:hover:bg-[#192745] dark:hover:text-[#f8fafc];
   }
 
@@ -99,10 +99,10 @@
   .input {
     @apply w-full border border-[#d0d9f0] rounded-xl px-3 py-2 text-sm bg-white
            text-[#1E293B] placeholder-[#9da5bc]
-           focus:outline-none focus:ring-4 focus:ring-[#2563EB]/10 focus:border-[#2563EB]
+           focus:outline-none focus:ring-4 focus:ring-[#4f46e5]/10 focus:border-[#4f46e5]
            transition-all duration-150
            dark:bg-[#17233d] dark:border-[#253556] dark:text-[#f8fafc] dark:placeholder-[#64748b]
-           dark:focus:border-[#6366F1] dark:focus:ring-[#6366F1]/20;
+           dark:focus:border-[#712ae2] dark:focus:ring-[#712ae2]/20;
   }
   .input-sm {
     @apply input py-1.5 text-xs;
@@ -137,7 +137,7 @@
   }
   .badge-ai {
     @apply badge text-white;
-    background: linear-gradient(135deg, #1a3cad 0%, #6366F1 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #712ae2 100%);
   }
 
   /* ── Page layout ── */
@@ -290,7 +290,7 @@ html.dark .text-gray-700 {
 html.dark .text-gray-600 {
   color: #94a3b8 !important;
 }
-html.dark .text-\[\#2563EB\] {
+html.dark .text-\[\#4f46e5\] {
   color: #93c5fd !important;
 }
 

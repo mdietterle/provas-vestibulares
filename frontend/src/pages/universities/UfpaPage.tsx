@@ -14,7 +14,7 @@ export default function UfpaPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#E2E8F0] dark:bg-[#1e2d4a] rounded-2xl overflow-hidden mb-8 border border-[#E2E8F0] dark:border-[#1e2d4a]">
         {NUMEROS.map(n => (
           <div key={n.rotulo} className="bg-white dark:bg-[#151f38] p-4 text-center">
-            <div className="text-2xl font-extrabold text-[#2563EB] dark:text-[#818CF8]">{n.valor}</div>
+            <div className="text-2xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">{n.valor}</div>
             <div className="text-[11px] text-[#64748B] dark:text-[#94a3b8] mt-1">{n.rotulo}</div>
           </div>
         ))}
@@ -59,7 +59,7 @@ export default function UfpaPage() {
       </p>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Avaliação MEC: Direito e Psicologia nota máxima no Enade
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
@@ -72,7 +72,7 @@ export default function UfpaPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Papel no desenvolvimento da Amazônia
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
@@ -86,7 +86,7 @@ export default function UfpaPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Ingresso: só pelo SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">

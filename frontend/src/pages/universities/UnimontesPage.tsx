@@ -38,7 +38,7 @@ export default function UnimontesPage() {
         </p>
         <div className="flex flex-wrap gap-2 mt-3">
           {NOTA5.map(c => (
-            <span key={c} className="text-xs font-semibold text-[#2563EB] dark:text-[#818CF8] bg-white dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] rounded-full px-3 py-1">
+            <span key={c} className="text-xs font-semibold text-[#4f46e5] dark:text-[#818CF8] bg-white dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] rounded-full px-3 py-1">
               {c} — nota 5 no ENADE 2023
             </span>
           ))}
@@ -54,7 +54,7 @@ export default function UnimontesPage() {
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Ingresso: vestibular próprio (80%) ou SiSU (20%)
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">

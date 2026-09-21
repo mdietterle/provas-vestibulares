@@ -69,7 +69,7 @@ function ProfessorList() {
             onClick={() => { setLoading(true); setFilterStatus(s) }}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
               filterStatus === s
-                ? 'bg-[#2563EB] text-white'
+                ? 'bg-[#4f46e5] text-white'
                 : 'bg-white dark:bg-[#131f37] border border-[#c5ceff] dark:border-[#2d3f6a] text-[#334155] dark:text-[#94a3b8] hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a]'
             }`}
           >
@@ -127,7 +127,7 @@ function ProfessorList() {
                             ? `/redacoes/${r.id}/review`
                             : `/redacoes/${r.id}/review`
                         )}
-                        className="text-xs font-semibold text-[#2563EB] hover:underline"
+                        className="text-xs font-semibold text-[#4f46e5] hover:underline"
                       >
                         {r.status === 'ai_done' ? 'Revisar' : 'Abrir'}
                       </button>
@@ -167,7 +167,7 @@ function StudentList() {
         <button
           onClick={() => navigate('/redacoes/nova')}
           className="px-4 py-2 rounded-xl text-sm font-bold text-white"
-          style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
         >
           + Nova redação
         </button>
@@ -187,7 +187,7 @@ function StudentList() {
           <button
             onClick={() => navigate('/redacoes/nova')}
             className="px-6 py-3 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
           >
             Enviar redação
           </button>

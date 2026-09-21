@@ -40,7 +40,7 @@ export default function FgvPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#E2E8F0] dark:bg-[#1e2d4a] rounded-2xl overflow-hidden mb-10 border border-[#E2E8F0] dark:border-[#1e2d4a]">
         {STATS.map(s => (
           <div key={s.label} className="bg-white dark:bg-[#151f38] p-4 sm:p-5 text-center">
-            <div className="text-2xl sm:text-3xl font-extrabold text-[#2563EB] dark:text-[#818CF8]">{s.value}</div>
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">{s.value}</div>
             <div className="text-[11px] text-[#64748B] dark:text-[#94a3b8] mt-1 leading-tight">{s.label}</div>
           </div>
         ))}
@@ -59,7 +59,7 @@ export default function FgvPage() {
         <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a]">
           <table className="w-full text-sm text-left border-collapse">
             <thead>
-              <tr className="bg-[#F4F6F9] dark:bg-[#1a2542] text-[#2563EB] dark:text-[#818CF8]">
+              <tr className="bg-[#F4F6F9] dark:bg-[#1a2542] text-[#4f46e5] dark:text-[#818CF8]">
                 <th className="p-3 font-bold">Escola</th>
                 <th className="p-3 font-bold">Curso</th>
                 <th className="p-3 font-bold">Cidade</th>
@@ -103,7 +103,7 @@ export default function FgvPage() {
         <ol className="relative border-l-2 border-[#E2E8F0] dark:border-[#1e2d4a] ml-3 space-y-8">
           {STEPS.map((step, i) => (
             <li key={step.title} className="ml-6">
-              <span className="absolute -left-[15px] flex items-center justify-center w-7 h-7 rounded-full bg-[#2563EB] dark:bg-[#6366F1] text-white text-xs font-bold ring-4 ring-[#F4F6F9] dark:ring-[#0F172A]">
+              <span className="absolute -left-[15px] flex items-center justify-center w-7 h-7 rounded-full bg-[#4f46e5] dark:bg-[#712ae2] text-white text-xs font-bold ring-4 ring-[#F4F6F9] dark:ring-[#0F172A]">
                 {i + 1}
               </span>
               <h3 className="font-bold text-[#1E293B] dark:text-white mb-1">{step.title}</h3>

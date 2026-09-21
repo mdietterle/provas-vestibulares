@@ -79,7 +79,7 @@ export default function OwnerUsersPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-[#4f46e5] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -97,12 +97,12 @@ export default function OwnerUsersPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Buscar por nome, e-mail ou escola..."
-            className="w-64 text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#2563EB]"
+            className="w-64 text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
           />
           <select
             value={roleFilter}
             onChange={e => setRoleFilter(e.target.value)}
-            className="text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#2563EB]"
+            className="text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
           >
             <option value="">Todos os papéis</option>
             <option value="admin">Administrador</option>
@@ -145,7 +145,7 @@ export default function OwnerUsersPage() {
                         value={u.role}
                         disabled={busyId === u.id}
                         onChange={e => handleChangeRole(u, e.target.value)}
-                        className="text-xs font-semibold border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-2 py-1 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#2563EB] disabled:opacity-50"
+                        className="text-xs font-semibold border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-2 py-1 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5] disabled:opacity-50"
                       >
                         <option value="admin">{ROLE_LABEL.admin}</option>
                         <option value="professor">{ROLE_LABEL.professor}</option>

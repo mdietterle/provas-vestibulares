@@ -9,9 +9,9 @@ export interface ExamMetadata {
 }
 
 const REGION_COLORS: Record<Region, { color: string, gradient: string }> = {
-  'Nacional': { color: '#2563EB', gradient: 'linear-gradient(135deg, #2563EB 0%, #0047cc 100%)' },
+  'Nacional': { color: '#4f46e5', gradient: 'linear-gradient(135deg, #4f46e5 0%, #0047cc 100%)' },
   'Sudeste': { color: '#be123c', gradient: 'linear-gradient(135deg, #be123c 0%, #e11d48 100%)' },
-  'Sul': { color: '#6366F1', gradient: 'linear-gradient(135deg, #6366F1 0%, #8b5cf6 100%)' },
+  'Sul': { color: '#712ae2', gradient: 'linear-gradient(135deg, #712ae2 0%, #8b5cf6 100%)' },
   'Centro-Oeste': { color: '#c2410c', gradient: 'linear-gradient(135deg, #c2410c 0%, #ea580c 100%)' },
   'Nordeste': { color: '#0f766e', gradient: 'linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)' },
   'Norte': { color: '#b45309', gradient: 'linear-gradient(135deg, #b45309 0%, #f59e0b 100%)' },

@@ -13,7 +13,7 @@ function ProgressBar({ answered, total }: { answered: number; total: number }) {
       <div className="flex-1 h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-300"
-          style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #2563EB 0%, #6366F1 100%)' }}
+          style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #4f46e5 0%, #712ae2 100%)' }}
         />
       </div>
       <span className="text-xs text-[#64748B] shrink-0">{answered}/{total}</span>
@@ -96,7 +96,7 @@ function ReportQuestionButton({ sqId, reported, onReported }: { sqId: number; re
                   <input
                     type="radio"
                     name={`report-reason-${sqId}`}
-                    className="mt-1 accent-[#6366F1]"
+                    className="mt-1 accent-[#712ae2]"
                     checked={reason === r.value}
                     onChange={() => setReason(r.value)}
                   />
@@ -110,7 +110,7 @@ function ReportQuestionButton({ sqId, reported, onReported }: { sqId: number; re
                 onChange={e => setDetails(e.target.value)}
                 placeholder="Descreva o problema que você encontrou..."
                 rows={3}
-                className="w-full text-sm border border-[#c5c5d3] dark:border-[#334155] rounded-lg p-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                className="w-full text-sm border border-[#c5c5d3] dark:border-[#334155] rounded-lg p-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#712ae2]"
               />
             )}
             <div className="flex justify-end gap-2 pt-1">
@@ -170,12 +170,12 @@ function QuestionCard({
         <div className="flex items-center gap-2 shrink-0">
           <span
             className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
           >
             {index}
           </span>
           {sq.area && (
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#8b93ff]">
+            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#8b93ff]">
               {sq.area}
             </span>
           )}
@@ -198,7 +198,7 @@ function QuestionCard({
           {isSummation && (
             <div className="text-right">
               <p className="text-[10px] uppercase tracking-wide text-[#64748B] dark:text-[#94a3b8]">Soma marcada</p>
-              <p className="text-lg font-bold text-[#2563EB] dark:text-[#8b93ff]">{sum}</p>
+              <p className="text-lg font-bold text-[#4f46e5] dark:text-[#8b93ff]">{sum}</p>
             </div>
           )}
           <ReportQuestionButton sqId={sq.id} reported={reported} onReported={onReported} />
@@ -207,7 +207,7 @@ function QuestionCard({
 
       {!ready ? (
         <div className="rounded-xl p-8 flex flex-col items-center justify-center gap-3 bg-[#F4F6F9] dark:bg-[#0F172A] border border-dashed border-[#c5d0ff] dark:border-[#2e3f66]">
-          <svg className="w-6 h-6 animate-spin text-[#6366F1]" fill="none" viewBox="0 0 24 24">
+          <svg className="w-6 h-6 animate-spin text-[#712ae2]" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
           </svg>
@@ -247,18 +247,18 @@ function QuestionCard({
                   onClick={() => onSelect(opt.letter)}
                   className={`w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-all text-sm ${
                     isSelected
-                      ? 'border-[#2563EB] dark:border-[#818CF8] bg-[#EFF6FF] dark:bg-[#1a2947]'
+                      ? 'border-[#4f46e5] dark:border-[#818CF8] bg-[#EFF6FF] dark:bg-[#1a2947]'
                       : 'border-[#E2E8F0] dark:border-[#1e2d4a] hover:border-[#b6c4ff] dark:hover:border-[#334670] hover:bg-[#F4F6F9] dark:hover:bg-[#182643]'
                   }`}
                 >
                   <span
                     className={`shrink-0 mt-0.5 flex items-center justify-center text-xs font-bold ${
                       isSummation ? 'w-6 h-6 rounded-md' : 'w-6 h-6 rounded-full'
-                    } ${isSelected ? 'bg-[#2563EB] dark:bg-[#6366F1] text-white' : 'bg-[#EEF2F7] dark:bg-[#1a2947] text-[#334155] dark:text-[#cbd5e1]'}`}
+                    } ${isSelected ? 'bg-[#4f46e5] dark:bg-[#712ae2] text-white' : 'bg-[#EEF2F7] dark:bg-[#1a2947] text-[#334155] dark:text-[#cbd5e1]'}`}
                   >
                     {isSummation ? (isSelected ? '✓' : opt.letter) : opt.letter}
                   </span>
-                  <span className={isSelected ? 'text-[#2563EB] dark:text-[#818CF8] font-medium' : 'text-[#334155] dark:text-[#cbd5e1]'}>
+                  <span className={isSelected ? 'text-[#4f46e5] dark:text-[#818CF8] font-medium' : 'text-[#334155] dark:text-[#cbd5e1]'}>
                     {isSummation && typeof opt.value === 'number' && (
                       <span className="text-xs text-[#9ca3af] dark:text-[#64748b] mr-1.5">({opt.value})</span>
                     )}
@@ -294,7 +294,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
             {index}
           </span>
           {sq.area && (
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#8b93ff]">
+            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#8b93ff]">
               {sq.area}
             </span>
           )}
@@ -368,10 +368,10 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
       {sq.ai_feedback && (
         <div className="mt-3 p-3 rounded-xl bg-[#EFF6FF] dark:bg-[#1a2947] border border-[#c5d0ff] dark:border-[#2a3a63]">
           <div className="flex items-start gap-2">
-            <svg className="w-4 h-4 text-[#2563EB] dark:text-[#8b93ff] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4 text-[#4f46e5] dark:text-[#8b93ff] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
-            <p className="text-xs text-[#2563EB] dark:text-[#8b93ff] leading-relaxed">{sq.ai_feedback}</p>
+            <p className="text-xs text-[#4f46e5] dark:text-[#8b93ff] leading-relaxed">{sq.ai_feedback}</p>
           </div>
         </div>
       )}
@@ -561,7 +561,7 @@ export default function SimuladoExamPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <svg className="w-8 h-8 animate-spin text-[#2563EB]" fill="none" viewBox="0 0 24 24">
+        <svg className="w-8 h-8 animate-spin text-[#4f46e5]" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
@@ -673,7 +673,7 @@ export default function SimuladoExamPage() {
           <div className="flex items-center justify-between mb-3">
             <div>
               <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide">Estimativa no ENEM</p>
-              <p className="text-2xl font-bold text-[#2563EB]">{simulado.enem_estimated_score.toFixed(0)} pontos</p>
+              <p className="text-2xl font-bold text-[#4f46e5]">{simulado.enem_estimated_score.toFixed(0)} pontos</p>
             </div>
             <span className="text-[10px] text-[#9ca3af] max-w-[45%] text-right leading-tight">
               Estimativa simplificada (não é a nota oficial da TRI do INEP)
@@ -711,11 +711,11 @@ export default function SimuladoExamPage() {
                   <button
                     key={q.id}
                     onClick={() => handleJump(idx)}
-                    className={`w-7 h-7 rounded text-[10px] font-bold border transition-colors flex items-center justify-center ${
+                    className={`w-8 h-8 rounded-lg text-[11px] font-bold border transition-all flex items-center justify-center ${
                       isCurrent
-                        ? 'border-[#2563EB] bg-[#2563EB] text-white shadow-sm'
+                        ? 'border-[#4f46e5] bg-[#4f46e5] text-white shadow-[0_0_0_3px_rgba(79,70,229,0.15)]'
                         : isAnswered
-                        ? 'border-[#2563EB] bg-[#E2E8F0] text-[#2563EB]'
+                        ? 'border-[#4f46e5]/30 bg-[#4f46e5] text-white'
                         : 'border-[#E2E8F0] bg-white text-[#64748B] hover:bg-gray-50'
                     }`}
                   >
@@ -769,7 +769,7 @@ export default function SimuladoExamPage() {
               onClick={handleNext}
               disabled={submitting}
               className="flex-1 py-4 rounded-xl text-white font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
             >
               {submitting ? (
                 <span className="flex items-center justify-center gap-2">
@@ -805,7 +805,7 @@ export default function SimuladoExamPage() {
           <button
             onClick={() => navigate('/simulados/dashboard')}
             className="flex-1 py-3 rounded-xl text-sm font-bold text-white transition-colors"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
           >
             Ver meu desempenho
           </button>

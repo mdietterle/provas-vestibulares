@@ -21,7 +21,7 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
                 </svg>
               )}
               {item.to && !isLast ? (
-                <Link to={item.to} className="hover:text-[#2563EB] dark:hover:text-[#818CF8] transition-colors font-medium">
+                <Link to={item.to} className="hover:text-[#4f46e5] dark:hover:text-[#818CF8] transition-colors font-medium">
                   {item.label}
                 </Link>
               ) : (

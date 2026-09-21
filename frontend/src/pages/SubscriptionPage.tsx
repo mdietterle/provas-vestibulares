@@ -146,7 +146,7 @@ export default function SubscriptionPage() {
             <div
               key={plan.key}
               className={`rounded-2xl border p-6 flex flex-col gap-4 bg-white dark:bg-[#131f37] ${
-                isCurrent ? 'border-[#6366F1] ring-2 ring-[#e9ddff] dark:ring-[#3a2166]' : 'border-[#E2E8F0] dark:border-[#1e2d4a]'
+                isCurrent ? 'border-[#712ae2] ring-2 ring-[#e9ddff] dark:ring-[#3a2166]' : 'border-[#E2E8F0] dark:border-[#1e2d4a]'
               }`}
             >
               <div>
@@ -166,7 +166,7 @@ export default function SubscriptionPage() {
                 className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                   isCurrent
                     ? 'bg-[#eef1fb] dark:bg-[#1e2d4a] text-[#9ca3af] dark:text-[#64748b] cursor-default'
-                    : 'bg-[#6366F1] text-white hover:bg-[#5a2eb8] disabled:opacity-50'
+                    : 'bg-[#712ae2] text-white hover:bg-[#5a2eb8] disabled:opacity-50'
                 }`}
               >
                 {actionLoading === `plan-${plan.key}` ? (

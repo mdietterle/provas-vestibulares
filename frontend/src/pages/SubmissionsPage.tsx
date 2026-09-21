@@ -302,7 +302,7 @@ export default function SubmissionsPage() {
 
   if (!exam) return (
     <div className="flex items-center justify-center py-20">
-      <div className="w-6 h-6 border-2 border-[#2563EB] border-t-transparent rounded-full animate-spin" />
+      <div className="w-6 h-6 border-2 border-[#4f46e5] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -330,7 +330,7 @@ export default function SubmissionsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/exams')}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-white hover:text-[#2563EB] border border-[#e8eeff] transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-white hover:text-[#4f46e5] border border-[#e8eeff] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -394,14 +394,14 @@ export default function SubmissionsPage() {
             <p className="text-sm font-medium text-[#1E293B]">
               Turma {exam.class_.name} · {exam.class_.year}
             </p>
-            <p className="text-sm font-bold text-[#2563EB]">{deliveredPct}%</p>
+            <p className="text-sm font-bold text-[#4f46e5]">{deliveredPct}%</p>
           </div>
           <div className="h-2 bg-[#edf0fb] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${deliveredPct}%`,
-                background: deliveredPct === 100 ? '#27c38a' : 'linear-gradient(90deg, #2563EB, #6366F1)',
+                background: deliveredPct === 100 ? '#27c38a' : 'linear-gradient(90deg, #4f46e5, #712ae2)',
               }}
             />
           </div>
@@ -437,7 +437,7 @@ export default function SubmissionsPage() {
             onClick={() => setFilterStatus(tab.key)}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
               filterStatus === tab.key
-                ? 'bg-[#2563EB] text-white'
+                ? 'bg-[#4f46e5] text-white'
                 : 'bg-white dark:bg-[#131f37] text-[#5a6480] dark:text-[#94a3b8] border border-[#e8eeff] dark:border-[#2d3f6a] hover:bg-[#f4f6fb] dark:hover:bg-[#1a2947]'
             }`}
           >
@@ -510,7 +510,7 @@ export default function SubmissionsPage() {
                             onClick={() => handleCorrectOne(sub)}
                             disabled={correctingId === sub.id}
                             title="Corrige esta submissão"
-                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#eef2ff] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8] hover:bg-[#e0e7ff] dark:hover:bg-[#1e2d4a] transition-colors disabled:opacity-60 whitespace-nowrap"
+                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#e0e7ff] dark:hover:bg-[#1e2d4a] transition-colors disabled:opacity-60 whitespace-nowrap"
                           >
                             {correctingId === sub.id ? 'Corrigindo…' : 'Corrigir'}
                           </button>

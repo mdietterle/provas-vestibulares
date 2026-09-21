@@ -21,7 +21,7 @@ export default function ThemeToggle() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-[#f0f4ff] hover:text-[#2563EB] dark:hover:bg-[#192745] dark:hover:text-[#93c5fd] transition-colors"
+        className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-[#f0f4ff] hover:text-[#4f46e5] dark:hover:bg-[#192745] dark:hover:text-[#93c5fd] transition-colors"
         title={`Tema atual: ${theme === 'system' ? 'Sistema' : theme === 'dark' ? 'Escuro' : 'Claro'}`}
         aria-label="Alternar tema"
       >
@@ -43,7 +43,7 @@ export default function ThemeToggle() {
             onClick={() => { setTheme('light'); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium transition-colors ${
               theme === 'light'
-                ? 'text-[#2563EB] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#1e2d4a]'
+                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#1e2d4a]'
                 : 'text-[#374060] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
             }`}
           >
@@ -56,7 +56,7 @@ export default function ThemeToggle() {
             onClick={() => { setTheme('dark'); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium transition-colors ${
               theme === 'dark'
-                ? 'text-[#2563EB] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#1e2d4a]'
+                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#1e2d4a]'
                 : 'text-[#374060] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
             }`}
           >
@@ -69,7 +69,7 @@ export default function ThemeToggle() {
             onClick={() => { setTheme('system'); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium transition-colors ${
               theme === 'system'
-                ? 'text-[#2563EB] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#1e2d4a]'
+                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#1e2d4a]'
                 : 'text-[#374060] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
             }`}
           >

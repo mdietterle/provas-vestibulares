@@ -53,7 +53,7 @@ function StartSimuladoModal({
               value={area}
               onChange={e => setArea(e.target.value)}
               disabled={loadingAreas}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] disabled:opacity-60"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5] disabled:opacity-60"
             >
               <option value="">{loadingAreas ? 'Carregando...' : 'Todas as áreas'}</option>
               {areas.map(a => <option key={a} value={a}>{a}</option>)}
@@ -62,7 +62,7 @@ function StartSimuladoModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Número de questões: <span className="font-bold text-[#2563EB]">{numQuestions}</span>
+              Número de questões: <span className="font-bold text-[#4f46e5]">{numQuestions}</span>
             </label>
             <input
               type="range"
@@ -71,7 +71,7 @@ function StartSimuladoModal({
               step={5}
               value={numQuestions}
               onChange={e => setNumQuestions(Number(e.target.value))}
-              className="w-full accent-[#2563EB]"
+              className="w-full accent-[#4f46e5]"
             />
             <div className="flex justify-between text-xs text-gray-400 mt-1">
               <span>5</span>
@@ -201,7 +201,7 @@ export default function SimuladoPage() {
               placeholder="Buscar por vestibular..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="border border-[#E2E8F0] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] w-full sm:w-64"
+              className="border border-[#E2E8F0] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5] w-full sm:w-64"
             />
           )}
         </div>
@@ -255,7 +255,7 @@ export default function SimuladoPage() {
           <h2 className="text-base font-semibold text-[#1E293B]">Histórico de simulados</h2>
           <button
             onClick={() => navigate('/simulados/dashboard')}
-            className="text-sm text-[#2563EB] font-semibold hover:underline"
+            className="text-sm text-[#4f46e5] font-semibold hover:underline"
           >
             Ver dashboard completo →
           </button>
@@ -317,7 +317,7 @@ export default function SimuladoPage() {
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => navigate(`/simulados/${s.id}`)}
-                        className="text-xs font-semibold text-[#2563EB] hover:underline"
+                        className="text-xs font-semibold text-[#4f46e5] hover:underline"
                       >
                         {s.status === 'done' ? 'Ver resultado' : s.status === 'pending' ? 'Continuar' : 'Aguardar'}
                       </button>

@@ -77,7 +77,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
             <select
               value={subjectId}
               onChange={e => setSubjectId(Number(e.target.value))}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
             >
               {subjects.map(s => (
                 <option key={s.id} value={s.id}>{s.name}</option>
@@ -90,7 +90,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
             <select
               value={difficulty}
               onChange={e => setDifficulty(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
             >
               <option value="easy">Fácil</option>
               <option value="medium">Médio</option>
@@ -116,7 +116,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
           <button
             onClick={handleImport}
             disabled={loading}
-            className="flex-1 py-2 text-sm font-semibold rounded-lg bg-[#2563EB] text-white hover:bg-[#001a54] transition-colors disabled:opacity-50"
+            className="flex-1 py-2 text-sm font-semibold rounded-lg bg-[#4f46e5] text-white hover:bg-[#001a54] transition-colors disabled:opacity-50"
           >
             {loading ? 'Importando...' : 'Importar'}
           </button>
@@ -138,7 +138,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
     <div className="card border border-gray-100 hover:border-[#c7d7ff] dark:hover:border-[#1e2d4a] transition-colors">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className="shrink-0 w-9 h-9 rounded-full bg-[#EFF6FF] flex items-center justify-center text-sm font-bold text-[#2563EB]">
+          <div className="shrink-0 w-9 h-9 rounded-full bg-[#EFF6FF] flex items-center justify-center text-sm font-bold text-[#4f46e5]">
             {question.number}
           </div>
           <div className="flex-1 min-w-0">
@@ -156,7 +156,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
           <button
             onClick={onImport}
             title="Importar para meu banco"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8] hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -279,7 +279,7 @@ export default function EnemBankPage() {
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#6366F1] text-white text-sm font-semibold shadow">
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#4f46e5] to-[#712ae2] text-white text-sm font-semibold shadow">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
@@ -303,7 +303,7 @@ export default function EnemBankPage() {
         <select
           value={filterYear}
           onChange={e => { setFilterYear(e.target.value); setPage(0) }}
-          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
         >
           <option value="">Todos os anos</option>
           {years.map(y => <option key={y} value={y}>{y}</option>)}
@@ -312,7 +312,7 @@ export default function EnemBankPage() {
         <select
           value={filterArea}
           onChange={e => { setFilterArea(e.target.value); setPage(0) }}
-          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
         >
           <option value="">Todas as áreas</option>
           {areas.map(a => <option key={a} value={a}>{a}</option>)}
@@ -325,11 +325,11 @@ export default function EnemBankPage() {
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+            className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
           />
           <button
             onClick={handleSearch}
-            className="px-4 py-2 rounded-lg bg-[#2563EB] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors"
+            className="px-4 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors"
           >
             Buscar
           </button>

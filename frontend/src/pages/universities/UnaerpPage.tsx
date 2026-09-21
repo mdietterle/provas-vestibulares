@@ -28,7 +28,7 @@ export default function UnaerpPage() {
   const customContent = (
     <div className="mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
       <figure className="float-left mr-6 mb-4 max-w-[45%] sm:max-w-xs">
-        <blockquote className="text-xl sm:text-2xl font-display font-bold text-[#1E293B] dark:text-white leading-snug border-l-4 border-[#6366F1] pl-4">
+        <blockquote className="text-xl sm:text-2xl font-display font-bold text-[#1E293B] dark:text-white leading-snug border-l-4 border-[#712ae2] pl-4">
           "Mais de 500 mil atendimentos por ano à comunidade."
         </blockquote>
         <figcaption className="text-xs text-[#a0a3af] dark:text-[#6b7385] pl-4 mt-2">
@@ -90,7 +90,7 @@ export default function UnaerpPage() {
           <details key={f.p} className="group rounded-xl border border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#151f38] p-4 open:shadow-sm">
             <summary className="cursor-pointer font-semibold text-[#1E293B] dark:text-white flex items-center justify-between list-none">
               {f.p}
-              <span className="text-[#6366F1] dark:text-[#818CF8] group-open:rotate-45 transition-transform text-lg leading-none">+</span>
+              <span className="text-[#712ae2] dark:text-[#818CF8] group-open:rotate-45 transition-transform text-lg leading-none">+</span>
             </summary>
             <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mt-3">{f.r}</p>
           </details>

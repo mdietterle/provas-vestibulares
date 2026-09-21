@@ -43,7 +43,7 @@ function ScoreInput({
             step={0.1}
             value={value}
             onChange={e => onChange(e.target.value)}
-            className={`w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#818CF8] ${
+            className={`w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8] ${
               !valid && value !== '' ? 'border-red-400' : 'border-[#c5ceff] dark:border-[#2d3f6a]'
             }`}
           />
@@ -60,7 +60,7 @@ function ScoreInput({
           value={note}
           onChange={e => onNoteChange(e.target.value)}
           placeholder="Comentário sobre este critério…"
-          className="w-full border border-[#c5ceff] dark:border-[#2d3f6a] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#818CF8]"
+          className="w-full border border-[#c5ceff] dark:border-[#2d3f6a] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8]"
         />
       </div>
     </div>
@@ -132,7 +132,7 @@ export default function RedacaoReviewPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <svg className="w-8 h-8 animate-spin text-[#2563EB]" fill="none" viewBox="0 0 24 24">
+        <svg className="w-8 h-8 animate-spin text-[#4f46e5]" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
@@ -168,7 +168,7 @@ export default function RedacaoReviewPage() {
         </div>
         <div className="text-right">
           <p className="text-xs text-[#64748B]">Total atual</p>
-          <p className="text-xl font-bold text-[#2563EB]">
+          <p className="text-xl font-bold text-[#4f46e5]">
             {currentTotal.toFixed(1)} <span className="text-sm font-normal text-[#64748B]">/ {data.max_score.toFixed(1)}</span>
           </p>
         </div>
@@ -213,7 +213,7 @@ export default function RedacaoReviewPage() {
           onChange={e => setProfessorComment(e.target.value)}
           rows={4}
           placeholder="Deixe um comentário geral para o aluno…"
-          className="w-full border border-[#c5ceff] dark:border-[#2d3f6a] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#818CF8] resize-none"
+          className="w-full border border-[#c5ceff] dark:border-[#2d3f6a] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8] resize-none"
         />
       </div>
 

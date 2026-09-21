@@ -115,7 +115,7 @@ function ReviewModal({
               value={statement}
               onChange={e => setStatement(e.target.value)}
               rows={6}
-              className="w-full text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg p-3 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#2563EB] font-mono"
+              className="w-full text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg p-3 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5] font-mono"
             />
           </div>
 
@@ -133,7 +133,7 @@ function ReviewModal({
                     type="text"
                     value={opt.text}
                     onChange={e => setOptions(prev => prev.map((o, j) => j === i ? { ...o, text: e.target.value } : o))}
-                    className="flex-1 text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#2563EB]"
+                    className="flex-1 text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
                   />
                   <label className="flex items-center gap-1.5 text-xs text-[#64748B] dark:text-[#94a3b8] shrink-0 mt-2">
                     <input
@@ -160,14 +160,14 @@ function ReviewModal({
               <button
                 onClick={handleReleaseOnly}
                 disabled={saving}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-[#2563EB] dark:text-[#818CF8] border border-[#dce1ff] dark:border-[#2a3a63] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947] transition-colors disabled:opacity-50"
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border border-[#dce1ff] dark:border-[#2a3a63] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947] transition-colors disabled:opacity-50"
               >
                 Liberar sem alterar
               </button>
               <button
                 onClick={handleSaveAndRelease}
                 disabled={saving}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#2563EB] hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#4f46e5] hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
               >
                 {saving ? 'Salvando...' : 'Salvar e liberar'}
               </button>
@@ -211,7 +211,7 @@ export default function OwnerQuestionReportsPage() {
       <div className="p-6 max-w-7xl mx-auto space-y-6">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#4f46e5] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <div className="bg-white dark:bg-[#131f37] rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] shadow-sm">
@@ -236,7 +236,7 @@ export default function OwnerQuestionReportsPage() {
                   ) : groups.map(g => (
                     <tr key={`${g.exam_type}-${g.question_id}`} className="hover:bg-[#F4F6F9] dark:hover:bg-[#0F172A] transition-colors">
                       <td className="px-5 py-3.5">
-                        <span className="text-xs font-bold uppercase text-[#6366F1] dark:text-[#818CF8]">{g.exam_type}</span>
+                        <span className="text-xs font-bold uppercase text-[#712ae2] dark:text-[#818CF8]">{g.exam_type}</span>
                         <div className="text-xs text-[#a0a3af]">#{g.question_id}</div>
                       </td>
                       <td className="px-4 py-3.5 text-[#334155] dark:text-[#94a3b8] max-w-md">
@@ -249,7 +249,7 @@ export default function OwnerQuestionReportsPage() {
                       <td className="px-5 py-3.5 text-right">
                         <button
                           onClick={() => setReviewing(g)}
-                          className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#2563EB] text-white hover:bg-[#1D4ED8] transition-colors"
+                          className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#4f46e5] text-white hover:bg-[#1D4ED8] transition-colors"
                         >
                           Revisar
                         </button>

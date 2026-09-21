@@ -4,7 +4,7 @@ export default function EspmPage() {
   const customContent = (
     <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
       {/* Banner Principal */}
-      <div className="bg-gradient-to-br from-[#2563EB] via-[#1a3a8a] to-[#6366F1] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[#4f46e5] via-[#1a3a8a] to-[#712ae2] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="relative z-10">
           <span className="inline-block text-xs font-semibold uppercase tracking-wider text-yellow-300 bg-white/10 px-3 py-1 rounded-full mb-3">
             Tudo o que você precisa saber
@@ -58,7 +58,7 @@ export default function EspmPage() {
 
         <div className="flex flex-wrap gap-2 text-xs">
           {['Publicidade e Propaganda', 'Administração', 'Design', 'Jornalismo', 'Cinema e Audiovisual', 'Ciência de Dados e Negócios', 'Relações Internacionais', 'Direito', 'Ciências Sociais e do Consumo'].map(c => (
-            <span key={c} className="bg-[#F4F6F9] dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#2563EB] dark:text-[#818CF8]">
+            <span key={c} className="bg-[#F4F6F9] dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
               {c}
             </span>
           ))}
@@ -78,14 +78,14 @@ export default function EspmPage() {
 
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Vestibular próprio</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vestibular próprio</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">
               Formato híbrido: etapa online e etapa presencial, com entrevista individual com um professor da ESPM e
               redação de até 400 palavras.
             </dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Nota do ENEM</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Nota do ENEM</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">
               Vale nota do ENEM de qualquer edição, desde que média geral mínima de 580 pontos e mínimo de 600 pontos
               em redação — as duas notas precisam vir do mesmo exame.

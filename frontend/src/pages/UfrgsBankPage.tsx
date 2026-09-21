@@ -71,7 +71,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
             <select
               value={subjectId}
               onChange={e => setSubjectId(Number(e.target.value))}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
             >
               {subjects.map(s => (
                 <option key={s.id} value={s.id}>{s.name}</option>
@@ -84,7 +84,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
             <select
               value={difficulty}
               onChange={e => setDifficulty(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
             >
               <option value="easy">Fácil</option>
               <option value="medium">Médio</option>
@@ -110,7 +110,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
           <button
             onClick={handleImport}
             disabled={loading}
-            className="flex-1 py-2 text-sm font-semibold rounded-lg bg-[#2563EB] text-white hover:bg-[#001a54] transition-colors disabled:opacity-50"
+            className="flex-1 py-2 text-sm font-semibold rounded-lg bg-[#4f46e5] text-white hover:bg-[#001a54] transition-colors disabled:opacity-50"
           >
             {loading ? 'Importando...' : 'Importar'}
           </button>
@@ -135,7 +135,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
     <div className="card border border-gray-100 hover:border-[#c7d7ff] dark:hover:border-[#1e2d4a] transition-colors">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className="shrink-0 w-9 h-9 rounded-full bg-[#EFF6FF] flex items-center justify-center text-sm font-bold text-[#2563EB]">
+          <div className="shrink-0 w-9 h-9 rounded-full bg-[#EFF6FF] flex items-center justify-center text-sm font-bold text-[#4f46e5]">
             {question.number}
           </div>
           <div className="flex-1 min-w-0">
@@ -157,7 +157,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
           <button
             onClick={onImport}
             title="Importar para meu banco"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#2563EB] dark:text-[#818CF8] hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -289,7 +289,7 @@ export default function UfrgsBankPage() {
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#6366F1] text-white text-sm font-semibold shadow">
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#4f46e5] to-[#712ae2] text-white text-sm font-semibold shadow">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
@@ -312,7 +312,7 @@ export default function UfrgsBankPage() {
         <select
           value={filterYear}
           onChange={e => { setFilterYear(e.target.value); setPage(0) }}
-          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
         >
           <option value="">Todos os anos</option>
           {years.map(y => <option key={y} value={y}>{y}</option>)}
@@ -321,7 +321,7 @@ export default function UfrgsBankPage() {
         <select
           value={filterDay}
           onChange={e => { setFilterDay(e.target.value); setPage(0) }}
-          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
         >
           <option value="">Todos os dias</option>
           <option value="1">Dia 1</option>
@@ -331,7 +331,7 @@ export default function UfrgsBankPage() {
         <select
           value={filterArea}
           onChange={e => { setFilterArea(e.target.value); setPage(0) }}
-          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
         >
           <option value="">Todas as áreas</option>
           {areas.map(a => <option key={a} value={a}>{a}</option>)}
@@ -344,11 +344,11 @@ export default function UfrgsBankPage() {
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+            className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
           />
           <button
             onClick={handleSearch}
-            className="px-4 py-2 rounded-lg bg-[#2563EB] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors"
+            className="px-4 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#001a54] transition-colors"
           >
             Buscar
           </button>

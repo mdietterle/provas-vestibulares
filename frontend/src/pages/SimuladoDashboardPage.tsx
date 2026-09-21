@@ -20,7 +20,7 @@ function StatCard({ label, value, sub }: { label: string; value: string | number
   )
 }
 
-function ScoreBar({ pct, color = '#2563EB' }: { pct: number; color?: string }) {
+function ScoreBar({ pct, color = '#4f46e5' }: { pct: number; color?: string }) {
   return (
     <div className="h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
       <div
@@ -71,7 +71,7 @@ export default function SimuladoDashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <svg className="w-8 h-8 animate-spin text-[#2563EB]" fill="none" viewBox="0 0 24 24">
+        <svg className="w-8 h-8 animate-spin text-[#4f46e5]" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
@@ -103,7 +103,7 @@ export default function SimuladoDashboardPage() {
           <button
             onClick={() => navigate('/simulados')}
             className="px-4 py-2 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
           >
             + Novo simulado
           </button>
@@ -120,7 +120,7 @@ export default function SimuladoDashboardPage() {
           <button
             onClick={() => navigate('/simulados')}
             className="mt-6 px-6 py-3 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
           >
             Fazer meu primeiro simulado
           </button>
@@ -160,7 +160,7 @@ export default function SimuladoDashboardPage() {
                     <div className="flex items-center gap-3 mb-3">
                       <div
                         className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold"
-                        style={{ background: EXAM_TYPE_COLOR[type] || '#2563EB' }}
+                        style={{ background: EXAM_TYPE_COLOR[type] || '#4f46e5' }}
                       >
                         {(EXAM_TYPE_LABEL[type] || type).substring(0, 2)}
                       </div>
@@ -250,7 +250,7 @@ export default function SimuladoDashboardPage() {
                           <td className="px-4 py-3 text-right">
                             <button
                               onClick={() => navigate(`/simulados/${s.id}`)}
-                              className="text-xs font-semibold text-[#2563EB] hover:underline"
+                              className="text-xs font-semibold text-[#4f46e5] hover:underline"
                             >
                               {s.status === 'done' ? 'Ver resultado' : 'Abrir'}
                             </button>

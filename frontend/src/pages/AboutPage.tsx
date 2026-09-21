@@ -43,7 +43,7 @@ export default function AboutPage() {
               <li><strong>Instituições de ensino</strong>, que precisam de um painel centralizado para gerenciar turmas, provas e desempenho;</li>
               <li><strong>Professores</strong>, que ganham tempo com correção automática e geração de questões alinhadas à BNCC;</li>
               <li><strong>Alunos</strong>, que podem treinar com simulados de vestibulares reais — veja a lista completa de{' '}
-                <Link to="/universidades" className="text-[#6366F1] dark:text-[#818CF8] hover:underline">universidades e exames</Link>{' '}
+                <Link to="/universidades" className="text-[#712ae2] dark:text-[#818CF8] hover:underline">universidades e exames</Link>{' '}
                 que fazem parte do sistema — e receber explicações de IA sobre onde erraram.</li>
             </ul>
           </section>
@@ -54,7 +54,7 @@ export default function AboutPage() {
               Os simulados são montados a partir de provas e gabaritos publicados oficialmente pelas próprias
               bancas organizadoras (INEP/MEC, ACAFE, UFPR, UFRGS, UFSC, PUCPR, entre outras), com fins
               exclusivamente educacionais. Detalhes sobre coleta e uso de dados pessoais estão na nossa{' '}
-              <Link to="/privacidade" className="text-[#6366F1] dark:text-[#818CF8] hover:underline">Política de Privacidade</Link>.
+              <Link to="/privacidade" className="text-[#712ae2] dark:text-[#818CF8] hover:underline">Política de Privacidade</Link>.
             </p>
           </section>
 
@@ -64,7 +64,7 @@ export default function AboutPage() {
               O Cognition AI é desenvolvido e mantido de forma independente. Ainda estamos em fase de
               crescimento e evoluindo a plataforma com frequência — se você notar algo que pode melhorar, ou
               tiver sugestões, adoraríamos ouvir através da nossa{' '}
-              <Link to="/contact" className="text-[#6366F1] dark:text-[#818CF8] hover:underline">página de contato</Link>.
+              <Link to="/contact" className="text-[#712ae2] dark:text-[#818CF8] hover:underline">página de contato</Link>.
             </p>
           </section>
         </div>

@@ -17,7 +17,7 @@ type InstitutionOption = { id: number; name: string }
 type SelectedInstitution = InstitutionOption | { id: null; name: string }
 
 const inputClass =
-  'w-full border border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all'
+  'w-full border border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all'
 const labelClass = 'block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1'
 
 function EyeIcon({ open }: { open: boolean }) {
@@ -84,14 +84,14 @@ function Brand() {
     <div className="flex items-center justify-center gap-2 mb-6">
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center"
-        style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
       >
         <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
         </svg>
       </div>
-      <span className="font-display font-bold text-[#2563EB] dark:text-[#818CF8] text-lg tracking-tight">Cognition AI</span>
+      <span className="font-display font-bold text-[#4f46e5] dark:text-[#818CF8] text-lg tracking-tight">Cognition AI</span>
     </div>
   )
 }
@@ -115,7 +115,7 @@ function IntroPanel() {
 
       <a
         href="#vestibulares"
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mb-6 bg-[#e9ddff] dark:bg-[#241c47] text-[#6366F1] dark:text-[#818CF8] hover:brightness-95 transition-all"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mb-6 bg-[#e9ddff] dark:bg-[#241c47] text-[#712ae2] dark:text-[#818CF8] hover:brightness-95 transition-all"
       >
         {EXAM_TYPES.length} vestibulares disponíveis — veja a lista completa ↓
       </a>
@@ -261,7 +261,7 @@ export default function StudentAuthPage() {
                   type="button"
                   onClick={() => switchMode('login')}
                   className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all ${
-                    mode === 'login' ? 'bg-white dark:bg-[#131f37] shadow text-[#2563EB] dark:text-[#818CF8]' : 'text-[#64748B] dark:text-[#94a3b8] hover:text-[#334155] dark:hover:text-[#cbd5e1]'
+                    mode === 'login' ? 'bg-white dark:bg-[#131f37] shadow text-[#4f46e5] dark:text-[#818CF8]' : 'text-[#64748B] dark:text-[#94a3b8] hover:text-[#334155] dark:hover:text-[#cbd5e1]'
                   }`}
                 >
                   Entrar
@@ -270,7 +270,7 @@ export default function StudentAuthPage() {
                   type="button"
                   onClick={() => switchMode('register')}
                   className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all ${
-                    mode === 'register' ? 'bg-white dark:bg-[#131f37] shadow text-[#2563EB] dark:text-[#818CF8]' : 'text-[#64748B] dark:text-[#94a3b8] hover:text-[#334155] dark:hover:text-[#cbd5e1]'
+                    mode === 'register' ? 'bg-white dark:bg-[#131f37] shadow text-[#4f46e5] dark:text-[#818CF8]' : 'text-[#64748B] dark:text-[#94a3b8] hover:text-[#334155] dark:hover:text-[#cbd5e1]'
                   }`}
                 >
                   Criar conta
@@ -301,7 +301,7 @@ export default function StudentAuthPage() {
                   <div>
                     <div className="flex justify-between mb-1">
                       <label className={labelClass}>Senha</label>
-                      <Link to="/esqueci-senha?from=aluno" className="text-xs text-[#6366F1] hover:underline">Esqueceu a senha?</Link>
+                      <Link to="/esqueci-senha?from=aluno" className="text-xs text-[#712ae2] hover:underline">Esqueceu a senha?</Link>
                     </div>
                     <input
                       type="password"
@@ -320,7 +320,7 @@ export default function StudentAuthPage() {
                     type="submit"
                     disabled={submitting}
                     className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-60 mt-1"
-                    style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
                   >
                     {submitting ? 'Entrando...' : 'Entrar'}
                   </button>
@@ -356,15 +356,15 @@ export default function StudentAuthPage() {
                   <div>
                     <label className={labelClass}>Escola</label>
                     {selectedInstitution ? (
-                      <div className="flex items-center justify-between gap-3 border border-[#2563EB] dark:border-[#818CF8] rounded-lg px-3 py-2.5 bg-[#2563EB0d] dark:bg-[#1e2d4a]">
+                      <div className="flex items-center justify-between gap-3 border border-[#4f46e5] dark:border-[#818CF8] rounded-lg px-3 py-2.5 bg-[#4f46e50d] dark:bg-[#1e2d4a]">
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8] truncate">{selectedInstitution.name}</p>
-                          {!selectedInstitution.id && <p className="text-xs text-[#6366F1] dark:text-[#818CF8] mt-0.5">Nova escola</p>}
+                          <p className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] truncate">{selectedInstitution.name}</p>
+                          {!selectedInstitution.id && <p className="text-xs text-[#712ae2] dark:text-[#818CF8] mt-0.5">Nova escola</p>}
                         </div>
                         <button
                           type="button"
                           onClick={() => { setSelectedInstitution(null); setInstitutionQuery('') }}
-                          className="text-xs font-semibold text-[#6366F1] hover:underline shrink-0"
+                          className="text-xs font-semibold text-[#712ae2] hover:underline shrink-0"
                         >
                           Trocar
                         </button>
@@ -399,7 +399,7 @@ export default function StudentAuthPage() {
                             <button
                               type="button"
                               onClick={() => setSelectedInstitution({ id: null, name: institutionQuery.trim() })}
-                              className="w-full border border-dashed border-[#6366F1] dark:border-[#818CF8] rounded-lg px-3 py-2.5 text-sm font-semibold text-[#6366F1] dark:text-[#818CF8] hover:bg-[#f6f2ff] dark:hover:bg-[#1e2d4a] transition-colors"
+                              className="w-full border border-dashed border-[#712ae2] dark:border-[#818CF8] rounded-lg px-3 py-2.5 text-sm font-semibold text-[#712ae2] dark:text-[#818CF8] hover:bg-[#f6f2ff] dark:hover:bg-[#1e2d4a] transition-colors"
                             >
                               Cadastrar "{institutionQuery.trim()}" como nova escola
                             </button>
@@ -444,7 +444,7 @@ export default function StudentAuthPage() {
                     type="submit"
                     disabled={submitting}
                     className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-60 mt-1"
-                    style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
                   >
                     {submitting ? 'Criando conta...' : 'Criar conta'}
                   </button>
@@ -455,11 +455,11 @@ export default function StudentAuthPage() {
 
         <p className="text-center text-xs text-[#64748B] dark:text-[#94a3b8] mt-6">
           É professor ou administrador?{' '}
-          <Link to="/login" className="text-[#6366F1] dark:text-[#818CF8] font-semibold hover:underline">Acesse por aqui</Link>
+          <Link to="/login" className="text-[#712ae2] dark:text-[#818CF8] font-semibold hover:underline">Acesse por aqui</Link>
         </p>
         <p className="text-center text-xs text-[#64748B] dark:text-[#94a3b8] mt-2">
           Precisa de ajuda?{' '}
-          <Link to="/ajuda" className="text-[#6366F1] dark:text-[#818CF8] font-semibold hover:underline">Central de Ajuda</Link>
+          <Link to="/ajuda" className="text-[#712ae2] dark:text-[#818CF8] font-semibold hover:underline">Central de Ajuda</Link>
         </p>
 
         <div className="mt-6">

@@ -17,7 +17,7 @@ function Avatar({ name }: { name: string }) {
   return (
     <div
       className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 select-none"
-      style={{ background: 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
     >
       {initials}
     </div>
@@ -296,7 +296,7 @@ export default function ProfessorsPage() {
               onClick={() => setFilterStatus(s)}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0]' : ''} ${
                 filterStatus === s
-                  ? 'bg-[#2563EB] text-white'
+                  ? 'bg-[#4f46e5] text-white'
                   : 'bg-white text-[#5a6480] hover:bg-[#f4f6fb]'
               }`}
             >
@@ -332,7 +332,7 @@ export default function ProfessorsPage() {
                     <div>
                       <p className="font-medium text-[#1E293B] text-[13px]">{p.name}</p>
                       {p.car_access && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#1a2947] text-[#6366F1] dark:text-[#818CF8]">CAR</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#1a2947] text-[#712ae2] dark:text-[#818CF8]">CAR</span>
                       )}
                     </div>
                   </div>
@@ -388,7 +388,7 @@ export default function ProfessorsPage() {
                       {search || filterStatus !== 'all' ? 'Nenhum professor encontrado' : 'Nenhum professor cadastrado'}
                     </p>
                     {!search && filterStatus === 'all' && (
-                      <button onClick={openCreate} className="mt-2 text-sm font-medium text-[#6366F1] hover:underline">
+                      <button onClick={openCreate} className="mt-2 text-sm font-medium text-[#712ae2] hover:underline">
                         Cadastrar primeiro professor
                       </button>
                     )}
@@ -417,7 +417,7 @@ export default function ProfessorsPage() {
             </div>
             {editing ? (
               <p className="text-xs text-[#64748B] bg-[#F4F6F9] border border-[#E2E8F0] rounded-lg px-3 py-2">
-                Para redefinir a senha deste professor, use <Link to="/user-access" className="font-semibold text-[#6366F1] hover:underline">Controle de Acesso</Link>.
+                Para redefinir a senha deste professor, use <Link to="/user-access" className="font-semibold text-[#712ae2] hover:underline">Controle de Acesso</Link>.
               </p>
             ) : (
               <div>
@@ -430,7 +430,7 @@ export default function ProfessorsPage() {
                 type="checkbox"
                 checked={form.car_access}
                 onChange={e => setForm({ ...form, car_access: e.target.checked })}
-                className="w-4 h-4 rounded accent-[#6366F1]"
+                className="w-4 h-4 rounded accent-[#712ae2]"
               />
               <div>
                 <p className="text-sm font-semibold text-[#1E293B]">Acesso ao CAR <span className="font-normal text-[#64748B]">(Correção Automática de Redações)</span></p>
@@ -441,7 +441,7 @@ export default function ProfessorsPage() {
               <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-[#334155] bg-[#EFF6FF] hover:bg-[#E2E8F0]">
                 Cancelar
               </button>
-              <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-60" style={{ background: 'linear-gradient(135deg,#2563EB,#6366F1)' }}>
+              <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-60" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}>
                 {saving ? 'Salvando...' : 'Salvar'}
               </button>
             </div>
@@ -510,7 +510,7 @@ export default function ProfessorsPage() {
                   type="submit"
                   disabled={!assignSubjectId || assignClassIds.length === 0 || addingAssignment}
                   className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-40 shrink-0"
-                  style={{ background: 'linear-gradient(135deg,#2563EB,#6366F1)' }}
+                  style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}
                 >
                   {addingAssignment ? 'Adicionando...' : assignClassIds.length > 1 ? `Adicionar (${assignClassIds.length} turmas)` : 'Adicionar'}
                 </button>

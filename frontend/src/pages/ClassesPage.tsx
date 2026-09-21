@@ -203,13 +203,13 @@ export default function ClassesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold font-display text-[#2563EB] dark:text-[#818CF8]">Turmas</h1>
+          <h1 className="text-2xl font-bold font-display text-[#4f46e5] dark:text-[#818CF8]">Turmas</h1>
           <p className="text-sm text-gray-500 mt-0.5">{classes.length} turma{classes.length !== 1 ? 's' : ''} cadastrada{classes.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => exportClasses(classes)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-[#E2E8F0] bg-white text-[#2563EB] hover:bg-[#EFF6FF] transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-[#E2E8F0] bg-white text-[#4f46e5] hover:bg-[#EFF6FF] transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Exportar PDF
@@ -217,7 +217,7 @@ export default function ClassesPage() {
           {user?.role === 'admin' && (
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-semibold shadow-sm transition-all hover:opacity-90 active:scale-95 bg-gradient-to-br from-[#2563EB] to-[#6366F1] dark:from-[#1a2947] dark:to-[#4c2f8c]"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-semibold shadow-sm transition-all hover:opacity-90 active:scale-95 bg-gradient-to-br from-[#4f46e5] to-[#712ae2] dark:from-[#1a2947] dark:to-[#4c2f8c]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -231,8 +231,8 @@ export default function ClassesPage() {
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Total de Turmas', value: classes.length, bg: 'bg-[#eef2ff] dark:bg-[#1a2947]', fg: 'text-[#2563EB] dark:text-[#818CF8]' },
-          { label: 'Ano Corrente', value: classes.filter(c => c.year === new Date().getFullYear()).length, bg: 'bg-[#f5f0ff] dark:bg-[#251a42]', fg: 'text-[#6366F1] dark:text-[#b79bff]' },
+          { label: 'Total de Turmas', value: classes.length, bg: 'bg-[#eef2ff] dark:bg-[#1a2947]', fg: 'text-[#4f46e5] dark:text-[#818CF8]' },
+          { label: 'Ano Corrente', value: classes.filter(c => c.year === new Date().getFullYear()).length, bg: 'bg-[#f5f0ff] dark:bg-[#251a42]', fg: 'text-[#712ae2] dark:text-[#b79bff]' },
           { label: 'Alunos Matriculados', value: totalStudentsEnrolled, bg: 'bg-[#f0fdf8] dark:bg-[#0f2e22]', fg: 'text-[#27c38a] dark:text-[#4ade80]' },
         ].map((stat) => (
           <div key={stat.label} className={`rounded-2xl p-4 border border-transparent ${stat.bg}`}>
@@ -248,7 +248,7 @@ export default function ClassesPage() {
           <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
         <input
-          className="w-full pl-9 pr-4 py-2 rounded-xl border text-sm focus:outline-none focus:ring-2 border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#131f37] text-gray-900 dark:text-gray-100 focus:ring-[#2563EB]/20 dark:focus:ring-[#818CF8]/20"
+          className="w-full pl-9 pr-4 py-2 rounded-xl border text-sm focus:outline-none focus:ring-2 border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#131f37] text-gray-900 dark:text-gray-100 focus:ring-[#4f46e5]/20 dark:focus:ring-[#818CF8]/20"
           placeholder="Buscar turma ou ano..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -332,7 +332,7 @@ export default function ClassesPage() {
               className="rounded-2xl border-2 border-dashed border-[#c7d2fe] dark:border-[#2d3f6a] flex flex-col items-center justify-center gap-2 p-6 text-gray-400 dark:text-gray-500 hover:border-indigo-300 dark:hover:border-indigo-700 hover:text-indigo-500 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all min-h-[160px]"
             >
               <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="stroke-[#6366F1] dark:stroke-[#b79bff]" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="stroke-[#712ae2] dark:stroke-[#b79bff]" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
               </div>
@@ -357,17 +357,17 @@ export default function ClassesPage() {
       {/* AI Insights */}
       <div className="rounded-2xl border p-5 bg-[#eef2ff] dark:bg-[#1a2947] border-[#e0d9ff] dark:border-[#2d3f6a]">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#6366F1] to-[#2563EB] dark:from-[#4c2f8c] dark:to-[#1a2947]">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#712ae2] to-[#4f46e5] dark:from-[#4c2f8c] dark:to-[#1a2947]">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2a10 10 0 1 0 10 10" /><path d="M12 6v6l4 2" />
             </svg>
           </div>
-          <span className="text-sm font-semibold text-[#2563EB] dark:text-[#818CF8]">Insights de Turmas</span>
-          <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-[#ede9fe] dark:bg-[#2b1a3f] text-[#6366F1] dark:text-[#b79bff]">IA</span>
+          <span className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8]">Insights de Turmas</span>
+          <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-[#ede9fe] dark:bg-[#2b1a3f] text-[#712ae2] dark:text-[#b79bff]">IA</span>
         </div>
         <div className="grid grid-cols-3 gap-3 text-center">
           <div className="bg-white dark:bg-[#131f37] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#2d3f6a]">
-            <p className="text-lg font-bold text-[#6366F1] dark:text-[#b79bff]">{classes.length}</p>
+            <p className="text-lg font-bold text-[#712ae2] dark:text-[#b79bff]">{classes.length}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Turmas Ativas</p>
           </div>
           <div className="bg-white dark:bg-[#131f37] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#2d3f6a]">
@@ -375,7 +375,7 @@ export default function ClassesPage() {
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Professores</p>
           </div>
           <div className="bg-white dark:bg-[#131f37] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#2d3f6a]">
-            <p className="text-lg font-bold text-[#2563EB] dark:text-[#818CF8]">{subjects.length}</p>
+            <p className="text-lg font-bold text-[#4f46e5] dark:text-[#818CF8]">{subjects.length}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Matérias</p>
           </div>
         </div>
@@ -409,7 +409,7 @@ export default function ClassesPage() {
               <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
               <button
                 type="submit"
-                className="px-4 py-2 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 bg-gradient-to-br from-[#2563EB] to-[#6366F1] dark:from-[#1a2947] dark:to-[#4c2f8c]"
+                className="px-4 py-2 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 bg-gradient-to-br from-[#4f46e5] to-[#712ae2] dark:from-[#1a2947] dark:to-[#4c2f8c]"
               >
                 Criar Turma
               </button>
@@ -430,7 +430,7 @@ export default function ClassesPage() {
                 className={
                   "px-4 py-1.5 rounded-lg text-sm font-medium transition-all " +
                   (detailTab === tab
-                    ? "bg-white dark:bg-[#131f37] text-[#2563EB] dark:text-[#818CF8] shadow-sm"
+                    ? "bg-white dark:bg-[#131f37] text-[#4f46e5] dark:text-[#818CF8] shadow-sm"
                     : "text-gray-500 dark:text-gray-400")
                 }
               >
@@ -461,7 +461,7 @@ export default function ClassesPage() {
                   </select>
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-xl text-white text-sm font-semibold whitespace-nowrap bg-gradient-to-br from-[#2563EB] to-[#6366F1] dark:from-[#1a2947] dark:to-[#4c2f8c]"
+                    className="px-4 py-2 rounded-xl text-white text-sm font-semibold whitespace-nowrap bg-gradient-to-br from-[#4f46e5] to-[#712ae2] dark:from-[#1a2947] dark:to-[#4c2f8c]"
                   >
                     Atribuir
                   </button>

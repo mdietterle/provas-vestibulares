@@ -26,7 +26,7 @@ export default function UerjPage() {
       />
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-2">Campi em nove cidades do estado</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Campi em nove cidades do estado</h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
           Além da sede no Maracanã, a UERJ mantém unidades em oito outras cidades fluminenses. Destaques incluem a
           Faculdade de Formação de Professores, em São Gonçalo, e o Instituto de Estudos Sociais e Políticos (IESP),
@@ -69,7 +69,7 @@ export default function UerjPage() {
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#6366F1] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
           Como entrar: vestibular em duas fases independentes
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mb-4">
@@ -81,19 +81,19 @@ export default function UerjPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">1º Exame de Qualificação</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">1º Exame de Qualificação</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Inscrição em abril/maio, prova em junho</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">2º Exame de Qualificação</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">2º Exame de Qualificação</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Inscrição em julho/agosto, prova em setembro</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Exame Discursivo</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Exame Discursivo</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">2ª fase, datas divulgadas depois dos Exames de Qualificação</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
-            <dt className="font-bold text-[#2563EB] dark:text-[#818CF8]">Resultado final</dt>
+            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Resultado final</dt>
             <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Costuma sair em janeiro do ano seguinte</dd>
           </div>
         </dl>
