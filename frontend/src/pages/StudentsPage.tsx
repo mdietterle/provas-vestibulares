@@ -48,10 +48,10 @@ function StatusBadge({ active, invitationStatus }: { active: boolean; invitation
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
         active
           ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-          : 'bg-gray-100 text-gray-600 dark:bg-[#1e2d4a] dark:text-[#94a3b8]'
+          : 'bg-gray-100 text-gray-600 dark:bg-[#464554] dark:text-[#c7c4d7]'
       }`}
     >
-      <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-[#27c38a]' : 'bg-gray-400 dark:bg-[#5a6b8a]'}`} />
+      <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-[#27c38a]' : 'bg-gray-400 dark:bg-[#908fa0]'}`} />
       {active ? 'Ativo' : 'Inativo'}
     </span>
   )
@@ -76,7 +76,7 @@ function InvitationBadge({ status }: { status: 'pending' | 'accepted' | null | u
       </span>
     )
   }
-  return <span className="text-xs text-gray-400 dark:text-[#5a6b8a]">—</span>
+  return <span className="text-xs text-gray-400 dark:text-[#908fa0]">—</span>
 }
 
 // ── Icon button ───────────────────────────────────────────────────────────────
@@ -91,7 +91,7 @@ function IconBtn({ onClick, title, children, danger }: {
       className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
         danger
           ? 'text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30'
-          : 'text-[#334155] dark:text-[#94a3b8] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947]'
+          : 'text-[#334155] dark:text-[#c7c4d7] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947]'
       }`}
     >
       {children}
@@ -281,10 +281,10 @@ export default function StudentsPage() {
       {/* Stats row */}
       <div className="grid grid-cols-4 gap-4">
         {[
-          { label: 'Total de Alunos', value: students.length, cls: 'bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]' },
+          { label: 'Total de Alunos', value: students.length, cls: 'bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]' },
           { label: 'Ativos', value: activeCount, cls: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
           { label: 'Convite pendente', value: pendingInviteCount, cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' },
-          { label: 'Inativos', value: inactiveCount, cls: 'bg-gray-100 text-gray-600 dark:bg-[#1e2d4a] dark:text-[#94a3b8]' },
+          { label: 'Inativos', value: inactiveCount, cls: 'bg-gray-100 text-gray-600 dark:bg-[#464554] dark:text-[#c7c4d7]' },
         ].map(stat => (
           <div key={stat.label} className="bg-white rounded-xl border border-[#E2E8F0] px-5 py-4 flex items-center gap-4" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-display text-lg font-bold ${stat.cls}`}>
@@ -318,7 +318,7 @@ export default function StudentsPage() {
               className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
                 filterStatus === s
                   ? 'bg-[#4f46e5] text-white'
-                  : 'bg-[#EFF6FF] dark:bg-[#1a2947] text-[#334155] dark:text-[#e2e8f0]'
+                  : 'bg-[#EFF6FF] dark:bg-[#272a32] text-[#334155] dark:text-[#e2e8f0]'
               }`}
             >
               {s === 'all' ? 'Todos' : s === 'active' ? 'Ativos' : 'Inativos'}
@@ -336,7 +336,7 @@ export default function StudentsPage() {
       <div className={`bg-white rounded-xl border border-[#E2E8F0] overflow-x-auto ${loading ? 'hidden' : ''}`} style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#1a2947]">
+            <tr className="border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#272a32]">
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Aluno</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Email</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Status</th>
@@ -348,7 +348,7 @@ export default function StudentsPage() {
             {paginated.map(s => (
               <tr
                 key={s.id}
-                className="transition-colors bg-white dark:bg-[#131f37] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947]"
+                className="transition-colors bg-white dark:bg-[#1d1f27] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947]"
               >
                 {/* Aluno */}
                 <td className="px-6 py-4">
@@ -438,7 +438,7 @@ export default function StudentsPage() {
 
         {/* Table footer */}
         {filtered.length > 0 && (
-          <div className="px-6 py-3 border-t border-[#EEF2F7] dark:border-[#1e2d4a] flex items-center justify-between bg-[#F4F6F9] dark:bg-[#1a2947]">
+          <div className="px-6 py-3 border-t border-[#EEF2F7] dark:border-[#464554] flex items-center justify-between bg-[#F4F6F9] dark:bg-[#272a32]">
             <p className="text-xs text-[#64748B]">
               Mostrando <span className="font-semibold text-[#1E293B]">{filtered.length}</span> de{' '}
               <span className="font-semibold text-[#1E293B]">{students.length}</span> alunos
@@ -459,7 +459,7 @@ export default function StudentsPage() {
       </div>
 
       {/* AI Insights */}
-      <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] dark:bg-[#1a2947] border-[#b6c4ff] dark:border-[#2d3f66]">
+      <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] dark:bg-[#272a32] border-[#b6c4ff] dark:border-[#464554]">
         <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)', color: '#fff' }}>
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -507,12 +507,12 @@ export default function StudentsPage() {
               />
             </div>
             {editing ? (
-              <p className="text-xs text-[#64748B] dark:text-[#94a3b8] bg-[#F4F6F9] dark:bg-[#1a2947] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-lg px-3 py-2">
+              <p className="text-xs text-[#64748B] dark:text-[#c7c4d7] bg-[#F4F6F9] dark:bg-[#272a32] border border-[#E2E8F0] dark:border-[#464554] rounded-lg px-3 py-2">
                 Para redefinir a senha deste aluno, use <Link to="/user-access" className="font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline">Controle de Acesso</Link>.
               </p>
             ) : (
               <>
-                <label className="flex items-center gap-2 text-xs font-medium text-[#334155] dark:text-[#94a3b8]">
+                <label className="flex items-center gap-2 text-xs font-medium text-[#334155] dark:text-[#c7c4d7]">
                   <input
                     type="checkbox"
                     className="accent-[#4f46e5]"
@@ -536,7 +536,7 @@ export default function StudentsPage() {
                     />
                   </div>
                 ) : (
-                  <div className="flex items-start gap-3 p-3 rounded-lg border border-[#b6c4ff] dark:border-[#2d3f66] bg-[#EFF6FF] dark:bg-[#1a2947]">
+                  <div className="flex items-start gap-3 p-3 rounded-lg border border-[#b6c4ff] dark:border-[#464554] bg-[#EFF6FF] dark:bg-[#272a32]">
                     <svg className="w-5 h-5 text-[#712ae2] dark:text-[#818CF8] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
@@ -557,8 +557,8 @@ export default function StudentsPage() {
                             key={c.id}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                               checked
-                                ? 'bg-[#eef2ff] dark:bg-[#1a2947] border-[#c7d2fe] dark:border-[#2d3f66] text-[#4f46e5] dark:text-[#818CF8]'
-                                : 'bg-white dark:bg-[#131f37] border-[#E2E8F0] dark:border-[#1e2d4a] text-gray-600 dark:text-[#94a3b8] hover:bg-gray-50 dark:hover:bg-[#1a2947]'
+                                ? 'bg-[#eef2ff] dark:bg-[#272a32] border-[#c7d2fe] dark:border-[#464554] text-[#4f46e5] dark:text-[#818CF8]'
+                                : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-[#c7c4d7] hover:bg-gray-50 dark:hover:bg-[#1a2947]'
                             }`}
                           >
                             <input

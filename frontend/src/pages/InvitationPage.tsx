@@ -42,7 +42,7 @@ export default function InvitationPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#f4f6fb] to-[#e8edff] dark:from-[#0F172A] dark:to-[#131f37]">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#f4f6fb] to-[#e8edff] dark:from-[#10131a] dark:to-[#1d1f27]">
       <div className="w-full max-w-md">
         {/* Logo / header */}
         <div className="text-center mb-8">
@@ -76,7 +76,7 @@ export default function InvitationPage() {
               </div>
               <h2 className="text-lg font-bold text-[#1E293B] mb-2">Link inválido</h2>
               <p className="text-sm text-[#64748B] mb-6">{errorMsg}</p>
-              <p className="text-xs text-[#9ca3af] dark:text-[#64748b]">Se você já definiu sua senha, faça login normalmente.</p>
+              <p className="text-xs text-[#9ca3af] dark:text-[#908fa0]">Se você já definiu sua senha, faça login normalmente.</p>
               <button
                 onClick={() => navigate('/login')}
                 className="mt-4 px-5 py-2.5 rounded-lg text-sm font-semibold text-white"
@@ -112,7 +112,7 @@ export default function InvitationPage() {
           {/* Form */}
           {step === 'form' && info && (
             <div>
-              <div className="px-8 pt-7 pb-5 border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#131f37]">
+              <div className="px-8 pt-7 pb-5 border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#1d1f27]">
                 <p className="text-xs font-semibold uppercase tracking-wide text-[#712ae2] dark:text-[#818CF8] mb-1">{info.institution_name}</p>
                 <h2 className="text-xl font-bold text-[#1E293B]">Olá, {info.student_name}!</h2>
                 <p className="text-sm text-[#64748B] mt-1">
@@ -129,7 +129,7 @@ export default function InvitationPage() {
                     placeholder="Mínimo 6 caracteres"
                     required
                     minLength={6}
-                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg bg-white text-[#1E293B] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#712ae2] focus:border-transparent"
+                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg bg-white text-[#1E293B] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#712ae2] focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -141,7 +141,7 @@ export default function InvitationPage() {
                     placeholder="Repita a senha"
                     required
                     minLength={6}
-                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg bg-white text-[#1E293B] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#712ae2] focus:border-transparent"
+                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg bg-white text-[#1E293B] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#712ae2] focus:border-transparent"
                   />
                 </div>
                 <button
@@ -157,7 +157,7 @@ export default function InvitationPage() {
           )}
         </div>
 
-        <p className="text-center text-xs text-[#9ca3af] dark:text-[#64748b] mt-6">
+        <p className="text-center text-xs text-[#9ca3af] dark:text-[#908fa0] mt-6">
           Já tem acesso?{' '}
           <button onClick={() => navigate('/login')} className="text-[#712ae2] dark:text-[#818CF8] font-medium hover:underline">
             Fazer login

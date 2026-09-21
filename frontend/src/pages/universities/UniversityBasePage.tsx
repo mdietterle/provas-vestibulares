@@ -19,7 +19,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
 
   if (!u) {
     return (
-      <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] flex items-center justify-center">
         <div className="text-center p-8 bg-white dark:bg-[#1a233a] rounded-2xl border shadow-sm">
           <h1 className="text-2xl font-bold mb-2">Universidade não encontrada</h1>
           <p className="text-[#64748B] mb-4">A instituição solicitada não está cadastrada.</p>
@@ -73,7 +73,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
   ]
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] font-sans">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
         title={`${u.shortName} (${u.fullName}) — Simulados, Provas e Informações | Cognition AI`}
         description={`Guia completo da ${u.fullName} (${u.shortName}): vestibulares, cursos mais procurados, formato de provas e simulados.`}
@@ -86,12 +86,12 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
         <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: 'Universidades', to: '/universidades' }, { label: u.shortName }]} />
 
         {/* Hero Section */}
-        <div className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
+        <div className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
           <div className="flex items-center gap-3 flex-wrap mb-3">
             <span className="text-xs font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] bg-[#f1ecfc] dark:bg-[#241f3d] rounded-full px-3 py-1">
               {CATEGORY_LABELS[u.category]}
             </span>
-            <span className="text-xs font-semibold text-[#64748B] dark:text-[#a0a3af]">{u.state} — {u.region}</span>
+            <span className="text-xs font-semibold text-[#64748B] dark:text-[#908fa0]">{u.state} — {u.region}</span>
             {u.hasRealImporter && (
               <span className="text-xs font-semibold text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/30 rounded-full px-3 py-1">
                 Provas Reais no Banco
@@ -101,7 +101,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1E293B] dark:text-white mb-2">
             {u.fullName} ({u.shortName})
           </h1>
-          <p className="text-sm text-[#64748B] dark:text-[#a0a3af] leading-relaxed">
+          <p className="text-sm text-[#64748B] dark:text-[#908fa0] leading-relaxed">
             {u.description}
           </p>
         </div>
@@ -111,31 +111,31 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
 
         {/* Main Information Sections */}
         <div className="space-y-8 text-sm leading-relaxed text-[#333] dark:text-[#c7ccd9]">
-          <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-2xl p-6 shadow-sm">
+          <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
             <h2 className="text-lg font-bold mb-3 text-[#1E293B] dark:text-white flex items-center gap-2">
               <svg className="w-5 h-5 text-[#712ae2]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
               Tipo de Vestibular e Seleção
             </h2>
-            <p className="text-[#555] dark:text-[#a0a3af]">{u.vestibularType}</p>
+            <p className="text-[#555] dark:text-[#908fa0]">{u.vestibularType}</p>
           </section>
 
-          <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-2xl p-6 shadow-sm">
+          <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
             <h2 className="text-lg font-bold mb-3 text-[#1E293B] dark:text-white flex items-center gap-2">
               <svg className="w-5 h-5 text-[#712ae2]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               Calendário de Ingresso Típico
             </h2>
-            <p className="text-[#555] dark:text-[#a0a3af]">{u.admissionCalendar}</p>
-            <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-3">
+            <p className="text-[#555] dark:text-[#908fa0]">{u.admissionCalendar}</p>
+            <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-3">
               As datas são baseadas em padrões anteriores e podem variar. Consulte o edital no site oficial da instituição.
             </p>
           </section>
 
           {u.mainCourses.length > 0 && (
-            <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-2xl p-6 shadow-sm">
+            <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
               <h2 className="text-lg font-bold mb-3 text-[#1E293B] dark:text-white flex items-center gap-2">
                 <svg className="w-5 h-5 text-[#712ae2]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0V11m0 0h5m-5 0H7" />
@@ -144,7 +144,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
                 {u.mainCourses.map(c => (
-                  <div key={c} className="bg-[#F4F6F9] dark:bg-[#1a2542] px-3 py-2 rounded-lg text-xs font-medium text-[#1E293B] dark:text-[#e1e7f5] border border-[#E2E8F0] dark:border-[#28385e]">
+                  <div key={c} className="bg-[#F4F6F9] dark:bg-[#1d1f27] px-3 py-2 rounded-lg text-xs font-medium text-[#1E293B] dark:text-[#e1e7f5] border border-[#E2E8F0] dark:border-[#464554]">
                     {c}
                   </div>
                 ))}
@@ -153,11 +153,11 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
           )}
 
           {/* Placeholder section for future detailed content */}
-          <section className="bg-white dark:bg-[#151f38] border border-dashed border-[#c7d7ff] dark:border-[#28385e] rounded-2xl p-6 shadow-sm">
+          <section className="bg-white dark:bg-[#191b23] border border-dashed border-[#c7d7ff] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
             <h2 className="text-lg font-bold mb-2 text-[#1E293B] dark:text-white">
               Guia Completo e Detalhes do Vestibular {u.shortName}
             </h2>
-            <p className="text-[#64748B] dark:text-[#a0a3af] text-sm leading-relaxed">
+            <p className="text-[#64748B] dark:text-[#908fa0] text-sm leading-relaxed">
               Conteúdo detalhado sobre concorrência, pesos das disciplinas, notas de corte e dicas de preparação para a <strong>{u.fullName}</strong> será expandido em breve.
             </p>
           </section>
@@ -169,13 +169,13 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
             </section>
           )}
 
-          <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-2xl p-6 shadow-sm">
+          <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
             <h2 className="text-lg font-bold mb-4 text-[#1E293B] dark:text-white">Perguntas Frequentes</h2>
-            <div className="space-y-4 divide-y divide-[#E2E8F0] dark:divide-[#1e2d4a]">
+            <div className="space-y-4 divide-y divide-[#E2E8F0] dark:divide-[#464554]">
               {faqs.map((f, idx) => (
                 <div key={f.q} className={idx > 0 ? 'pt-4' : ''}>
                   <h3 className="font-semibold text-[#1E293B] dark:text-white mb-1">{f.q}</h3>
-                  <p className="text-[#555] dark:text-[#a0a3af] text-xs">{f.a}</p>
+                  <p className="text-[#555] dark:text-[#908fa0] text-xs">{f.a}</p>
                 </div>
               ))}
             </div>

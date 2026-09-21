@@ -9,7 +9,7 @@ const ADSENSE_SLOT_PUBLIC = (import.meta.env.VITE_ADSENSE_SLOT_PUBLIC as string 
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0F172A] text-[#1E293B]">
+    <div className="min-h-screen bg-white dark:bg-[#10131a] text-[#1E293B]">
       <Seo
         title="Sobre o Cognition AI — plataforma de correção de provas com IA"
         description="Conheça o Cognition AI: como a plataforma corrige provas e redações com apoio de Inteligência Artificial e monta simulados de vestibular a partir de provas oficiais."
@@ -22,7 +22,7 @@ export default function AboutPage() {
         <h1 className="text-3xl font-bold mt-2 mb-2">Sobre o Cognition AI</h1>
         <p className="text-sm text-[#64748B] mb-10">Uma plataforma de avaliação educacional com apoio de Inteligência Artificial</p>
 
-        <div className="space-y-8 text-sm leading-relaxed text-[#333] dark:text-[#cbd5e1]">
+        <div className="space-y-8 text-sm leading-relaxed text-[#333] dark:text-[#e1e2ec]">
           <section>
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">O que fazemos</h2>
             <p>

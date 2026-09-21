@@ -35,10 +35,10 @@ function StatusBadge({ active }: { active: boolean }) {
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
         active
           ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-          : 'bg-gray-100 text-gray-600 dark:bg-[#1e2d4a] dark:text-[#94a3b8]'
+          : 'bg-gray-100 text-gray-600 dark:bg-[#464554] dark:text-[#c7c4d7]'
       }`}
     >
-      <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-[#27c38a]' : 'bg-gray-400 dark:bg-[#5a6b8a]'}`} />
+      <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-[#27c38a]' : 'bg-gray-400 dark:bg-[#908fa0]'}`} />
       {active ? 'Ativo' : 'Inativo'}
     </span>
   )
@@ -52,8 +52,8 @@ function RoleBadge({ role }: { role: string }) {
     <span
       className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
         isProfessor
-          ? 'bg-[#eef2ff] dark:bg-[#1a2947] text-[#4a1d96] dark:text-[#818CF8]'
-          : 'bg-[#dce1ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]'
+          ? 'bg-[#eef2ff] dark:bg-[#272a32] text-[#4a1d96] dark:text-[#818CF8]'
+          : 'bg-[#dce1ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]'
       }`}
     >
       {isProfessor ? 'Professor' : 'Aluno'}
@@ -70,7 +70,7 @@ function IconBtn({ onClick, title, children, color }: {
     ? 'text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30'
     : color === 'accent'
       ? 'text-[#712ae2] dark:text-[#818CF8] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947]'
-      : 'text-[#334155] dark:text-[#94a3b8] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947]'
+      : 'text-[#334155] dark:text-[#c7c4d7] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947]'
   return (
     <button
       onClick={onClick}
@@ -199,10 +199,10 @@ export default function UserAccessPage() {
       {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: 'Professores', value: professors.length, cls: 'bg-[#eef2ff] dark:bg-[#1a2947] text-[#4a1d96] dark:text-[#818CF8]' },
-          { label: 'Alunos', value: students.length, cls: 'bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]' },
+          { label: 'Professores', value: professors.length, cls: 'bg-[#eef2ff] dark:bg-[#272a32] text-[#4a1d96] dark:text-[#818CF8]' },
+          { label: 'Alunos', value: students.length, cls: 'bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]' },
           { label: 'Ativos', value: activeCount, cls: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
-          { label: 'Inativos', value: inactiveCount, cls: 'bg-gray-100 text-gray-600 dark:bg-[#1e2d4a] dark:text-[#94a3b8]' },
+          { label: 'Inativos', value: inactiveCount, cls: 'bg-gray-100 text-gray-600 dark:bg-[#464554] dark:text-[#c7c4d7]' },
         ].map(stat => (
           <div
             key={stat.label}
@@ -225,7 +225,7 @@ export default function UserAccessPage() {
               key={t.key}
               onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                tab === t.key ? 'text-white' : 'text-[#334155] dark:text-[#94a3b8]'
+                tab === t.key ? 'text-white' : 'text-[#334155] dark:text-[#c7c4d7]'
               }`}
               style={tab === t.key
                 ? { background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }
@@ -236,7 +236,7 @@ export default function UserAccessPage() {
                 className={`px-1.5 py-0.5 rounded-full text-xs font-bold leading-none ${
                   tab === t.key
                     ? 'bg-white/25 text-white'
-                    : 'bg-[#E2E8F0] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]'
+                    : 'bg-[#E2E8F0] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]'
                 }`}
               >
                 {t.count}
@@ -267,7 +267,7 @@ export default function UserAccessPage() {
                 className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
                   filterStatus === s
                     ? 'bg-[#4f46e5] text-white'
-                    : 'bg-[#EFF6FF] dark:bg-[#1a2947] text-[#334155] dark:text-[#e2e8f0]'
+                    : 'bg-[#EFF6FF] dark:bg-[#272a32] text-[#334155] dark:text-[#e2e8f0]'
                 }`}
               >
                 {s === 'all' ? 'Todos' : s === 'active' ? 'Ativos' : 'Inativos'}
@@ -289,7 +289,7 @@ export default function UserAccessPage() {
       >
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#1a2947]">
+            <tr className="border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#272a32]">
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Usuário</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Email</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Perfil</th>
@@ -302,7 +302,7 @@ export default function UserAccessPage() {
             {filtered.map(u => (
               <tr
                 key={u.id}
-                className="transition-colors bg-white dark:bg-[#131f37] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947]"
+                className="transition-colors bg-white dark:bg-[#1d1f27] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947]"
               >
                 {/* Usuário */}
                 <td className="px-6 py-4">
@@ -366,7 +366,7 @@ export default function UserAccessPage() {
 
         {/* Table footer */}
         {filtered.length > 0 && (
-          <div className="px-6 py-3 border-t border-[#EEF2F7] dark:border-[#1e2d4a] flex items-center justify-between bg-[#F4F6F9] dark:bg-[#1a2947]">
+          <div className="px-6 py-3 border-t border-[#EEF2F7] dark:border-[#464554] flex items-center justify-between bg-[#F4F6F9] dark:bg-[#272a32]">
             <p className="text-xs text-[#64748B]">
               Mostrando <span className="font-semibold text-[#1E293B]">{filtered.length}</span> de{' '}
               <span className="font-semibold text-[#1E293B]">{users.length}</span> usuários
@@ -387,7 +387,7 @@ export default function UserAccessPage() {
       </div>
 
       {/* Info banner */}
-      <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] dark:bg-[#1a2947] border-[#b6c4ff] dark:border-[#2d3f66]">
+      <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] dark:bg-[#272a32] border-[#b6c4ff] dark:border-[#464554]">
         <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)', color: '#fff' }}>
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -408,7 +408,7 @@ export default function UserAccessPage() {
         <Modal title="Redefinir Senha" onClose={() => setPwTarget(null)}>
           <div className="space-y-5">
             {/* User info */}
-            <div className="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#1a2947]">
+            <div className="flex items-center gap-3 p-3 rounded-xl border border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#272a32]">
               <Avatar name={pwTarget.name} />
               <div>
                 <p className="font-semibold text-sm text-[#1E293B]">{pwTarget.name}</p>
@@ -489,7 +489,7 @@ export default function UserAccessPage() {
                               : strength === 2 ? 'bg-amber-600'
                               : strength === 3 ? 'bg-blue-500'
                               : 'bg-[#27c38a]'
-                              : 'bg-gray-200 dark:bg-[#1e2d4a]'
+                              : 'bg-gray-200 dark:bg-[#464554]'
                           }`}
                         />
                       )

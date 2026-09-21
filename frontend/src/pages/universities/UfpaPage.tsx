@@ -10,12 +10,12 @@ const NUMEROS = [
 
 export default function UfpaPage() {
   const customContent = (
-    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#E2E8F0] dark:bg-[#1e2d4a] rounded-2xl overflow-hidden mb-8 border border-[#E2E8F0] dark:border-[#1e2d4a]">
+    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#E2E8F0] dark:bg-[#464554] rounded-2xl overflow-hidden mb-8 border border-[#E2E8F0] dark:border-[#464554]">
         {NUMEROS.map(n => (
-          <div key={n.rotulo} className="bg-white dark:bg-[#151f38] p-4 text-center">
+          <div key={n.rotulo} className="bg-white dark:bg-[#191b23] p-4 text-center">
             <div className="text-2xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">{n.valor}</div>
-            <div className="text-[11px] text-[#64748B] dark:text-[#94a3b8] mt-1">{n.rotulo}</div>
+            <div className="text-[11px] text-[#64748B] dark:text-[#c7c4d7] mt-1">{n.rotulo}</div>
           </div>
         ))}
       </div>
@@ -26,7 +26,7 @@ export default function UfpaPage() {
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         A maior e mais antiga federal da região Norte
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
         Com sede em Belém, a UFPA é a maior universidade federal do Norte do Brasil, presente em 12 campi que
         alcançam 82 municípios paraenses. É a principal formadora de profissionais pra uma região continental, com
         papel central em áreas como Genética, Geociências e Neurociências.
@@ -36,7 +36,7 @@ export default function UfpaPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: líder amazônica em patentes registradas
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           A UFPA lidera a região amazônica em quantidade de patentes registradas no INPI (Instituto Nacional de
           Propriedade Industrial) — um indicador raro de conversão de pesquisa acadêmica em inovação registrada,
           numa região historicamente carente de infraestrutura de ciência e tecnologia.
@@ -51,7 +51,7 @@ export default function UfpaPage() {
         credit="Foto: Túllio F / Wikimedia Commons, CC BY-SA 4.0"
       />
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
         São 100 mestrados e 55 doutorados, além de 1.021 grupos de pesquisa e 622 programas de extensão em
         atividade — números que colocam a UFPA entre as maiores estruturas de pós-graduação e extensão do país.
         Cursos de destaque incluem <strong>Medicina</strong>, <strong>Direito</strong>, <strong>Psicologia</strong> e{' '}
@@ -62,7 +62,7 @@ export default function UfpaPage() {
         <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Avaliação MEC: Direito e Psicologia nota máxima no Enade
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           No Enade 2022, <strong>Direito</strong> e <strong>Psicologia</strong> tiraram nota máxima (5), enquanto
           Administração, Ciências Contábeis, Jornalismo, Publicidade e Propaganda, Serviço Social e Turismo
           alcançaram conceito 4. Cursos como Engenharia de Exploração e Produção de Petróleo e Gás (Salinópolis)
@@ -75,7 +75,7 @@ export default function UfpaPage() {
         <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Papel no desenvolvimento da Amazônia
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           A UFPA é a maior instituição de ensino, pesquisa e extensão da Amazônia, presente em municípios que
           dificilmente teriam acesso a ensino superior público de outra forma. Isso é especialmente relevante numa
           região com dimensões continentais e infraestrutura de transporte limitada: cada campus no interior
@@ -85,11 +85,11 @@ export default function UfpaPage() {
         </p>
       </div>
 
-      <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
+      <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
         <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Ingresso: só pelo SiSU
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           Diferente de várias federais que mantêm vestibular próprio, a UFPA usa <strong>exclusivamente a nota do
           ENEM</strong> desde 2014, através do PS UFPA, organizado pelo CEPS/UFPA. Não há prova própria — toda a
           seleção segue o calendário nacional do SiSU. Confirme datas e vagas em{' '}

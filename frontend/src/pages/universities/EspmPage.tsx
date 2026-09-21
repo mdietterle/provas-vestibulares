@@ -2,7 +2,7 @@ import UniversityBasePage from './UniversityBasePage'
 
 export default function EspmPage() {
   const customContent = (
-    <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
+    <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       {/* Banner Principal */}
       <div className="bg-gradient-to-br from-[#4f46e5] via-[#1a3a8a] to-[#712ae2] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="relative z-10">
@@ -21,12 +21,12 @@ export default function EspmPage() {
       </div>
 
       {/* Seção 1: O que é e onde fica */}
-      <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+      <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             O que é a ESPM
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#94a3b8] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
             <p>
               A ESPM (Escola Superior de Propaganda e Marketing) foi fundada em 1951, em São Paulo, por um grupo de
               publicitários e profissionais de mídia — sendo pioneira no ensino de Propaganda e Marketing no Brasil.
@@ -45,12 +45,12 @@ export default function EspmPage() {
       </section>
 
       {/* Seção 2: Cursos */}
-      <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+      <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Principais cursos
           </h2>
-          <p className="text-sm text-[#475569] dark:text-[#94a3b8] mt-4 leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 leading-relaxed">
             A grade de graduação combina o DNA histórico da escola em comunicação com áreas de negócios e tecnologia
             que vêm crescendo bastante nos últimos anos:
           </p>
@@ -58,7 +58,7 @@ export default function EspmPage() {
 
         <div className="flex flex-wrap gap-2 text-xs">
           {['Publicidade e Propaganda', 'Administração', 'Design', 'Jornalismo', 'Cinema e Audiovisual', 'Ciência de Dados e Negócios', 'Relações Internacionais', 'Direito', 'Ciências Sociais e do Consumo'].map(c => (
-            <span key={c} className="bg-[#F4F6F9] dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
+            <span key={c} className="bg-[#F4F6F9] dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#c7c4d7] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
               {c}
             </span>
           ))}
@@ -66,33 +66,33 @@ export default function EspmPage() {
       </section>
 
       {/* Seção: Processo seletivo */}
-      <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+      <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Como entrar: vestibular próprio ou nota do ENEM?
           </h2>
-          <p className="text-sm text-[#475569] dark:text-[#94a3b8] mt-4 leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 leading-relaxed">
             A ESPM tem duas portas de entrada, e o candidato pode tentar as duas ao mesmo tempo:
           </p>
         </div>
 
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
+          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
             <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vestibular próprio</dt>
-            <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">
+            <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">
               Formato híbrido: etapa online e etapa presencial, com entrevista individual com um professor da ESPM e
               redação de até 400 palavras.
             </dd>
           </div>
-          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
+          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
             <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Nota do ENEM</dt>
-            <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">
+            <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">
               Vale nota do ENEM de qualquer edição, desde que média geral mínima de 580 pontos e mínimo de 600 pontos
               em redação — as duas notas precisam vir do mesmo exame.
             </dd>
           </div>
         </dl>
-        <p className="text-xs text-[#a0a3af] dark:text-[#6b7385]">
+        <p className="text-xs text-[#a0a3af] dark:text-[#908fa0]">
           Quem se inscreve pela nota do ENEM também pode participar do vestibular próprio — se não passar por um
           caminho, ainda concorre pelo outro. Datas, taxas e formato exato variam a cada edição; confirme sempre em{' '}
           <a href="https://www.espm.br/cursos-de-graduacao/processos-seletivos/" target="_blank" rel="noreferrer" className="underline font-semibold">
@@ -102,14 +102,14 @@ export default function EspmPage() {
       </section>
 
       {/* Seção 3: Referência */}
-      <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+      <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Por que a ESPM é referência
           </h2>
         </div>
-        <div className="bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e] rounded-2xl p-5 space-y-3">
-          <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <div className="bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-5 space-y-3">
+          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
             A ESPM é reconhecida no mercado como a principal escola de <strong>Publicidade e Propaganda</strong> do
             Brasil, com curso historicamente bem avaliado em rankings de mercado, e conta com nota máxima (4) no
             Índice Geral de Cursos (IGC) do MEC — indicador que mede a qualidade do ensino superior de uma instituição

@@ -81,7 +81,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] font-sans">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
 
       <PublicHeader />
 
@@ -98,14 +98,14 @@ export default function LoginPage() {
           <h1 className="font-display text-5xl font-bold text-[#1E293B] leading-tight mb-4">
             Revolucionando a educação com IA
           </h1>
-          <p className="text-lg text-[#334155] dark:text-[#94a3b8] leading-relaxed mb-8">
+          <p className="text-lg text-[#334155] dark:text-[#c7c4d7] leading-relaxed mb-8">
             Transforme o ensino com Inteligência Estratégica. Automatize correções, gere questões personalizadas em segundos e obtenha insights profundos sobre o desempenho dos alunos.
           </p>
           <div className="flex flex-wrap gap-4 mb-12">
             <a href="#login" className="px-6 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
               Começar agora
             </a>
-            <Link to="/plans" className="px-6 py-3 rounded-lg text-sm font-semibold text-[#4f46e5] bg-[#EFF6FF] dark:bg-[#1e2d4a] hover:bg-[#E2E8F0] dark:hover:bg-[#243756] transition-colors">
+            <Link to="/plans" className="px-6 py-3 rounded-lg text-sm font-semibold text-[#4f46e5] bg-[#EFF6FF] dark:bg-[#464554] hover:bg-[#E2E8F0] dark:hover:bg-[#243756] transition-colors">
               Ver preços →
             </Link>
           </div>
@@ -128,10 +128,10 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1">Email institucional</label>
+                <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1">Email institucional</label>
                 <input
                   type="email"
-                  className="w-full border border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="seu@instituicao.edu.br"
@@ -140,12 +140,12 @@ export default function LoginPage() {
               </div>
               <div>
                 <div className="flex justify-between mb-1">
-                  <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide">Senha</label>
+                  <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide">Senha</label>
                   <Link to="/esqueci-senha" className="text-xs text-[#712ae2] hover:underline">Esqueceu a senha?</Link>
                 </div>
                 <input
                   type="password"
-                  className="w-full border border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
@@ -173,18 +173,18 @@ export default function LoginPage() {
               Funcionalidades
             </span>
             <h2 className="font-display text-3xl font-bold text-[#1E293B] mb-3">Potencialize sua Produtividade</h2>
-            <p className="text-[#334155] dark:text-[#94a3b8] max-w-xl mx-auto">
+            <p className="text-[#334155] dark:text-[#c7c4d7] max-w-xl mx-auto">
               Ferramentas desenhadas para devolver ao professor o tempo que importa: o aluno.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map(f => (
-              <div key={f.title} className="rounded-xl p-6 border border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#131f37] hover:border-[#b6c4ff] dark:hover:border-[#334155] transition-colors">
+              <div key={f.title} className="rounded-xl p-6 border border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#1d1f27] hover:border-[#b6c4ff] dark:hover:border-[#334155] transition-colors">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ background: f.bg, color: f.color }}>
                   {f.icon}
                 </div>
                 <h3 className="font-display font-semibold text-[#1E293B] mb-2">{f.title}</h3>
-                <p className="text-sm text-[#334155] dark:text-[#94a3b8] leading-relaxed">{f.description}</p>
+                <p className="text-sm text-[#334155] dark:text-[#c7c4d7] leading-relaxed">{f.description}</p>
               </div>
             ))}
           </div>
@@ -201,12 +201,12 @@ export default function LoginPage() {
             <h2 className="font-display text-3xl font-bold text-[#1E293B] mb-4">
               Crie conteúdos em segundos com o <span style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI Tray</span>
             </h2>
-            <p className="text-[#334155] dark:text-[#94a3b8] leading-relaxed mb-8">
+            <p className="text-[#334155] dark:text-[#c7c4d7] leading-relaxed mb-8">
               Interface flutuante para geração de materiais didáticos diretamente nas suas páginas de planejamento. Como ter um assistente pedagógico 24 horas por dia, 7 dias por semana.
             </p>
             <ul className="space-y-3 mb-8">
               {['Planos de aula alinhados com a BNCC', 'Rubricas de avaliação personalizadas', 'Questões geradas por tema ou habilidade', 'Feedback individualizado por aluno'].map(item => (
-                <li key={item} className="flex items-center gap-3 text-sm text-[#334155] dark:text-[#94a3b8]">
+                <li key={item} className="flex items-center gap-3 text-sm text-[#334155] dark:text-[#c7c4d7]">
                   <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: '#d1fae5', color: '#27c38a' }}>
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -230,12 +230,12 @@ export default function LoginPage() {
                 <span className="text-sm font-semibold text-[#1E293B]">AI Tray</span>
                 <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: '#e9ddff', color: '#712ae2' }}>Novo</span>
               </div>
-              <div className="bg-[#F4F6F9] dark:bg-[#1e2d4a] rounded-lg p-3 mb-4 text-sm text-[#334155] dark:text-[#94a3b8] border border-[#E2E8F0] dark:border-[#334155]">
+              <div className="bg-[#F4F6F9] dark:bg-[#464554] rounded-lg p-3 mb-4 text-sm text-[#334155] dark:text-[#c7c4d7] border border-[#E2E8F0] dark:border-[#c7c4d7]">
                 "Gere 5 questões de múltipla escolha sobre Revolução Industrial para o 8º ano, nível médio, alinhadas à BNCC EF08HI20."
               </div>
               <div className="space-y-2 mb-4">
                 {['Questão 1: Qual foi o principal fator...', 'Questão 2: A máquina a vapor representou...', 'Questão 3: As condições de trabalho...'].map((q, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs text-[#334155] dark:text-[#94a3b8] bg-white rounded-lg p-2 border border-[#E2E8F0]">
+                  <div key={i} className="flex items-start gap-2 text-xs text-[#334155] dark:text-[#c7c4d7] bg-white rounded-lg p-2 border border-[#E2E8F0]">
                     <span className="w-4 h-4 rounded-full bg-[#dce1ff] text-[#4f46e5] flex items-center justify-center font-bold shrink-0 text-[10px]">{i + 1}</span>
                     {q}
                   </div>
@@ -245,7 +245,7 @@ export default function LoginPage() {
                 <button className="flex-1 py-2 rounded-lg text-xs font-semibold text-white" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
                   Inserir no Plano
                 </button>
-                <button className="px-3 py-2 rounded-lg text-xs font-medium text-[#4f46e5] bg-[#EFF6FF] dark:bg-[#1e2d4a] hover:bg-[#E2E8F0] dark:hover:bg-[#243756]">
+                <button className="px-3 py-2 rounded-lg text-xs font-medium text-[#4f46e5] bg-[#EFF6FF] dark:bg-[#464554] hover:bg-[#E2E8F0] dark:hover:bg-[#243756]">
                   Refinar
                 </button>
               </div>
@@ -275,7 +275,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── AD SLOT ── */}
-      <section className="py-8 bg-[#F4F6F9] dark:bg-[#0F172A]">
+      <section className="py-8 bg-[#F4F6F9] dark:bg-[#10131a]">
         <div className="max-w-6xl mx-auto px-6">
           <AdSlot slot={ADSENSE_SLOT_LOGIN} className="h-24" />
         </div>

@@ -96,7 +96,7 @@ export default function SubscriptionPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 text-[#64748B] dark:text-[#94a3b8]">
+      <div className="flex items-center justify-center h-64 text-[#64748B] dark:text-[#c7c4d7]">
         <Loader2 className="w-5 h-5 animate-spin mr-2" /> Carregando...
       </div>
     )
@@ -107,10 +107,10 @@ export default function SubscriptionPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#f8fafc] flex items-center gap-2">
+        <h1 className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#e1e2ec] flex items-center gap-2">
           <CreditCard className="w-6 h-6" /> Assinatura
         </h1>
-        <p className="text-[#64748B] dark:text-[#94a3b8] mt-1">
+        <p className="text-[#64748B] dark:text-[#c7c4d7] mt-1">
           Gerencie o plano da sua instituição e compre créditos avulsos de IA.
         </p>
       </div>
@@ -118,20 +118,20 @@ export default function SubscriptionPage() {
       {status && (
         <div className="card flex flex-wrap items-center justify-between gap-4">
           <div className="space-y-1">
-            <p className="text-sm text-[#64748B] dark:text-[#94a3b8]">Plano atual</p>
-            <p className="text-lg font-bold text-[#1E293B] dark:text-[#f8fafc] capitalize">{currentPlan || 'Basic'}</p>
+            <p className="text-sm text-[#64748B] dark:text-[#c7c4d7]">Plano atual</p>
+            <p className="text-lg font-bold text-[#1E293B] dark:text-[#e1e2ec] capitalize">{currentPlan || 'Basic'}</p>
             {status.stripe_subscription_status && (
-              <p className="text-xs text-[#9ca3af] dark:text-[#64748b]">Status: {status.stripe_subscription_status}</p>
+              <p className="text-xs text-[#9ca3af] dark:text-[#908fa0]">Status: {status.stripe_subscription_status}</p>
             )}
           </div>
           <div className="space-y-1">
-            <p className="text-sm text-[#64748B] dark:text-[#94a3b8]">Créditos avulsos disponíveis</p>
-            <p className="text-lg font-bold text-[#1E293B] dark:text-[#f8fafc]">{status.credits_balance}</p>
+            <p className="text-sm text-[#64748B] dark:text-[#c7c4d7]">Créditos avulsos disponíveis</p>
+            <p className="text-lg font-bold text-[#1E293B] dark:text-[#e1e2ec]">{status.credits_balance}</p>
           </div>
           <button
             onClick={handlePortal}
             disabled={actionLoading === 'portal'}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E2E8F0] dark:border-[#1e2d4a] text-sm font-semibold text-[#1E293B] dark:text-[#f8fafc] hover:bg-[#f7f8fc] dark:hover:bg-[#1e2d4a] disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-sm font-semibold text-[#1E293B] dark:text-[#e1e2ec] hover:bg-[#f7f8fc] dark:hover:bg-[#1e2d4a] disabled:opacity-50"
           >
             {actionLoading === 'portal' ? <Loader2 className="w-4 h-4 animate-spin" /> : <ExternalLink className="w-4 h-4" />}
             Gerenciar assinatura
@@ -145,17 +145,17 @@ export default function SubscriptionPage() {
           return (
             <div
               key={plan.key}
-              className={`rounded-2xl border p-6 flex flex-col gap-4 bg-white dark:bg-[#131f37] ${
-                isCurrent ? 'border-[#712ae2] ring-2 ring-[#e9ddff] dark:ring-[#3a2166]' : 'border-[#E2E8F0] dark:border-[#1e2d4a]'
+              className={`rounded-2xl border p-6 flex flex-col gap-4 bg-white dark:bg-[#1d1f27] ${
+                isCurrent ? 'border-[#712ae2] ring-2 ring-[#e9ddff] dark:ring-[#3a2166]' : 'border-[#E2E8F0] dark:border-[#464554]'
               }`}
             >
               <div>
-                <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#f8fafc]">{plan.label}</p>
-                <p className="text-2xl font-bold text-[#1E293B] dark:text-[#f8fafc] mt-1">{plan.price}</p>
+                <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#e1e2ec]">{plan.label}</p>
+                <p className="text-2xl font-bold text-[#1E293B] dark:text-[#e1e2ec] mt-1">{plan.price}</p>
               </div>
               <ul className="space-y-2 flex-1">
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-[#334155] dark:text-[#cbd5e1]">
+                  <li key={f} className="flex items-start gap-2 text-sm text-[#334155] dark:text-[#e1e2ec]">
                     <Check className="w-4 h-4 text-[#27c38a] shrink-0 mt-0.5" /> {f}
                   </li>
                 ))}
@@ -165,7 +165,7 @@ export default function SubscriptionPage() {
                 disabled={isCurrent || actionLoading === `plan-${plan.key}`}
                 className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                   isCurrent
-                    ? 'bg-[#eef1fb] dark:bg-[#1e2d4a] text-[#9ca3af] dark:text-[#64748b] cursor-default'
+                    ? 'bg-[#eef1fb] dark:bg-[#464554] text-[#9ca3af] dark:text-[#908fa0] cursor-default'
                     : 'bg-[#712ae2] text-white hover:bg-[#5a2eb8] disabled:opacity-50'
                 }`}
               >
@@ -184,8 +184,8 @@ export default function SubscriptionPage() {
 
       <div className="card flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#f8fafc]">Pacote de créditos avulsos</p>
-          <p className="text-sm text-[#64748B] dark:text-[#94a3b8] mt-1">
+          <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#e1e2ec]">Pacote de créditos avulsos</p>
+          <p className="text-sm text-[#64748B] dark:text-[#c7c4d7] mt-1">
             100 créditos de IA (gerações + correções) por R$ 49 — usados automaticamente quando sua cota mensal do plano é excedida.
           </p>
         </div>

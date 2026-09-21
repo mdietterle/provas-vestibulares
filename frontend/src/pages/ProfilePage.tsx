@@ -246,7 +246,7 @@ export default function ProfilePage() {
       </form>
 
       {/* Account info */}
-      <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] dark:bg-[#1a2947] border-[#b6c4ff] dark:border-[#2d3f6a]">
+      <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] dark:bg-[#272a32] border-[#b6c4ff] dark:border-[#464554]">
         <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)', color: '#fff' }}>
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

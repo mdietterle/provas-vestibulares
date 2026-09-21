@@ -9,7 +9,7 @@ const ADSENSE_SLOT_PUBLIC = (import.meta.env.VITE_ADSENSE_SLOT_PUBLIC as string 
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
-    <div className="group rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] p-6 bg-white dark:bg-[#131f37] transition-all duration-300 hover:-translate-y-1 hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:shadow-[0_16px_40px_rgba(0,35,111,0.10)]">
+    <div className="group rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-6 bg-white dark:bg-[#1d1f27] transition-all duration-300 hover:-translate-y-1 hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:shadow-[0_16px_40px_rgba(0,35,111,0.10)]">
       <div
         className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-white shadow-[0_4px_14px_rgba(107,56,212,0.28)] transition-transform duration-300 group-hover:scale-110"
         style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
@@ -17,20 +17,20 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
         {icon}
       </div>
       <h3 className="font-display text-base font-bold text-[#1E293B] mb-2">{title}</h3>
-      <p className="text-sm text-[#6b7a9a] dark:text-[#94a3b8] leading-relaxed">{description}</p>
+      <p className="text-sm text-[#6b7a9a] dark:text-[#c7c4d7] leading-relaxed">{description}</p>
     </div>
   )
 }
 
 function AudienceCard({ icon, audience, description, to, cta }: { icon: React.ReactNode; audience: string; description: string; to: string; cta: string }) {
   return (
-    <div className="group relative rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] p-6 bg-white dark:bg-[#131f37] flex flex-col gap-3 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:shadow-[0_16px_40px_rgba(0,35,111,0.10)]">
+    <div className="group relative rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-6 bg-white dark:bg-[#1d1f27] flex flex-col gap-3 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:shadow-[0_16px_40px_rgba(0,35,111,0.10)]">
       <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full opacity-[0.06] transition-transform duration-500 group-hover:scale-125" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }} />
       <div className="relative w-10 h-10 rounded-xl flex items-center justify-center bg-[#e9ddff] dark:bg-[#241c47] text-[#712ae2] dark:text-[#818CF8]">
         {icon}
       </div>
       <h3 className="relative font-display text-lg font-bold text-[#1E293B]">{audience}</h3>
-      <p className="relative text-sm text-[#6b7a9a] dark:text-[#94a3b8] leading-relaxed flex-1">{description}</p>
+      <p className="relative text-sm text-[#6b7a9a] dark:text-[#c7c4d7] leading-relaxed flex-1">{description}</p>
       <Link to={to} className="relative inline-flex items-center gap-1.5 text-sm font-semibold text-[#712ae2] dark:text-[#818CF8] group-hover:gap-2.5 transition-all">
         {cta}
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -51,14 +51,14 @@ function StepCard({ number, title, description }: { number: string; title: strin
         {number}
       </div>
       <h3 className="font-display text-base font-bold text-[#1E293B] mb-1.5">{title}</h3>
-      <p className="text-sm text-[#6b7a9a] dark:text-[#94a3b8] leading-relaxed">{description}</p>
+      <p className="text-sm text-[#6b7a9a] dark:text-[#c7c4d7] leading-relaxed">{description}</p>
     </div>
   )
 }
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans overflow-x-hidden">
       <Seo
         title="Cognition AI — Provas, Redações e Simulados corrigidos por IA"
         description="Plataforma de avaliações para escolas: aplique provas, corrija redações com apoio de Inteligência Artificial e prepare seus alunos para o ENEM, UFPR e ACAFE com simulados de vestibular."
@@ -97,7 +97,7 @@ export default function LandingPage() {
               corrigidos por IA
             </span>
           </h1>
-          <p className="text-lg text-[#6b7a9a] dark:text-[#94a3b8] leading-relaxed max-w-2xl mx-auto mb-9">
+          <p className="text-lg text-[#6b7a9a] dark:text-[#c7c4d7] leading-relaxed max-w-2xl mx-auto mb-9">
             Plataforma de avaliações para escolas: professores aplicam e corrigem provas em uma fração do
             tempo, e alunos treinam com questões reais do ENEM e mais de 45 vestibulares com explicações
             geradas por IA.
@@ -112,7 +112,7 @@ export default function LandingPage() {
             </Link>
             <Link
               to="/quote"
-              className="px-6 py-3 rounded-xl text-sm font-bold border border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#131f37] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947] hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:-translate-y-0.5 transition-all"
+              className="px-6 py-3 rounded-xl text-sm font-bold border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947] hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:-translate-y-0.5 transition-all"
             >
               Sou professor ou escola
             </Link>
@@ -154,7 +154,7 @@ export default function LandingPage() {
 
       {/* How it works */}
       <div className="max-w-5xl mx-auto px-6 pb-20">
-        <div className="rounded-3xl border border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#131f37] p-8 sm:p-10">
+        <div className="rounded-3xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] p-8 sm:p-10">
           <div className="text-center mb-10">
             <p className="text-xs font-bold tracking-wider uppercase text-[#712ae2] dark:text-[#818CF8] mb-2">Como funciona</p>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B]">
@@ -258,7 +258,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── AD SLOT ── */}
-      <section className="py-8 bg-[#F4F6F9] dark:bg-[#0F172A]">
+      <section className="py-8 bg-[#F4F6F9] dark:bg-[#10131a]">
         <div className="max-w-6xl mx-auto px-6">
           <AdSlot slot={ADSENSE_SLOT_PUBLIC} className="h-24" />
         </div>

@@ -26,17 +26,17 @@ const FAQ = [
 
 export default function UnaerpPage() {
   const customContent = (
-    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
+    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       <figure className="float-left mr-6 mb-4 max-w-[45%] sm:max-w-xs">
         <blockquote className="text-xl sm:text-2xl font-display font-bold text-[#1E293B] dark:text-white leading-snug border-l-4 border-[#712ae2] pl-4">
           "Mais de 500 mil atendimentos por ano à comunidade."
         </blockquote>
-        <figcaption className="text-xs text-[#a0a3af] dark:text-[#6b7385] pl-4 mt-2">
+        <figcaption className="text-xs text-[#a0a3af] dark:text-[#908fa0] pl-4 mt-2">
           Rede de Serviços Comunitários da UNAERP
         </figcaption>
       </figure>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8]">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7]">
         A UNAERP nasceu como a Sociedade Escola de Pharmácia e Odontologia de Ribeirão Preto, fundada por um grupo
         de profissionais de saúde, intelectuais e educadores. Virou universidade em 1985, mas já investia em
         produção científica desde o início dos anos 1980, com projetos em biotecnologia, meio ambiente, educação,
@@ -49,7 +49,7 @@ export default function UnaerpPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: rede de serviço comunitário em escala rara pra uma universidade privada
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           A <strong>Rede de Serviços Comunitários</strong> da UNAERP realiza mais de <strong>500 mil atendimentos
           por ano</strong> através de programas de extensão — um volume de serviço direto à população raramente
           visto em instituições privadas desse porte, geralmente mais focadas em ensino e pesquisa isolados da
@@ -61,7 +61,7 @@ export default function UnaerpPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Avaliação MEC: 3ª melhor privada do país, com cinco cursos nota máxima
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           A UNAERP é a <strong>3ª melhor universidade privada do Brasil</strong> segundo o IGC/MEC 2023 (8ª entre
           públicas e privadas), com nota 4 de excelência mantida por onze anos consecutivos (2012-2023). Cinco
           cursos tiraram <strong>nota máxima (5)</strong> na avaliação de 2023: Nutrição, Fisioterapia, Farmácia,
@@ -75,7 +75,7 @@ export default function UnaerpPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Papel no desenvolvimento de Ribeirão Preto
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           Ribeirão Preto é polo agroindustrial e de saúde do interior paulista, e a UNAERP nasceu justamente ligada
           a essas vocações — uma escola de Farmácia e Odontologia que, décadas depois, virou universidade completa.
           A combinação de Medicina, Odontologia e Farmácia com Engenharia de Produção e Arquitetura reforça o papel
@@ -87,12 +87,12 @@ export default function UnaerpPage() {
       {/* FAQ em acordeão nativo (details/summary) — mecanismo interativo ainda não usado nas outras páginas */}
       <div className="space-y-2 mb-8">
         {FAQ.map(f => (
-          <details key={f.p} className="group rounded-xl border border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#151f38] p-4 open:shadow-sm">
+          <details key={f.p} className="group rounded-xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#191b23] p-4 open:shadow-sm">
             <summary className="cursor-pointer font-semibold text-[#1E293B] dark:text-white flex items-center justify-between list-none">
               {f.p}
               <span className="text-[#712ae2] dark:text-[#818CF8] group-open:rotate-45 transition-transform text-lg leading-none">+</span>
             </summary>
-            <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed mt-3">{f.r}</p>
+            <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed mt-3">{f.r}</p>
           </details>
         ))}
       </div>
@@ -105,7 +105,7 @@ export default function UnaerpPage() {
         credit="Foto: Matheus Ribeiro de Souza / Wikimedia Commons, CC BY-SA 3.0"
       />
 
-      <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-6">
+      <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-6">
         Datas, vagas e requisitos de ingresso mudam a cada edição — confirme sempre em{' '}
         <a href="https://unaerp.br/estude-na-unaerp/processo-seletivo/" target="_blank" rel="noreferrer" className="underline font-semibold">
           unaerp.br/processo-seletivo

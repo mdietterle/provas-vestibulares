@@ -37,14 +37,14 @@ export default function ThemeToggle() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-[#131f37] rounded-xl border border-[#e8eeff] dark:border-[#1e2d4a] py-1.5 z-50 shadow-xl"
+        <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-[#1d1f27] rounded-xl border border-[#e8eeff] dark:border-[#464554] py-1.5 z-50 shadow-xl"
           style={{ boxShadow: '0 8px 30px rgba(0,35,111,0.15)' }}>
           <button
             onClick={() => { setTheme('light'); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium transition-colors ${
               theme === 'light'
-                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#1e2d4a]'
-                : 'text-[#374060] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
+                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#464554]'
+                : 'text-[#374060] dark:text-[#c7c4d7] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
             }`}
           >
             <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -56,8 +56,8 @@ export default function ThemeToggle() {
             onClick={() => { setTheme('dark'); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium transition-colors ${
               theme === 'dark'
-                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#1e2d4a]'
-                : 'text-[#374060] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
+                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#464554]'
+                : 'text-[#374060] dark:text-[#c7c4d7] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
             }`}
           >
             <svg className="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -69,8 +69,8 @@ export default function ThemeToggle() {
             onClick={() => { setTheme('system'); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium transition-colors ${
               theme === 'system'
-                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#1e2d4a]'
-                : 'text-[#374060] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
+                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#464554]'
+                : 'text-[#374060] dark:text-[#c7c4d7] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
             }`}
           >
             <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>

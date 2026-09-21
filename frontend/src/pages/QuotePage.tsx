@@ -6,14 +6,14 @@ import PublicFooter from '../components/PublicFooter'
 import Breadcrumb from '../components/Breadcrumb'
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1.5">{children}</label>
+  return <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1.5">{children}</label>
 }
 
 function Input({ id, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { id: string }) {
   return (
     <input
       id={id}
-      className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+      className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
       {...props}
     />
   )
@@ -23,7 +23,7 @@ function Select({ id, children, ...props }: React.SelectHTMLAttributes<HTMLSelec
   return (
     <select
       id={id}
-      className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+      className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
       {...props}
     >
       {children}
@@ -64,7 +64,7 @@ export default function QuotePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] font-sans">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
         title="Solicitar orçamento — Cognition AI"
         description="Peça um orçamento personalizado do Cognition AI para sua escola: correção de provas e redações com IA e simulados de vestibular."
@@ -100,7 +100,7 @@ export default function QuotePage() {
               { icon: '🔒', title: 'Sem compromisso', sub: 'Orçamento gratuito, sem fidelidade obrigatória' },
               { icon: '🎓', title: 'Demonstração gratuita', sub: 'Podemos agendar um trial completo para sua equipe' },
             ].map(h => (
-              <div key={h.title} className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-[#131f37] border border-[#E2E8F0] dark:border-[#1e2d4a]">
+              <div key={h.title} className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
                 <span className="text-xl shrink-0">{h.icon}</span>
                 <div>
                   <p className="text-sm font-semibold text-[#1E293B]">{h.title}</p>
@@ -112,8 +112,8 @@ export default function QuotePage() {
 
           {/* Plans quick ref */}
           <div className="rounded-xl border border-[#E2E8F0] overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#1a2947]">
-              <p className="text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide">Referência de preços</p>
+            <div className="px-4 py-3 border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#272a32]">
+              <p className="text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide">Referência de preços</p>
             </div>
             {[
               { plan: 'Professor Solo', price: 'R$ 59/mês' },
@@ -121,12 +121,12 @@ export default function QuotePage() {
               { plan: 'Inteligente', price: 'R$ 399 + R$ 24,90/prof' },
               { plan: 'Institucional', price: 'R$ 799/unid + R$ 19,90/prof' },
             ].map(p => (
-              <div key={p.plan} className="flex items-center justify-between px-4 py-2.5 border-b border-[#f0f0f8] dark:border-[#1e2d4a] last:border-b-0 bg-white dark:bg-[#131f37]">
-                <span className="text-xs text-[#334155] dark:text-[#94a3b8]">{p.plan}</span>
+              <div key={p.plan} className="flex items-center justify-between px-4 py-2.5 border-b border-[#f0f0f8] dark:border-[#464554] last:border-b-0 bg-white dark:bg-[#1d1f27]">
+                <span className="text-xs text-[#334155] dark:text-[#c7c4d7]">{p.plan}</span>
                 <span className="text-xs font-semibold text-[#4f46e5]">{p.price}</span>
               </div>
             ))}
-            <div className="px-4 py-2.5 bg-[#F4F6F9] dark:bg-[#1a2947]">
+            <div className="px-4 py-2.5 bg-[#F4F6F9] dark:bg-[#272a32]">
               <Link to="/plans" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver todos os planos →</Link>
             </div>
           </div>
@@ -135,7 +135,7 @@ export default function QuotePage() {
         {/* Right — form */}
         <div className="lg:col-span-3">
           {sent ? (
-            <div className="bg-white dark:bg-[#131f37] rounded-2xl border border-[#E2E8F0] p-10 text-center" style={{ boxShadow: '0 4px 24px rgba(0,35,111,0.08)' }}>
+            <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] p-10 text-center" style={{ boxShadow: '0 4px 24px rgba(0,35,111,0.08)' }}>
               <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-green-100 dark:bg-green-900/30">
                 <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="#27c38a" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -150,7 +150,7 @@ export default function QuotePage() {
               </Link>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-white dark:bg-[#131f37] rounded-2xl border border-[#E2E8F0] p-8 space-y-6" style={{ boxShadow: '0 4px 24px rgba(0,35,111,0.08)' }}>
+            <form onSubmit={handleSubmit} className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] p-8 space-y-6" style={{ boxShadow: '0 4px 24px rgba(0,35,111,0.08)' }}>
               <h2 className="font-display text-lg font-bold text-[#1E293B]">Dados do solicitante</h2>
 
               {/* Contact info */}
@@ -293,7 +293,7 @@ export default function QuotePage() {
                 <div className="mt-4">
                   <Label>Observações adicionais</Label>
                   <textarea
-                    className="w-full border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] dark:placeholder-[#64748b] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all resize-none"
+                    className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all resize-none"
                     rows={3}
                     placeholder="Descreva necessidades específicas, integrações desejadas, prazos, etc."
                     value={form.message}
@@ -310,7 +310,7 @@ export default function QuotePage() {
               >
                 {loading ? 'Enviando...' : 'Solicitar orçamento gratuito →'}
               </button>
-              <p className="text-center text-xs text-[#9ca3af] dark:text-[#64748b]">
+              <p className="text-center text-xs text-[#9ca3af] dark:text-[#908fa0]">
                 Sem compromisso. Resposta em até 1 dia útil.
               </p>
             </form>

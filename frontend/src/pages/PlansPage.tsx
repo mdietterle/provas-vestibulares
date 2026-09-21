@@ -28,7 +28,7 @@ function FeatureRow({ label, included }: { label: string; included: boolean }) {
   return (
     <div className="flex items-center gap-2.5 py-1.5">
       <CheckIcon muted={!included} />
-      <span className={`text-sm ${included ? 'text-[#1E293B] dark:text-[#f8fafc]' : 'text-[#9ca3af] dark:text-[#64748b]'}`}>{label}</span>
+      <span className={`text-sm ${included ? 'text-[#1E293B] dark:text-[#e1e2ec]' : 'text-[#9ca3af] dark:text-[#908fa0]'}`}>{label}</span>
     </div>
   )
 }
@@ -47,16 +47,16 @@ function PriceBreakdown({
   note?: string
 }) {
   return (
-    <div className="mt-4 rounded-xl border border-[#E2E8F0] dark:border-[#1e2d4a] overflow-hidden">
+    <div className="mt-4 rounded-xl border border-[#E2E8F0] dark:border-[#464554] overflow-hidden">
       <div className="grid grid-cols-3">
         {seats.map((s) => {
           const total = basePrice + s * perSeat
           return (
             <div
               key={s}
-              className="p-3 text-center border-r border-[#E2E8F0] dark:border-[#1e2d4a] last:border-r-0 bg-[#F4F6F9] dark:bg-[#0F172A]"
+              className="p-3 text-center border-r border-[#E2E8F0] dark:border-[#464554] last:border-r-0 bg-[#F4F6F9] dark:bg-[#10131a]"
             >
-              <p className="text-xs text-[#64748B] dark:text-[#94a3b8] mb-0.5">{s} professores</p>
+              <p className="text-xs text-[#64748B] dark:text-[#c7c4d7] mb-0.5">{s} professores</p>
               <p className="font-display text-base font-bold text-[#4f46e5] dark:text-[#818CF8]">
                 R$ {total.toLocaleString('pt-BR')}
               </p>
@@ -65,8 +65,8 @@ function PriceBreakdown({
         })}
       </div>
       {note && (
-        <div className="px-3 py-2 border-t border-[#E2E8F0] dark:border-[#1e2d4a]">
-          <p className="text-[10px] text-[#9ca3af] dark:text-[#64748b] leading-relaxed">{note}</p>
+        <div className="px-3 py-2 border-t border-[#E2E8F0] dark:border-[#464554]">
+          <p className="text-[10px] text-[#9ca3af] dark:text-[#908fa0] leading-relaxed">{note}</p>
         </div>
       )}
     </div>
@@ -115,7 +115,7 @@ function PlanCard({
       ? 'w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90'
       : ctaStyle === 'primary'
       ? 'w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90'
-      : 'w-full py-3 rounded-xl text-sm font-bold transition-all border-[1.5px] border-[#dce1ff] dark:border-[#2d3f6a] bg-[#f0f4ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a]'
+      : 'w-full py-3 rounded-xl text-sm font-bold transition-all border-[1.5px] border-[#dce1ff] dark:border-[#464554] bg-[#f0f4ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a]'
 
   const ctaInlineStyle =
     ctaStyle === 'gradient'
@@ -129,7 +129,7 @@ function PlanCard({
       className={`relative flex flex-col rounded-2xl border p-6 ${
         highlight
           ? 'border-[#712ae2] dark:border-[#8b5cf6] shadow-lg bg-[#faf8ff] dark:bg-[#1b1642]'
-          : 'border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#131f37]'
+          : 'border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27]'
       }`}
       style={{
         boxShadow: highlight
@@ -166,22 +166,22 @@ function PlanCard({
 
       {/* Header */}
       <div className="mb-5">
-        <h3 className="font-display text-lg font-bold text-[#1E293B] dark:text-[#f8fafc]">{name}</h3>
-        <p className="text-sm text-[#64748B] dark:text-[#94a3b8] mt-0.5">{tagline}</p>
+        <h3 className="font-display text-lg font-bold text-[#1E293B] dark:text-[#e1e2ec]">{name}</h3>
+        <p className="text-sm text-[#64748B] dark:text-[#c7c4d7] mt-0.5">{tagline}</p>
         {description && (
-          <p className="text-xs text-[#9ca3af] dark:text-[#64748b] leading-relaxed mt-2">{description}</p>
+          <p className="text-xs text-[#9ca3af] dark:text-[#908fa0] leading-relaxed mt-2">{description}</p>
         )}
       </div>
 
       {/* Price */}
       <div className="mb-5">
         <div className="flex items-end gap-1.5 flex-wrap">
-          <span className="font-display text-3xl font-extrabold text-[#1E293B] dark:text-[#f8fafc]">
+          <span className="font-display text-3xl font-extrabold text-[#1E293B] dark:text-[#e1e2ec]">
             R$ {basePrice.toLocaleString('pt-BR')}
           </span>
-          <span className="text-sm text-[#64748B] dark:text-[#94a3b8] mb-1">/mês base</span>
+          <span className="text-sm text-[#64748B] dark:text-[#c7c4d7] mb-1">/mês base</span>
           {perSeat > 0 && (
-            <span className="text-sm text-[#334155] dark:text-[#cbd5e1] mb-1 ml-1">
+            <span className="text-sm text-[#334155] dark:text-[#e1e2ec] mb-1 ml-1">
               + R$ {perSeat.toFixed(2).replace('.', ',')}{seatLabel}
             </span>
           )}
@@ -194,7 +194,7 @@ function PlanCard({
       </button>
 
       {/* Divider */}
-      <div className="my-5 border-t border-[#E2E8F0] dark:border-[#1e2d4a]" />
+      <div className="my-5 border-t border-[#E2E8F0] dark:border-[#464554]" />
 
       {/* Features */}
       <div className="flex-1 space-y-0.5">
@@ -215,10 +215,10 @@ function PlanCard({
 
       {/* Example calc */}
       {example && (
-        <div className="mt-4 rounded-xl border border-[#E2E8F0] dark:border-[#1e2d4a] bg-[#F4F6F9] dark:bg-[#0F172A] p-4">
-          <p className="text-[11px] font-semibold text-[#334155] dark:text-[#cbd5e1] uppercase tracking-wide mb-2">Exemplo de cálculo</p>
+        <div className="mt-4 rounded-xl border border-[#E2E8F0] dark:border-[#464554] bg-[#F4F6F9] dark:bg-[#10131a] p-4">
+          <p className="text-[11px] font-semibold text-[#334155] dark:text-[#e1e2ec] uppercase tracking-wide mb-2">Exemplo de cálculo</p>
           {example.split('\n').map((line, i) => (
-            <p key={i} className="text-[11px] text-[#64748B] dark:text-[#94a3b8] leading-relaxed">{line}</p>
+            <p key={i} className="text-[11px] text-[#64748B] dark:text-[#c7c4d7] leading-relaxed">{line}</p>
           ))}
         </div>
       )}
@@ -230,11 +230,11 @@ function PlanCard({
 
 function AddOnRow({ label, price, sub }: { label: string; price: string; sub?: string }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-[#f0f0f8] dark:border-[#1e2d4a] last:border-b-0">
-      <span className="text-sm text-[#1E293B] dark:text-[#f8fafc]">{label}</span>
+    <div className="flex items-center justify-between py-3 border-b border-[#f0f0f8] dark:border-[#464554] last:border-b-0">
+      <span className="text-sm text-[#1E293B] dark:text-[#e1e2ec]">{label}</span>
       <div className="text-right">
         <span className="text-sm font-bold text-[#4f46e5] dark:text-[#818CF8]">{price}</span>
-        {sub && <p className="text-[11px] text-[#9ca3af] dark:text-[#64748b]">{sub}</p>}
+        {sub && <p className="text-[11px] text-[#9ca3af] dark:text-[#908fa0]">{sub}</p>}
       </div>
     </div>
   )
@@ -284,7 +284,7 @@ const ADD_ONS = [
 
 export default function PlansPage() {
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] font-sans">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
         title="Planos e Preços — Cognition AI"
         description="Conheça os planos do Cognition AI para escolas: correção de provas e redações com IA, simulados de vestibular e gestão de turmas."
@@ -301,14 +301,14 @@ export default function PlansPage() {
           </svg>
           Planos e Preços
         </div>
-        <h1 className="font-display text-3xl font-bold text-[#1E293B] dark:text-[#f8fafc] mb-3">
+        <h1 className="font-display text-3xl font-bold text-[#1E293B] dark:text-[#e1e2ec] mb-3">
           Escolha o plano ideal para sua instituição
         </h1>
-        <p className="text-[#64748B] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-[#64748B] dark:text-[#c7c4d7] leading-relaxed">
           Do professor autônomo à rede de escolas — a IA corrige, você ensina.
           Todos os planos incluem alunos ilimitados.
         </p>
-        <p className="text-sm text-[#9ca3af] dark:text-[#64748b] leading-relaxed mt-3">
+        <p className="text-sm text-[#9ca3af] dark:text-[#908fa0] leading-relaxed mt-3">
           Os planos são cobrados por professor ou unidade, nunca por aluno — o preço varia principalmente pela
           quantidade de questões geradas e correções de discursivas feitas com Inteligência Artificial a cada mês.
           Se sua instituição só precisa de aplicação e correção manual, o plano Basic cobre isso sem custo de IA.
@@ -372,7 +372,7 @@ export default function PlansPage() {
 
       {/* Professor solo strip */}
       <div
-        className="rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] px-6 py-4 flex items-center justify-between flex-wrap gap-4 bg-[#F4F6F9] dark:bg-[#0F172A]"
+        className="rounded-2xl border border-[#E2E8F0] dark:border-[#464554] px-6 py-4 flex items-center justify-between flex-wrap gap-4 bg-[#F4F6F9] dark:bg-[#10131a]"
         style={{ boxShadow: '0 2px 8px rgba(0,35,111,0.04)' }}
       >
         <div className="flex items-center gap-3">
@@ -382,8 +382,8 @@ export default function PlansPage() {
             </svg>
           </div>
           <div>
-            <p className="font-semibold text-sm text-[#1E293B] dark:text-[#f8fafc]">Professor solo</p>
-            <p className="text-xs text-[#64748B] dark:text-[#94a3b8]">
+            <p className="font-semibold text-sm text-[#1E293B] dark:text-[#e1e2ec]">Professor solo</p>
+            <p className="text-xs text-[#64748B] dark:text-[#c7c4d7]">
               Autônomo, tutor, reforço escolar — sem vínculo com uma instituição, com IA para gerar questões
               e corrigir discursivas na sua própria conta.
             </p>
@@ -391,7 +391,7 @@ export default function PlansPage() {
         </div>
         <div className="text-right">
           <p className="font-display text-xl font-bold text-[#4f46e5] dark:text-[#818CF8]">R$ 59/mês</p>
-          <p className="text-xs text-[#64748B] dark:text-[#94a3b8]">30 questões IA + 50 correções IA incluso</p>
+          <p className="text-xs text-[#64748B] dark:text-[#c7c4d7]">30 questões IA + 50 correções IA incluso</p>
         </div>
         <button
           className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
@@ -404,7 +404,7 @@ export default function PlansPage() {
       {/* Add-ons */}
       <div className="grid lg:grid-cols-2 gap-6">
         <div
-          className="rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#131f37] p-6"
+          className="rounded-2xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] p-6"
           style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}
         >
           <div className="flex items-center gap-2 mb-4">
@@ -414,29 +414,29 @@ export default function PlansPage() {
               </svg>
             </div>
             <div>
-              <h2 className="font-display text-base font-semibold text-[#1E293B] dark:text-[#f8fafc]">
+              <h2 className="font-display text-base font-semibold text-[#1E293B] dark:text-[#e1e2ec]">
                 Pacotes de créditos extras de IA
               </h2>
-              <p className="text-xs text-[#64748B] dark:text-[#94a3b8]">Quando a cota mensal inclusa não é suficiente</p>
+              <p className="text-xs text-[#64748B] dark:text-[#c7c4d7]">Quando a cota mensal inclusa não é suficiente</p>
             </div>
           </div>
           {ADD_ONS.map((a) => (
             <AddOnRow key={a.label} label={a.label} price={a.price} sub={a.sub} />
           ))}
-          <p className="mt-3 text-[11px] text-[#9ca3af] dark:text-[#64748b] leading-relaxed">
+          <p className="mt-3 text-[11px] text-[#9ca3af] dark:text-[#908fa0] leading-relaxed">
             Créditos não expiram no ciclo e podem ser usados a qualquer momento como reforço da cota mensal.
           </p>
         </div>
 
         {/* FAQ / notes */}
         <div
-          className="rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#131f37] p-6"
+          className="rounded-2xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] p-6"
           style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}
         >
-          <h2 className="font-display text-base font-semibold text-[#1E293B] dark:text-[#f8fafc] mb-1">
+          <h2 className="font-display text-base font-semibold text-[#1E293B] dark:text-[#e1e2ec] mb-1">
             Perguntas frequentes
           </h2>
-          <p className="text-xs text-[#64748B] dark:text-[#94a3b8] mb-4">
+          <p className="text-xs text-[#64748B] dark:text-[#c7c4d7] mb-4">
             Dúvidas sobre o uso da plataforma? Consulte a{' '}
             <Link to="/ajuda" className="text-[#712ae2] dark:text-[#A5B4FC] font-semibold hover:underline">Central de Ajuda</Link>.
           </p>
@@ -460,8 +460,8 @@ export default function PlansPage() {
               },
             ].map((item) => (
               <div key={item.q}>
-                <p className="text-sm font-semibold text-[#1E293B] dark:text-[#f8fafc] mb-1">{item.q}</p>
-                <p className="text-sm text-[#64748B] dark:text-[#94a3b8] leading-relaxed">{item.a}</p>
+                <p className="text-sm font-semibold text-[#1E293B] dark:text-[#e1e2ec] mb-1">{item.q}</p>
+                <p className="text-sm text-[#64748B] dark:text-[#c7c4d7] leading-relaxed">{item.a}</p>
               </div>
             ))}
           </div>

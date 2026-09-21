@@ -50,10 +50,10 @@ export default function CampusImage({ src, alt, caption, credit, variant = 'reve
 
   const frameByVariant: Record<CampusImageVariant, string> = {
     'polaroid-tilt': 'bg-white dark:bg-[#1a2340] p-3 pb-10 shadow-xl rounded-sm',
-    'float-right': 'rounded-2xl overflow-hidden shadow-lg border border-[#E2E8F0] dark:border-[#1e2d4a]',
+    'float-right': 'rounded-2xl overflow-hidden shadow-lg border border-[#E2E8F0] dark:border-[#464554]',
     'diagonal-strip': 'rounded-3xl overflow-hidden shadow-xl',
-    'reveal-wide': 'rounded-2xl overflow-hidden shadow-lg border border-[#E2E8F0] dark:border-[#1e2d4a]',
-    'corner-badge': 'rounded-xl overflow-hidden shadow-md ring-4 ring-white dark:ring-[#151f38]',
+    'reveal-wide': 'rounded-2xl overflow-hidden shadow-lg border border-[#E2E8F0] dark:border-[#464554]',
+    'corner-badge': 'rounded-xl overflow-hidden shadow-md ring-4 ring-white dark:ring-[#191b23]',
   }
 
   return (
@@ -70,7 +70,7 @@ export default function CampusImage({ src, alt, caption, credit, variant = 'reve
         />
       </div>
       {(caption || credit) && (
-        <figcaption className="text-[11px] text-[#a0a3af] dark:text-[#6b7385] mt-1.5 leading-snug">
+        <figcaption className="text-[11px] text-[#a0a3af] dark:text-[#908fa0] mt-1.5 leading-snug">
           {caption && <span>{caption} — </span>}
           <span>{credit}</span>
         </figcaption>

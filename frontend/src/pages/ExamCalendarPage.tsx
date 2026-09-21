@@ -68,7 +68,7 @@ export default function ExamCalendarPage() {
   const noFixedDate = UNIVERSITIES.filter(u => NO_FIXED_DATE_SLUGS.has(u.slug))
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] font-sans">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
         title="Calendário de vestibulares 2027 — datas de inscrição e prova | Cognition AI"
         description="Calendário atualizado com datas de inscrição e prova dos principais vestibulares brasileiros: ENEM, FUVEST, ITA, UFPR, UFRGS e outros."
@@ -117,11 +117,11 @@ export default function ExamCalendarPage() {
                   </div>
                   <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm mb-3">
                     <div>
-                      <dt className="text-[10px] uppercase font-bold text-[#a0a3af] dark:text-[#6b7385] tracking-wider">Data da prova</dt>
+                      <dt className="text-[10px] uppercase font-bold text-[#a0a3af] dark:text-[#908fa0] tracking-wider">Data da prova</dt>
                       <dd className="text-[#1E293B] dark:text-[#e5e9f5] font-semibold">{info.examDateLabel}</dd>
                     </div>
                     <div>
-                      <dt className="text-[10px] uppercase font-bold text-[#a0a3af] dark:text-[#6b7385] tracking-wider">Inscrição</dt>
+                      <dt className="text-[10px] uppercase font-bold text-[#a0a3af] dark:text-[#908fa0] tracking-wider">Inscrição</dt>
                       <dd className="text-[#1E293B] dark:text-[#e5e9f5] font-semibold">{info.registrationWindowLabel}</dd>
                     </div>
                   </dl>
@@ -129,7 +129,7 @@ export default function ExamCalendarPage() {
                     <span className="font-semibold">Como se inscrever: </span>{info.howToRegister}
                   </p>
                   <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <p className="text-xs text-[#a0a3af] dark:text-[#6b7385]">{info.sourceNote}</p>
+                    <p className="text-xs text-[#a0a3af] dark:text-[#908fa0]">{info.sourceNote}</p>
                     <a
                       href={info.registrationUrl}
                       target="_blank"
@@ -147,7 +147,7 @@ export default function ExamCalendarPage() {
 
         <section className="mb-14">
           <h2 className="text-lg font-bold mb-1 text-[#1E293B]">Estimativa por padrão histórico</h2>
-          <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mb-4 max-w-2xl">
+          <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mb-4 max-w-2xl">
             Os meses abaixo são um padrão recorrente lido nos próprios editais — não a data confirmada da próxima
             edição. Cada instituição pode antecipar, atrasar ou mudar o formato a qualquer ano.
           </p>
@@ -163,7 +163,7 @@ export default function ExamCalendarPage() {
                       {e.shortName}
                     </Link>
                     {e.allPhases.length > 1 && (
-                      <span className="text-[10px] uppercase font-bold text-[#a0a3af] dark:text-[#6b7385] tracking-wider">
+                      <span className="text-[10px] uppercase font-bold text-[#a0a3af] dark:text-[#908fa0] tracking-wider">
                         {e.phaseLabel}
                       </span>
                     )}

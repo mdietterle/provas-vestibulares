@@ -3,7 +3,7 @@ import CampusImage from '../../components/CampusImage'
 
 export default function CebraspePage() {
   const customContent = (
-    <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
+    <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       {/* Banner Principal */}
       <div className="bg-gradient-to-br from-[#4f46e5] via-[#1a3a8a] to-[#712ae2] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="relative z-10">
@@ -21,12 +21,12 @@ export default function CebraspePage() {
       </div>
 
       {/* Seção 1: O que é o Cebraspe */}
-      <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+      <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             O que é o Cebraspe?
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#94a3b8] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
             <p>
               O Cebraspe (Centro Brasileiro de Pesquisa em Avaliação e Seleção e de Promoção de Eventos) é uma
               instituição sem fins lucrativos vinculada à UnB, conhecida principalmente por organizar grandes concursos
@@ -43,18 +43,18 @@ export default function CebraspePage() {
         </div>
 
         <div className="space-y-4 text-sm leading-relaxed">
-          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
+          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
             <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
               Universidades que usam o Cebraspe como banca
             </h3>
             <div className="flex flex-wrap gap-2 text-xs">
               {['UnB (Universidade de Brasília)', 'Uncisal (Univ. Estadual de Ciências da Saúde de Alagoas)', 'UFV (Universidade Federal de Viçosa)', 'UESB (Univ. Estadual do Sudoeste da Bahia)', 'UERR (Univ. Estadual de Roraima)', 'UFAC (Univ. Federal do Acre — vestibular de Medicina)'].map(u => (
-                <span key={u} className="bg-white dark:bg-[#0f172a] border border-[#cbd5e1] dark:border-[#334155] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
+                <span key={u} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#c7c4d7] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
                   {u}
                 </span>
               ))}
             </div>
-            <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-3">
+            <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-3">
               A UnB é o processo mais tradicional e concorrido entre eles. Cada instituição tem edital, vagas e
               calendário próprios — verifique sempre no portal do vestibular específico da universidade que te interessa.
             </p>
@@ -66,32 +66,32 @@ export default function CebraspePage() {
             Quais universidades usam o Cebraspe como banca e para quais cursos?
           </h3>
           <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3">
-            <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#10131a] border border-[#E2E8F0] dark:border-[#464554]">
               <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UnB</dt>
-              <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Vestibular tradicional de ampla concorrência para todos os cursos de graduação (além do Vestibular UnB 60mais).</dd>
+              <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Vestibular tradicional de ampla concorrência para todos os cursos de graduação (além do Vestibular UnB 60mais).</dd>
             </div>
-            <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#10131a] border border-[#E2E8F0] dark:border-[#464554]">
               <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Uncisal</dt>
-              <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Cursos de saúde — Medicina, Fisioterapia, Fonoaudiologia, Terapia Ocupacional, Enfermagem, além de tecnólogos como Radiologia e Gestão Hospitalar.</dd>
+              <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Cursos de saúde — Medicina, Fisioterapia, Fonoaudiologia, Terapia Ocupacional, Enfermagem, além de tecnólogos como Radiologia e Gestão Hospitalar.</dd>
             </div>
-            <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#10131a] border border-[#E2E8F0] dark:border-[#464554]">
               <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UFV</dt>
-              <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">PASES — Programa de Avaliação Seriada para Ingresso na UFV, aplicado em etapas ao longo de um ciclo de três anos (ex.: 2025–2027), não uma prova única.</dd>
+              <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">PASES — Programa de Avaliação Seriada para Ingresso na UFV, aplicado em etapas ao longo de um ciclo de três anos (ex.: 2025–2027), não uma prova única.</dd>
             </div>
-            <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#10131a] border border-[#E2E8F0] dark:border-[#464554]">
               <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UESB</dt>
-              <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Vestibular regular da universidade estadual baiana.</dd>
+              <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Vestibular regular da universidade estadual baiana.</dd>
             </div>
-            <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#10131a] border border-[#E2E8F0] dark:border-[#464554]">
               <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UERR</dt>
-              <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Vestibular regular; passou a usar o Cebraspe a partir da edição 2026.</dd>
+              <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Vestibular regular; passou a usar o Cebraspe a partir da edição 2026.</dd>
             </div>
-            <div className="p-4 rounded-xl bg-white dark:bg-[#0f172a] border border-[#E2E8F0] dark:border-[#28385e]">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#10131a] border border-[#E2E8F0] dark:border-[#464554]">
               <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">UFAC</dt>
-              <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Vestibular específico para o curso de Medicina, a partir de 2026.</dd>
+              <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Vestibular específico para o curso de Medicina, a partir de 2026.</dd>
             </div>
           </dl>
-          <p className="text-xs text-[#a0a3af] dark:text-[#6b7385]">
+          <p className="text-xs text-[#a0a3af] dark:text-[#908fa0]">
             Essa lista muda com o tempo — o Cebraspe fecha e encerra contratos com universidades a cada ciclo de
             licitação. Confirme sempre em{' '}
             <a href="https://www.cebraspe.org.br/vestibulares/" target="_blank" rel="noreferrer" className="underline font-semibold">
@@ -120,12 +120,12 @@ export default function CebraspePage() {
       </section>
 
       {/* Seção 2: Cebraspe usa TRI? Parece com ENEM ou ACAFE? */}
-      <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+      <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Parece mais com o ENEM ou com o ACAFE?
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#94a3b8] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
             <p>
               Em <strong>abrangência</strong>, o vestibular Cebraspe/UnB se parece mais com o ACAFE do que com o ENEM:
               é um processo específico de uma única instituição (ou de poucas, cada uma com processo separado), e a nota
@@ -136,11 +136,11 @@ export default function CebraspePage() {
           </div>
         </div>
 
-        <div className="bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e] rounded-2xl p-5 space-y-3">
+        <div className="bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-5 space-y-3">
           <h3 className="font-bold text-base text-[#4f46e5] dark:text-[#818CF8]">
             Sim, o vestibular da UnB usa TRI
           </h3>
-          <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
             Em <strong>metodologia de correção</strong>, o vestibular Cebraspe/UnB se parece com o ENEM: a nota final é
             calculada pela Teoria de Resposta ao Item (TRI), então o número de acertos não corresponde diretamente à
             nota — o que pesa é o padrão de coerência das respostas, não só a quantidade de questões certas. Some a isso
@@ -152,12 +152,12 @@ export default function CebraspePage() {
       </section>
 
       {/* Seção 3: Datas importantes */}
-      <section className="bg-white dark:bg-[#151f38] border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+      <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Datas importantes (Vestibular UnB 2026, como referência)
           </h2>
-          <p className="text-sm text-[#475569] dark:text-[#94a3b8] mt-2 leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-2 leading-relaxed">
             O cronograma abaixo é da edição mais recente já confirmada em edital pelo Cebraspe. Cada nova edição sai com
             datas próprias — sempre confira o edital vigente em{' '}
             <a href="https://www.cebraspe.org.br/vestibulares/" target="_blank" rel="noreferrer" className="underline font-semibold">
@@ -166,24 +166,24 @@ export default function CebraspePage() {
           </p>
         </div>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
+          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
             <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrições</dt>
-            <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">15 de agosto a 5 de setembro</dd>
+            <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">15 de agosto a 5 de setembro</dd>
           </div>
-          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
+          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
             <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Pagamento da taxa (R$ 173)</dt>
-            <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Até 25 de setembro</dd>
+            <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Até 25 de setembro</dd>
           </div>
-          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
+          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
             <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">1º dia de prova</dt>
-            <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Prova I (30 itens) + Prova II (120 itens) + Redação — até 5h de duração</dd>
+            <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Prova I (30 itens) + Prova II (120 itens) + Redação — até 5h de duração</dd>
           </div>
-          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1a2542] border border-[#E2E8F0] dark:border-[#28385e]">
+          <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
             <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">2º dia de prova</dt>
-            <dd className="text-[#475569] dark:text-[#cbd5e1] mt-1">Prova III (150 itens) — até 5h de duração</dd>
+            <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Prova III (150 itens) — até 5h de duração</dd>
           </div>
         </dl>
-        <p className="text-xs text-[#a0a3af] dark:text-[#6b7385]">
+        <p className="text-xs text-[#a0a3af] dark:text-[#908fa0]">
           Isenção de taxa disponível pra quem está no CadÚnico ou tem renda per capita de até 1,5 salário mínimo,
           cursando ensino médio em escola pública ou como bolsista integral.
         </p>

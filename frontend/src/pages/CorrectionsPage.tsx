@@ -104,7 +104,7 @@ export default function CorrectionsPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Turmas', value: classes.length, bg: 'bg-[#eef2ff] dark:bg-[#1a2947]', fg: 'text-[#4f46e5] dark:text-[#818CF8]' },
+          { label: 'Turmas', value: classes.length, bg: 'bg-[#eef2ff] dark:bg-[#272a32]', fg: 'text-[#4f46e5] dark:text-[#818CF8]' },
           { label: 'Submissões', value: totalSubmissions, bg: 'bg-[#f5f0ff] dark:bg-[#251a42]', fg: 'text-[#712ae2] dark:text-[#b79bff]' },
           { label: 'Corrigidas', value: totalDone, bg: 'bg-[#f0fdf8] dark:bg-[#0f2e22]', fg: 'text-[#27c38a] dark:text-[#4ade80]' },
         ].map((s) => (
@@ -133,7 +133,7 @@ export default function CorrectionsPage() {
                 key={exam.id}
                 to={`/exams/${exam.id}/submissions`}
                 className={
-                  "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-white dark:bg-[#131f37] border text-left hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors " +
+                  "w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-white dark:bg-[#1d1f27] border text-left hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors " +
                   (stuckCount > 0 ? "border-red-300 dark:border-red-800" : "border-amber-200 dark:border-amber-800")
                 }
               >
@@ -180,7 +180,7 @@ export default function CorrectionsPage() {
           {classes.map(cls => (
             <div
               key={cls.id}
-              className="rounded-2xl border bg-white dark:bg-[#131f37] overflow-hidden border-[#E2E8F0] dark:border-[#1e2d4a]"
+              className="rounded-2xl border bg-white dark:bg-[#1d1f27] overflow-hidden border-[#E2E8F0] dark:border-[#464554]"
             >
               {/* Class header */}
               <button
@@ -188,7 +188,7 @@ export default function CorrectionsPage() {
                 className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]">
                     {cls.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="text-left">
@@ -206,7 +206,7 @@ export default function CorrectionsPage() {
 
               {/* Exams list */}
               {expandedClass === cls.id && (
-                <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a]">
+                <div className="border-t border-[#E2E8F0] dark:border-[#464554]">
                   {(examsByClass[cls.id] ?? []).length === 0 ? (
                     <p className="px-6 py-4 text-sm text-gray-400 dark:text-gray-500">Nenhuma prova nesta turma</p>
                   ) : (
@@ -224,7 +224,7 @@ export default function CorrectionsPage() {
                             to={`/exams/${exam.id}/submissions`}
                             className="flex items-center gap-3 px-5 py-3 hover:bg-[#F4F6F9] dark:hover:bg-white/5 transition-colors"
                           >
-                            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#eef2ff] dark:bg-[#1a2947]">
+                            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#eef2ff] dark:bg-[#272a32]">
                               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-[#4f46e5] dark:stroke-[#818CF8]" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                 <polyline points="14 2 14 8 20 8" />
@@ -232,7 +232,7 @@ export default function CorrectionsPage() {
                             </div>
                             <span className="font-medium text-sm text-gray-800 dark:text-gray-200 truncate flex-1 min-w-0">{exam.title}</span>
                             {exam.subject?.name && (
-                              <span className="text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]">
+                              <span className="text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]">
                                 {exam.subject.name}
                               </span>
                             )}

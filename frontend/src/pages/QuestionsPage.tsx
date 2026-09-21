@@ -18,7 +18,7 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
-  multiple_choice: { bg: 'bg-[#eef2ff] dark:bg-[#1a2947]', text: 'text-[#4f46e5] dark:text-[#818CF8]' },
+  multiple_choice: { bg: 'bg-[#eef2ff] dark:bg-[#272a32]', text: 'text-[#4f46e5] dark:text-[#818CF8]' },
   true_false: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400' },
   essay: { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-400' },
   summation: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-400' },
@@ -317,8 +317,8 @@ export default function QuestionsPage() {
           { label: 'Dissertativas', value: counts.essay, color: '#9333ea', bg: '#fdf4ff' },
           { label: 'Somatório', value: counts.summ, color: '#c2410c', bg: '#fff7ed' },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl border p-3 bg-[var(--stat-bg)] border-[var(--stat-bg)] dark:bg-[#1e2d4a] dark:border-[#2a3a5c]" style={{ ['--stat-bg' as any]: s.bg }}>
-            <p className="text-[10px] font-medium text-[#8490b0] dark:text-[#94a3b8] mb-0.5">{s.label}</p>
+          <div key={s.label} className="rounded-xl border p-3 bg-[var(--stat-bg)] border-[var(--stat-bg)] dark:bg-[#464554] dark:border-[#464554]" style={{ ['--stat-bg' as any]: s.bg }}>
+            <p className="text-[10px] font-medium text-[#8490b0] dark:text-[#c7c4d7] mb-0.5">{s.label}</p>
             <p className="text-xl font-bold font-display dark:brightness-125" style={{ color: s.color }}>{s.value}</p>
           </div>
         ))}
@@ -327,7 +327,7 @@ export default function QuestionsPage() {
       {/* Filters — single compact row */}
       <div className="flex flex-wrap gap-2 items-center">
         <div className="relative">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9da5bc] dark:text-[#94a3b8] w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9da5bc] dark:text-[#c7c4d7] w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <input
@@ -348,7 +348,7 @@ export default function QuestionsPage() {
           {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
 
-        <div className="flex rounded-lg overflow-hidden border border-[#d0d9f0] dark:border-[#2a3a5c]">
+        <div className="flex rounded-lg overflow-hidden border border-[#d0d9f0] dark:border-[#464554]">
           {[
             { val: '', label: 'Tipo' },
             { val: 'multiple_choice', label: 'M.Escolha' },
@@ -359,8 +359,8 @@ export default function QuestionsPage() {
             <button
               key={opt.val}
               onClick={() => setFilterType(opt.val)}
-              className={`px-2.5 py-1.5 text-[11px] font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0] dark:border-[#2a3a5c]' : ''} ${
-                filterType === opt.val ? 'bg-[#4f46e5] text-white' : 'bg-white dark:bg-[#1e2d4a] text-[#5a6480] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
+              className={`px-2.5 py-1.5 text-[11px] font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0] dark:border-[#464554]' : ''} ${
+                filterType === opt.val ? 'bg-[#4f46e5] text-white' : 'bg-white dark:bg-[#464554] text-[#5a6480] dark:text-[#c7c4d7] hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
               }`}
             >
               {opt.label}
@@ -368,7 +368,7 @@ export default function QuestionsPage() {
           ))}
         </div>
 
-        <div className="flex rounded-lg overflow-hidden border border-[#d0d9f0] dark:border-[#2a3a5c]">
+        <div className="flex rounded-lg overflow-hidden border border-[#d0d9f0] dark:border-[#464554]">
           {[
             { val: '', label: 'Dific.' },
             { val: 'easy', label: 'Fácil' },
@@ -378,8 +378,8 @@ export default function QuestionsPage() {
             <button
               key={opt.val}
               onClick={() => setFilterDifficulty(opt.val)}
-              className={`px-2.5 py-1.5 text-[11px] font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0] dark:border-[#2a3a5c]' : ''} ${
-                filterDifficulty === opt.val ? 'bg-[#4f46e5] text-white' : 'bg-white dark:bg-[#1e2d4a] text-[#5a6480] dark:text-[#94a3b8] hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
+              className={`px-2.5 py-1.5 text-[11px] font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0] dark:border-[#464554]' : ''} ${
+                filterDifficulty === opt.val ? 'bg-[#4f46e5] text-white' : 'bg-white dark:bg-[#464554] text-[#5a6480] dark:text-[#c7c4d7] hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
               }`}
             >
               {opt.label}
@@ -387,7 +387,7 @@ export default function QuestionsPage() {
           ))}
         </div>
 
-        <span className="text-xs text-[#8490b0] dark:text-[#94a3b8] ml-auto">{filtered.length} resultado{filtered.length !== 1 ? 's' : ''}</span>
+        <span className="text-xs text-[#8490b0] dark:text-[#c7c4d7] ml-auto">{filtered.length} resultado{filtered.length !== 1 ? 's' : ''}</span>
       </div>
 
       {/* Question list */}
@@ -401,7 +401,7 @@ export default function QuestionsPage() {
           return (
             <div
               key={q.id}
-              className="rounded-2xl border bg-white dark:bg-[#1e2d4a] border-[#E2E8F0] dark:border-[#2a3a5c] overflow-hidden transition-all"
+              className="rounded-2xl border bg-white dark:bg-[#464554] border-[#E2E8F0] dark:border-[#464554] overflow-hidden transition-all"
             >
               {/* Question header row */}
               <div className="flex items-start gap-4 p-4">
@@ -439,7 +439,7 @@ export default function QuestionsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span
-                      className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]"
+                      className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]"
                     >
                       {q.subject.name}
                     </span>
@@ -605,7 +605,7 @@ export default function QuestionsPage() {
       </div>
 
       {/* AI Insights */}
-      <div className="rounded-2xl border p-5 bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a1530] dark:to-[#1a2947] border-[#e0d9ff] dark:border-[#332a5c]">
+      <div className="rounded-2xl border p-5 bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a1530] dark:to-[#272a32] border-[#e0d9ff] dark:border-[#332a5c]">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#712ae2] to-[#4f46e5]">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -616,23 +616,23 @@ export default function QuestionsPage() {
           <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-[#ede9fe] dark:bg-[#2a2050] text-[#712ae2] dark:text-[#b8a5ff]">IA</span>
         </div>
         <div className="grid grid-cols-4 gap-3 text-center">
-          <div className="bg-white dark:bg-[#1e2d4a] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
+          <div className="bg-white dark:bg-[#464554] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
             <p className="text-lg font-bold text-[#4f46e5] dark:text-[#818CF8]">{questions.length}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Total</p>
           </div>
-          <div className="bg-white dark:bg-[#1e2d4a] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
+          <div className="bg-white dark:bg-[#464554] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
             <p className="text-lg font-bold text-[#4f46e5] dark:text-[#818CF8]">
               {questions.length > 0 ? Math.round((counts.mc / questions.length) * 100) : 0}%
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Múltipla Escolha</p>
           </div>
-          <div className="bg-white dark:bg-[#1e2d4a] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
+          <div className="bg-white dark:bg-[#464554] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
             <p className="text-lg font-bold text-[#27c38a] dark:text-[#4ade80]">
               {questions.filter(q => q.is_public).length}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Públicas</p>
           </div>
-          <div className="bg-white dark:bg-[#1e2d4a] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
+          <div className="bg-white dark:bg-[#464554] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
             <p className="text-lg font-bold text-[#ef4444] dark:text-red-400">
               {questions.length > 0 ? Math.round((questions.filter(q => q.difficulty === 'hard').length / questions.length) * 100) : 0}%
             </p>
@@ -728,7 +728,7 @@ export default function QuestionsPage() {
                   <img
                     src={`data:image/jpeg;base64,${form.image_base64}`}
                     alt="Imagem da questão"
-                    className="rounded-xl border max-h-48 object-contain border-[#E2E8F0] dark:border-[#2a3a5c]"
+                    className="rounded-xl border max-h-48 object-contain border-[#E2E8F0] dark:border-[#464554]"
                   />
                   <button
                     type="button"
@@ -741,7 +741,7 @@ export default function QuestionsPage() {
                   </button>
                 </div>
               ) : (
-                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-gray-50 dark:hover:bg-[#1e2d4a] border-[#E2E8F0] dark:border-[#2a3a5c] text-[#712ae2] dark:text-[#b8a5ff]">
+                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-gray-50 dark:hover:bg-[#1e2d4a] border-[#E2E8F0] dark:border-[#464554] text-[#712ae2] dark:text-[#b8a5ff]">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" />
                     <polyline points="21 15 16 10 5 21" />
@@ -836,7 +836,7 @@ export default function QuestionsPage() {
                         )}
                       </button>
                       <span
-                        className={`flex items-center justify-center text-xs font-bold flex-shrink-0 ${form.question_type === 'summation' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300' : 'bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]'}`}
+                        className={`flex items-center justify-center text-xs font-bold flex-shrink-0 ${form.question_type === 'summation' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300' : 'bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]'}`}
                         style={{
                           width: 24, height: 24,
                           borderRadius: form.question_type === 'summation' ? 4 : '50%',
@@ -868,7 +868,7 @@ export default function QuestionsPage() {
               </div>
             )}
 
-            <div className="flex gap-3 justify-end pt-2 border-t border-[#E2E8F0] dark:border-[#2a3a5c]">
+            <div className="flex gap-3 justify-end pt-2 border-t border-[#E2E8F0] dark:border-[#464554]">
               <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
               <button
                 type="submit"
@@ -890,7 +890,7 @@ export default function QuestionsPage() {
         >
           <div className="space-y-5">
             {/* Header badge */}
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a1530] dark:to-[#1a2947] border-[#e0d9ff] dark:border-[#332a5c]">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a1530] dark:to-[#272a32] border-[#e0d9ff] dark:border-[#332a5c]">
               <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br from-[#712ae2] to-[#4f46e5]">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -965,7 +965,7 @@ export default function QuestionsPage() {
                       onClick={() => setAiForm(f => ({ ...f, count: n }))}
                       className={`w-10 h-10 rounded-lg text-sm font-semibold transition-all border ${aiForm.count === n
                         ? 'bg-[#4f46e5] text-white border-[#4f46e5]'
-                        : 'bg-[#F4F6F9] dark:bg-[#1e2d4a] text-[#334155] dark:text-gray-300 border-[#E2E8F0] dark:border-[#2a3a5c]'
+                        : 'bg-[#F4F6F9] dark:bg-[#464554] text-[#334155] dark:text-gray-300 border-[#E2E8F0] dark:border-[#464554]'
                       }`}
                     >
                       {n}
@@ -1059,7 +1059,7 @@ export default function QuestionsPage() {
 
             {/* Results */}
             {aiResults.length > 0 && (
-              <div className="space-y-3 border-t pt-4 border-[#E2E8F0] dark:border-[#2a3a5c]">
+              <div className="space-y-3 border-t pt-4 border-[#E2E8F0] dark:border-[#464554]">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-[#1E293B]">
                     {aiResults.length} {aiResults.length !== 1 ? 'questões' : 'questão'} gerada{aiResults.length !== 1 ? 's' : ''}
@@ -1101,7 +1101,7 @@ export default function QuestionsPage() {
                         })}
                         className={`rounded-xl border p-4 cursor-pointer transition-all ${selected
                           ? 'border-[#712ae2] bg-[#faf5ff] dark:bg-[#241a3d]'
-                          : 'border-[#E2E8F0] dark:border-[#2a3a5c] bg-white dark:bg-[#1e2d4a]'
+                          : 'border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#464554]'
                         }`}
                       >
                         <div className="flex items-start gap-3">

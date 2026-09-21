@@ -8,7 +8,7 @@ const ADSENSE_SLOT_PUBLIC = (import.meta.env.VITE_ADSENSE_SLOT_PUBLIC as string 
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0F172A] text-[#1E293B]">
+    <div className="min-h-screen bg-white dark:bg-[#10131a] text-[#1E293B]">
       <Seo
         title="Política de Privacidade — Cognition AI"
         description="Como o Cognition AI coleta, usa e protege dados pessoais de professores, alunos e instituições de ensino na plataforma."
@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
         <h1 className="text-3xl font-bold mt-2 mb-2">Política de Privacidade</h1>
         <p className="text-sm text-[#64748B] mb-10">Última atualização: julho de 2026</p>
 
-        <div className="space-y-8 text-sm leading-relaxed text-[#333] dark:text-[#cbd5e1]">
+        <div className="space-y-8 text-sm leading-relaxed text-[#333] dark:text-[#e1e2ec]">
           <section>
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">1. Quem somos</h2>
             <p>

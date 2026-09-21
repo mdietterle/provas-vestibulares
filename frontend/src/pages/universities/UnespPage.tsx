@@ -16,14 +16,14 @@ const INGRESSO = [
 
 export default function UnespPage() {
   const customContent = (
-    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
+    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       <div className="inline-flex items-center gap-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full mb-4">
         Universidade pública estadual — sem mensalidade
       </div>
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         UNESP: ensino superior público levado a 24 cidades de São Paulo
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8] mb-10 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10 max-w-2xl">
         Criada em 1976 pela fusão de institutos isolados já espalhados pelo interior paulista, a UNESP é
         universidade <strong>pública e gratuita</strong>, mantida pelo governo do estado de São Paulo. Seu maior
         diferencial estrutural é a <strong>descentralização</strong>: em vez de concentrar tudo na capital, a
@@ -39,12 +39,12 @@ export default function UnespPage() {
         </h3>
         <div className="flex flex-wrap gap-2">
           {CIDADES.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
         </div>
-        <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-3">
+        <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-3">
           Cada unidade tem cursos próprios voltados à vocação da região — Medicina Veterinária e Agronomia em
           Botucatu e Jaboticabal, Comunicação em Bauru, Geociências em Rio Claro — sem uma sede única concentrando
           toda a estrutura acadêmica.
@@ -71,11 +71,11 @@ export default function UnespPage() {
           {INGRESSO.map(i => (
             <div key={i.via} className="flex gap-3">
               <dt className="font-bold text-[#1E293B] dark:text-white shrink-0 w-64">{i.via}</dt>
-              <dd className="text-[#475569] dark:text-[#94a3b8]">{i.texto}</dd>
+              <dd className="text-[#475569] dark:text-[#c7c4d7]">{i.texto}</dd>
             </div>
           ))}
         </dl>
-        <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-3">
+        <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-3">
           A VUNESP é a fundação responsável por organizar o vestibular tradicional. Metade das vagas de cada curso
           é reservada a candidatos de escola pública, com 35% dessa reserva pra autodeclarados pretos, pardos ou
           indígenas. Datas e proporção exata mudam a cada edital — confirme sempre em{' '}
@@ -97,7 +97,7 @@ export default function UnespPage() {
       <div className="grid sm:grid-cols-2 gap-6">
         <div>
           <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Cursos mais fortes</h3>
-          <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
             São 136 cursos de graduação, com tradição consolidada em <strong>Medicina</strong>,{' '}
             <strong>Medicina Veterinária</strong>, <strong>Agronomia</strong>, <strong>Odontologia</strong>,{' '}
             <strong>Comunicação Social</strong> e <strong>Educação Física</strong> — áreas em que a universidade
@@ -106,7 +106,7 @@ export default function UnespPage() {
         </div>
         <div>
           <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Pesquisa e extensão</h3>
-          <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
             Além da graduação, a UNESP mantém cerca de <strong>150 programas de pós-graduação</strong> e mais de
             3.000 professores. São mais de <strong>500 projetos de extensão</strong> em andamento, levando
             conhecimento produzido na universidade direto à comunidade em todo o interior paulista.

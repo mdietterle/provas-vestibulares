@@ -92,50 +92,50 @@ function ReviewModal({
             </p>
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {detail.reports.map(r => (
-                <div key={r.id} className="text-xs bg-[#F4F6F9] dark:bg-[#0F172A] rounded-lg p-2">
-                  <span className="font-semibold text-[#1E293B] dark:text-[#f8fafc]">{r.reason}</span>
-                  {r.details && <span className="text-[#64748B] dark:text-[#94a3b8]"> — {r.details}</span>}
+                <div key={r.id} className="text-xs bg-[#F4F6F9] dark:bg-[#10131a] rounded-lg p-2">
+                  <span className="font-semibold text-[#1E293B] dark:text-[#e1e2ec]">{r.reason}</span>
+                  {r.details && <span className="text-[#64748B] dark:text-[#c7c4d7]"> — {r.details}</span>}
                 </div>
               ))}
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1">
+            <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1">
               Enunciado — como aparece pro aluno
             </label>
             <div
-              className="text-sm text-[#1E293B] dark:text-[#e2e8f0] leading-relaxed prose prose-sm max-w-none border border-[#E2E8F0] dark:border-[#1e2d4a] rounded-lg p-3 bg-[#F4F6F9] dark:bg-[#0F172A] mb-2 max-h-48 overflow-y-auto"
+              className="text-sm text-[#1E293B] dark:text-[#e2e8f0] leading-relaxed prose prose-sm max-w-none border border-[#E2E8F0] dark:border-[#464554] rounded-lg p-3 bg-[#F4F6F9] dark:bg-[#10131a] mb-2 max-h-48 overflow-y-auto"
               dangerouslySetInnerHTML={{ __html: statement }}
             />
-            <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1">
+            <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1">
               HTML bruto (editável)
             </label>
             <textarea
               value={statement}
               onChange={e => setStatement(e.target.value)}
               rows={6}
-              className="w-full text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg p-3 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5] font-mono"
+              className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg p-3 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5] font-mono"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1">
+            <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1">
               Alternativas
             </label>
             <div className="space-y-2">
               {options.map((opt, i) => (
                 <div key={opt.id} className="flex items-start gap-2">
-                  <span className="w-7 h-7 shrink-0 rounded-lg bg-[#EEF2F7] dark:bg-[#1a2947] flex items-center justify-center text-xs font-bold text-[#334155] dark:text-[#cbd5e1] mt-0.5">
+                  <span className="w-7 h-7 shrink-0 rounded-lg bg-[#EEF2F7] dark:bg-[#272a32] flex items-center justify-center text-xs font-bold text-[#334155] dark:text-[#e1e2ec] mt-0.5">
                     {opt.letter}
                   </span>
                   <input
                     type="text"
                     value={opt.text}
                     onChange={e => setOptions(prev => prev.map((o, j) => j === i ? { ...o, text: e.target.value } : o))}
-                    className="flex-1 text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
+                    className="flex-1 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
                   />
-                  <label className="flex items-center gap-1.5 text-xs text-[#64748B] dark:text-[#94a3b8] shrink-0 mt-2">
+                  <label className="flex items-center gap-1.5 text-xs text-[#64748B] dark:text-[#c7c4d7] shrink-0 mt-2">
                     <input
                       type="checkbox"
                       checked={opt.is_correct}
@@ -148,7 +148,7 @@ function ReviewModal({
             </div>
           </div>
 
-          <div className="flex flex-wrap justify-between gap-2 pt-3 border-t border-[#E2E8F0] dark:border-[#1e2d4a]">
+          <div className="flex flex-wrap justify-between gap-2 pt-3 border-t border-[#E2E8F0] dark:border-[#464554]">
             <button
               onClick={() => setConfirmDelete(true)}
               disabled={saving}
@@ -200,10 +200,10 @@ export default function OwnerQuestionReportsPage() {
   useEffect(() => { load() }, [])
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A]">
-      <div className="bg-white dark:bg-[#131f37] border-b border-[#E2E8F0] dark:border-[#1e2d4a] px-6 py-4">
-        <h1 className="text-xl font-bold text-[#1E293B] dark:text-[#f8fafc]">Questões Reportadas</h1>
-        <p className="text-sm text-[#64748B] dark:text-[#94a3b8]">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a]">
+      <div className="bg-white dark:bg-[#1d1f27] border-b border-[#E2E8F0] dark:border-[#464554] px-6 py-4">
+        <h1 className="text-xl font-bold text-[#1E293B] dark:text-[#e1e2ec]">Questões Reportadas</h1>
+        <p className="text-sm text-[#64748B] dark:text-[#c7c4d7]">
           Questões que alunos reportaram como problemáticas — saem do sorteio de novos simulados até serem revisadas aqui.
         </p>
       </div>
@@ -214,22 +214,22 @@ export default function OwnerQuestionReportsPage() {
             <div className="w-8 h-8 border-4 border-[#4f46e5] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="bg-white dark:bg-[#131f37] rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] shadow-sm">
+          <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[#E2E8F0] dark:border-[#1e2d4a] bg-[#F4F6F9] dark:bg-[#0F172A]">
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Banco</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Enunciado</th>
-                    <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Denúncias</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Motivos</th>
-                    <th className="text-right px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Ações</th>
+                  <tr className="border-b border-[#E2E8F0] dark:border-[#464554] bg-[#F4F6F9] dark:bg-[#10131a]">
+                    <th className="text-left px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Banco</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Enunciado</th>
+                    <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Denúncias</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Motivos</th>
+                    <th className="text-right px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#1e2d4a]">
+                <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#464554]">
                   {groups.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="text-center py-10 text-[#64748B] dark:text-[#94a3b8] text-sm">
+                      <td colSpan={5} className="text-center py-10 text-[#64748B] dark:text-[#c7c4d7] text-sm">
                         Nenhuma questão reportada pendente — tudo em ordem.
                       </td>
                     </tr>
@@ -239,11 +239,11 @@ export default function OwnerQuestionReportsPage() {
                         <span className="text-xs font-bold uppercase text-[#712ae2] dark:text-[#818CF8]">{g.exam_type}</span>
                         <div className="text-xs text-[#a0a3af]">#{g.question_id}</div>
                       </td>
-                      <td className="px-4 py-3.5 text-[#334155] dark:text-[#94a3b8] max-w-md">
+                      <td className="px-4 py-3.5 text-[#334155] dark:text-[#c7c4d7] max-w-md">
                         <p className="line-clamp-2">{g.statement_preview}</p>
                       </td>
-                      <td className="px-4 py-3.5 text-center font-semibold text-[#1E293B] dark:text-[#f8fafc]">{g.count}</td>
-                      <td className="px-4 py-3.5 text-xs text-[#64748B] dark:text-[#94a3b8] max-w-xs">
+                      <td className="px-4 py-3.5 text-center font-semibold text-[#1E293B] dark:text-[#e1e2ec]">{g.count}</td>
+                      <td className="px-4 py-3.5 text-xs text-[#64748B] dark:text-[#c7c4d7] max-w-xs">
                         {[...new Set(g.reasons)].join(', ')}
                       </td>
                       <td className="px-5 py-3.5 text-right">

@@ -19,7 +19,7 @@ function UniversityCard({ u }: { u: University }) {
     >
       <div className="flex items-center justify-between gap-2 mb-1">
         <h3 className="font-display font-bold text-[#1E293B]">{u.shortName}</h3>
-        <span className="text-[10px] uppercase font-bold text-[#a0a3af] dark:text-[#6b7385] tracking-wider">{u.state}</span>
+        <span className="text-[10px] uppercase font-bold text-[#a0a3af] dark:text-[#908fa0] tracking-wider">{u.state}</span>
       </div>
       <p className="text-xs text-[#64748B] leading-relaxed line-clamp-2">{u.vestibularType}</p>
       {u.hasRealImporter && (
@@ -43,7 +43,7 @@ export default function UniversitiesIndexPage() {
   })).filter(g => g.items.length > 0)
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] font-sans">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
         title={`Vestibulares e universidades no Brasil (${UNIVERSITIES.length} instituições) — calendário e cursos | Cognition AI`}
         description={`Guia com calendário, tipo de prova e cursos mais procurados de ${UNIVERSITIES.length} vestibulares brasileiros, incluindo ENEM, FUVEST, ITA, UFPR, UFRGS e mais.`}
@@ -81,7 +81,7 @@ export default function UniversitiesIndexPage() {
               <div key={g.category}>
                 <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
                   {CATEGORY_LABELS[g.category]}
-                  <span className="ml-2 text-[#a0a3af] dark:text-[#6b7385] font-normal">({g.items.length})</span>
+                  <span className="ml-2 text-[#a0a3af] dark:text-[#908fa0] font-normal">({g.items.length})</span>
                 </h3>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {g.items.map(u => <UniversityCard key={u.slug} u={u} />)}
@@ -102,7 +102,7 @@ export default function UniversitiesIndexPage() {
               <div key={g.region}>
                 <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
                   {REGION_LABELS[g.region]}
-                  <span className="ml-2 text-[#a0a3af] dark:text-[#6b7385] font-normal">({g.items.length})</span>
+                  <span className="ml-2 text-[#a0a3af] dark:text-[#908fa0] font-normal">({g.items.length})</span>
                 </h3>
                 <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {g.items.map(u => <UniversityCard key={u.slug} u={u} />)}

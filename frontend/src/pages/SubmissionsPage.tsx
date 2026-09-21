@@ -438,7 +438,7 @@ export default function SubmissionsPage() {
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
               filterStatus === tab.key
                 ? 'bg-[#4f46e5] text-white'
-                : 'bg-white dark:bg-[#131f37] text-[#5a6480] dark:text-[#94a3b8] border border-[#e8eeff] dark:border-[#2d3f6a] hover:bg-[#f4f6fb] dark:hover:bg-[#1a2947]'
+                : 'bg-white dark:bg-[#1d1f27] text-[#5a6480] dark:text-[#c7c4d7] border border-[#e8eeff] dark:border-[#464554] hover:bg-[#f4f6fb] dark:hover:bg-[#1a2947]'
             }`}
           >
             {tab.label}
@@ -510,7 +510,7 @@ export default function SubmissionsPage() {
                             onClick={() => handleCorrectOne(sub)}
                             disabled={correctingId === sub.id}
                             title="Corrige esta submissão"
-                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#e0e7ff] dark:hover:bg-[#1e2d4a] transition-colors disabled:opacity-60 whitespace-nowrap"
+                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#e0e7ff] dark:hover:bg-[#1e2d4a] transition-colors disabled:opacity-60 whitespace-nowrap"
                           >
                             {correctingId === sub.id ? 'Corrigindo…' : 'Corrigir'}
                           </button>
@@ -537,7 +537,7 @@ export default function SubmissionsPage() {
                         )}
                         <button
                           onClick={() => openDetail(sub.id)}
-                          className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#f0f4ff] dark:bg-[#1a2947] text-[#2845b5] dark:text-[#818CF8] hover:bg-[#e5edff] dark:hover:bg-[#1e2d4a] transition-colors whitespace-nowrap"
+                          className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#f0f4ff] dark:bg-[#272a32] text-[#2845b5] dark:text-[#818CF8] hover:bg-[#e5edff] dark:hover:bg-[#1e2d4a] transition-colors whitespace-nowrap"
                         >
                           Ver detalhes
                         </button>

@@ -24,7 +24,7 @@ const TONE_BADGE: Record<Tone, string> = {
   green:  'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   blue:   'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
   gray:   'bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-slate-400',
-  navy:   'bg-[#dce1ff] text-[#4f46e5] dark:bg-[#1a2947] dark:text-[#818CF8]',
+  navy:   'bg-[#dce1ff] text-[#4f46e5] dark:bg-[#272a32] dark:text-[#818CF8]',
   purple: 'bg-[#e9ddff] text-[#712ae2] dark:bg-[#271a48] dark:text-[#b794f6]',
   orange: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
 }
@@ -64,7 +64,7 @@ const TONE_BG: Record<Tone, string> = {
   green:  'bg-green-50 dark:bg-green-950/20',
   blue:   'bg-blue-50 dark:bg-blue-950/20',
   gray:   'bg-gray-50 dark:bg-slate-800/60',
-  navy:   'bg-[#dce1ff] dark:bg-[#1a2947]',
+  navy:   'bg-[#dce1ff] dark:bg-[#272a32]',
   purple: 'bg-[#e9ddff] dark:bg-[#271a48]',
   orange: 'bg-orange-50 dark:bg-orange-950/20',
 }
@@ -347,7 +347,7 @@ function MonitoringSection({ monitoring }: { monitoring: DashboardMonitoring }) 
               key={v}
               onClick={() => setTab(v)}
               className={tab === v
-                ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#1e2d4a] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
+                ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#464554] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
                 : 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-gray-500 dark:text-slate-400'
               }
             >
@@ -707,7 +707,7 @@ function AdminDashboard() {
                   key={val}
                   onClick={() => setChartMode(val)}
                   className={chartMode === val
-                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#1e2d4a] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
+                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#464554] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
                     : 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-gray-500 dark:text-slate-400'
                   }
                 >
@@ -722,7 +722,7 @@ function AdminDashboard() {
                   key={r}
                   onClick={() => setChartRange(r)}
                   className={chartRange === r
-                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#1e2d4a] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
+                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#464554] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
                     : 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-gray-500 dark:text-slate-400'
                   }
                 >
@@ -1197,7 +1197,7 @@ function StudentDashboard() {
             <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-2">Provas tradicionais por matéria</p>
             <div className="flex flex-wrap gap-2">
               {subjectBreakdown.map(([subject, count]) => (
-                <span key={subject} className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-[#F4F6F9] dark:bg-[#0F172A] text-[#334155] dark:text-[#94a3b8] border border-[#E2E8F0] dark:border-[#1e2d4a]">
+                <span key={subject} className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-[#F4F6F9] dark:bg-[#10131a] text-[#334155] dark:text-[#c7c4d7] border border-[#E2E8F0] dark:border-[#464554]">
                   {subject}
                   <span className="font-bold text-[#1E293B] dark:text-[#e2e8f0]">{count}</span>
                 </span>
@@ -1245,7 +1245,7 @@ function StudentDashboard() {
                     barras não apareciam antes). */}
                 <div className="relative h-32">
                   {[0, 25, 50, 75, 100].map(pct => (
-                    <div key={pct} className="absolute inset-x-0 border-t border-[#f0f2fa] dark:border-[#1e2d4a]" style={{ bottom: `${pct}%` }} />
+                    <div key={pct} className="absolute inset-x-0 border-t border-[#f0f2fa] dark:border-[#464554]" style={{ bottom: `${pct}%` }} />
                   ))}
                   <div className="absolute inset-x-0 pointer-events-none z-20" style={{ bottom: `${(7 / 10) * 100}%` }}>
                     <div className="border-t border-dashed border-[#27c38a] opacity-70" />

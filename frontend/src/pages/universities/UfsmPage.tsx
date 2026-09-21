@@ -3,8 +3,8 @@ import CampusImage from '../../components/CampusImage'
 
 export default function UfsmPage() {
   const customContent = (
-    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
-      <div className="bg-[#1E293B] dark:bg-[#0F172A] text-white rounded-2xl p-6 sm:p-8 mb-8">
+    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
+      <div className="bg-[#1E293B] dark:bg-[#10131a] text-white rounded-2xl p-6 sm:p-8 mb-8">
         <span className="text-xs font-bold uppercase tracking-wider text-yellow-300">Um marco na história do ensino público</span>
         <p className="text-sm sm:text-base text-white/90 leading-relaxed mt-2">
           Criada em 14 de dezembro de 1960, a UFSM foi a <strong>primeira universidade federal do Brasil fundada
@@ -17,7 +17,7 @@ export default function UfsmPage() {
         Pública federal — sem mensalidade
       </div>
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">UFSM: Santa Maria e mais três cidades gaúchas</h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
         Além da sede em Santa Maria (RS), a UFSM tem campi em Frederico Westphalen, Palmeira das Missões e Cachoeira
         do Sul — espalhando ensino federal por diferentes regiões do estado.
       </p>
@@ -30,7 +30,7 @@ export default function UfsmPage() {
         credit="Foto: Wikimedia Commons, CC BY-SA 4.0"
       />
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
         São 127 cursos de graduação (24 licenciaturas presenciais, 78 bacharelados, 11 tecnólogos, além de 12
         licenciaturas EaD) e 108 cursos de pós-graduação. Áreas de destaque histórico incluem{' '}
         <strong>Medicina</strong>, <strong>Odontologia</strong>, <strong>Agronomia</strong>,{' '}
@@ -41,7 +41,7 @@ export default function UfsmPage() {
         <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Avaliação MEC: nota máxima mantida e cursos 5 estrelas
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           A UFSM mantém <strong>nota máxima (5) no Índice Geral de Cursos (IGC)</strong> do MEC pela segunda vez
           consecutiva, e nenhum dos 31 cursos avaliados no Enade tirou conceito 1 ou 2 (insuficiente). No Enade
           2023, 15 cursos tiraram nota 5, incluindo <strong>Engenharia Florestal</strong>,{' '}
@@ -56,7 +56,7 @@ export default function UfsmPage() {
         <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Papel na região central do Rio Grande do Sul
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           Ser a primeira federal fundada fora de uma capital não foi só um marco simbólico: a UFSM levou pesquisa
           em ciências agrárias, saúde e engenharia pra uma região do RS que, sem essa descentralização, dificilmente
           concentraria hospital-escola, clínicas veterinárias e laboratórios de pesquisa de ponta fora de Porto
@@ -66,11 +66,11 @@ export default function UfsmPage() {
         </p>
       </div>
 
-      <div className="border-t border-[#E2E8F0] dark:border-[#1e2d4a] pt-6">
+      <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
         <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Ingresso: vestibular próprio ou SiSU
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           A UFSM combina o vestibular próprio da <strong>COPERVES</strong> (múltipla escolha e redação, com
           inscrições ao longo do ano) e o <strong>SiSU</strong>, que segue o calendário nacional do MEC. Confirme
           sempre em{' '}

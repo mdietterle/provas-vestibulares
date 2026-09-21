@@ -172,7 +172,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
           <button
             onClick={onImport}
             title="Importar para meu banco"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

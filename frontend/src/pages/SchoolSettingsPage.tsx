@@ -104,7 +104,7 @@ export default function SchoolSettingsPage() {
       {/* Logo card */}
       <div className="rounded-2xl border border-[#E2E8F0] bg-white p-6">
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#eef2ff] dark:bg-[#1a2947]">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#eef2ff] dark:bg-[#272a32]">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
               <circle cx="8.5" cy="8.5" r="1.5" />
@@ -119,7 +119,7 @@ export default function SchoolSettingsPage() {
           <div
             className={`w-24 h-24 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden flex-shrink-0 transition-colors ${
               inst.logo
-                ? 'border-[#c7d2fe] dark:border-[#3730a3] bg-white dark:bg-[#131f37]'
+                ? 'border-[#c7d2fe] dark:border-[#3730a3] bg-white dark:bg-[#1d1f27]'
                 : 'border-[#E2E8F0] bg-[#F4F6F9]'
             }`}
           >
@@ -196,7 +196,7 @@ export default function SchoolSettingsPage() {
       {/* Institution data card */}
       <div className="rounded-2xl border border-[#E2E8F0] bg-white p-6">
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#eef2ff] dark:bg-[#1a2947]">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#eef2ff] dark:bg-[#272a32]">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
               <polyline points="9 22 9 12 15 12 15 22" />
@@ -326,7 +326,7 @@ export default function SchoolSettingsPage() {
           </div>
           <button
             onClick={() => setAiAutoSuggest(v => !v)}
-            className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${aiAutoSuggest ? '' : 'bg-[#d1d5db] dark:bg-[#334155]'}`}
+            className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${aiAutoSuggest ? '' : 'bg-[#d1d5db] dark:bg-[#c7c4d7]'}`}
             style={aiAutoSuggest ? { background: 'linear-gradient(135deg, #4f46e5, #712ae2)' } : undefined}
           >
             <span
@@ -339,7 +339,7 @@ export default function SchoolSettingsPage() {
 
       {/* Info card */}
       <div
-        className="rounded-2xl border border-[#e0d9ff] dark:border-[#2e2660] p-5 bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a2947] dark:to-[#182643]"
+        className="rounded-2xl border border-[#e0d9ff] dark:border-[#2e2660] p-5 bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#272a32] dark:to-[#182643]"
       >
         <div className="flex items-start gap-3">
           <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #712ae2, #4f46e5)' }}>
@@ -362,7 +362,7 @@ export default function SchoolSettingsPage() {
       {user && (
         <div className="rounded-2xl border border-[#E2E8F0] bg-white p-6">
           <div className="flex items-center gap-2 mb-5">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#eef2ff] dark:bg-[#1a2947]">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#eef2ff] dark:bg-[#272a32]">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
               </svg>
@@ -380,7 +380,7 @@ export default function SchoolSettingsPage() {
               <p className="font-semibold text-gray-900">{user.name}</p>
               <p className="text-sm text-gray-500">{user.email}</p>
               <span
-                className="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full capitalize bg-[#eef2ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#93c5fd]"
+                className="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full capitalize bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#93c5fd]"
               >
                 {user.role === 'admin' ? 'Administrador' : user.role === 'professor' ? 'Professor' : 'Aluno'}
               </span>

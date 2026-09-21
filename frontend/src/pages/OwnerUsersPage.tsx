@@ -78,18 +78,18 @@ export default function OwnerUsersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-[#4f46e5] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A]">
-      <div className="bg-white dark:bg-[#131f37] border-b border-[#E2E8F0] dark:border-[#1e2d4a] px-6 py-4 flex items-center justify-between flex-wrap gap-3">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a]">
+      <div className="bg-white dark:bg-[#1d1f27] border-b border-[#E2E8F0] dark:border-[#464554] px-6 py-4 flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-bold text-[#1E293B] dark:text-[#f8fafc]">Gestão de Usuários</h1>
-          <p className="text-sm text-[#64748B] dark:text-[#94a3b8]">Todos os usuários de todas as escolas da plataforma</p>
+          <h1 className="text-xl font-bold text-[#1E293B] dark:text-[#e1e2ec]">Gestão de Usuários</h1>
+          <p className="text-sm text-[#64748B] dark:text-[#c7c4d7]">Todos os usuários de todas as escolas da plataforma</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <input
@@ -97,12 +97,12 @@ export default function OwnerUsersPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Buscar por nome, e-mail ou escola..."
-            className="w-64 text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
+            className="w-64 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
           />
           <select
             value={roleFilter}
             onChange={e => setRoleFilter(e.target.value)}
-            className="text-sm border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
+            className="text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
           >
             <option value="">Todos os papéis</option>
             <option value="admin">Administrador</option>
@@ -113,39 +113,39 @@ export default function OwnerUsersPage() {
       </div>
 
       <div className="p-6 max-w-7xl mx-auto space-y-6">
-        <div className="bg-white dark:bg-[#131f37] rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] shadow-sm">
+        <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#E2E8F0] dark:border-[#1e2d4a] bg-[#F4F6F9] dark:bg-[#0F172A]">
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Usuário</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Escola</th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Papel</th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Situação</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Criado em</th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#94a3b8] uppercase tracking-wide">Ações</th>
+                <tr className="border-b border-[#E2E8F0] dark:border-[#464554] bg-[#F4F6F9] dark:bg-[#10131a]">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Usuário</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Escola</th>
+                  <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Papel</th>
+                  <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Situação</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Criado em</th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#1e2d4a]">
+              <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#464554]">
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="text-center py-10 text-[#64748B] dark:text-[#94a3b8] text-sm">
+                    <td colSpan={6} className="text-center py-10 text-[#64748B] dark:text-[#c7c4d7] text-sm">
                       {users.length === 0 ? 'Nenhum usuário cadastrado ainda' : 'Nenhum usuário encontrado com esse filtro'}
                     </td>
                   </tr>
                 ) : filtered.map(u => (
                   <tr key={u.id} className="hover:bg-[#F4F6F9] dark:hover:bg-[#0F172A] transition-colors">
                     <td className="px-5 py-3.5">
-                      <div className="font-medium text-[#1E293B] dark:text-[#f8fafc]">{u.name}</div>
-                      <div className="text-xs text-[#64748B] dark:text-[#94a3b8]">{u.email}</div>
+                      <div className="font-medium text-[#1E293B] dark:text-[#e1e2ec]">{u.name}</div>
+                      <div className="text-xs text-[#64748B] dark:text-[#c7c4d7]">{u.email}</div>
                     </td>
-                    <td className="px-4 py-3.5 text-[#334155] dark:text-[#94a3b8]">{u.institution_name}</td>
+                    <td className="px-4 py-3.5 text-[#334155] dark:text-[#c7c4d7]">{u.institution_name}</td>
                     <td className="px-4 py-3.5 text-center">
                       <select
                         value={u.role}
                         disabled={busyId === u.id}
                         onChange={e => handleChangeRole(u, e.target.value)}
-                        className="text-xs font-semibold border border-[#c5c5d3] dark:border-[#1e2d4a] rounded-lg px-2 py-1 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5] disabled:opacity-50"
+                        className="text-xs font-semibold border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-2 py-1 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5] disabled:opacity-50"
                       >
                         <option value="admin">{ROLE_LABEL.admin}</option>
                         <option value="professor">{ROLE_LABEL.professor}</option>
@@ -163,7 +163,7 @@ export default function OwnerUsersPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 text-xs text-[#64748B] dark:text-[#94a3b8]">
+                    <td className="px-4 py-3.5 text-xs text-[#64748B] dark:text-[#c7c4d7]">
                       {u.created_at ? new Date(u.created_at).toLocaleDateString('pt-BR') : '—'}
                     </td>
                     <td className="px-5 py-3.5">
@@ -193,7 +193,7 @@ export default function OwnerUsersPage() {
             </table>
           </div>
         </div>
-        <p className="text-xs text-[#a0a3af] dark:text-[#6b7385]">{filtered.length} de {users.length} usuário(s)</p>
+        <p className="text-xs text-[#a0a3af] dark:text-[#908fa0]">{filtered.length} de {users.length} usuário(s)</p>
       </div>
 
       {deleteTarget && (

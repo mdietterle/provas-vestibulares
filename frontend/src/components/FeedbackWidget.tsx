@@ -49,7 +49,7 @@ export default function FeedbackWidget() {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-[70] w-80 max-w-[calc(100vw-2.5rem)] bg-white dark:bg-[#131f37] rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] shadow-2xl overflow-hidden"
+    <div className="fixed bottom-5 right-5 z-[70] w-80 max-w-[calc(100vw-2.5rem)] bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] shadow-2xl overflow-hidden"
       style={{ boxShadow: '0 12px 40px rgba(0,35,111,0.25)' }}>
       <div className="flex items-center justify-between px-4 py-3" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
         <span className="text-sm font-semibold text-white">Reportar problema</span>
@@ -60,7 +60,7 @@ export default function FeedbackWidget() {
         </button>
       </div>
       <form onSubmit={handleSubmit} className="p-4 space-y-3">
-        <p className="text-xs text-[#64748B] dark:text-[#94a3b8]">
+        <p className="text-xs text-[#64748B] dark:text-[#c7c4d7]">
           Descreva o problema ou sugestão. Enviamos direto para a equipe.
         </p>
         <textarea
@@ -69,7 +69,7 @@ export default function FeedbackWidget() {
           rows={4}
           maxLength={5000}
           placeholder="O que aconteceu?"
-          className="w-full text-sm rounded-lg border border-[#E2E8F0] dark:border-[#334155] bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] p-2.5 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] resize-none"
+          className="w-full text-sm rounded-lg border border-[#E2E8F0] dark:border-[#c7c4d7] bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] p-2.5 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] resize-none"
           autoFocus
         />
         <button

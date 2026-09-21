@@ -389,7 +389,7 @@ function Avatar({ name, avatar, size = 'md' }: { name: string; avatar?: string |
 }
 
 const KIND_COLORS: Record<string, { className: string; label: string }> = {
-  submission: { className: 'bg-[#dce1ff] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#818CF8]', label: 'Enviada' },
+  submission: { className: 'bg-[#dce1ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]', label: 'Enviada' },
   correcting: { className: 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400', label: 'Corrigindo' },
   correction: { className: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400', label: 'Corrigida' },
   release: { className: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400', label: 'Liberada' },
@@ -687,10 +687,10 @@ export default function Layout() {
   }, [userRole])
 
   return (
-    <div className="h-screen flex flex-col bg-[#f4f6fb] dark:bg-[#0F172A] text-[#1E293B] dark:text-[#e2e8f0] overflow-hidden transition-colors duration-200">
+    <div className="h-screen flex flex-col bg-[#f4f6fb] dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] overflow-hidden transition-colors duration-200">
       {/* ── Top header ── */}
       <header
-        className="bg-white/85 dark:bg-[#0e172e]/90 backdrop-blur-md flex items-center justify-between px-4 shrink-0 z-50 border-b border-[#eaeff8] dark:border-[#1e2d4a]"
+        className="bg-white/85 dark:bg-[#0e172e]/90 backdrop-blur-md flex items-center justify-between px-4 shrink-0 z-50 border-b border-[#eaeff8] dark:border-[#464554]"
         style={{ height: 52, boxShadow: '0 1px 12px rgba(0,35,111,0.05)' }}
       >
         {/* Left: toggle + logo */}
@@ -743,15 +743,15 @@ export default function Layout() {
             </button>
 
             {bellOpen && (
-              <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#131f37] rounded-xl border border-[#e8eeff] dark:border-[#1e2d4a] z-50 overflow-hidden"
+              <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#1d1f27] rounded-xl border border-[#e8eeff] dark:border-[#464554] z-50 overflow-hidden"
                 style={{ boxShadow: '0 8px 30px rgba(0,35,111,0.12)' }}>
-                <div className="px-4 py-3 border-b border-[#f0f3fa] dark:border-[#1e2d4a] flex items-center justify-between">
-                  <p className="text-sm font-semibold text-[#1E293B] dark:text-[#f8fafc]">Notificações</p>
+                <div className="px-4 py-3 border-b border-[#f0f3fa] dark:border-[#464554] flex items-center justify-between">
+                  <p className="text-sm font-semibold text-[#1E293B] dark:text-[#e1e2ec]">Notificações</p>
                   {notifications.length > 0 && (
                     <span className="text-xs text-[#8490b0]">{notifications.length} eventos</span>
                   )}
                 </div>
-                <div className="max-h-72 overflow-y-auto divide-y divide-[#f4f6fb] dark:divide-[#1e2d4a]">
+                <div className="max-h-72 overflow-y-auto divide-y divide-[#f4f6fb] dark:divide-[#464554]">
                   {notifications.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 text-center px-4">
                       <svg className="w-9 h-9 text-[#c5d0ea] dark:text-[#3b4c74] mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -773,7 +773,7 @@ export default function Layout() {
                               <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">Nota: {n.score.toFixed(1)}</p>
                             )}
                           </div>
-                          <span className="text-[10px] text-[#9da5bc] dark:text-[#64748b] shrink-0">{timeAgo(n.at)}</span>
+                          <span className="text-[10px] text-[#9da5bc] dark:text-[#908fa0] shrink-0">{timeAgo(n.at)}</span>
                         </div>
                       )
                     })
@@ -791,7 +791,7 @@ export default function Layout() {
             >
               {user && <Avatar name={user.name} avatar={user.avatar} size="sm" />}
               <div className="text-left hidden sm:block">
-                <p className="text-[13px] font-semibold text-[#1E293B] dark:text-[#f8fafc] leading-tight">{user?.name}</p>
+                <p className="text-[13px] font-semibold text-[#1E293B] dark:text-[#e1e2ec] leading-tight">{user?.name}</p>
                 <p className="text-[11px] text-[#8490b0]">{user ? ROLE_LABEL[user.role] : ''}</p>
               </div>
               <svg className={`w-3.5 h-3.5 text-[#8490b0] transition-transform hidden sm:block ${menuOpen ? 'rotate-180' : ''}`}
@@ -801,13 +801,13 @@ export default function Layout() {
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-[#131f37] rounded-xl border border-[#e8eeff] dark:border-[#1e2d4a] py-1 z-50"
+              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-[#1d1f27] rounded-xl border border-[#e8eeff] dark:border-[#464554] py-1 z-50"
                 style={{ boxShadow: '0 8px 30px rgba(0,35,111,0.12)' }}>
-                <div className="px-3.5 py-3 border-b border-[#f0f3fa] dark:border-[#1e2d4a]">
+                <div className="px-3.5 py-3 border-b border-[#f0f3fa] dark:border-[#464554]">
                   <div className="flex items-center gap-2.5">
                     {user && <Avatar name={user.name} avatar={user.avatar} size="sm" />}
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#1E293B] dark:text-[#f8fafc] truncate">{user?.name}</p>
+                      <p className="text-sm font-semibold text-[#1E293B] dark:text-[#e1e2ec] truncate">{user?.name}</p>
                       <p className="text-xs text-[#8490b0] truncate">{user?.email}</p>
                     </div>
                   </div>
@@ -815,7 +815,7 @@ export default function Layout() {
                 <div className="py-1">
                   <button
                     onClick={() => { navigate('/profile'); setMenuOpen(false) }}
-                    className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-[#374060] dark:text-[#cbd5e1] hover:bg-[#f4f6fb] dark:hover:bg-[#182643] transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-[#374060] dark:text-[#e1e2ec] hover:bg-[#f4f6fb] dark:hover:bg-[#182643] transition-colors"
                   >
                     <svg className="w-4 h-4 text-[#8490b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -884,7 +884,7 @@ export default function Layout() {
         )}
 
         {/* ── Page content ── */}
-        <main className="flex-1 min-w-0 overflow-auto bg-[#f4f6fb] dark:bg-[#0F172A]">
+        <main className="flex-1 min-w-0 overflow-auto bg-[#f4f6fb] dark:bg-[#10131a]">
           <div className="p-4 md:p-6 max-w-7xl mx-auto">
             <Outlet />
           </div>

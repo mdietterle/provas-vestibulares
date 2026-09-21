@@ -80,19 +80,19 @@ function ReportQuestionButton({ sqId, reported, onReported }: { sqId: number; re
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-white dark:bg-[#131f37] rounded-2xl p-6 max-w-md w-full space-y-4"
+            className="bg-white dark:bg-[#1d1f27] rounded-2xl p-6 max-w-md w-full space-y-4"
             onClick={e => e.stopPropagation()}
           >
             <div>
-              <h3 className="font-bold text-[#1E293B] dark:text-[#f8fafc]">Reportar problema na questão</h3>
-              <p className="text-xs text-[#64748B] dark:text-[#94a3b8] mt-1">
+              <h3 className="font-bold text-[#1E293B] dark:text-[#e1e2ec]">Reportar problema na questão</h3>
+              <p className="text-xs text-[#64748B] dark:text-[#c7c4d7] mt-1">
                 Ela sai de circulação até um responsável revisar e corrigir.
               </p>
             </div>
             <div className="space-y-2">
               {reasons.length === 0 && <p className="text-xs text-[#64748B]">Carregando motivos...</p>}
               {reasons.map(r => (
-                <label key={r.value} className="flex items-start gap-2 text-sm text-[#334155] dark:text-[#cbd5e1] cursor-pointer">
+                <label key={r.value} className="flex items-start gap-2 text-sm text-[#334155] dark:text-[#e1e2ec] cursor-pointer">
                   <input
                     type="radio"
                     name={`report-reason-${sqId}`}
@@ -110,13 +110,13 @@ function ReportQuestionButton({ sqId, reported, onReported }: { sqId: number; re
                 onChange={e => setDetails(e.target.value)}
                 placeholder="Descreva o problema que você encontrou..."
                 rows={3}
-                className="w-full text-sm border border-[#c5c5d3] dark:border-[#334155] rounded-lg p-2 bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-[#f8fafc] placeholder-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#712ae2]"
+                className="w-full text-sm border border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg p-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#712ae2]"
               />
             )}
             <div className="flex justify-end gap-2 pt-1">
               <button
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-[#64748B] dark:text-[#94a3b8] hover:bg-[#F4F6F9] dark:hover:bg-[#0F172A] transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-[#64748B] dark:text-[#c7c4d7] hover:bg-[#F4F6F9] dark:hover:bg-[#0F172A] transition-colors"
               >
                 Cancelar
               </button>
@@ -165,7 +165,7 @@ function QuestionCard({
     : 0
 
   return (
-    <div className="bg-white dark:bg-[#131f37] rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] p-6 space-y-4">
+    <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-6 space-y-4">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-2 shrink-0">
           <span
@@ -175,7 +175,7 @@ function QuestionCard({
             {index}
           </span>
           {sq.area && (
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#8b93ff]">
+            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#8b93ff]">
               {sq.area}
             </span>
           )}
@@ -197,7 +197,7 @@ function QuestionCard({
         <div className="flex items-center gap-3 shrink-0">
           {isSummation && (
             <div className="text-right">
-              <p className="text-[10px] uppercase tracking-wide text-[#64748B] dark:text-[#94a3b8]">Soma marcada</p>
+              <p className="text-[10px] uppercase tracking-wide text-[#64748B] dark:text-[#c7c4d7]">Soma marcada</p>
               <p className="text-lg font-bold text-[#4f46e5] dark:text-[#8b93ff]">{sum}</p>
             </div>
           )}
@@ -206,12 +206,12 @@ function QuestionCard({
       </div>
 
       {!ready ? (
-        <div className="rounded-xl p-8 flex flex-col items-center justify-center gap-3 bg-[#F4F6F9] dark:bg-[#0F172A] border border-dashed border-[#c5d0ff] dark:border-[#2e3f66]">
+        <div className="rounded-xl p-8 flex flex-col items-center justify-center gap-3 bg-[#F4F6F9] dark:bg-[#10131a] border border-dashed border-[#c5d0ff] dark:border-[#2e3f66]">
           <svg className="w-6 h-6 animate-spin text-[#712ae2]" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
           </svg>
-          <p className="text-sm text-[#64748B] dark:text-[#94a3b8]">Preparando questão...</p>
+          <p className="text-sm text-[#64748B] dark:text-[#c7c4d7]">Preparando questão...</p>
         </div>
       ) : (
         <>
@@ -225,7 +225,7 @@ function QuestionCard({
               key={i}
               src={img}
               alt={`Imagem da questão ${i + 1}`}
-              className="max-w-full rounded-lg border border-[#E2E8F0] dark:border-[#1e2d4a] mt-2"
+              className="max-w-full rounded-lg border border-[#E2E8F0] dark:border-[#464554] mt-2"
             />
           ))}
 
@@ -247,20 +247,20 @@ function QuestionCard({
                   onClick={() => onSelect(opt.letter)}
                   className={`w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-all text-sm ${
                     isSelected
-                      ? 'border-[#4f46e5] dark:border-[#818CF8] bg-[#EFF6FF] dark:bg-[#1a2947]'
-                      : 'border-[#E2E8F0] dark:border-[#1e2d4a] hover:border-[#b6c4ff] dark:hover:border-[#334670] hover:bg-[#F4F6F9] dark:hover:bg-[#182643]'
+                      ? 'border-[#4f46e5] dark:border-[#818CF8] bg-[#EFF6FF] dark:bg-[#272a32]'
+                      : 'border-[#E2E8F0] dark:border-[#464554] hover:border-[#b6c4ff] dark:hover:border-[#334670] hover:bg-[#F4F6F9] dark:hover:bg-[#182643]'
                   }`}
                 >
                   <span
                     className={`shrink-0 mt-0.5 flex items-center justify-center text-xs font-bold ${
                       isSummation ? 'w-6 h-6 rounded-md' : 'w-6 h-6 rounded-full'
-                    } ${isSelected ? 'bg-[#4f46e5] dark:bg-[#712ae2] text-white' : 'bg-[#EEF2F7] dark:bg-[#1a2947] text-[#334155] dark:text-[#cbd5e1]'}`}
+                    } ${isSelected ? 'bg-[#4f46e5] dark:bg-[#712ae2] text-white' : 'bg-[#EEF2F7] dark:bg-[#272a32] text-[#334155] dark:text-[#e1e2ec]'}`}
                   >
                     {isSummation ? (isSelected ? '✓' : opt.letter) : opt.letter}
                   </span>
-                  <span className={isSelected ? 'text-[#4f46e5] dark:text-[#818CF8] font-medium' : 'text-[#334155] dark:text-[#cbd5e1]'}>
+                  <span className={isSelected ? 'text-[#4f46e5] dark:text-[#818CF8] font-medium' : 'text-[#334155] dark:text-[#e1e2ec]'}>
                     {isSummation && typeof opt.value === 'number' && (
-                      <span className="text-xs text-[#9ca3af] dark:text-[#64748b] mr-1.5">({opt.value})</span>
+                      <span className="text-xs text-[#9ca3af] dark:text-[#908fa0] mr-1.5">({opt.value})</span>
                     )}
                     {opt.text}
                   </span>
@@ -281,7 +281,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
 
   return (
     <div
-      className={`bg-white dark:bg-[#131f37] rounded-2xl border p-6 space-y-4 ${
+      className={`bg-white dark:bg-[#1d1f27] rounded-2xl border p-6 space-y-4 ${
         sq.is_correct ? 'border-green-200 dark:border-green-800/40' : 'border-red-200 dark:border-red-800/40'
       }`}
     >
@@ -294,7 +294,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
             {index}
           </span>
           {sq.area && (
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-[#1a2947] text-[#4f46e5] dark:text-[#8b93ff]">
+            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#EFF6FF] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#8b93ff]">
               {sq.area}
             </span>
           )}
@@ -323,7 +323,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
           key={i}
           src={img}
           alt={`Imagem da questão ${i + 1}`}
-          className="max-w-full rounded-lg border border-[#E2E8F0] dark:border-[#1e2d4a] mt-2"
+          className="max-w-full rounded-lg border border-[#E2E8F0] dark:border-[#464554] mt-2"
         />
       ))}
 
@@ -332,7 +332,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
           const isStudentAnswer = selectedLetters.includes(opt.letter)
           const isCorrect = opt.is_correct
 
-          let cls = 'border-[#E2E8F0] dark:border-[#1e2d4a] bg-white dark:bg-[#131f37] text-[#334155] dark:text-[#cbd5e1]'
+          let cls = 'border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] text-[#334155] dark:text-[#e1e2ec]'
           if (isCorrect) cls = 'border-green-300 dark:border-green-800/50 bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300'
           else if (isStudentAnswer && !isCorrect) cls = 'border-red-300 dark:border-red-800/50 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300'
 
@@ -344,7 +344,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
                     ? 'bg-green-600 text-white'
                     : isStudentAnswer
                     ? 'bg-red-500 text-white'
-                    : 'bg-[#EEF2F7] dark:bg-[#1a2947] text-[#334155] dark:text-[#cbd5e1]'
+                    : 'bg-[#EEF2F7] dark:bg-[#272a32] text-[#334155] dark:text-[#e1e2ec]'
                 }`}
               >
                 {opt.letter}
@@ -366,7 +366,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
       </div>
 
       {sq.ai_feedback && (
-        <div className="mt-3 p-3 rounded-xl bg-[#EFF6FF] dark:bg-[#1a2947] border border-[#c5d0ff] dark:border-[#2a3a63]">
+        <div className="mt-3 p-3 rounded-xl bg-[#EFF6FF] dark:bg-[#272a32] border border-[#c5d0ff] dark:border-[#2a3a63]">
           <div className="flex items-start gap-2">
             <svg className="w-4 h-4 text-[#4f46e5] dark:text-[#8b93ff] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -377,7 +377,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
       )}
 
       {!sq.is_correct && !sq.ai_feedback && correctOpt && (
-        <p className="text-xs text-[#64748B] dark:text-[#94a3b8] mt-2">
+        <p className="text-xs text-[#64748B] dark:text-[#c7c4d7] mt-2">
           Resposta correta: <strong>{correctOpt.letter}) {correctOpt.text}</strong>
         </p>
       )}

@@ -43,7 +43,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export default function HelpPage() {
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0F172A] font-sans">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
         title="Central de Ajuda — Cognition AI"
         description="Tire dúvidas sobre como usar o Cognition AI: correção de provas com IA, simulados de vestibular, cadastro de turmas e planos."

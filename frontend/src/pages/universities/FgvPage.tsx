@@ -35,18 +35,18 @@ const STEPS = [
 
 export default function FgvPage() {
   const customContent = (
-    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
+    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       {/* Tira de estatísticas — sem banner gradiente, foge do padrão das outras páginas */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#E2E8F0] dark:bg-[#1e2d4a] rounded-2xl overflow-hidden mb-10 border border-[#E2E8F0] dark:border-[#1e2d4a]">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#E2E8F0] dark:bg-[#464554] rounded-2xl overflow-hidden mb-10 border border-[#E2E8F0] dark:border-[#464554]">
         {STATS.map(s => (
-          <div key={s.label} className="bg-white dark:bg-[#151f38] p-4 sm:p-5 text-center">
+          <div key={s.label} className="bg-white dark:bg-[#191b23] p-4 sm:p-5 text-center">
             <div className="text-2xl sm:text-3xl font-extrabold text-[#4f46e5] dark:text-[#818CF8]">{s.value}</div>
-            <div className="text-[11px] text-[#64748B] dark:text-[#94a3b8] mt-1 leading-tight">{s.label}</div>
+            <div className="text-[11px] text-[#64748B] dark:text-[#c7c4d7] mt-1 leading-tight">{s.label}</div>
           </div>
         ))}
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8] mb-10">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10">
         A FGV (Fundação Getulio Vargas) nasceu em 1944 como centro de formação de quadros técnicos para a administração
         pública brasileira e, ao longo de oito décadas, se tornou uma das instituições de ensino e pesquisa mais
         respeitadas do país — reconhecida internacionalmente como think tank e com escolas de graduação de altíssimo
@@ -56,10 +56,10 @@ export default function FgvPage() {
       {/* Tabela comparativa das escolas — em vez do bloco de "cursos em tags" usado nas outras páginas */}
       <div className="mb-10">
         <h2 className="text-xl font-bold text-[#1E293B] dark:text-white mb-4">As escolas de graduação da FGV</h2>
-        <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a]">
+        <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0] dark:border-[#464554]">
           <table className="w-full text-sm text-left border-collapse">
             <thead>
-              <tr className="bg-[#F4F6F9] dark:bg-[#1a2542] text-[#4f46e5] dark:text-[#818CF8]">
+              <tr className="bg-[#F4F6F9] dark:bg-[#1d1f27] text-[#4f46e5] dark:text-[#818CF8]">
                 <th className="p-3 font-bold">Escola</th>
                 <th className="p-3 font-bold">Curso</th>
                 <th className="p-3 font-bold">Cidade</th>
@@ -68,17 +68,17 @@ export default function FgvPage() {
             </thead>
             <tbody>
               {SCHOOLS.map((s, i) => (
-                <tr key={s.sigla} className={i % 2 === 0 ? 'bg-white dark:bg-[#151f38]' : 'bg-[#fbfcff] dark:bg-[#121b35]'}>
+                <tr key={s.sigla} className={i % 2 === 0 ? 'bg-white dark:bg-[#191b23]' : 'bg-[#fbfcff] dark:bg-[#121b35]'}>
                   <td className="p-3 font-semibold text-[#1E293B] dark:text-white">{s.sigla}</td>
-                  <td className="p-3 text-[#475569] dark:text-[#cbd5e1]">{s.curso}</td>
-                  <td className="p-3 text-[#475569] dark:text-[#cbd5e1]">{s.cidade}</td>
-                  <td className="p-3 text-[#475569] dark:text-[#cbd5e1]">{s.desde}</td>
+                  <td className="p-3 text-[#475569] dark:text-[#e1e2ec]">{s.curso}</td>
+                  <td className="p-3 text-[#475569] dark:text-[#e1e2ec]">{s.cidade}</td>
+                  <td className="p-3 text-[#475569] dark:text-[#e1e2ec]">{s.desde}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-2">
+        <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-2">
           {SCHOOLS[0].nome} foi a primeira, criada em parceria com a Michigan State University. Direito SP, Direito Rio
           e EESP vieram na década seguinte, ampliando a atuação da fundação além da administração pública e de empresas.
         </p>
@@ -87,7 +87,7 @@ export default function FgvPage() {
       {/* Reconhecimento internacional — parágrafo adicional de aprofundamento */}
       <div className="mb-10">
         <h2 className="text-xl font-bold text-[#1E293B] dark:text-white mb-4">Reconhecimento internacional</h2>
-        <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8]">
+        <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7]">
           Além da tradição doméstica, a FGV tem presença rara entre instituições brasileiras em rankings
           internacionais de peso: o <strong>OneMBA</strong>, MBA executivo oferecido pela FGV EAESP em parceria com
           escolas de negócios do México, Holanda, EUA e China, foi eleito o melhor MBA executivo da América Latina
@@ -100,18 +100,18 @@ export default function FgvPage() {
       {/* Linha do tempo vertical do processo seletivo — estrutura diferente do formato de cards das outras páginas */}
       <div>
         <h2 className="text-xl font-bold text-[#1E293B] dark:text-white mb-6">Como funciona o processo seletivo</h2>
-        <ol className="relative border-l-2 border-[#E2E8F0] dark:border-[#1e2d4a] ml-3 space-y-8">
+        <ol className="relative border-l-2 border-[#E2E8F0] dark:border-[#464554] ml-3 space-y-8">
           {STEPS.map((step, i) => (
             <li key={step.title} className="ml-6">
-              <span className="absolute -left-[15px] flex items-center justify-center w-7 h-7 rounded-full bg-[#4f46e5] dark:bg-[#712ae2] text-white text-xs font-bold ring-4 ring-[#F4F6F9] dark:ring-[#0F172A]">
+              <span className="absolute -left-[15px] flex items-center justify-center w-7 h-7 rounded-full bg-[#4f46e5] dark:bg-[#712ae2] text-white text-xs font-bold ring-4 ring-[#F4F6F9] dark:ring-[#10131a]">
                 {i + 1}
               </span>
               <h3 className="font-bold text-[#1E293B] dark:text-white mb-1">{step.title}</h3>
-              <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">{step.text}</p>
+              <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">{step.text}</p>
             </li>
           ))}
         </ol>
-        <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-6 ml-6">
+        <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-6 ml-6">
           Datas, taxas e formato exato mudam a cada edição — confirme sempre no edital vigente em{' '}
           <a href="https://vestibular.fgv.br/" target="_blank" rel="noreferrer" className="underline font-semibold">
             vestibular.fgv.br

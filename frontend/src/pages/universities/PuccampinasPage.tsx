@@ -3,11 +3,11 @@ import CampusImage from '../../components/CampusImage'
 
 export default function PuccampinasPage() {
   const customContent = (
-    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#cbd5e1]">
+    <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         A melhor universidade privada do interior do Brasil
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
         Sediada em Campinas (SP), a PUC-Campinas ocupa uma posição rara: segundo o ranking QS América Latina e Caribe,
         é a melhor universidade privada do interior brasileiro entre as que não estão sediadas em capitais — um
         território disputado por dezenas de instituições regionais.
@@ -27,14 +27,14 @@ export default function PuccampinasPage() {
           Curso em destaque
         </span>
         <h3 className="text-xl font-bold text-[#1E293B] dark:text-white mb-2">Tecnologia em Gastronomia</h3>
-        <p className="text-sm text-[#475569] dark:text-[#cbd5e1] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#e1e2ec] leading-relaxed">
           O Polo Gastronômico do Campus I reúne o curso de Tecnologia em Gastronomia com mentoria de chefs
           professores renomados — um diferencial raro entre universidades do interior paulista, que coloca a
           PUC-Campinas no mapa também fora das áreas tradicionais de Direito e Engenharia.
         </p>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#94a3b8] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
         Além da Gastronomia, a instituição oferece cerca de <strong>70 cursos de graduação</strong>, com tradição
         consolidada em <strong>Medicina</strong>, <strong>Arquitetura e Urbanismo</strong>, <strong>Direito</strong> e{' '}
         <strong>Psicologia</strong> — e ofertou 6.810 vagas na edição mais recente do vestibular.
@@ -47,7 +47,7 @@ export default function PuccampinasPage() {
           <div className="flex-1 bg-[#4f46e5] dark:bg-[#712ae2] flex items-center justify-center">Vestibular de Verão</div>
           <div className="flex-1 bg-[#712ae2] dark:bg-[#8b5cf6] flex items-center justify-center">Vestibular de Inverno</div>
         </div>
-        <p className="text-xs text-[#a0a3af] dark:text-[#6b7385] mt-2">
+        <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-2">
           Além das duas edições próprias, a PUC-Campinas aceita nota do ENEM das três últimas edições, transferência
           externa e ingresso por diploma — inscrição sempre feita online, no site do vestibular.
         </p>
@@ -57,7 +57,7 @@ export default function PuccampinasPage() {
         <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Avaliação MEC: seis cursos nota máxima e liderança em tecnologia
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           A PUC-Campinas já dobrou o número de cursos <strong>cinco estrelas</strong> em avaliações recentes do MEC,
           entre eles Arquitetura e Urbanismo, Direito, Engenharia de Software, Letras, Pedagogia e Psicologia —
           resultado que colocou a instituição entre as <strong>4 melhores universidades privadas do Brasil</strong>.
@@ -71,7 +71,7 @@ export default function PuccampinasPage() {
         <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
           Papel no desenvolvimento tecnológico da região de Campinas
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#94a3b8] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
           Campinas é um dos principais polos de tecnologia do Brasil, e a PUC-Campinas contribui diretamente pra
           isso há cinco décadas formando profissionais de software pra Região Metropolitana — uma área que reúne
           empresas de tecnologia, parques industriais e centros de pesquisa. A recente criação do curso de Ciência
@@ -80,7 +80,7 @@ export default function PuccampinasPage() {
         </p>
       </div>
 
-      <p className="text-xs text-[#a0a3af] dark:text-[#6b7385]">
+      <p className="text-xs text-[#a0a3af] dark:text-[#908fa0]">
         Datas, vagas e requisitos mudam a cada edição — confirme sempre em{' '}
         <a href="https://vestibular.puc-campinas.edu.br/" target="_blank" rel="noreferrer" className="underline font-semibold">
           vestibular.puc-campinas.edu.br

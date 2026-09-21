@@ -32,10 +32,10 @@ function StatusBadge({ active }: { active: boolean }) {
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
         active
           ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-          : 'bg-gray-100 text-gray-600 dark:bg-[#1e2d4a] dark:text-[#94a3b8]'
+          : 'bg-gray-100 text-gray-600 dark:bg-[#464554] dark:text-[#c7c4d7]'
       }`}
     >
-      <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-[#27c38a]' : 'bg-gray-400 dark:bg-[#5a6b8a]'}`} />
+      <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-[#27c38a]' : 'bg-gray-400 dark:bg-[#908fa0]'}`} />
       {active ? 'Ativo' : 'Inativo'}
     </span>
   )
@@ -53,7 +53,7 @@ function IconBtn({ onClick, title, children, danger }: {
       className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
         danger
           ? 'text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30'
-          : 'text-[#334155] dark:text-[#94a3b8] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947]'
+          : 'text-[#334155] dark:text-[#c7c4d7] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947]'
       }`}
     >
       {children}
@@ -332,7 +332,7 @@ export default function ProfessorsPage() {
                     <div>
                       <p className="font-medium text-[#1E293B] text-[13px]">{p.name}</p>
                       {p.car_access && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#1a2947] text-[#712ae2] dark:text-[#818CF8]">CAR</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#272a32] text-[#712ae2] dark:text-[#818CF8]">CAR</span>
                       )}
                     </div>
                   </div>
@@ -343,7 +343,7 @@ export default function ProfessorsPage() {
                 <td className="table-cell">
                   <button
                     onClick={() => openAssignments(p)}
-                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#f0f4ff] dark:bg-[#1a2947] text-[#2845b5] dark:text-[#818CF8] hover:bg-[#e5edff] dark:hover:bg-[#20335a] transition-colors"
+                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#f0f4ff] dark:bg-[#272a32] text-[#2845b5] dark:text-[#818CF8] hover:bg-[#e5edff] dark:hover:bg-[#20335a] transition-colors"
                   >
                     Gerenciar
                   </button>
@@ -487,8 +487,8 @@ export default function ProfessorsPage() {
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                             already ? 'opacity-40 cursor-not-allowed' :
                             checked
-                              ? 'bg-[#eef2ff] dark:bg-[#1a2947] border-[#c7d2fe] dark:border-[#2d3f66] text-[#4f46e5] dark:text-[#818CF8]'
-                              : 'bg-white dark:bg-[#131f37] border-[#E2E8F0] dark:border-[#1e2d4a] text-gray-600 dark:text-[#94a3b8] hover:bg-gray-50 dark:hover:bg-[#1a2947]'
+                              ? 'bg-[#eef2ff] dark:bg-[#272a32] border-[#c7d2fe] dark:border-[#464554] text-[#4f46e5] dark:text-[#818CF8]'
+                              : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-[#c7c4d7] hover:bg-gray-50 dark:hover:bg-[#1a2947]'
                           }`}
                         >
                           <input
@@ -528,7 +528,7 @@ export default function ProfessorsPage() {
               ) : (
                 <div className="space-y-2">
                   {assignments.map(a => (
-                    <div key={a.id} className="flex items-center justify-between bg-[#F4F6F9] dark:bg-[#1a2947] rounded-lg px-4 py-2.5 border border-[#E2E8F0]">
+                    <div key={a.id} className="flex items-center justify-between bg-[#F4F6F9] dark:bg-[#272a32] rounded-lg px-4 py-2.5 border border-[#E2E8F0]">
                       <div className="flex items-center gap-2 text-sm">
                         <span className="font-semibold text-[#1E293B]">{subjectLabel(a.subject_id)}</span>
                         <span className="text-[#c5c5d3]">·</span>

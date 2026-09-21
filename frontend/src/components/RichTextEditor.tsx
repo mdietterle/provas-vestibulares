@@ -64,7 +64,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Digite 
       title={title}
       onMouseDown={e => { e.preventDefault(); onClick() }}
       className={`px-2 py-1 text-sm rounded transition-colors leading-none select-none ${
-        active ? 'bg-indigo-100 text-indigo-700 dark:bg-[#253966] dark:text-[#93c5fd] font-bold' : 'hover:bg-gray-100 dark:hover:bg-[#182643] text-gray-700 dark:text-[#cbd5e1]'
+        active ? 'bg-indigo-100 text-indigo-700 dark:bg-[#253966] dark:text-[#93c5fd] font-bold' : 'hover:bg-gray-100 dark:hover:bg-[#182643] text-gray-700 dark:text-[#e1e2ec]'
       }`}
     >
       {children}
@@ -72,9 +72,9 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Digite 
   )
 
   return (
-    <div className="border border-[#c5c5d3] dark:border-[#253556] rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#4f46e5] dark:focus-within:ring-[#712ae2] focus-within:border-transparent">
+    <div className="border border-[#c5c5d3] dark:border-[#464554] rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#4f46e5] dark:focus-within:ring-[#712ae2] focus-within:border-transparent">
       {/* Toolbar */}
-      <div className="flex items-center gap-0.5 px-2 py-1.5 border-b border-[#e5e7eb] dark:border-[#253556] bg-gray-50 dark:bg-[#131f37] flex-wrap">
+      <div className="flex items-center gap-0.5 px-2 py-1.5 border-b border-[#e5e7eb] dark:border-[#464554] bg-gray-50 dark:bg-[#1d1f27] flex-wrap">
         <Btn active={editor.isActive('bold')} onClick={() => editor.chain().focus().toggleBold().run()} title="Negrito (Ctrl+B)">
           <b>N</b>
         </Btn>
@@ -88,7 +88,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Digite 
           <s>T</s>
         </Btn>
 
-        <div className="w-px h-5 bg-gray-200 dark:bg-[#253556] mx-1 shrink-0" />
+        <div className="w-px h-5 bg-gray-200 dark:bg-[#464554] mx-1 shrink-0" />
 
         {/* Color palette */}
         <div className="flex items-center gap-1 flex-wrap">
@@ -106,11 +106,11 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Digite 
             type="button"
             title="Remover cor"
             onMouseDown={e => { e.preventDefault(); editor.chain().focus().unsetColor().run() }}
-            className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#17233d] flex items-center justify-center text-[10px] text-gray-400 dark:text-[#64748b] hover:bg-gray-100 dark:hover:bg-[#182643] shrink-0 leading-none"
+            className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#191b23] flex items-center justify-center text-[10px] text-gray-400 dark:text-[#908fa0] hover:bg-gray-100 dark:hover:bg-[#182643] shrink-0 leading-none"
           >✕</button>
         </div>
 
-        <div className="w-px h-5 bg-gray-200 dark:bg-[#253556] mx-1 shrink-0" />
+        <div className="w-px h-5 bg-gray-200 dark:bg-[#464554] mx-1 shrink-0" />
 
         <Btn active={false} onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()} title="Limpar formatação">
           <span className="text-xs">A̲×</span>
@@ -118,9 +118,9 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Digite 
       </div>
 
       {/* Editor */}
-      <div className="relative px-3 py-2 min-h-[96px] bg-white dark:bg-[#17233d]">
+      <div className="relative px-3 py-2 min-h-[96px] bg-white dark:bg-[#191b23]">
         {editor.isEmpty && (
-          <p className="absolute top-2 left-3 text-sm text-gray-400 dark:text-[#64748b] pointer-events-none select-none">
+          <p className="absolute top-2 left-3 text-sm text-gray-400 dark:text-[#908fa0] pointer-events-none select-none">
             {placeholder}
           </p>
         )}

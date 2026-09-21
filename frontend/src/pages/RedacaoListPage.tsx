@@ -70,7 +70,7 @@ function ProfessorList() {
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
               filterStatus === s
                 ? 'bg-[#4f46e5] text-white'
-                : 'bg-white dark:bg-[#131f37] border border-[#c5ceff] dark:border-[#2d3f6a] text-[#334155] dark:text-[#94a3b8] hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a]'
+                : 'bg-white dark:bg-[#1d1f27] border border-[#c5ceff] dark:border-[#464554] text-[#334155] dark:text-[#c7c4d7] hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a]'
             }`}
           >
             {s === '' ? 'Todas' : STATUS_LABEL[s]}
@@ -83,8 +83,8 @@ function ProfessorList() {
           {[1, 2, 3].map(i => <div key={i} className="h-16 rounded-xl bg-gray-100 animate-pulse" />)}
         </div>
       ) : items.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#c5ceff] dark:border-[#2d3f6a] p-12 text-center">
-          <svg className="w-10 h-10 text-[#c5ceff] dark:text-[#2d3f6a] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <div className="rounded-xl border border-dashed border-[#c5ceff] dark:border-[#464554] p-12 text-center">
+          <svg className="w-10 h-10 text-[#c5ceff] dark:text-[#464554] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <p className="text-sm text-[#64748B]">Nenhuma redação encontrada.</p>
@@ -93,7 +93,7 @@ function ProfessorList() {
         <div className="bg-white rounded-xl border border-[#E2E8F0] overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#EEF2F7] dark:border-[#1e2d4a]">
+              <tr className="border-b border-[#EEF2F7] dark:border-[#464554]">
                 <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] uppercase tracking-wide">Aluno</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] uppercase tracking-wide">Tema</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] uppercase tracking-wide">Data</th>
@@ -102,14 +102,14 @@ function ProfessorList() {
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#EEF2F7] dark:divide-[#1e2d4a]">
+            <tbody className="divide-y divide-[#EEF2F7] dark:divide-[#464554]">
               {items.map(r => {
                 const sc = STATUS_STYLE[r.status] ?? STATUS_STYLE.pending
                 return (
                   <tr key={r.id} className="hover:bg-[#F4F6F9] dark:hover:bg-[#131f37] transition-colors">
                     <td className="px-4 py-3 font-semibold text-[#1E293B]">{r.student.name}</td>
-                    <td className="px-4 py-3 text-[#334155] dark:text-[#94a3b8] max-w-xs truncate">{r.theme}</td>
-                    <td className="px-4 py-3 text-[#334155] dark:text-[#94a3b8]">
+                    <td className="px-4 py-3 text-[#334155] dark:text-[#c7c4d7] max-w-xs truncate">{r.theme}</td>
+                    <td className="px-4 py-3 text-[#334155] dark:text-[#c7c4d7]">
                       {new Date(r.created_at).toLocaleDateString('pt-BR')}
                     </td>
                     <td className="px-4 py-3">
@@ -178,8 +178,8 @@ function StudentList() {
           {[1, 2, 3].map(i => <div key={i} className="h-16 rounded-xl bg-gray-100 animate-pulse" />)}
         </div>
       ) : items.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#c5ceff] dark:border-[#2d3f6a] p-16 text-center">
-          <svg className="w-12 h-12 text-[#c5ceff] dark:text-[#2d3f6a] mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <div className="rounded-xl border border-dashed border-[#c5ceff] dark:border-[#464554] p-16 text-center">
+          <svg className="w-12 h-12 text-[#c5ceff] dark:text-[#464554] mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <p className="text-base font-semibold text-[#1E293B] mb-1">Nenhuma redação ainda</p>

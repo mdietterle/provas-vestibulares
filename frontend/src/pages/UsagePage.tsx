@@ -33,7 +33,7 @@ function ProgressBar({ resource }: { resource: UsageResource }) {
           <span className="text-[11px] font-bold text-red-600">+{overage} excedente</span>
         )}
       </div>
-      <div className="h-2 rounded-full bg-[#eef1fb] dark:bg-[#1e2d4a] overflow-hidden">
+      <div className="h-2 rounded-full bg-[#eef1fb] dark:bg-[#464554] overflow-hidden">
         <div
           className="h-full rounded-full transition-all"
           style={{ width: `${pct(used, limit)}%`, background: barColor(used, limit) }}

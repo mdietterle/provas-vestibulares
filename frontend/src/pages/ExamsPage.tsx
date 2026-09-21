@@ -274,7 +274,7 @@ export default function ExamsPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {[
-          { label: 'Total de Provas', value: exams.length, textClass: 'text-[#4f46e5] dark:text-[#818CF8]', bgClass: 'bg-[#eef2ff] dark:bg-[#1a2947] border-[#eef2ff] dark:border-[#2d3f6a]' },
+          { label: 'Total de Provas', value: exams.length, textClass: 'text-[#4f46e5] dark:text-[#818CF8]', bgClass: 'bg-[#eef2ff] dark:bg-[#272a32] border-[#eef2ff] dark:border-[#464554]' },
           { label: user?.role === 'student' ? 'Disponíveis' : 'Matérias Cobertas', value: user?.role === 'student' ? exams.length : new Set(exams.map(e => e.subject_id)).size, textClass: 'text-[#712ae2] dark:text-[#c4a4ff]', bgClass: 'bg-[#f5f0ff] dark:bg-[#241b3f] border-[#f5f0ff] dark:border-[#3a2a5c]' },
           { label: user?.role === 'student' ? 'Para Responder' : 'Turmas', value: user?.role === 'student' ? exams.length : new Set(exams.map(e => e.class_id)).size, textClass: 'text-[#27c38a] dark:text-[#4ade80]', bgClass: 'bg-[#f0fdf8] dark:bg-[#132a1f] border-[#f0fdf8] dark:border-[#1f4535]' },
         ].map((s) => (
@@ -292,7 +292,7 @@ export default function ExamsPage() {
             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <input
-            className="pl-9 pr-4 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#2d3f6a] text-sm focus:outline-none focus:ring-2 w-56"
+            className="pl-9 pr-4 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#464554] text-sm focus:outline-none focus:ring-2 w-56"
             style={{ '--tw-ring-color': '#4f46e533' } as React.CSSProperties}
             placeholder="Buscar prova..."
             value={search}
@@ -300,7 +300,7 @@ export default function ExamsPage() {
           />
         </div>
         <select
-          className="input py-2 rounded-xl text-sm border-[#E2E8F0] dark:border-[#2d3f6a]"
+          className="input py-2 rounded-xl text-sm border-[#E2E8F0] dark:border-[#464554]"
           style={{ minWidth: '160px' }}
           value={filterSubject}
           onChange={(e) => setFilterSubject(+e.target.value)}
@@ -321,7 +321,7 @@ export default function ExamsPage() {
           return (
             <div
               key={exam.id}
-              className="rounded-2xl border border-[#E2E8F0] dark:border-[#2d3f6a] bg-white dark:bg-[#182543] overflow-hidden transition-all hover:shadow-md"
+              className="rounded-2xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#182543] overflow-hidden transition-all hover:shadow-md"
             >
               <div className="flex items-center gap-4 p-4">
                 {/* Icon */}
@@ -343,7 +343,7 @@ export default function ExamsPage() {
                       </span>
                     )}
                     {exam.class_?.name && (
-                      <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-[#0f1c37] dark:text-slate-300 border border-gray-200 dark:border-[#2d3f6a]">
+                      <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-[#0f1c37] dark:text-slate-300 border border-gray-200 dark:border-[#464554]">
                         {exam.class_.name} — {exam.class_.year}
                       </span>
                     )}
@@ -362,7 +362,7 @@ export default function ExamsPage() {
                 <div className="flex items-center gap-2 shrink-0">
                   <Link
                     to={`/exams/${exam.id}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2d3f6a] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-[#4f46e5] dark:text-[#818CF8]"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-[#4f46e5] dark:text-[#818CF8]"
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
@@ -384,7 +384,7 @@ export default function ExamsPage() {
                       </Link>
                       <Link
                         to={`/exams/${exam.id}/scan`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2d3f6a] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-[#712ae2] dark:text-[#c4a4ff]"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-[#712ae2] dark:text-[#c4a4ff]"
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="3" y1="9" x2="21" y2="9" />
@@ -397,7 +397,7 @@ export default function ExamsPage() {
                     <>
                       <Link
                         to={`/exams/${exam.id}/submissions`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2d3f6a] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-gray-700 dark:text-slate-300"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-gray-700 dark:text-slate-300"
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
@@ -407,7 +407,7 @@ export default function ExamsPage() {
                       </Link>
                       <button
                         onClick={() => openPdf(exam)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#2d3f6a] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-gray-700 dark:text-slate-300"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-gray-700 dark:text-slate-300"
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -467,7 +467,7 @@ export default function ExamsPage() {
       </div>
 
       {/* AI Insights */}
-      <div className="rounded-2xl border border-[#ddd6fe] dark:border-[#2d3f6a] p-5 bg-[#eef2ff] dark:bg-[#1a2947]">
+      <div className="rounded-2xl border border-[#ddd6fe] dark:border-[#464554] p-5 bg-[#eef2ff] dark:bg-[#272a32]">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #712ae2, #4f46e5)' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -478,17 +478,17 @@ export default function ExamsPage() {
           <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-[#ede9fe] dark:bg-[#241b3f] text-[#712ae2] dark:text-[#c4a4ff]">IA</span>
         </div>
         <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="bg-white dark:bg-[#131f37] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#2d3f6a]">
+          <div className="bg-white dark:bg-[#1d1f27] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#464554]">
             <p className="text-lg font-bold text-[#4f46e5] dark:text-[#818CF8]">{exams.length}</p>
             <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Provas</p>
           </div>
-          <div className="bg-white dark:bg-[#131f37] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#2d3f6a]">
+          <div className="bg-white dark:bg-[#1d1f27] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#464554]">
             <p className="text-lg font-bold text-[#712ae2] dark:text-[#c4a4ff]">
               {exams.reduce((s, e) => s + (e.question_count ?? e.exam_questions?.length ?? 0), 0)}
             </p>
             <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Total de Questões</p>
           </div>
-          <div className="bg-white dark:bg-[#131f37] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#2d3f6a]">
+          <div className="bg-white dark:bg-[#1d1f27] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#464554]">
             <p className="text-lg font-bold text-[#27c38a] dark:text-[#4ade80]">
               {new Set(exams.map(e => e.subject_id)).size}
             </p>
@@ -525,7 +525,7 @@ export default function ExamsPage() {
             {examMode === 'redacao' ? (
               /* ── Formulário de Avaliação de Redação ── */
               <>
-                <div className="rounded-xl border border-[#ddd6fe] dark:border-[#2d3f6a] p-3 text-sm text-[#5b21b6] dark:text-[#c4a4ff] bg-[#faf5ff] dark:bg-[#241b3f]">
+                <div className="rounded-xl border border-[#ddd6fe] dark:border-[#464554] p-3 text-sm text-[#5b21b6] dark:text-[#c4a4ff] bg-[#faf5ff] dark:bg-[#241b3f]">
                   O sistema cria automaticamente uma questão dissertativa com o enunciado abaixo. O aluno poderá <strong>digitar</strong> ou <strong>enviar foto</strong> da redação, e a IA corrigirá automaticamente.
                 </div>
                 <div>
@@ -583,7 +583,7 @@ export default function ExamsPage() {
                           return (
                             <label
                               key={c.id}
-                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${checked ? 'bg-[#f5f0ff] dark:bg-[#241b3f] border-[#ddd6fe] dark:border-[#3a2a5c] text-[#7c3aed] dark:text-[#c4a4ff]' : 'bg-white dark:bg-[#131f37] border-[#E2E8F0] dark:border-[#2d3f6a] text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#0f1c37]'}`}
+                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${checked ? 'bg-[#f5f0ff] dark:bg-[#241b3f] border-[#ddd6fe] dark:border-[#3a2a5c] text-[#7c3aed] dark:text-[#c4a4ff]' : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#0f1c37]'}`}
                             >
                               <input
                                 type="checkbox"
@@ -694,7 +694,7 @@ export default function ExamsPage() {
                           return (
                             <label
                               key={c.id}
-                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${checked ? 'bg-[#eef2ff] dark:bg-[#1f2547] border-[#c7d2fe] dark:border-[#2d3f6a] text-[#4f46e5] dark:text-[#818CF8]' : 'bg-white dark:bg-[#131f37] border-[#E2E8F0] dark:border-[#2d3f6a] text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#0f1c37]'}`}
+                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${checked ? 'bg-[#eef2ff] dark:bg-[#1f2547] border-[#c7d2fe] dark:border-[#464554] text-[#4f46e5] dark:text-[#818CF8]' : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#0f1c37]'}`}
                             >
                               <input
                                 type="checkbox"
@@ -711,7 +711,7 @@ export default function ExamsPage() {
                   )
                 })()}
                 {form.subject_id > 0 && (
-                  <div className="rounded-xl border p-4 space-y-3 bg-[#F4F6F9] dark:bg-[#131f37] border-[#E2E8F0] dark:border-[#2d3f6a]">
+                  <div className="rounded-xl border p-4 space-y-3 bg-[#F4F6F9] dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554]">
                     <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Adicionar Questão ao Banco</label>
                     <div className="relative">
                       <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -734,7 +734,7 @@ export default function ExamsPage() {
                             key={q.id}
                             type="button"
                             onClick={() => addQuestion(q.id)}
-                            className="w-full flex items-start gap-2 text-left p-2.5 rounded-lg border bg-white dark:bg-[#131f37] border-[#E2E8F0] dark:border-[#2d3f6a] hover:border-[#c7d2fe] dark:hover:border-[#3f5a94] hover:bg-[#eef2ff] dark:hover:bg-[#1a2947] transition-colors group"
+                            className="w-full flex items-start gap-2 text-left p-2.5 rounded-lg border bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] hover:border-[#c7d2fe] dark:hover:border-[#3f5a94] hover:bg-[#eef2ff] dark:hover:bg-[#1a2947] transition-colors group"
                           >
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 mb-1 flex-wrap">
@@ -773,7 +773,7 @@ export default function ExamsPage() {
                     </div>
                     <div className="space-y-2">
                       {draftQuestionDetails.map((dq, i) => (
-                        <div key={dq.question_id} className="flex items-center gap-3 px-4 py-2.5 rounded-xl border bg-[#F4F6F9] dark:bg-[#131f37] border-[#E2E8F0] dark:border-[#2d3f6a]">
+                        <div key={dq.question_id} className="flex items-center gap-3 px-4 py-2.5 rounded-xl border bg-[#F4F6F9] dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554]">
                           <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#eef2ff] dark:bg-[#1f2547] text-[#4f46e5] dark:text-[#818CF8]">
                             {i + 1}
                           </span>
@@ -807,7 +807,7 @@ export default function ExamsPage() {
               </>
             )}
 
-            <div className="flex gap-3 justify-end pt-2 border-t border-[#E2E8F0] dark:border-[#2d3f6a]">
+            <div className="flex gap-3 justify-end pt-2 border-t border-[#E2E8F0] dark:border-[#464554]">
               <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
               <button
                 type="submit"
@@ -858,7 +858,7 @@ export default function ExamsPage() {
                   ))}
                 </select>
               </div>
-              <div className="flex gap-3 justify-end pt-2 border-t border-[#E2E8F0] dark:border-[#2d3f6a]">
+              <div className="flex gap-3 justify-end pt-2 border-t border-[#E2E8F0] dark:border-[#464554]">
                 <button type="button" onClick={() => setApplyExam(null)} className="btn-secondary">Cancelar</button>
                 <button
                   type="submit"

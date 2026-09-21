@@ -9,7 +9,7 @@ const ADSENSE_SLOT_PUBLIC = (import.meta.env.VITE_ADSENSE_SLOT_PUBLIC as string 
 
 export default function TermsOfServicePage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0F172A] text-[#1E293B]">
+    <div className="min-h-screen bg-white dark:bg-[#10131a] text-[#1E293B]">
       <Seo
         title="Termos de Uso — Cognition AI"
         description="Condições de uso da plataforma Cognition AI para escolas, professores e alunos: cadastro, assinatura, responsabilidades e limites de uso."
@@ -22,7 +22,7 @@ export default function TermsOfServicePage() {
         <h1 className="text-3xl font-bold mt-2 mb-2">Termos de Uso</h1>
         <p className="text-sm text-[#64748B] mb-10">Última atualização: agosto de 2026</p>
 
-        <div className="space-y-8 text-sm leading-relaxed text-[#333] dark:text-[#cbd5e1]">
+        <div className="space-y-8 text-sm leading-relaxed text-[#333] dark:text-[#e1e2ec]">
           <section>
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">1. Sobre estes termos</h2>
             <p>

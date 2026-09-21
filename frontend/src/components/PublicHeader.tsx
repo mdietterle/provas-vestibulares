@@ -29,14 +29,14 @@ export default function PublicHeader() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="bg-white/90 dark:bg-[#131f37]/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#eef1fb] dark:border-[#1e2d4a]">
+    <nav className="bg-white/90 dark:bg-[#1d1f27]/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#eef1fb] dark:border-[#464554]">
       <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link to="/">{LOGO}</Link>
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-5 text-sm">
           {NAV_LINKS.map(l => (
-            <Link key={l.to} to={l.to} className="font-medium text-[#334155] dark:text-[#94a3b8] hover:text-[#4f46e5] dark:hover:text-[#818CF8] transition-colors">
+            <Link key={l.to} to={l.to} className="font-medium text-[#334155] dark:text-[#c7c4d7] hover:text-[#4f46e5] dark:hover:text-[#818CF8] transition-colors">
               {l.label}
             </Link>
           ))}
@@ -50,7 +50,7 @@ export default function PublicHeader() {
             </Link>
           ) : (
             <>
-              <Link to="/aluno" className="font-medium text-[#334155] dark:text-[#94a3b8] hover:text-[#4f46e5] dark:hover:text-[#818CF8] transition-colors">
+              <Link to="/aluno" className="font-medium text-[#334155] dark:text-[#c7c4d7] hover:text-[#4f46e5] dark:hover:text-[#818CF8] transition-colors">
                 Sou aluno
               </Link>
               <Link
@@ -86,9 +86,9 @@ export default function PublicHeader() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-[#eef1fb] dark:border-[#1e2d4a] bg-white dark:bg-[#131f37] px-6 py-4 flex flex-col gap-3 text-sm">
+        <div className="md:hidden border-t border-[#eef1fb] dark:border-[#464554] bg-white dark:bg-[#1d1f27] px-6 py-4 flex flex-col gap-3 text-sm">
           {NAV_LINKS.map(l => (
-            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="font-medium text-[#334155] dark:text-[#94a3b8] hover:text-[#4f46e5] dark:hover:text-[#818CF8]">
+            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="font-medium text-[#334155] dark:text-[#c7c4d7] hover:text-[#4f46e5] dark:hover:text-[#818CF8]">
               {l.label}
             </Link>
           ))}
@@ -98,7 +98,7 @@ export default function PublicHeader() {
             </Link>
           ) : (
             <>
-              <Link to="/aluno" onClick={() => setOpen(false)} className="font-medium text-[#334155] dark:text-[#94a3b8] hover:text-[#4f46e5] dark:hover:text-[#818CF8]">
+              <Link to="/aluno" onClick={() => setOpen(false)} className="font-medium text-[#334155] dark:text-[#c7c4d7] hover:text-[#4f46e5] dark:hover:text-[#818CF8]">
                 Sou aluno
               </Link>
               <Link to="/login" onClick={() => setOpen(false)} className="font-semibold text-[#4f46e5] dark:text-[#818CF8]">

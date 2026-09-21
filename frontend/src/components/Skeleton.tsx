@@ -9,7 +9,7 @@ export function Skeleton({ className = '' }: { className?: string }) {
 
 export function SkeletonCard() {
   return (
-    <div className="bg-white dark:bg-[#131f37] rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] p-5 space-y-3">
+    <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5 space-y-3">
       <div className="flex items-center gap-3">
         <Skeleton className="w-10 h-10 rounded-xl" />
         <div className="flex-1 space-y-2">
@@ -25,7 +25,7 @@ export function SkeletonCard() {
 
 export function SkeletonRow() {
   return (
-    <div className="flex items-center gap-4 px-5 py-3 border-b border-[#f3f4f6] dark:border-[#1e2d4a]">
+    <div className="flex items-center gap-4 px-5 py-3 border-b border-[#f3f4f6] dark:border-[#464554]">
       <Skeleton className="w-9 h-9 rounded-full shrink-0" />
       <div className="flex-1 space-y-2">
         <Skeleton className="h-4 w-48" />
@@ -39,8 +39,8 @@ export function SkeletonRow() {
 
 export function SkeletonTable({ rows = 5 }: { rows?: number }) {
   return (
-    <div className="bg-white dark:bg-[#131f37] rounded-2xl border border-[#E2E8F0] dark:border-[#1e2d4a] overflow-hidden">
-      <div className="px-5 py-3 border-b border-[#E2E8F0] dark:border-[#1e2d4a] flex gap-4">
+    <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] overflow-hidden">
+      <div className="px-5 py-3 border-b border-[#E2E8F0] dark:border-[#464554] flex gap-4">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-4 w-24 ml-auto" />
       </div>

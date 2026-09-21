@@ -38,7 +38,7 @@ export default function AdSlot({ slot, className }: AdSlotProps) {
   if (!ADSENSE_CLIENT_ID || !ADSENSE_APPROVED) {
     return (
       <div
-        className={`flex items-center justify-center rounded-xl border border-dashed border-[#c5d0ff] dark:border-[#2e3f66] bg-[#F4F6F9] dark:bg-[#131f37] text-xs text-[#64748B] dark:text-[#94a3b8] ${className ?? 'h-24'}`}
+        className={`flex items-center justify-center rounded-xl border border-dashed border-[#c5d0ff] dark:border-[#2e3f66] bg-[#F4F6F9] dark:bg-[#1d1f27] text-xs text-[#64748B] dark:text-[#c7c4d7] ${className ?? 'h-24'}`}
       >
         Espaço reservado para anúncio
       </div>

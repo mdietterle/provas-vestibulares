@@ -17,8 +17,8 @@ type InstitutionOption = { id: number; name: string }
 type SelectedInstitution = InstitutionOption | { id: null; name: string }
 
 const inputClass =
-  'w-full border border-[#c5c5d3] dark:border-[#334155] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all'
-const labelClass = 'block text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-1'
+  'w-full border border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all'
+const labelClass = 'block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1'
 
 function EyeIcon({ open }: { open: boolean }) {
   if (open) {
@@ -105,10 +105,10 @@ function IntroPanel() {
   ]
   return (
     <div className="max-w-md mx-auto lg:mx-0">
-      <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B] dark:text-[#f8fafc] mb-3 leading-tight">
+      <h1 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B] dark:text-[#e1e2ec] mb-3 leading-tight">
         Sua preparação para o vestibular começa aqui
       </h1>
-      <p className="text-[#64748B] dark:text-[#94a3b8] leading-relaxed mb-6">
+      <p className="text-[#64748B] dark:text-[#c7c4d7] leading-relaxed mb-6">
         Crie sua conta gratuita com o e-mail da sua instituição de ensino e comece a estudar hoje: simulados
         ilimitados, correção instantânea com Inteligência Artificial e acompanhamento do seu progresso.
       </p>
@@ -122,7 +122,7 @@ function IntroPanel() {
 
       <ul className="space-y-3">
         {features.map((f) => (
-          <li key={f} className="flex items-start gap-2.5 text-sm text-[#334155] dark:text-[#94a3b8]">
+          <li key={f} className="flex items-start gap-2.5 text-sm text-[#334155] dark:text-[#c7c4d7]">
             <svg className="w-4 h-4 mt-0.5 shrink-0 text-[#27c38a]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
@@ -246,22 +246,22 @@ export default function StudentAuthPage() {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <PublicHeader />
-      <div className="flex-1 flex flex-col items-center px-4 py-12 bg-[linear-gradient(160deg,#EFF6FF_0%,#f6f2ff_100%)] dark:bg-none dark:bg-[#0F172A]">
+      <div className="flex-1 flex flex-col items-center px-4 py-12 bg-[linear-gradient(160deg,#EFF6FF_0%,#f6f2ff_100%)] dark:bg-none dark:bg-[#10131a]">
       <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-10 items-center">
         <IntroPanel />
 
         <div className="w-full max-w-md mx-auto lg:mx-0 lg:ml-auto">
-        <div className="bg-white dark:bg-[#131f37] rounded-2xl p-8" style={{ boxShadow: '0px 24px 60px rgba(0, 35, 111, 0.12)' }}>
+        <div className="bg-white dark:bg-[#1d1f27] rounded-2xl p-8" style={{ boxShadow: '0px 24px 60px rgba(0, 35, 111, 0.12)' }}>
           <Brand />
 
           <>
               {/* Tabs */}
-              <div className="flex gap-1 mb-6 bg-[#EEF2F7] dark:bg-[#1e2d4a] rounded-lg p-1">
+              <div className="flex gap-1 mb-6 bg-[#EEF2F7] dark:bg-[#464554] rounded-lg p-1">
                 <button
                   type="button"
                   onClick={() => switchMode('login')}
                   className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all ${
-                    mode === 'login' ? 'bg-white dark:bg-[#131f37] shadow text-[#4f46e5] dark:text-[#818CF8]' : 'text-[#64748B] dark:text-[#94a3b8] hover:text-[#334155] dark:hover:text-[#cbd5e1]'
+                    mode === 'login' ? 'bg-white dark:bg-[#1d1f27] shadow text-[#4f46e5] dark:text-[#818CF8]' : 'text-[#64748B] dark:text-[#c7c4d7] hover:text-[#334155] dark:hover:text-[#cbd5e1]'
                   }`}
                 >
                   Entrar
@@ -270,17 +270,17 @@ export default function StudentAuthPage() {
                   type="button"
                   onClick={() => switchMode('register')}
                   className={`flex-1 py-2 rounded-md text-sm font-semibold transition-all ${
-                    mode === 'register' ? 'bg-white dark:bg-[#131f37] shadow text-[#4f46e5] dark:text-[#818CF8]' : 'text-[#64748B] dark:text-[#94a3b8] hover:text-[#334155] dark:hover:text-[#cbd5e1]'
+                    mode === 'register' ? 'bg-white dark:bg-[#1d1f27] shadow text-[#4f46e5] dark:text-[#818CF8]' : 'text-[#64748B] dark:text-[#c7c4d7] hover:text-[#334155] dark:hover:text-[#cbd5e1]'
                   }`}
                 >
                   Criar conta
                 </button>
               </div>
 
-              <h2 className="font-display text-xl font-semibold text-[#1E293B] dark:text-[#f8fafc] mb-1">
+              <h2 className="font-display text-xl font-semibold text-[#1E293B] dark:text-[#e1e2ec] mb-1">
                 {mode === 'login' ? 'Bem-vindo de volta' : 'Crie sua conta de aluno'}
               </h2>
-              <p className="text-sm text-[#64748B] dark:text-[#94a3b8] mb-6">
+              <p className="text-sm text-[#64748B] dark:text-[#c7c4d7] mb-6">
                 {mode === 'login' ? 'Acesse seus simulados e desempenho' : 'É rápido — comece a praticar hoje'}
               </p>
 
@@ -356,7 +356,7 @@ export default function StudentAuthPage() {
                   <div>
                     <label className={labelClass}>Escola</label>
                     {selectedInstitution ? (
-                      <div className="flex items-center justify-between gap-3 border border-[#4f46e5] dark:border-[#818CF8] rounded-lg px-3 py-2.5 bg-[#4f46e50d] dark:bg-[#1e2d4a]">
+                      <div className="flex items-center justify-between gap-3 border border-[#4f46e5] dark:border-[#818CF8] rounded-lg px-3 py-2.5 bg-[#4f46e50d] dark:bg-[#464554]">
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] truncate">{selectedInstitution.name}</p>
                           {!selectedInstitution.id && <p className="text-xs text-[#712ae2] dark:text-[#818CF8] mt-0.5">Nova escola</p>}
@@ -378,15 +378,15 @@ export default function StudentAuthPage() {
                           onChange={(e) => setInstitutionQuery(e.target.value)}
                           placeholder="Busque pelo nome da sua escola"
                         />
-                        {searching && <p className="text-xs text-[#64748B] dark:text-[#94a3b8] mt-1">Buscando...</p>}
+                        {searching && <p className="text-xs text-[#64748B] dark:text-[#c7c4d7] mt-1">Buscando...</p>}
                         {institutionOptions.length > 0 && (
-                          <div className="mt-1 border border-[#E2E8F0] dark:border-[#334155] rounded-lg overflow-hidden">
+                          <div className="mt-1 border border-[#E2E8F0] dark:border-[#c7c4d7] rounded-lg overflow-hidden">
                             {institutionOptions.map((opt) => (
                               <button
                                 key={opt.id}
                                 type="button"
                                 onClick={() => { setSelectedInstitution(opt); setInstitutionOptions([]) }}
-                                className="w-full text-left px-3 py-2.5 text-sm text-[#1E293B] dark:text-[#f8fafc] hover:bg-[#F4F6F9] dark:hover:bg-[#1e2d4a] border-b border-[#EEF2F7] dark:border-[#334155] last:border-0"
+                                className="w-full text-left px-3 py-2.5 text-sm text-[#1E293B] dark:text-[#e1e2ec] hover:bg-[#F4F6F9] dark:hover:bg-[#1e2d4a] border-b border-[#EEF2F7] dark:border-[#c7c4d7] last:border-0"
                               >
                                 {opt.name}
                               </button>
@@ -395,7 +395,7 @@ export default function StudentAuthPage() {
                         )}
                         {!searching && institutionQuery.trim().length >= 2 && institutionOptions.length === 0 && (
                           <div className="mt-2">
-                            <p className="text-xs text-[#64748B] dark:text-[#94a3b8] mb-1">Nenhuma escola encontrada.</p>
+                            <p className="text-xs text-[#64748B] dark:text-[#c7c4d7] mb-1">Nenhuma escola encontrada.</p>
                             <button
                               type="button"
                               onClick={() => setSelectedInstitution({ id: null, name: institutionQuery.trim() })}
@@ -453,11 +453,11 @@ export default function StudentAuthPage() {
             </>
         </div>
 
-        <p className="text-center text-xs text-[#64748B] dark:text-[#94a3b8] mt-6">
+        <p className="text-center text-xs text-[#64748B] dark:text-[#c7c4d7] mt-6">
           É professor ou administrador?{' '}
           <Link to="/login" className="text-[#712ae2] dark:text-[#818CF8] font-semibold hover:underline">Acesse por aqui</Link>
         </p>
-        <p className="text-center text-xs text-[#64748B] dark:text-[#94a3b8] mt-2">
+        <p className="text-center text-xs text-[#64748B] dark:text-[#c7c4d7] mt-2">
           Precisa de ajuda?{' '}
           <Link to="/ajuda" className="text-[#712ae2] dark:text-[#818CF8] font-semibold hover:underline">Central de Ajuda</Link>
         </p>
@@ -469,13 +469,13 @@ export default function StudentAuthPage() {
       </div>
 
       <section id="vestibulares" className="w-full max-w-5xl mt-16 scroll-mt-20">
-        <p className="text-center text-xs font-semibold text-[#334155] dark:text-[#94a3b8] uppercase tracking-wide mb-6">
+        <p className="text-center text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-6">
           {EXAM_TYPES.length} vestibulares disponíveis
         </p>
         <div className="space-y-5">
           {REGION_ORDER.filter(region => EXAM_TYPES.some(t => t.region === region)).map(region => (
             <div key={region} className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] dark:text-[#94a3b8] w-24 shrink-0">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] dark:text-[#c7c4d7] w-24 shrink-0">
                 {region}
               </span>
               <div className="flex flex-wrap gap-1.5">

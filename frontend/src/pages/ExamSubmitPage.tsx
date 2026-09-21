@@ -93,7 +93,7 @@ function EssayInput({
             </div>
           ) : (
             <label
-              className="flex flex-col items-center justify-center border-2 border-dashed border-[#c7d3f0] dark:border-[#2d3f6a] rounded-xl p-8 cursor-pointer hover:border-[#4f63d2] dark:hover:border-[#5b6fd8] hover:bg-[#f5f7ff] dark:hover:bg-[#1a2947] transition-all"
+              className="flex flex-col items-center justify-center border-2 border-dashed border-[#c7d3f0] dark:border-[#464554] rounded-xl p-8 cursor-pointer hover:border-[#4f63d2] dark:hover:border-[#5b6fd8] hover:bg-[#f5f7ff] dark:hover:bg-[#1a2947] transition-all"
               onDrop={handleDrop}
               onDragOver={e => e.preventDefault()}
             >
