@@ -37,11 +37,11 @@ export default {
         'soft-xl': '0 20px 60px -15px rgba(0, 35, 111, 0.25)',
       },
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(135deg, #2563EB 0%, #6366F1 100%)',
-        'brand-gradient-radial': 'radial-gradient(circle at 30% 20%, #1a3cad 0%, #2563EB 55%, #1E293B 100%)',
-        'brand-mesh': `radial-gradient(circle at 15% 15%, rgba(107,56,212,0.16) 0%, transparent 45%),
-          radial-gradient(circle at 85% 10%, rgba(0,35,111,0.12) 0%, transparent 40%),
-          radial-gradient(circle at 50% 100%, rgba(107,56,212,0.10) 0%, transparent 50%)`,
+        'brand-gradient': 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)',
+        'brand-gradient-radial': 'radial-gradient(circle at 30% 20%, #3525cd 0%, #4f46e5 55%, #1E293B 100%)',
+        'brand-mesh': `radial-gradient(circle at 15% 15%, rgba(113,42,226,0.14) 0%, transparent 45%),
+          radial-gradient(circle at 85% 10%, rgba(79,70,229,0.10) 0%, transparent 40%),
+          radial-gradient(circle at 50% 100%, rgba(113,42,226,0.08) 0%, transparent 50%)`,
       },
       keyframes: {
         'fade-in-up': {
