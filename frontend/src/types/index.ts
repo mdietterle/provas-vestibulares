@@ -21,6 +21,7 @@ export interface User {
   deleted_at?: string | null
   institution_id: number
   car_enabled?: boolean
+  institution_verified?: boolean
   created_at: string
   invitation_sent_at?: string | null
   invitation_accepted_at?: string | null

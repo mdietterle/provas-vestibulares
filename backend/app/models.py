@@ -70,6 +70,7 @@ class Institution(Base):
     plan_since: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     car_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     # ── Stripe billing ────────────────────────────────────────────────────────
     stripe_customer_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, unique=True, index=True)

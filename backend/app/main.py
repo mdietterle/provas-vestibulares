@@ -846,6 +846,10 @@ def _run_migrations():
         # Importador real da UFU (antes stub): cada edição/Tipo tem numeração
         # própria reaproveitada entre anos e tipos, exam_name garante unicidade.
         "ALTER TABLE IF EXISTS ufu_questions ADD COLUMN IF NOT EXISTS exam_name VARCHAR(200)",
+        # Escolas criadas via auto-inscrição (aluno digitou o nome, sem selecionar
+        # uma instituição existente) ficam marcadas como não verificadas, para
+        # travar funcionalidades como o menu Provas até um admin confirmar a escola.
+        "ALTER TABLE IF EXISTS institutions ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT TRUE",
     ]
 
     # Dynamically append ALTER TABLE for any missing universities in SimuladoQuestion

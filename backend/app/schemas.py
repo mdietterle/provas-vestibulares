@@ -76,6 +76,7 @@ class UserOut(BaseModel):
     deleted_at: Optional[datetime] = None
     institution_id: int
     car_enabled: bool = False
+    institution_verified: bool = True
     created_at: datetime
     invitation_sent_at: Optional[datetime] = None
     invitation_accepted_at: Optional[datetime] = None
@@ -100,6 +101,7 @@ class UserOut(BaseModel):
             deleted_at=user.deleted_at,
             institution_id=user.institution_id,
             car_enabled=bool(inst.car_enabled) if inst else False,
+            institution_verified=bool(inst.is_verified) if inst else True,
             created_at=user.created_at,
             invitation_sent_at=user.invitation_sent_at,
             invitation_accepted_at=user.invitation_accepted_at,

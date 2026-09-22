@@ -12,6 +12,8 @@ type NavLeaf = {
   label: string
   roles: string[]
   requireCar?: boolean
+  /** Se true, o item fica desabilitado (com tooltip) quando a escola do aluno não é verificada. */
+  requireVerifiedSchool?: boolean
   /** Se definido, o item só aparece se este banco de questões tiver questões importadas. */
   bankSlug?: string
   icon: React.ReactNode
@@ -47,6 +49,7 @@ const nav: NavEntry[] = [
     to: '/exams',
     label: 'Provas',
     roles: ['student'],
+    requireVerifiedSchool: true,
     icon: (
       <svg className="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -506,7 +509,7 @@ function SidebarGroup({
 
 // ── Sidebar Content ───────────────────────────────────────────────────────────
 
-function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs }: { userRole: string; carAccessOk: boolean; collapsed: boolean; availableBankSlugs: Set<string> | null }) {
+function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, schoolVerified }: { userRole: string; carAccessOk: boolean; collapsed: boolean; availableBankSlugs: Set<string> | null; schoolVerified: boolean }) {
   return (
     <>
       <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto overflow-x-hidden">
@@ -515,24 +518,55 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs }
             if (!entry.roles.includes(userRole)) return null
             if (entry.requireCar && !carAccessOk) return null
 
+            const locked = !!entry.requireVerifiedSchool && !schoolVerified
+            const tooltipText = locked ? 'Liberado somente para alunos de escolas cadastradas' : entry.label
+
             if (collapsed) {
               return (
                 <div key={entry.to} className="relative group/tooltip">
-                  <NavLink
-                    to={entry.to}
-                    end={entry.to === '/'}
-                    className={({ isActive }) =>
-                      `flex items-center justify-center p-2.5 rounded-xl transition-all duration-150 ${
-                        isActive ? 'bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]' : 'text-[#7a94d0] hover:bg-white/[0.07] hover:text-white'
-                      }`
-                    }
-                    title={entry.label}
-                  >
-                    {entry.icon}
-                  </NavLink>
+                  {locked ? (
+                    <div
+                      className="flex items-center justify-center p-2.5 rounded-xl text-[#7a94d0]/40 cursor-not-allowed"
+                      aria-disabled="true"
+                    >
+                      {entry.icon}
+                    </div>
+                  ) : (
+                    <NavLink
+                      to={entry.to}
+                      end={entry.to === '/'}
+                      className={({ isActive }) =>
+                        `flex items-center justify-center p-2.5 rounded-xl transition-all duration-150 ${
+                          isActive ? 'bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]' : 'text-[#7a94d0] hover:bg-white/[0.07] hover:text-white'
+                        }`
+                      }
+                      title={entry.label}
+                    >
+                      {entry.icon}
+                    </NavLink>
+                  )}
                   <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-150">
                     <div className="bg-[#1E293B] text-white text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
-                      {entry.label}
+                      {tooltipText}
+                    </div>
+                  </div>
+                </div>
+              )
+            }
+
+            if (locked) {
+              return (
+                <div key={entry.to} className="relative group/tooltip">
+                  <div
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-[#7a94d0]/40 cursor-not-allowed opacity-60"
+                    aria-disabled="true"
+                  >
+                    {entry.icon}
+                    {entry.label}
+                  </div>
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-150">
+                    <div className="bg-[#1E293B] text-white text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
+                      {tooltipText}
                     </div>
                   </div>
                 </div>
@@ -678,6 +712,7 @@ export default function Layout() {
   const userRole = user?.role ?? ''
   const carEnabled = user?.car_enabled ?? false
   const carAccessOk = carEnabled && (userRole !== 'professor' || (user?.car_access ?? false))
+  const schoolVerified = user?.institution_verified ?? true
 
   useEffect(() => {
     if (userRole !== 'admin' && userRole !== 'professor') return
@@ -858,7 +893,7 @@ export default function Layout() {
                 transition: 'transform 0.25s ease',
               }}
             >
-              <SidebarContent userRole={userRole} carAccessOk={carAccessOk} collapsed={false} availableBankSlugs={availableBankSlugs} />
+              <SidebarContent userRole={userRole} carAccessOk={carAccessOk} collapsed={false} availableBankSlugs={availableBankSlugs} schoolVerified={schoolVerified} />
             </aside>
           </>
         ) : (
@@ -878,7 +913,7 @@ export default function Layout() {
                 boxShadow: desktopExpanded && !pinned ? '4px 0 32px rgba(0,0,0,0.22)' : 'none',
               }}
             >
-              <SidebarContent userRole={userRole} carAccessOk={carAccessOk} collapsed={!desktopExpanded} availableBankSlugs={availableBankSlugs} />
+              <SidebarContent userRole={userRole} carAccessOk={carAccessOk} collapsed={!desktopExpanded} availableBankSlugs={availableBankSlugs} schoolVerified={schoolVerified} />
             </div>
           </aside>
         )}

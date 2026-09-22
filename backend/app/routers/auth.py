@@ -80,7 +80,7 @@ def register(payload: StudentRegister, db: Session = Depends(get_db)):
         name = payload.institution_name.strip()
         institution = db.query(Institution).filter(func.lower(Institution.name) == name.lower()).first()
         if not institution:
-            institution = Institution(name=name)
+            institution = Institution(name=name, is_verified=False)
             db.add(institution)
             db.flush()  # garante institution.id sem commitar ainda
             seed_default_subjects(db, institution.id)
