@@ -68,13 +68,13 @@ export default function LandingPage() {
 
       {/* Hero */}
       <div className="relative">
-        <div className="absolute inset-0 bg-brand-mesh pointer-events-none" />
+        <div className="absolute inset-0 bg-brand-mesh pointer-events-none dark:hidden" />
         <div
-          className="absolute top-10 -left-24 w-72 h-72 rounded-full opacity-[0.12] blur-3xl animate-float pointer-events-none"
+          className="absolute top-10 -left-24 w-72 h-72 rounded-full opacity-[0.12] blur-3xl animate-float pointer-events-none dark:hidden"
           style={{ background: 'radial-gradient(circle, #712ae2, transparent 70%)' }}
         />
         <div
-          className="absolute top-24 -right-16 w-80 h-80 rounded-full opacity-[0.10] blur-3xl animate-float pointer-events-none"
+          className="absolute top-24 -right-16 w-80 h-80 rounded-full opacity-[0.10] blur-3xl animate-float pointer-events-none dark:hidden"
           style={{ background: 'radial-gradient(circle, #4f46e5, transparent 70%)', animationDelay: '1.5s' }}
         />
 
