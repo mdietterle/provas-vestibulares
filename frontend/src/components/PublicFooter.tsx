@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
  * links em toda parte (antes cada página listava um subconjunto diferente). */
 export default function PublicFooter() {
   return (
-    <footer className="text-[#b6c4ff]" style={{ background: 'linear-gradient(180deg, #1E293B 0%, #071122 100%)' }}>
+    <footer className="text-[#c7c4d7]" style={{ background: 'linear-gradient(180deg, #241c47 0%, #10131a 100%)' }}>
       <div className="max-w-5xl mx-auto px-6 py-14 grid gap-10 sm:grid-cols-2 md:grid-cols-4">
         <div className="sm:col-span-2 md:col-span-1">
           <div className="flex items-center gap-2 mb-3">
@@ -15,7 +15,7 @@ export default function PublicFooter() {
             </div>
             <span className="font-display font-bold text-white text-sm">Cognition AI</span>
           </div>
-          <p className="text-xs leading-relaxed text-[#7a8bc4]">
+          <p className="text-xs leading-relaxed text-[#8a83a8]">
             Avaliações e simulados corrigidos por inteligência artificial para escolas e redes de ensino.
           </p>
         </div>
@@ -45,7 +45,7 @@ export default function PublicFooter() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="max-w-5xl mx-auto px-6 py-5 text-xs text-[#7a8bc4]">
+        <div className="max-w-5xl mx-auto px-6 py-5 text-xs text-[#8a83a8]">
           © 2026 Cognition AI. Todos os direitos reservados.
         </div>
       </div>

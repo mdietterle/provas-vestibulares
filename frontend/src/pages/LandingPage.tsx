@@ -105,14 +105,14 @@ export default function LandingPage() {
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link
               to="/aluno"
-              className="px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 shadow-[0_4px_16px_rgba(0,35,111,0.3)] hover:shadow-[0_10px_28px_rgba(107,56,212,0.4)]"
+              className="px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 shadow-[0_4px_16px_rgba(79,70,229,0.3)] hover:shadow-[0_10px_28px_rgba(107,56,212,0.4)]"
               style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
             >
               Sou aluno, quero praticar
             </Link>
             <Link
               to="/quote"
-              className="px-6 py-3 rounded-xl text-sm font-bold border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947] hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:-translate-y-0.5 transition-all"
+              className="px-6 py-3 rounded-xl text-sm font-bold border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#EFF6FF] dark:hover:bg-[#241c47] hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:-translate-y-0.5 transition-all"
             >
               Sou professor ou escola
             </Link>
