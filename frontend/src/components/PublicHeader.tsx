@@ -29,7 +29,7 @@ export default function PublicHeader() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="bg-white/90 dark:bg-[#1d1f27]/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#eef1fb] dark:border-[#464554]">
+    <nav className="bg-white/90 dark:bg-[#10131a]/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#eef1fb] dark:border-[#2a2d3a]">
       <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link to="/">{LOGO}</Link>
 
@@ -73,7 +73,7 @@ export default function PublicHeader() {
             aria-label={open ? 'Fechar menu' : 'Abrir menu'}
             aria-expanded={open}
             onClick={() => setOpen(o => !o)}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#eef1ff] dark:hover:bg-[#1e2d4a] transition-colors"
+            className="w-9 h-9 flex items-center justify-center rounded-lg text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#eef1ff] dark:hover:bg-[#241c47] transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               {open
