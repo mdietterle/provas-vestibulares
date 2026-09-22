@@ -95,7 +95,10 @@ class User(Base):
     car_access: Mapped[bool] = mapped_column(Boolean, default=False)
     avatar: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
-    institution_id: Mapped[int] = mapped_column(ForeignKey("institutions.id"), nullable=False, index=True)
+    institution_id: Mapped[Optional[int]] = mapped_column(ForeignKey("institutions.id"), nullable=True, index=True)
+    # Nome de escola digitado no auto-cadastro que não corresponde a nenhuma instituição
+    # cadastrada — fica só registrado aqui, sem criar uma Institution fantasma.
+    pending_institution_name: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     # ── Invitation flow ───────────────────────────────────────────────────────
     invitation_token: Mapped[Optional[str]] = mapped_column(String(200), nullable=True, unique=True, index=True)

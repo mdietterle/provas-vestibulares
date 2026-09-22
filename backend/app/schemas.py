@@ -74,7 +74,8 @@ class UserOut(BaseModel):
     car_access: bool = False
     avatar: Optional[str] = None
     deleted_at: Optional[datetime] = None
-    institution_id: int
+    institution_id: Optional[int] = None
+    pending_institution_name: Optional[str] = None
     car_enabled: bool = False
     institution_verified: bool = True
     created_at: datetime
@@ -100,8 +101,9 @@ class UserOut(BaseModel):
             avatar=user.avatar,
             deleted_at=user.deleted_at,
             institution_id=user.institution_id,
+            pending_institution_name=user.pending_institution_name,
             car_enabled=bool(inst.car_enabled) if inst else False,
-            institution_verified=bool(inst.is_verified) if inst else True,
+            institution_verified=bool(inst.is_verified) if inst else False,
             created_at=user.created_at,
             invitation_sent_at=user.invitation_sent_at,
             invitation_accepted_at=user.invitation_accepted_at,

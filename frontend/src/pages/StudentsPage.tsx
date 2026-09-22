@@ -173,7 +173,7 @@ export default function StudentsPage() {
           name: form.name,
           email: form.email,
           role: 'student',
-          institution_id: user!.institution_id,
+          institution_id: user!.institution_id!,
           ...(setPasswordNow && form.password ? { password: form.password } : {}),
         })
         const viaConvite = !(setPasswordNow && form.password)

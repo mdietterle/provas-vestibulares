@@ -850,6 +850,10 @@ def _run_migrations():
         # uma instituição existente) ficam marcadas como não verificadas, para
         # travar funcionalidades como o menu Provas até um admin confirmar a escola.
         "ALTER TABLE IF EXISTS institutions ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT TRUE",
+        # Auto-cadastro com nome de escola inexistente não cria mais uma Institution
+        # fantasma — o nome fica só no aluno até um admin cadastrar a escola de verdade.
+        "ALTER TABLE IF EXISTS users ALTER COLUMN institution_id DROP NOT NULL",
+        "ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS pending_institution_name VARCHAR(200)",
     ]
 
     # Dynamically append ALTER TABLE for any missing universities in SimuladoQuestion

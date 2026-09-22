@@ -139,7 +139,7 @@ export default function ProfessorsPage() {
         setShowModal(false)
         loadProfessors()
       } else {
-        const r = await usersApi.create({ ...form, role: 'professor', institution_id: user!.institution_id })
+        const r = await usersApi.create({ ...form, role: 'professor', institution_id: user!.institution_id! })
         toast.success('Professor cadastrado')
         setShowModal(false)
         loadProfessors()

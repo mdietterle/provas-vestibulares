@@ -23,7 +23,6 @@ from app.schemas import (
     UserOut,
 )
 from app.services import email as email_service
-from app.services.subjects import seed_default_subjects
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -72,6 +71,7 @@ def register(payload: StudentRegister, db: Session = Depends(get_db)):
     administrativo (web) buscarem/selecionarem.
     """
     institution: Optional[Institution] = None
+    pending_institution_name: Optional[str] = None
     if payload.institution_id:
         institution = db.get(Institution, payload.institution_id)
         if not institution:
@@ -80,10 +80,9 @@ def register(payload: StudentRegister, db: Session = Depends(get_db)):
         name = payload.institution_name.strip()
         institution = db.query(Institution).filter(func.lower(Institution.name) == name.lower()).first()
         if not institution:
-            institution = Institution(name=name, is_verified=False)
-            db.add(institution)
-            db.flush()  # garante institution.id sem commitar ainda
-            seed_default_subjects(db, institution.id)
+            # Escola não cadastrada: não cria uma Institution fantasma, só guarda o
+            # nome digitado no próprio aluno até um admin confirmar/cadastrar a escola.
+            pending_institution_name = name
     else:
         raise HTTPException(status_code=400, detail="Informe a instituição")
 
@@ -101,7 +100,8 @@ def register(payload: StudentRegister, db: Session = Depends(get_db)):
         email=payload.email.strip().lower(),
         hashed_password=get_password_hash(payload.password),
         role=UserRole.STUDENT,
-        institution_id=institution.id,
+        institution_id=institution.id if institution else None,
+        pending_institution_name=pending_institution_name,
         is_active=True,
         email_verified_at=datetime.utcnow(),
     )

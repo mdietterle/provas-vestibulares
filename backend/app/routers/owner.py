@@ -176,7 +176,8 @@ def owner_toggle_user_active(
     return OwnerUserOut(
         id=user.id, name=user.name, email=user.email, role=user.role, is_active=user.is_active,
         deleted_at=user.deleted_at, institution_id=user.institution_id,
-        institution_name=user.institution.name, created_at=user.created_at,
+        institution_name=user.institution.name if user.institution else user.pending_institution_name,
+        created_at=user.created_at,
     )
 
 
@@ -198,7 +199,8 @@ def owner_change_user_role(
     return OwnerUserOut(
         id=user.id, name=user.name, email=user.email, role=user.role, is_active=user.is_active,
         deleted_at=user.deleted_at, institution_id=user.institution_id,
-        institution_name=user.institution.name, created_at=user.created_at,
+        institution_name=user.institution.name if user.institution else user.pending_institution_name,
+        created_at=user.created_at,
     )
 
 

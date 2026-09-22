@@ -19,7 +19,8 @@ export interface User {
   car_access?: boolean
   avatar?: string | null
   deleted_at?: string | null
-  institution_id: number
+  institution_id?: number | null
+  pending_institution_name?: string | null
   car_enabled?: boolean
   institution_verified?: boolean
   created_at: string
