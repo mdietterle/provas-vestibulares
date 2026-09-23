@@ -88,7 +88,7 @@ export default function LandingPage() {
             </svg>
             Correção por Inteligência Artificial
           </div>
-          <h1 className="font-display text-4xl sm:text-6xl font-bold text-[#1E293B] mb-6 leading-[1.1] tracking-tight">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1E293B] mb-6 leading-[1.2] tracking-tight">
             Provas, redações e simulados{' '}
             <span
               className="bg-clip-text text-transparent"
