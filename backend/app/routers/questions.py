@@ -140,11 +140,21 @@ def update_question(
         setattr(question, field, value)
 
     if payload.options is not None:
-        for opt in question.options:
-            db.delete(opt)
-        db.flush()
-        for opt in payload.options:
-            db.add(QuestionOption(question_id=question.id, **opt.model_dump()))
+        # Update existing options in place instead of delete+recreate: submission_answers
+        # references question_options.id, so deleting an option that was already answered
+        # by a student violates the FK constraint (RESTRICT) and raises a 500.
+        existing = list(question.options)
+        new_data = payload.options
+        for opt, data in zip(existing, new_data):
+            opt.text = data.text
+            opt.is_correct = data.is_correct
+            opt.order = data.order
+        if len(new_data) > len(existing):
+            for data in new_data[len(existing):]:
+                db.add(QuestionOption(question_id=question.id, **data.model_dump()))
+        elif len(existing) > len(new_data):
+            for opt in existing[len(new_data):]:
+                db.delete(opt)
 
     db.commit()
     db.refresh(question)
