@@ -119,7 +119,7 @@ def update_question(
 
     # Institution boundary: admins from other institutions must not edit this question
     subject = db.get(Subject, question.subject_id)
-    if subject.institution_id != current_user.institution_id:
+    if not subject or subject.institution_id != current_user.institution_id:
         raise HTTPException(403, "Sem acesso a esta questão")
 
     if current_user.role == UserRole.PROFESSOR and question.professor_id != current_user.id:
