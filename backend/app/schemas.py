@@ -242,6 +242,7 @@ class QuestionUpdate(BaseModel):
     difficulty: Optional[str] = None
     criteria: Optional[str] = None
     image_base64: Optional[str] = None
+    subject_id: Optional[int] = None
     options: Optional[List[QuestionOptionCreate]] = None
 
 
