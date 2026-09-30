@@ -28,9 +28,6 @@ import UfprBankPage from './pages/UfprBankPage'
 import UfrgsBankPage from './pages/UfrgsBankPage'
 import PucprBankPage from './pages/PucprBankPage'
 import ItaBankPage from './pages/ItaBankPage'
-import PlansPage from './pages/PlansPage'
-import QuotePage from './pages/QuotePage'
-import ContactPage from './pages/ContactPage'
 import OwnerPage from './pages/OwnerPage'
 import OwnerSchoolsPage from './pages/OwnerSchoolsPage'
 import OwnerUsersPage from './pages/OwnerUsersPage'
@@ -44,17 +41,11 @@ import RedacaoListPage from './pages/RedacaoListPage'
 import RedacaoPage from './pages/RedacaoPage'
 import RedacaoReviewPage from './pages/RedacaoReviewPage'
 import InvitationPage from './pages/InvitationPage'
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
-import TermsOfServicePage from './pages/TermsOfServicePage'
-import AboutPage from './pages/AboutPage'
 import StudentAuthPage from './pages/StudentAuthPage'
-import HelpPage from './pages/HelpPage'
-import UniversitiesIndexPage from './pages/UniversitiesIndexPage'
-import UniversityDetailPage from './pages/UniversityDetailPage'
-import ExamCalendarPage from './pages/ExamCalendarPage'
 import LandingPage from './pages/LandingPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import { publicRoutes } from './publicRoutes'
 import FeedbackWidget from './components/FeedbackWidget'
 
 function RootRoute({ children }: { children: React.ReactNode }) {
@@ -78,19 +69,10 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={user ? <Navigate to={user.role === 'owner' ? '/billing' : '/'} replace /> : <LoginPage />} />
       <Route path="/aluno" element={user ? <Navigate to="/" replace /> : <StudentAuthPage />} />
-      <Route path="/plans" element={<PlansPage />} />
-      <Route path="/quote" element={<QuotePage />} />
-      <Route path="/contact" element={<ContactPage />} />
       <Route path="/convite/:token" element={<InvitationPage />} />
       <Route path="/esqueci-senha" element={<ForgotPasswordPage />} />
       <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
-      <Route path="/privacidade" element={<PrivacyPolicyPage />} />
-      <Route path="/termos" element={<TermsOfServicePage />} />
-      <Route path="/sobre" element={<AboutPage />} />
-      <Route path="/ajuda" element={<HelpPage />} />
-      <Route path="/universidades" element={<UniversitiesIndexPage />} />
-      <Route path="/universidades/:slug" element={<UniversityDetailPage />} />
-      <Route path="/calendario" element={<ExamCalendarPage />} />
+      {publicRoutes()}
       <Route path="/" element={<RootRoute><Layout /></RootRoute>}>
         <Route index element={<DashboardPage />} />
         <Route path="professors" element={<ProfessorsPage />} />

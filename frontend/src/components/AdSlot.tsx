@@ -13,8 +13,8 @@ const ADSENSE_CLIENT_ID = import.meta.env.VITE_ADSENSE_CLIENT_ID as string | und
 // Flag separada do client ID: o client ID precisa continuar presente no HTML
 // pro verificador de site do AdSense (aprovação em andamento), mas os slots de
 // anúncio em si só devem renderizar de verdade depois que a conta for aprovada
-// — até lá, mostra sempre o placeholder "Espaço reservado", em vez de um
-// <ins> real que fica em branco/quebrado com a conta ainda não aprovada.
+// — até lá não renderiza nada, em vez de um <ins> real que fica em branco/quebrado
+// com a conta ainda não aprovada.
 const ADSENSE_APPROVED = import.meta.env.VITE_ADSENSE_APPROVED === 'true'
 
 interface AdSlotProps {
@@ -35,15 +35,9 @@ export default function AdSlot({ slot, className }: AdSlotProps) {
     }
   }, [])
 
-  if (!ADSENSE_CLIENT_ID || !ADSENSE_APPROVED) {
-    return (
-      <div
-        className={`flex items-center justify-center rounded-xl border border-dashed border-[#c5d0ff] dark:border-[#2e3f66] bg-[#F4F6F9] dark:bg-[#1d1f27] text-xs text-[#64748B] dark:text-[#c7c4d7] ${className ?? 'h-24'}`}
-      >
-        Espaço reservado para anúncio
-      </div>
-    )
-  }
+  // Antes da aprovação não renderiza nada: a caixa "Espaço reservado para anúncio"
+  // aparecia pra usuários e pro revisor do AdSense como página inacabada.
+  if (!ADSENSE_CLIENT_ID || !ADSENSE_APPROVED) return null
 
   // Só chega aqui depois que VITE_ADSENSE_APPROVED='true' for ligado. O
   // criativo do AdSense sempre renderiza com fundo branco (fora do nosso
