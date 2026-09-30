@@ -6,6 +6,7 @@ import Seo from '../../components/Seo'
 import PublicHeader from '../../components/PublicHeader'
 import PublicFooter from '../../components/PublicFooter'
 import Breadcrumb from '../../components/Breadcrumb'
+import { getStudyGuide } from '../../data/studyGuides'
 
 const ADSENSE_SLOT_PUBLIC = (import.meta.env.VITE_ADSENSE_SLOT_PUBLIC as string | undefined) || ''
 
@@ -30,6 +31,8 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
       </div>
     )
   }
+
+  const hasStudyGuide = !!getStudyGuide(u.slug)
 
   const faqs = [
     {
@@ -152,15 +155,17 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
             </section>
           )}
 
-          {/* Placeholder section for future detailed content */}
-          <section className="bg-white dark:bg-[#191b23] border border-dashed border-[#c7d7ff] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
-            <h2 className="text-lg font-bold mb-2 text-[#1E293B] dark:text-white">
-              Guia Completo e Detalhes do Vestibular {u.shortName}
-            </h2>
-            <p className="text-[#64748B] dark:text-[#908fa0] text-sm leading-relaxed">
-              Conteúdo detalhado sobre concorrência, pesos das disciplinas, notas de corte e dicas de preparação para a <strong>{u.fullName}</strong> será expandido em breve.
-            </p>
-          </section>
+          {hasStudyGuide && (
+            <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
+              <h2 className="text-lg font-bold mb-2 text-[#1E293B] dark:text-white">Guia de estudos: como estudar para {u.shortName}</h2>
+              <p className="text-[#555] dark:text-[#908fa0] mb-3">
+                O que estudar e como estudar em cada matéria, com orientações e sites gratuitos para cada conteúdo.
+              </p>
+              <Link to={`/universidades/${u.slug}/como-estudar`} className="text-sm font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline">
+                Ver o guia de estudos &rarr;
+              </Link>
+            </section>
+          )}
 
           {u.notes && (
             <section className="bg-amber-50 dark:bg-[#252014] border border-amber-200 dark:border-[#42361b] rounded-2xl p-6">

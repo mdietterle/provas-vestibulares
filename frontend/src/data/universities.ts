@@ -408,11 +408,11 @@ const RAW: Omit<University, 'hasRealImporter'>[] = [
   {
     slug: 'ulbra', shortName: 'ULBRA', fullName: 'Universidade Luterana do Brasil',
     category: 'particular', state: 'RS', region: 'Sul',
-    vestibularType: 'Vestibular próprio (prova presencial de múltipla escolha e redação) pela comissão de vestibular do campus Canoas, com edições recorrentes a cada semestre',
-    admissionCalendar: 'Duas chamadas anuais recorrentes: vestibular para ingresso no 1º semestre (inscrições e prova no final do ano anterior) e para o 2º semestre (inscrições e prova em meados do ano).',
-    mainCourses: ['Medicina', 'Direito', 'Engenharias', 'Psicologia', 'Odontologia', 'Fisioterapia', 'Administração', 'Enfermagem'],
-    description: 'A ULBRA é uma universidade privada confessional luterana com sede em Canoas (RS) e outros campi no Rio Grande do Sul. É a única unidade que publica provas anteriores de vestibular em PDF entre os campi verificados.',
-    officialUrl: 'https://www.ulbra.br/vestibular/canoas',
+    vestibularType: 'Vestibular online contínuo, sem agendamento, que consiste em uma redação em Língua Portuguesa (mínimo de 2.500 caracteres, 1 hora); também é possível usar a nota da redação do ENEM (mínimo de 200 pontos)',
+    admissionCalendar: 'Edital 2027/1: inscrições das 10h de 31 de agosto de 2026 às 23h59 de 28 de março de 2027, podendo ser prorrogadas enquanto houver vagas. A redação é feita online, sem agendamento, e as inscrições são isentas de taxa.',
+    mainCourses: ['Direito', 'Psicologia', 'Odontologia', 'Fisioterapia', 'Enfermagem', 'Farmácia', 'Medicina Veterinária', 'Administração'],
+    description: 'A ULBRA é uma universidade privada confessional luterana com sede em Canoas (RS) e campi em outras cidades do Rio Grande do Sul. No edital de 2027/1 a seleção dos cursos presenciais é feita por uma redação online ou pela nota da redação do ENEM, e as vagas são ocupadas por ordem de efetivação do ingresso dos candidatos habilitados.',
+    officialUrl: 'https://www.ulbra.br/vestibular',
     notes: '',
   },
   {

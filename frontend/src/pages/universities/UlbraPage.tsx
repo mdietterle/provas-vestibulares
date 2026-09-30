@@ -2,12 +2,12 @@ import UniversityBasePage from './UniversityBasePage'
 import CampusImage from '../../components/CampusImage'
 
 const CAMPI_RS = ['Canoas (sede)', 'Cachoeira do Sul', 'Carazinho', 'Gravataí', 'Guaíba', 'Santa Maria', 'São Jerônimo', 'Torres']
-const CAMPI_OUTROS_ESTADOS = ['Manaus (AM)', 'Itumbiara (GO)', 'Ji-Paraná (RO)', 'Porto Velho (RO)', 'Palmas (TO)', 'Santarém (PA)', 'Sertãozinho (SP)']
+const CAMPI_OUTROS_ESTADOS = ['Manaus (AM)', 'Itumbiara (GO)', 'Palmas (TO)', 'Santarém (PA)']
 
 export default function UlbraPage() {
   const customContent = (
     <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
-      <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">ULBRA: de uma escola paroquial a 21 estados do país</h2>
+      <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">ULBRA: de uma escola paroquial a unidades em três regiões do país</h2>
       <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
         A ULBRA tem origem na escola paroquial da Igreja Evangélica Luterana de São Paulo de Canoas (CELSP), fundada
         em 1911, em Canoas (RS). Virou Faculdades Canoenses em 1972 e foi reconhecida como universidade em 1989,
@@ -37,14 +37,14 @@ export default function UlbraPage() {
 
       <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
-          Diferencial: descentralização em escala nacional, não só regional
+          Diferencial: presença em três regiões do Brasil
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
-          A ULBRA está presente em <strong>85 cidades de 21 estados brasileiros</strong>, com campi universitários
-          e escolas em 20 delas e polos de EaD em outras 65. É um grau de descentralização geográfica raro entre
-          universidades privadas do país — a maioria concentra expansão numa única região, enquanto a ULBRA saiu
-          do Rio Grande do Sul pro Norte (Amazonas, Pará, Rondônia, Tocantins), Centro-Oeste (Goiás) e Sudeste (São
-          Paulo).
+          Segundo o site oficial, a ULBRA tem <strong>mais de 10 unidades de ensino em 3 regiões do Brasil</strong>,
+          com unidades e polos ativos em mais de 9 estados, cerca de <strong>20 mil alunos matriculados</strong> e mais
+          de <strong>500 mil egressos</strong> em <strong>53 anos de história</strong>. Além do Rio Grande do Sul, há
+          unidades no Norte (Amazonas, Tocantins e Pará) e no Centro-Oeste (Goiás), além de polos de ensino a
+          distância em vários estados.
         </p>
       </div>
 
@@ -57,7 +57,7 @@ export default function UlbraPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Oito campi no RS, mais seis em outros estados</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Oito campi no RS, mais quatro em outros estados</h3>
         <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed mb-3">
           No Rio Grande do Sul, além da sede em Canoas:
         </p>
@@ -79,25 +79,27 @@ export default function UlbraPage() {
       </div>
 
       <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10">
-        São mais de 60 mil alunos matriculados em 232 cursos de graduação e pós-graduação, presenciais e a
-        distância, cobrindo Humanas, Exatas, Biológicas, Saúde e Tecnológicas. Cursos de maior tradição incluem{' '}
-        <strong>Medicina</strong>, <strong>Direito</strong>, <strong>Engenharias</strong>,{' '}
-        <strong>Psicologia</strong> e <strong>Odontologia</strong>. A universidade também é a única unidade entre
-        os campi verificados nesta plataforma que publica provas anteriores de vestibular em PDF.
+        Os cursos cobrem áreas como Saúde, Direito, Gestão e Tecnologia, e existem unidades específicas de Medicina
+        (Faculdade Ulbra Medicina em Gravataí, Porto Alegre e São Jerônimo, e unidades em Manaus, Palmas e Santarém). No edital de 2027/1 do vestibular regular, os cursos presenciais com vagas incluem{' '}
+        <strong>Direito</strong>, <strong>Psicologia</strong>, <strong>Odontologia</strong>,{' '}
+        <strong>Fisioterapia</strong>, <strong>Enfermagem</strong> e <strong>Medicina Veterinária</strong>. Nesta plataforma há provas reais de edições
+        anteriores do vestibular (2016 a 2019), úteis para treino de interpretação e de conteúdo, embora o processo atual
+        seja uma redação.
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
         <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
-          Ingresso: vestibular contínuo, nota do ENEM ou transferência
+          Ingresso: redação online ou nota da redação do ENEM
         </h3>
         <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
-          O processo seletivo da ULBRA é aplicado de forma <strong>contínua e online</strong>, sem necessidade de
-          agendamento — o candidato faz a prova pela internet e recebe o resultado na hora. Até 10% das vagas são
-          reservadas pra quem usa a <strong>nota do ENEM</strong> (edições de 2016 a 2023) como critério de
-          classificação, e também existem vias de ingresso por transferência externa ou segunda graduação. Datas e
-          regras mudam por campus — confirme sempre em{' '}
-          <a href="https://vestibular.ulbra.br/" target="_blank" rel="noreferrer" className="underline font-semibold">
-            vestibular.ulbra.br
+          Segundo o edital de 2027/1, o vestibular da ULBRA é feito <strong>online, sem necessidade de agendamento</strong>:
+          o candidato escreve uma redação em Língua Portuguesa, com no mínimo 2.500 caracteres e duração de 1 hora, e é
+          habilitado ao obter pelo menos 50% da pontuação. Quem preferir pode usar a <strong>nota da redação do ENEM</strong>{' '}
+          (edições de 2016 a 2025, com mínimo de 200 pontos), e a instituição pode reservar até 10% das vagas de cada curso
+          a essa modalidade. Ser habilitado não garante a vaga: elas são ocupadas pela ordem em que os candidatos efetivam o
+          ingresso. Datas e regras podem mudar a cada edital; confirme sempre em{' '}
+          <a href="https://www.ulbra.br/vestibular" target="_blank" rel="noreferrer" className="underline font-semibold">
+            ulbra.br/vestibular
           </a>.
         </p>
       </div>
