@@ -80,7 +80,7 @@ for (const p of getPublicPaths()) {
 // sitemap.xml gerado das mesmas rotas prerenderizadas (antes era mantido à mão).
 const SITE_URL = 'https://cognition-ai-edu.vercel.app'
 const today = new Date().toISOString().slice(0, 10)
-const EXTRA_URLS = ['/aluno', '/login', '/docs/manual-aluno.html', '/docs/manual-professor.html', '/docs/manual-administrador.html']
+const EXTRA_URLS = ['/docs/manual-aluno.html', '/docs/manual-professor.html', '/docs/manual-administrador.html']
 
 function priorityFor(p) {
   if (p === '/') return '1.0'

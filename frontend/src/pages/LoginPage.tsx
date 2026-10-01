@@ -2,11 +2,9 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
-import AdSlot from '../components/AdSlot'
 import PublicHeader from '../components/PublicHeader'
 import PublicFooter from '../components/PublicFooter'
 
-const ADSENSE_SLOT_LOGIN = (import.meta.env.VITE_ADSENSE_SLOT_LOGIN as string | undefined) || ''
 
 const features = [
   {
@@ -271,13 +269,6 @@ export default function LoginPage() {
               Falar com Especialista
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* ── AD SLOT ── */}
-      <section className="py-8 bg-[#F4F6F9] dark:bg-[#10131a]">
-        <div className="max-w-6xl mx-auto px-6">
-          <AdSlot slot={ADSENSE_SLOT_LOGIN} className="h-24" />
         </div>
       </section>
 

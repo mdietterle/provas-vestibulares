@@ -2,14 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { authApi, institutionsApi } from '../api'
 import { useAuth } from '../contexts/AuthContext'
-import AdSlot from '../components/AdSlot'
 import PublicHeader from '../components/PublicHeader'
 import PublicFooter from '../components/PublicFooter'
 import { EXAM_TYPES, type Region } from '../utils/exams'
 
 const REGION_ORDER: Region[] = ['Nacional', 'Sudeste', 'Sul', 'Centro-Oeste', 'Nordeste', 'Norte']
 
-const ADSENSE_SLOT_LOGIN = (import.meta.env.VITE_ADSENSE_SLOT_LOGIN as string | undefined) || ''
 
 type Mode = 'login' | 'register'
 type InstitutionOption = { id: number; name: string }
@@ -461,10 +459,6 @@ export default function StudentAuthPage() {
           Precisa de ajuda?{' '}
           <Link to="/ajuda" className="text-[#712ae2] dark:text-[#818CF8] font-semibold hover:underline">Central de Ajuda</Link>
         </p>
-
-        <div className="mt-6">
-          <AdSlot slot={ADSENSE_SLOT_LOGIN} className="h-24" />
-        </div>
         </div>
       </div>
 
