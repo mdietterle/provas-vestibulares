@@ -103,14 +103,17 @@ class User(Base):
     # ── Invitation flow ───────────────────────────────────────────────────────
     invitation_token: Mapped[Optional[str]] = mapped_column(String(200), nullable=True, unique=True, index=True)
     invitation_sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    invitation_expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     invitation_accepted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     # ── Auto-cadastro / confirmação de e-mail ────────────────────────────────
     email_verification_token: Mapped[Optional[str]] = mapped_column(String(200), nullable=True, unique=True, index=True)
     email_verification_sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    email_verification_expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     email_verified_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     # ── Recuperação de senha ("esqueci minha senha") ─────────────────────────
     password_reset_token: Mapped[Optional[str]] = mapped_column(String(200), nullable=True, unique=True, index=True)
     password_reset_sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    password_reset_expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
     institution: Mapped["Institution"] = relationship(back_populates="users")
     teaching_assignments: Mapped[List["TeachingAssignment"]] = relationship(

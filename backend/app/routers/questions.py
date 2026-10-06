@@ -1,3 +1,4 @@
+import base64
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -8,6 +9,7 @@ from app.database import get_db
 from app.deps import get_current_user, require_professor
 from app.models import Question, QuestionOption, Subject, TeachingAssignment, User, UserRole
 from app.schemas import QuestionCreate, QuestionOut, QuestionUpdate
+from app.services.storage import upload_image
 
 router = APIRouter(prefix="/questions", tags=["questions"])
 
@@ -72,6 +74,18 @@ def create_question(
             raise HTTPException(403, "Você não leciona esta matéria")
 
     data = payload.model_dump(exclude={"options"})
+    # Convert base64 image to R2 URL if present
+    if data.get("image_base64"):
+        try:
+            raw = data["image_base64"]
+            header, b64_data = raw.split(",", 1) if "," in raw else ("", raw)
+            mime = "image/png"
+            if "image/" in header:
+                mime = header.split(";")[0].replace("data:", "")
+            img_bytes = base64.b64decode(b64_data)
+            data["image_base64"] = upload_image(img_bytes, content_type=mime)
+        except Exception as e:
+            raise HTTPException(400, f"Falha ao fazer upload da imagem: {e}")
     data["professor_id"] = current_user.id
     question = Question(**data)
     db.add(question)
@@ -136,6 +150,18 @@ def update_question(
                 raise HTTPException(403, "Você não leciona esta matéria")
 
     data = payload.model_dump(exclude_none=True, exclude={"options"})
+    # Convert base64 image to R2 URL if present
+    if data.get("image_base64"):
+        try:
+            raw = data["image_base64"]
+            header, b64_data = raw.split(",", 1) if "," in raw else ("", raw)
+            mime = "image/png"
+            if "image/" in header:
+                mime = header.split(";")[0].replace("data:", "")
+            img_bytes = base64.b64decode(b64_data)
+            data["image_base64"] = upload_image(img_bytes, content_type=mime)
+        except Exception as e:
+            raise HTTPException(400, f"Falha ao fazer upload da imagem: {e}")
     for field, value in data.items():
         setattr(question, field, value)
 

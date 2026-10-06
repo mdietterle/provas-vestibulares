@@ -264,9 +264,12 @@ async def upload_avatar(
     content = await file.read()
     if len(content) > 2 * 1024 * 1024:
         raise HTTPException(400, "Imagem muito grande. Máximo 2 MB.")
+    from app.services.storage import upload_image
     mime = file.content_type or "image/jpeg"
-    b64 = base64.b64encode(content).decode()
-    current_user.avatar = f"data:{mime};base64,{b64}"
+    try:
+        current_user.avatar = upload_image(content, content_type=mime, prefix="avatars")
+    except Exception as e:
+        raise HTTPException(400, f"Falha ao fazer upload do avatar: {e}")
     db.commit()
     db.refresh(current_user)
     return current_user

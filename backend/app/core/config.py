@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     RESEND_API_KEY: str = ""          # obrigatório para enviar e-mails
     EMAIL_FROM: str = "onboarding@resend.dev"  # domínio verificado no Resend
     FRONTEND_URL: str = "http://localhost:5173"
+    ALLOWED_ORIGINS: str = ""  # comma-separated list, e.g. "https://app.example.com,https://admin.example.com"
     INVITATION_EXPIRE_DAYS: int = 7
     EMAIL_VERIFICATION_EXPIRE_HOURS: int = 48
     PASSWORD_RESET_EXPIRE_HOURS: int = 2
@@ -37,6 +38,9 @@ class Settings(BaseSettings):
     STRIPE_PRICE_ENTERPRISE: str = ""
     STRIPE_PRICE_CREDITS_PACK: str = ""
     STRIPE_CREDITS_PACK_AMOUNT: int = 100
+    # ── Observabilidade ────────────────────────────────────────────────────────
+    SENTRY_DSN: str = ""
+    LOG_LEVEL: str = "INFO"
 
 
 settings = Settings()
