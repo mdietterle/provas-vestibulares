@@ -74,7 +74,7 @@ import fitz  # PyMuPDF
 import requests
 
 from app.services.progress import update_task_progress, complete_task, fail_task
-from app.models import UfgQuestion, UfgQuestionOption
+from app.services.import_batch import save_vestibular_question
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
 
@@ -382,11 +382,8 @@ _OPCAO_EXAM_LABELS = {"ingles": "Opção Inglês", "espanhol": "Opção Espanhol
 
 
 def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str]) -> tuple[int, int]:
-    already = db.query(UfgQuestion).filter(UfgQuestion.exam_name == exam_name).count()
-    if already > 0:
-        return 0, already
-
     added = 0
+    skipped_existing = 0
     for q in questions:
         correct = gabarito.get(q["number"])
         if not correct:
@@ -395,26 +392,38 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
         if correct not in letters:
             continue
 
-        question = UfgQuestion(
+        options = [
+            {
+                "letter": letters[order],
+                "text": text,
+                "is_correct": (letters[order] == correct),
+                "order": order,
+            }
+            for order, text in enumerate(q["alternatives"])
+        ]
+        metadata = {
+            "university": "UFG",
+        }
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="ufg",
             exam_name=exam_name,
             year=year,
             number=q["number"],
             statement=q["statement"],
+            options=options,
+            images=None,
+            image_base64=None,
+            correct_option=correct,
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        for order, text in enumerate(q["alternatives"]):
-            db.add(UfgQuestionOption(
-                question_id=question.id,
-                text=text,
-                is_correct=(letters[order] == correct),
-                order=order,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
     db.commit()
-    return added, 0
+    return added, skipped_existing
 
 
 def import_ufg_edition(db, edition: dict) -> dict:

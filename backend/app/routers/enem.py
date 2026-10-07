@@ -16,6 +16,7 @@ from app.models import (
     QuestionType,
     Subject,
     User,
+    VestibularQuestion,
 )
 
 from app.schemas import EnemImportRequest, EnemQuestionOut, QuestionOut
@@ -201,8 +202,8 @@ def import_enem_question(
     current_user: User = Depends(require_professor),
 ):
     """Copy an ENEM question into the professor's institution question bank."""
-    enem_q = db.get(EnemQuestion, payload.enem_question_id)
-    if not enem_q:
+    vq = db.get(VestibularQuestion, payload.vestibular_question_id)
+    if not vq or vq.exam_type != "enem":
         raise HTTPException(404, "Questão ENEM não encontrada")
 
     subject = db.get(Subject, payload.subject_id)
@@ -210,20 +211,21 @@ def import_enem_question(
         raise HTTPException(404, "Matéria não encontrada")
 
     # Build statement with ENEM source attribution
-    statement = f"{enem_q.statement}\n\n[ENEM {enem_q.year} – Q{enem_q.number}]"
+    statement = f"{vq.statement}\n\n[ENEM {vq.year} – Q{vq.number}]"
 
     question = Question(
         statement=statement,
         question_type=QuestionType.MULTIPLE_CHOICE,
         is_public=payload.is_public,
         difficulty=payload.difficulty,
+        image_base64=vq.image_base64,
         subject_id=payload.subject_id,
         professor_id=current_user.id,
     )
     db.add(question)
     db.flush()
 
-    for opt in sorted(enem_q.options, key=lambda o: o.order):
+    for opt in sorted(vq.options, key=lambda o: o.order):
         db.add(
             QuestionOption(
                 question_id=question.id,

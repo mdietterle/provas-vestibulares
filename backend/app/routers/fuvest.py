@@ -12,6 +12,7 @@ from app.models import (
     QuestionOption,
     QuestionType,
     Subject,
+    VestibularQuestion,
     User,
 )
 from app.schemas import FuvestImportRequest, FuvestQuestionOut, QuestionOut
@@ -114,7 +115,7 @@ def import_fuvest_question(
     current_user: User = Depends(require_professor),
 ):
     """Copia uma questão FUVEST para o banco de questões da escola do professor."""
-    fuvest_q = db.get(FuvestQuestion, payload.fuvest_question_id)
+    fuvest_q = db.get(VestibularQuestion, payload.vestibular_question_id)
     if not fuvest_q:
         raise HTTPException(404, "Questão FUVEST não encontrada")
 

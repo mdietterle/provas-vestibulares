@@ -74,8 +74,8 @@ parser não encontra nenhuma alternativa "(A)".." nela, então essa parte
 fica com 0 questões e é pulada automaticamente (o mesmo mecanismo genérico
 de "0 questões reconhecidas", sem caso especial).
 
-Persistência via SQLAlchemy nos modelos `PuccampinasQuestion`/
-`PuccampinasQuestionOption` (app/models.py). O modelo original (nunca
+Persistência via adapter unificado `save_vestibular_question`
+(app/services/import_batch.py). O modelo original (nunca
 populado de verdade) não tinha `exam_name`; foi adicionado (nullable, com
 migração incremental em `_run_migrations()`, app/main.py) para diferenciar
 as várias trilhas e partes de cada edição — sem ele, `number` sozinho
@@ -93,7 +93,6 @@ import requests
 
 import base64
 
-from app.models import PuccampinasQuestion, PuccampinasQuestionOption, PuccampinasQuestionImage
 from app.services.pdf_figures import extract_figure_events, text_content_y_range
 from app.services.progress import update_task_progress, complete_task, fail_task
 
@@ -538,7 +537,12 @@ def _persist_segment(db, exam_name: str, year: int, questions: list[dict], gabar
     """Grava as questões de UMA parte (segmento) já parseada, pulando
     edições já importadas (mesmo exam_name) e questões sem gabarito
     conhecido (não encontrado na tabela de respostas)."""
-    already = db.query(PuccampinasQuestion).filter(PuccampinasQuestion.exam_name == exam_name).count()
+    from app.services.import_batch import save_vestibular_question
+    from app.models import VestibularQuestion
+    already = db.query(VestibularQuestion).filter(
+        VestibularQuestion.exam_type == "puccampinas",
+        VestibularQuestion.exam_name == exam_name,
+    ).count()
     if already > 0:
         return {"exam_name": exam_name, "skipped": True, "reason": "Já importado", "skipped_existing": already}
 
@@ -553,30 +557,35 @@ def _persist_segment(db, exam_name: str, year: int, questions: list[dict], gabar
             skipped_no_answer += 1
             continue
 
+        options = [
+            {
+                "letter": letter,
+                "text": text,
+                "is_correct": (letter == correct),
+                "order": order,
+            }
+            for order, (letter, text) in enumerate(q["alternatives"])
+        ]
         images = q.get("images") or []
-        question = PuccampinasQuestion(
+        image_list = None
+        if images:
+            image_list = [f"data:image/png;base64,{base64.b64encode(img).decode()}" for img in images]
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="puccampinas",
             exam_name=exam_name,
             year=year,
             number=q["number"],
             statement=q["statement"],
-            image_base64=(f"data:image/png;base64,{base64.b64encode(images[0]).decode()}" if images else None),
+            options=options,
+            images=image_list,
+            correct_option=correct,
+            metadata={},
         )
-        db.add(question)
-        db.flush()
-
-        for order, (letter, text) in enumerate(q["alternatives"]):
-            db.add(PuccampinasQuestionOption(
-                question_id=question.id,
-                text=text,
-                is_correct=(letter == correct),
-                order=order,
-            ))
-        for order, png in enumerate(images[1:]):
-            db.add(PuccampinasQuestionImage(
-                question_id=question.id,
-                image_base64=f"data:image/png;base64,{base64.b64encode(png).decode()}",
-                order=order,
-            ))
+        if not created:
+            skipped_no_answer += 1
+            continue
         added += 1
 
     db.commit()

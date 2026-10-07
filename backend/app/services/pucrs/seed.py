@@ -324,14 +324,10 @@ def run_migrations_pucrs(conn):
 
 
 def import_pucrs_edition(db, edition: dict) -> dict:
-    from app.models import PucrsQuestion, PucrsQuestionImage, PucrsQuestionOption
+    from app.services.import_batch import save_vestibular_question
 
     year, season = edition["year"], edition["season"]
     exam_name = f"PUCRS {season} {year} – Medicina"
-
-    already = db.query(PucrsQuestion).filter(PucrsQuestion.exam_name == exam_name).count()
-    if already > 0:
-        return {"exam_name": exam_name, "total_parsed": 0, "total_added": 0, "skipped_existing": already}
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
@@ -361,6 +357,7 @@ def import_pucrs_edition(db, edition: dict) -> dict:
     # ordem de ocorrência do gabarito (`_range_lookup`) pra casar cada uma
     # com o idioma certo, em vez de tentar adivinhar por tentativa.
     added = 0
+    skipped_existing = 0
     seen: set[tuple[int, Optional[str]]] = set()
     for q in parsed:
         num = q["number"]
@@ -374,37 +371,41 @@ def import_pucrs_edition(db, edition: dict) -> dict:
             continue
         seen.add(key)
 
-        question = PucrsQuestion(
+        options = [
+            {"letter": letter, "text": text_, "is_correct": (letter == correct), "order": i}
+            for i, (letter, text_) in enumerate(q["options"])
+        ]
+        images = None
+        if q.get("images"):
+            images = [
+                {"image_base64": img, "order": i}
+                for i, img in enumerate(q["images"])
+            ]
+        metadata = {
+            "season": season,
+            "area": area,
+            "language": language,
+        }
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="pucrs",
             exam_name=exam_name,
             year=year,
-            season=season,
             number=num,
-            area=area,
-            language=language,
             statement=q["statement"],
-            image_base64=q["image_base64"],
+            options=options,
+            images=images,
+            image_base64=q.get("image_base64"),
+            correct_option=correct,
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        for order, (letter, text_) in enumerate(q["options"]):
-            db.add(PucrsQuestionOption(
-                question_id=question.id,
-                letter=letter,
-                text=text_,
-                is_correct=(letter == correct),
-                order=order,
-            ))
-        for order, data_url in enumerate(q.get("images", [])):
-            db.add(PucrsQuestionImage(
-                question_id=question.id,
-                image_base64=data_url,
-                order=order,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
     db.commit()
-    return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": 0}
+    return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
 def import_all_pucrs_exams(since_year: int = 2015, until_year: Optional[int] = None, db=None, task_id: Optional[str] = None, **kwargs) -> dict:

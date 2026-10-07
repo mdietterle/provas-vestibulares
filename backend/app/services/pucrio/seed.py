@@ -395,7 +395,7 @@ def import_pucrio_edition(
     until_year: Optional[int] = None,
 ) -> dict:
     from app.database import SessionLocal
-    from app.models import PucRioQuestion, PucRioQuestionImage, PucRioQuestionOption
+    from app.services.import_batch import save_vestibular_question
 
     links = _fetch_year_links(year_label)
     day1_href = _find_day1_gabarito(links)
@@ -437,33 +437,43 @@ def import_pucrio_edition(
     db = SessionLocal()
     try:
         exam_name = f"PUC-Rio {year}"
-        existing = db.query(PucRioQuestion.id).filter(PucRioQuestion.exam_name == exam_name).first()
-        if existing:
-            return {"year_label": year_label, "skipped": True, "reason": f"{exam_name} já importado"}
-
         added = 0
-        for lang_group_offset, q in enumerate(all_questions):
-            question = PucRioQuestion(
+        skipped_existing = 0
+        for q in all_questions:
+            options = []
+            for i, opt in enumerate(q["options"]):
+                options.append({
+                    "letter": opt["letter"],
+                    "text": opt["text"],
+                    "is_correct": (opt["letter"] == q["correct"]),
+                    "order": i,
+                })
+            images = None
+            if q.get("images"):
+                images = [
+                    {"image_base64": img, "order": i}
+                    for i, img in enumerate(q["images"])
+                ]
+            metadata = {
+                "area": q["area"],
+                "language": q["language"],
+            }
+            vq, created = save_vestibular_question(
+                db,
+                exam_type="pucrio",
                 exam_name=exam_name,
                 year=year,
-                area=q["area"],
-                language=q["language"],
                 number=q["number"],
                 statement=q["statement"],
-                image_base64=q["images"][0] if q["images"] else None,
+                options=options,
+                images=images,
+                image_base64=q["images"][0] if q.get("images") else None,
+                correct_option=q.get("correct"),
+                metadata=metadata,
             )
-            db.add(question)
-            db.flush()
-            for i, opt in enumerate(q["options"]):
-                db.add(PucRioQuestionOption(
-                    question_id=question.id,
-                    letter=opt["letter"],
-                    text=opt["text"],
-                    is_correct=(opt["letter"] == q["correct"]),
-                    order=i,
-                ))
-            for i, img in enumerate(q["images"]):
-                db.add(PucRioQuestionImage(question_id=question.id, image_base64=img, order=i))
+            if not created:
+                skipped_existing += 1
+                continue
             added += 1
         db.commit()
         return {
@@ -471,6 +481,7 @@ def import_pucrio_edition(
             "exam_name": exam_name,
             "files_used": files_used,
             "total_questions": added,
+            "skipped_existing": skipped_existing,
             "with_gabarito": sum(1 for q in all_questions if q["correct"]),
         }
     finally:

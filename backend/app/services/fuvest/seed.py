@@ -364,12 +364,9 @@ def run_migrations_fuvest(conn):
 
 
 def import_fuvest_year(db, year: int, edition: dict) -> dict:
-    from app.models import FuvestQuestion, FuvestQuestionImage, FuvestQuestionOption
+    from app.services.import_batch import save_vestibular_question
 
     exam_name = f"FUVEST {year}"
-    already = db.query(FuvestQuestion).filter(FuvestQuestion.exam_name == exam_name).count()
-    if already > 0:
-        return {"exam_name": exam_name, "total_parsed": 0, "total_added": 0, "skipped_existing": already}
 
     import tempfile
 
@@ -406,39 +403,51 @@ def import_fuvest_year(db, year: int, edition: dict) -> dict:
         }
 
     added = 0
+    skipped_existing = 0
     seen: set[int] = set()
     for q in parsed:
         if q["number"] in seen:
             continue
         seen.add(q["number"])
 
-        question = FuvestQuestion(
-            exam_name=exam_name,
-            year=year,
-            version=edition.get("version"),
-            number=q["number"],
-            area=q["area"],
-            statement=q["statement"],
-            image_base64=q["image_base64"],
-        )
-        db.add(question)
-        db.flush()
-
+        options = []
         correct = gabarito.get(q["number"])
         for order, (letter, text_) in enumerate(q["options"]):
-            db.add(FuvestQuestionOption(
-                question_id=question.id,
-                letter=letter,
-                text=text_,
-                is_correct=(letter == correct),
-                order=order,
-            ))
-        for order, data_url in enumerate(q.get("images", [])):
-            db.add(FuvestQuestionImage(
-                question_id=question.id,
-                image_base64=data_url,
-                order=order,
-            ))
+            options.append({
+                "letter": letter,
+                "text": text_,
+                "is_correct": (letter == correct),
+                "order": order,
+            })
+
+        images = None
+        if q.get("images"):
+            images = [
+                {"image_base64": data_url, "order": order}
+                for order, data_url in enumerate(q["images"])
+            ]
+
+        metadata = {
+            "area": q["area"],
+            "version": edition.get("version"),
+        }
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="fuvest",
+            exam_name=exam_name,
+            year=year,
+            number=q["number"],
+            statement=q["statement"],
+            options=options,
+            images=images,
+            image_base64=q.get("image_base64"),
+            correct_option=correct,
+            metadata=metadata,
+        )
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
     db.commit()
@@ -446,7 +455,7 @@ def import_fuvest_year(db, year: int, edition: dict) -> dict:
         "exam_name": exam_name,
         "total_parsed": len(parsed),
         "total_added": added,
-        "skipped_existing": 0,
+        "skipped_existing": skipped_existing,
         "gabarito_entries": len(gabarito),
     }
 

@@ -25,14 +25,7 @@ import fitz  # PyMuPDF
 from app.services.pdf_figures import extract_figure_events
 
 from app.database import SessionLocal
-from app.models import (
-    UfmsQuestion,
-    UfmsQuestionOption,
-    UfmsQuestionImage,
-    Exam,
-    Subject,
-    Institution
-)
+from app.services.import_batch import save_vestibular_question
 
 # Constantes UFMS
 _INDEX_URL = "https://www.vestibular.ufms.br/?page_id=7069"
@@ -456,51 +449,37 @@ def _parse_exam(
 def _persist_parsed_questions(
     db, exam_name: str, year: int, season: str, parsed: list[dict]
 ) -> tuple[int, int]:
-    from app.models import UfmsQuestion, UfmsQuestionOption, UfmsQuestionImage
-
     added = 0
     skipped_existing = 0
     for q in parsed:
-        existing = (
-            db.query(UfmsQuestion)
-            .filter_by(exam_name=exam_name, number=q["number"], area=q["area"])
-            .first()
+        images = None
+        extra = q.get("extra_images")
+        if extra:
+            images = [{"image_base64": img_b64, "order": idx} for idx, img_b64 in enumerate(extra)]
+
+        metadata = {
+            "university": "UFMS",
+            "season": season,
+            "question_type": q.get("question_type"),
+            "area": q.get("area"),
+        }
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="ufms",
+            exam_name=exam_name,
+            year=year,
+            number=q["number"],
+            statement=q["statement"],
+            options=q.get("options", []),
+            images=images,
+            image_base64=q.get("image_base64"),
+            correct_option=q.get("answer") if isinstance(q.get("answer"), str) else None,
+            metadata=metadata,
         )
-        if existing:
+        if not created:
             skipped_existing += 1
             continue
-
-        uq = UfmsQuestion(
-            exam_name=exam_name,
-            university="UFMS",
-            year=year,
-            season=season,
-            number=q["number"],
-            question_type=q["question_type"],
-            area=q["area"],
-            statement=q["statement"],
-            answer=q["answer"] if isinstance(q["answer"], int) else None,
-            image_base64=q["image_base64"],
-        )
-        db.add(uq)
-        db.flush()
-
-        for idx, opt in enumerate(q["options"]):
-            db.add(UfmsQuestionOption(
-                question_id=uq.id,
-                value=int(opt["letter"]) if opt["letter"].isdigit() else 0,
-                text=opt["text"],
-                is_correct=opt["is_correct"],
-                order=idx,
-            ))
-
-        for idx, img_b64 in enumerate(q.get("extra_images", [])):
-            db.add(UfmsQuestionImage(
-                question_id=uq.id,
-                image_base64=img_b64,
-                order=idx,
-            ))
-
         added += 1
 
         # Commita em lotes de 10 em vez de esperar a prova inteira: acumular

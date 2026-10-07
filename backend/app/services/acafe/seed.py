@@ -37,7 +37,7 @@ from sqlalchemy.orm import Session
 
 from app.database import SessionLocal, engine
 from app.services.progress import update_task_progress, complete_task, fail_task
-from app.models import AcafeQuestion, AcafeQuestionImage, AcafeQuestionOption
+from app.services.import_batch import save_vestibular_question
 
 ACAFE_DIR = Path(__file__).parent.parent.parent.parent / "provas" / "acafe"
 
@@ -650,11 +650,8 @@ def _persist_parsed_acafe_questions(
     """Grava questões ACAFE já parseadas (e, opcionalmente, com o gabarito
     sobrescrito por `_apply_gabarito_override`). Compartilhado pelo seed
     local, pelo importador por URL e pelo importador em lote (site oficial)."""
-    already = db.query(AcafeQuestion).filter(AcafeQuestion.exam_name == exam_name).count()
-    if already > 0:
-        return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": 0, "skipped_existing": already}
-
     added = 0
+    skipped_existing = 0
     seen: set[tuple[int, str | None]] = set()
     for q in parsed:
         if not q["statement"]:
@@ -664,40 +661,50 @@ def _persist_parsed_acafe_questions(
             continue
         seen.add(key)
 
-        question = AcafeQuestion(
+        options = []
+        for order, letter in enumerate("ABCD"):
+            options.append({
+                "letter": letter,
+                "text": q["options"][letter],
+                "is_correct": (letter == q["correct"]),
+                "order": order,
+            })
+
+        images = None
+        if q.get("images"):
+            images = [
+                {"image_base64": data_url, "order": order}
+                for order, data_url in enumerate(q["images"])
+            ]
+
+        metadata = {
+            "area": q["area"],
+            "language": q["language"],
+            "period": period,
+            "justification": q.get("justification"),
+            "reference_matrix": q.get("reference_matrix"),
+        }
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="acafe",
             exam_name=exam_name,
             year=year,
-            period=period,
             number=q["number"],
-            area=q["area"],
-            language=q["language"],
             statement=q["statement"],
-            image_base64=q["image_base64"],
-            justification=q["justification"],
-            reference_matrix=q["reference_matrix"],
+            options=options,
+            images=images,
+            image_base64=q.get("image_base64"),
+            correct_option=q.get("correct"),
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        for order, letter in enumerate("ABCD"):
-            db.add(AcafeQuestionOption(
-                question_id=question.id,
-                letter=letter,
-                text=q["options"][letter],
-                is_correct=(letter == q["correct"]),
-                order=order,
-            ))
-
-        for order, data_url in enumerate(q.get("images", [])):
-            db.add(AcafeQuestionImage(
-                question_id=question.id,
-                image_base64=data_url,
-                order=order,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
     db.commit()
-    return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": 0}
+    return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
 def _import_pdf_file(db: Session, pdf_path: Path, year: int, period: Optional[str]) -> dict:
@@ -790,7 +797,11 @@ def import_acafe_edition(db: Session, year: int, period: str, edition: dict) -> 
     if label:
         exam_name += f" ({label})"
 
-    already = db.query(AcafeQuestion).filter(AcafeQuestion.exam_name == exam_name).count()
+    from app.models import VestibularQuestion
+    already = db.query(VestibularQuestion).filter(
+        VestibularQuestion.exam_type == "acafe",
+        VestibularQuestion.exam_name == exam_name,
+    ).count()
     if already > 0:
         return {"exam_name": exam_name, "total_parsed": 0, "total_added": 0, "skipped_existing": already}
 

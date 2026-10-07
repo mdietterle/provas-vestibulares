@@ -12,6 +12,7 @@ from app.models import (
     QuestionType,
     Subject,
     UdescQuestion,
+    VestibularQuestion,
     User,
 )
 from app.schemas import QuestionOut, UdescImportRequest, UdescQuestionOut
@@ -126,7 +127,7 @@ def import_udesc_question(
     current_user: User = Depends(require_professor),
 ):
     """Copia uma questão UDESC para o banco de questões da escola do professor."""
-    udesc_q = db.get(UdescQuestion, payload.udesc_question_id)
+    udesc_q = db.get(VestibularQuestion, payload.vestibular_question_id)
     if not udesc_q:
         raise HTTPException(404, "Questão UDESC não encontrada")
 

@@ -79,7 +79,7 @@ import fitz  # PyMuPDF
 import requests
 from sqlalchemy.orm import Session
 
-from app.models import UelQuestion, UelQuestionOption
+from app.services.import_batch import save_vestibular_question
 from app.services.progress import complete_task, fail_task, update_task_progress
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -272,30 +272,49 @@ def parse_exam_pdf(pdf_path: Path) -> list[dict]:
 # ── Persistência ─────────────────────────────────────────────────────────────
 
 def _persist_year(db: Session, year: int, questions: list[dict]) -> dict:
-    """Grava as questões de um ano. Idempotente por ano: se já existirem
-    questões daquele ano, não duplica."""
-    already = db.query(UelQuestion).filter(UelQuestion.year == year).count()
-    if already > 0:
-        return {"year": year, "total_parsed": len(questions), "total_added": 0, "skipped_existing": already}
+    """Grava as questões de um ano via adapter unificado. Idempotente por
+    (exam_type, exam_name, number) — delegada ao save_vestibular_question."""
+    import gc
 
+    exam_name = f"UEL {year}"
     added = 0
+    skipped_existing = 0
     for q in questions:
-        question = UelQuestion(year=year, number=q["number"], statement=q["statement"])
-        db.add(question)
-        db.flush()
-
         correct = q.get("correct")
+        options = []
         for order, (letter, opt_text) in enumerate(q["alternatives"]):
-            db.add(UelQuestionOption(
-                question_id=question.id,
-                text=opt_text,
-                is_correct=(letter == correct),
-                order=order,
-            ))
+            options.append({
+                "letter": letter,
+                "text": opt_text,
+                "is_correct": (letter == correct),
+                "order": order,
+            })
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="uel",
+            exam_name=exam_name,
+            year=year,
+            number=q["number"],
+            statement=q["statement"],
+            options=options,
+            correct_option=correct,
+            metadata={},
+        )
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
+        if added % 10 == 0:
+            db.commit()
+            db.expunge_all()
+            gc.collect()
+
     db.commit()
-    return {"year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": 0}
+    db.expunge_all()
+    gc.collect()
+    return {"year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": skipped_existing}
 
 
 def import_uel_year(year: int, db: Optional[Session] = None) -> dict:

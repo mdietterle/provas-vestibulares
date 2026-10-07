@@ -399,53 +399,55 @@ def _persist_parsed_questions(
 ) -> tuple[int, int]:
     """Grava as questões parseadas no banco, pulando as que já existem
     (mesma exam_name + number + language). Retorna (added, skipped_existing)."""
-    from app.models import UfscQuestion, UfscQuestionImage, UfscQuestionOption
+    from app.services.import_batch import save_vestibular_question
 
     added = 0
     skipped_existing = 0
     for q in parsed:
-        existing = (
-            db.query(UfscQuestion)
-            .filter_by(exam_name=exam_name, number=q["number"], language=q["language"])
-            .first()
+        options = [
+            {
+                "letter": str(opt.get("value", "")),
+                "text": opt["text"],
+                "is_correct": opt["is_correct"],
+                "order": i,
+            }
+            for i, opt in enumerate(q["options"])
+        ]
+
+        images = None
+        extra = q.get("extra_images")
+        if extra:
+            images = [
+                {"image_base64": img_b64, "order": i}
+                for i, img_b64 in enumerate(extra)
+            ]
+
+        metadata = {
+            "university": "UFSC",
+            "phase": phase,
+            "color": color or None,
+            "question_type": q["question_type"],
+            "area": q["area"],
+            "language": q["language"],
+        }
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="ufsc",
+            exam_name=exam_name,
+            year=year,
+            number=q["number"],
+            statement=q["statement"],
+            options=options,
+            images=images,
+            image_base64=q.get("image_base64"),
+            correct_option=None,
+            answer=q.get("answer"),
+            metadata=metadata,
         )
-        if existing:
+        if not created:
             skipped_existing += 1
             continue
-
-        uq = UfscQuestion(
-            exam_name=exam_name,
-            university="UFSC",
-            year=year,
-            phase=phase,
-            color=color or None,
-            number=q["number"],
-            question_type=q["question_type"],
-            area=q["area"],
-            language=q["language"],
-            statement=q["statement"],
-            answer=q["answer"],
-            image_base64=q["image_base64"],
-        )
-        db.add(uq)
-        db.flush()
-
-        for i, opt in enumerate(q["options"]):
-            db.add(UfscQuestionOption(
-                question_id=uq.id,
-                value=opt["value"],
-                text=opt["text"],
-                is_correct=opt["is_correct"],
-                order=i,
-            ))
-
-        for i, img_b64 in enumerate(q.get("extra_images", [])):
-            db.add(UfscQuestionImage(
-                question_id=uq.id,
-                image_base64=img_b64,
-                order=i,
-            ))
-
         added += 1
 
     db.commit()

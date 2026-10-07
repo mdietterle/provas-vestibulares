@@ -473,7 +473,7 @@ def import_ufrgs_exam(
     parsear a prova, pra restringir a leitura às matérias que ela realmente
     contém (evita colisão de numeração entre variantes de idioma)."""
     from app.database import SessionLocal
-    from app.models import UfrgsQuestion, UfrgsQuestionOption
+    from app.services.import_batch import save_vestibular_question
 
     close_after = db is None
     if db is None:
@@ -509,38 +509,51 @@ def import_ufrgs_exam(
         added = 0
         skipped_existing = 0
         for q in parsed:
-            existing = (
-                db.query(UfrgsQuestion)
-                .filter_by(exam_name=exam_name, number=q["number"])
-                .first()
-            )
-            if existing:
-                skipped_existing += 1
-                continue
+            correct_letter = gabarito.get(q["number"])
+            options = [
+                {
+                    "letter": opt["letter"],
+                    "text": opt["text"],
+                    "is_correct": (correct_letter == opt["letter"]) if correct_letter else False,
+                    "order": i,
+                }
+                for i, opt in enumerate(q["options"])
+            ]
 
-            uq = UfrgsQuestion(
+            metadata = {
+                "area": q["area"],
+                "day": day,
+                "language": language,
+                "university": "UFRGS",
+            }
+
+            vq, created = save_vestibular_question(
+                db,
+                exam_type="ufrgs",
                 exam_name=exam_name,
                 year=year,
-                day=day,
                 number=q["number"],
-                area=q["area"],
                 statement=q["statement"],
+                options=options,
+                images=None,
+                image_base64=None,
+                correct_option=correct_letter,
+                metadata=metadata,
             )
-            db.add(uq)
-            db.flush()
-
-            correct_letter = gabarito.get(q["number"])
-            for i, opt in enumerate(q["options"]):
-                db.add(UfrgsQuestionOption(
-                    question_id=uq.id,
-                    letter=opt["letter"],
-                    text=opt["text"],
-                    is_correct=(correct_letter == opt["letter"]) if correct_letter else False,
-                    order=i,
-                ))
+            if not created:
+                skipped_existing += 1
+                continue
             added += 1
 
+            # Commit em lotes de 10 para evitar OOM em sessões longas
+            if added % 10 == 0:
+                db.commit()
+                db.expunge_all()
+                gc.collect()
+
         db.commit()
+        db.expunge_all()
+        gc.collect()
         return {
             "exam_name": exam_name,
             "total_parsed": len(parsed),

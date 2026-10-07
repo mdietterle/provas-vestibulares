@@ -664,7 +664,7 @@ def import_enem_pdf(
     """Importa um caderno de prova ENEM via PDF local ou URL pública do MEC,
     opcionalmente com gabarito em PDF, classificando matéria e dificuldade via Groq."""
     from app.database import SessionLocal
-    from app.models import EnemQuestion, EnemQuestionOption
+    from app.services.import_batch import save_vestibular_question
 
     close_after = db is None
     if db is None:
@@ -728,15 +728,6 @@ def import_enem_pdf(
         added = 0
         skipped_existing = 0
         for q in valid:
-            existing = (
-                db.query(EnemQuestion)
-                .filter_by(exam_name=exam_name, number=q["number"], language=q["language"])
-                .first()
-            )
-            if existing:
-                skipped_existing += 1
-                continue
-
             gab_letter = gabarito.get((q["number"], q["language"])) or gabarito.get((q["number"], None))
             if q["language"]:
                 subject, difficulty = "Língua Estrangeira", None
@@ -744,37 +735,44 @@ def import_enem_pdf(
                 cls = classifications.get(q["number"], {})
                 subject, difficulty = cls.get("subject"), cls.get("difficulty")
 
-            eq = EnemQuestion(
+            options = []
+            for i, opt_text in enumerate(q["options"]):
+                letter = "ABCDE"[i]
+                options.append({
+                    "letter": letter,
+                    "text": opt_text,
+                    "is_correct": (gab_letter == letter),
+                    "order": i,
+                })
+
+            metadata = {
+                "area": q["area"],
+                "language": q["language"],
+                "color": color,
+                "module": module_label,
+                "subject": subject,
+                "difficulty": difficulty,
+            }
+
+            vq, created = save_vestibular_question(
+                db,
+                exam_type="enem",
                 exam_name=exam_name,
                 year=year,
                 number=q["number"],
-                area=q["area"],
-                language=q["language"],
-                color=color,
-                module=module_label,
-                subject=subject,
-                difficulty=difficulty,
                 statement=q["statement"],
-                image_base64=q["image_base64"],
+                options=options,
+                image_base64=q.get("image_base64"),
+                correct_option=gab_letter,
+                metadata=metadata,
             )
-            db.add(eq)
-            db.flush()
-            for i, opt_text in enumerate(q["options"]):
-                letter = "ABCDE"[i]
-                db.add(EnemQuestionOption(
-                    question_id=eq.id,
-                    letter=letter,
-                    text=opt_text,
-                    is_correct=(gab_letter == letter),
-                    order=i,
-                ))
+            if not created:
+                skipped_existing += 1
+                continue
             added += 1
 
-            # Commita em lotes de 10 em vez de esperar a prova inteira: sem isso, os
-            # ~180 objetos EnemQuestion/EnemQuestionOption (cada um com a imagem em
-            # base64) ficam todos vivos na identity map da sessão até o fim, o que
-            # foi identificado como a causa do pico de memória que batia no teto de
-            # 512MB do Render free e derrubava o processo (OOM) no meio da importação.
+            # Commit em lotes de 10 para evitar OOM (identity map acumula
+            # objetos com base64 pesado). Adapter já faz flush interno.
             if added % 10 == 0:
                 db.commit()
                 db.expunge_all()

@@ -433,45 +433,44 @@ def _import_parsed_exam(db, exam_name: str, year: int, season, course, color, pa
     detectado por grifo na própria prova tem prioridade; `gabarito_text`
     (colado manualmente) só é usado como reforço para questões sem grifo
     identificado."""
-    from app.models import PucprQuestion, PucprQuestionOption
+    from app.services.import_batch import save_vestibular_question
 
     gabarito = parse_gabarito_text(gabarito_text) if gabarito_text else {}
 
-    already = db.query(PucprQuestion).filter(PucprQuestion.exam_name == exam_name).count()
-    if already > 0:
-        return {
-            "exam_name": exam_name,
-            "total_parsed": len(parsed),
-            "total_added": 0,
-            "skipped_existing": already,
-            "skipped_unparsed": sorted(set(skipped_numbers)),
-        }
-
     added = 0
+    skipped_existing = 0
     for q in parsed:
-        pq = PucprQuestion(
+        correct_letter = q.get("correct") or gabarito.get(q["number"])
+        options = [
+            {
+                "letter": opt["letter"],
+                "text": opt["text"],
+                "is_correct": (correct_letter == opt["letter"]) if correct_letter else False,
+                "order": i,
+            }
+            for i, opt in enumerate(q["options"])
+        ]
+        metadata = {
+            "season": season,
+            "course": course,
+            "color": color,
+            "area": q["area"],
+            "language": q["language"],
+        }
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="pucpr",
             exam_name=exam_name,
             year=year,
-            season=season,
-            course=course,
-            color=color,
             number=q["number"],
-            area=q["area"],
-            language=q["language"],
             statement=q["statement"],
+            options=options,
+            correct_option=correct_letter,
+            metadata=metadata,
         )
-        db.add(pq)
-        db.flush()
-
-        correct_letter = q.get("correct") or gabarito.get(q["number"])
-        for i, opt in enumerate(q["options"]):
-            db.add(PucprQuestionOption(
-                question_id=pq.id,
-                letter=opt["letter"],
-                text=opt["text"],
-                is_correct=(correct_letter == opt["letter"]) if correct_letter else False,
-                order=i,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
         # Commita em lotes de 10 em vez de esperar a prova inteira: acumular
@@ -491,7 +490,7 @@ def _import_parsed_exam(db, exam_name: str, year: int, season, course, color, pa
         "exam_name": exam_name,
         "total_parsed": len(parsed),
         "total_added": added,
-        "skipped_existing": 0,
+        "skipped_existing": skipped_existing,
         "skipped_unparsed": sorted(set(skipped_numbers)),
     }
 

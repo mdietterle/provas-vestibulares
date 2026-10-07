@@ -368,6 +368,48 @@ def run_migrations() -> None:
     migrations.append("CREATE INDEX IF NOT EXISTS ix_question_reports_exam_type ON question_reports (exam_type)")
     migrations.append("CREATE INDEX IF NOT EXISTS ix_question_reports_question_id ON question_reports (question_id)")
 
+    # ── Unified vestibular_questions (Item 1 Phase 0) ────────────────────────
+    migrations.append("""CREATE TABLE IF NOT EXISTS vestibular_questions (
+        id SERIAL PRIMARY KEY,
+        exam_type VARCHAR(30) NOT NULL,
+        exam_name VARCHAR(200),
+        year INTEGER NOT NULL,
+        number INTEGER NOT NULL,
+        statement TEXT NOT NULL,
+        html_statement TEXT,
+        image_base64 TEXT,
+        answer TEXT,
+        is_annulled BOOLEAN DEFAULT FALSE,
+        correct_option VARCHAR(10),
+        metadata JSONB NOT NULL DEFAULT '{}',
+        created_at TIMESTAMPTZ DEFAULT NOW()
+    )""")
+    migrations.append("CREATE INDEX IF NOT EXISTS idx_vq_exam_type_year ON vestibular_questions (exam_type, year)")
+    migrations.append("CREATE INDEX IF NOT EXISTS idx_vq_metadata_gin ON vestibular_questions USING GIN (metadata)")
+
+    migrations.append("""CREATE TABLE IF NOT EXISTS vestibular_question_options (
+        id SERIAL PRIMARY KEY,
+        question_id INTEGER NOT NULL REFERENCES vestibular_questions(id) ON DELETE CASCADE,
+        letter VARCHAR(1),
+        value INTEGER,
+        text TEXT NOT NULL,
+        is_correct BOOLEAN DEFAULT FALSE,
+        "order" INTEGER DEFAULT 0
+    )""")
+    migrations.append("CREATE INDEX IF NOT EXISTS idx_vqo_question ON vestibular_question_options (question_id, \"order\")")
+
+    migrations.append("""CREATE TABLE IF NOT EXISTS vestibular_question_images (
+        id SERIAL PRIMARY KEY,
+        question_id INTEGER NOT NULL REFERENCES vestibular_questions(id) ON DELETE CASCADE,
+        image_base64 TEXT NOT NULL,
+        "order" INTEGER DEFAULT 0
+    )""")
+    migrations.append("CREATE INDEX IF NOT EXISTS idx_vqi_question ON vestibular_question_images (question_id, \"order\")")
+
+    # SimuladoQuestion polymorphic FK columns (Phase 1 backfill target)
+    migrations.append("ALTER TABLE IF EXISTS simulado_questions ADD COLUMN IF NOT EXISTS vestibular_question_id INTEGER REFERENCES vestibular_questions(id)")
+    migrations.append("ALTER TABLE IF EXISTS simulado_questions ADD COLUMN IF NOT EXISTS vq_exam_type VARCHAR(30)")
+
     for sql in migrations:
         try:
             with engine.begin() as conn:

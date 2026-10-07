@@ -93,7 +93,7 @@ import fitz  # PyMuPDF
 import requests
 from sqlalchemy.orm import Session
 
-from app.models import UlbraQuestion, UlbraQuestionOption
+from app.services.import_batch import save_vestibular_question
 from app.services.progress import complete_task, fail_task, update_task_progress
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -240,30 +240,47 @@ def parse_exam(text: str, gabarito: dict[int, Optional[str]]) -> list[dict]:
 # ── Persistência ─────────────────────────────────────────────────────────
 
 def _persist_edition(db: Session, edition: str, year: int, questions: list[dict], gabarito: dict[int, Optional[str]]) -> dict:
-    """Grava as questões de uma edição (ex.: "2019-2"). Idempotente por
-    edição: se já existirem questões daquela edição, não duplica."""
-    already = db.query(UlbraQuestion).filter(UlbraQuestion.edition == edition).count()
-    if already > 0:
-        return {"edition": edition, "year": year, "total_parsed": len(questions), "total_added": 0, "skipped_existing": already}
-
+    """Grava as questões de uma edição (ex.: "2019-2") via adapter unificado.
+    Idempotente por (exam_type, exam_name, number)."""
+    import gc
+    exam_name = f"ULBRA {edition}"
     added = 0
+    skipped_existing = 0
     for q in questions:
         correct = gabarito.get(q["number"])
-        question = UlbraQuestion(year=year, edition=edition, number=q["number"], statement=q["statement"])
-        db.add(question)
-        db.flush()
-
+        options = []
         for order, (letter, opt_text) in enumerate(q["alternatives"]):
-            db.add(UlbraQuestionOption(
-                question_id=question.id,
-                text=opt_text,
-                is_correct=(letter == correct),
-                order=order,
-            ))
+            options.append({
+                "letter": letter,
+                "text": opt_text,
+                "is_correct": (letter == correct),
+                "order": order,
+            })
+        metadata = {"edition": edition}
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="ulbra",
+            exam_name=exam_name,
+            year=year,
+            number=q["number"],
+            statement=q["statement"],
+            options=options,
+            correct_option=correct,
+            metadata=metadata,
+        )
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
+        if added % 10 == 0:
+            db.commit()
+            db.expunge_all()
+            gc.collect()
 
     db.commit()
-    return {"edition": edition, "year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": 0}
+    db.expunge_all()
+    gc.collect()
+    return {"edition": edition, "year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": skipped_existing}
 
 
 def import_ulbra_edition(edition: str, year: int, prova_url: str, gabarito_url: str, db: Optional[Session] = None) -> dict:

@@ -15,9 +15,114 @@ como causa de OOM no plano free do Render.
 from __future__ import annotations
 
 import gc
-from typing import Callable, Optional
+from typing import Any, Callable, Dict, List, Optional
 
+from sqlalchemy.orm import Session
+
+from app.models import VestibularQuestion, VestibularQuestionOption, VestibularQuestionImage
 from app.services.progress import update_task_progress, complete_task, fail_task
+from app.services.r2_storage import upload_image
+
+
+def save_vestibular_question(
+    db: Session,
+    *,
+    exam_type: str,
+    exam_name: Optional[str],
+    year: int,
+    number: int,
+    statement: str,
+    options: List[Dict[str, Any]],
+    images: Optional[List[Dict[str, Any]]] = None,
+    html_statement: Optional[str] = None,
+    image_base64: Optional[str] = None,
+    answer: Optional[str] = None,
+    is_annulled: bool = False,
+    correct_option: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> tuple[Optional[VestibularQuestion], bool]:
+    """Unified output adapter for all vestibular importers.
+
+    Writes to `vestibular_questions` + options/images tables. Returns
+    (question, created). If question already exists (same exam_type +
+    exam_name + number), returns (existing, False) without modifying data.
+
+    Images are uploaded to R2 automatically; only URLs are stored in DB.
+    Pass `image_base64` for the main question image or `images` list for
+    additional figures — both accept raw bytes or base64 strings.
+
+    Importers should call this instead of creating legacy per-exam models.
+    Exam-specific fields (color, phase, day, module, area, subject, etc.)
+    go in `metadata` JSONB dict.
+    """
+    existing = (
+        db.query(VestibularQuestion)
+        .filter_by(exam_type=exam_type, exam_name=exam_name, number=number)
+        .first()
+    )
+    if existing:
+        return existing, False
+
+    # Upload main question image to R2 if provided
+    image_url = None
+    if image_base64:
+        try:
+            image_url = upload_image(
+                image_base64,
+                exam_type=exam_type,
+                year=year,
+                number=number,
+            )
+        except Exception:
+            image_url = None  # Graceful degradation: question saved without image
+
+    vq = VestibularQuestion(
+        exam_type=exam_type,
+        exam_name=exam_name,
+        year=year,
+        number=number,
+        statement=statement,
+        html_statement=html_statement,
+        image_url=image_url,
+        answer=answer,
+        is_annulled=is_annulled,
+        correct_option=correct_option,
+        metadata=metadata or {},
+    )
+    db.add(vq)
+    db.flush()
+
+    for opt in options:
+        db.add(VestibularQuestionOption(question_id=vq.id, **opt))
+
+    # Upload additional images to R2 and store URLs
+    for idx, img in enumerate(images or []):
+        img_data = img.get("image_base64") or img.get("data")
+        if img_data:
+            try:
+                url = upload_image(
+                    img_data,
+                    exam_type=exam_type,
+                    year=year,
+                    number=number,
+                    suffix=f"_fig{idx}",
+                )
+                db.add(VestibularQuestionImage(
+                    question_id=vq.id,
+                    image_url=url,
+                    order=img.get("order", idx),
+                ))
+            except Exception:
+                pass  # Skip failed image uploads, don't block question creation
+        elif img.get("image_url"):
+            # Already a URL (e.g., from re-import or external source)
+            db.add(VestibularQuestionImage(
+                question_id=vq.id,
+                image_url=img["image_url"],
+                order=img.get("order", idx),
+            ))
+
+    return vq, True
 
 
 def run_batch_import(

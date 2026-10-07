@@ -465,51 +465,48 @@ def _parse_exam(
 def _persist_parsed_questions(
     db, exam_name: str, year: int, phase: str, parsed: list[dict]
 ) -> tuple[int, int]:
-    from app.models import EspmQuestion, EspmQuestionOption, EspmQuestionImage
+    from app.services.import_batch import save_vestibular_question
 
     added = 0
     skipped_existing = 0
     for q in parsed:
-        existing = (
-            db.query(EspmQuestion)
-            .filter_by(exam_name=exam_name, number=q["number"], area=q["area"])
-            .first()
+        options = [
+            {
+                "letter": opt["letter"],
+                "text": opt["text"],
+                "is_correct": opt["is_correct"],
+                "order": idx,
+            }
+            for idx, opt in enumerate(q["options"])
+        ]
+        images = None
+        extra = q.get("extra_images")
+        if extra:
+            images = [
+                f"data:image/png;base64,{img}" if not img.startswith("data:") else img
+                for img in extra
+            ]
+        metadata = {
+            "phase": phase,
+            "question_type": q["question_type"],
+            "area": q["area"],
+        }
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="espm",
+            exam_name=exam_name,
+            year=year,
+            number=q["number"],
+            statement=q["statement"],
+            options=options,
+            images=images,
+            correct_option=q.get("answer"),
+            image_base64=q.get("image_base64"),
+            metadata=metadata,
         )
-        if existing:
+        if not created:
             skipped_existing += 1
             continue
-
-        uq = EspmQuestion(
-            exam_name=exam_name,
-            university="ESPM",
-            year=year,
-            phase=phase,
-            number=q["number"],
-            question_type=q["question_type"],
-            area=q["area"],
-            statement=q["statement"],
-            answer=q["answer"],
-            image_base64=q["image_base64"],
-        )
-        db.add(uq)
-        db.flush()
-
-        for idx, opt in enumerate(q["options"]):
-            db.add(EspmQuestionOption(
-                question_id=uq.id,
-                letter=opt["letter"],
-                text=opt["text"],
-                is_correct=opt["is_correct"],
-                order=idx,
-            ))
-
-        for idx, img_b64 in enumerate(q.get("extra_images", [])):
-            db.add(EspmQuestionImage(
-                question_id=uq.id,
-                image_base64=img_b64,
-                order=idx,
-            ))
-
         added += 1
 
         # Commita em lotes de 10 em vez de esperar a prova inteira: acumular

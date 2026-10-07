@@ -27,8 +27,9 @@ if settings.SENTRY_DSN:
     sentry_sdk.init(
         dsn=settings.SENTRY_DSN,
         integrations=[StarletteIntegration(), FastApiIntegration()],
-        traces_sample_rate=0.1,
-        send_default_pii=False,
+        traces_sample_rate=1.0,
+        send_default_pii=True,
+        enable_logs=True,
     )
 
 # A signal that we're running as a real deployment rather than a local checkout.

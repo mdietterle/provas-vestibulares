@@ -82,7 +82,7 @@ import fitz  # PyMuPDF
 import requests
 from sqlalchemy.orm import Session
 
-from app.models import UfsmQuestion, UfsmQuestionOption
+from app.services.import_batch import save_vestibular_question
 from app.services.progress import complete_task, fail_task, update_task_progress
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -226,36 +226,52 @@ def parse_exam(text: str, gabarito: dict[int, Optional[str]]) -> list[dict]:
 # ── Persistência ─────────────────────────────────────────────────────────
 
 def _persist_year(db: Session, year: int, cadernos: list[dict]) -> dict:
-    """Grava as questões de um ano, renumerando de forma contínua (1..N)
-    entre os cadernos (PS1/PS2/PS3) do mesmo ano, já que a numeração
-    original recomeça em 1 em cada um e colidiria. Idempotente por ano: se
-    já existirem questões daquele ano, não duplica."""
-    already = db.query(UfsmQuestion).filter(UfsmQuestion.year == year).count()
+    """Grava as questões de um ano via adapter unificado, renumerando de
+    forma contínua (1..N) entre os cadernos (PS1/PS2/PS3) do mesmo ano,
+    já que a numeração original recomeça em 1 em cada um e colidiria."""
+    import gc
+    exam_name = f"UFSM {year}"
     total_parsed = sum(len(c["questions"]) for c in cadernos)
-    if already > 0:
-        return {"year": year, "total_parsed": total_parsed, "total_added": 0, "skipped_existing": already}
-
     added = 0
+    skipped_existing = 0
     running_number = 0
     for caderno in cadernos:
         for q in caderno["questions"]:
             running_number += 1
             correct = caderno["gabarito"].get(q["number"])
-            question = UfsmQuestion(year=year, number=running_number, statement=q["statement"])
-            db.add(question)
-            db.flush()
-
+            options = []
             for order, (letter, opt_text) in enumerate(q["alternatives"]):
-                db.add(UfsmQuestionOption(
-                    question_id=question.id,
-                    text=opt_text,
-                    is_correct=(letter == correct),
-                    order=order,
-                ))
+                options.append({
+                    "letter": letter,
+                    "text": opt_text,
+                    "is_correct": (letter == correct),
+                    "order": order,
+                })
+            metadata = {"caderno": caderno["nome"], "original_number": q["number"]}
+            vq, created = save_vestibular_question(
+                db,
+                exam_type="ufsm",
+                exam_name=exam_name,
+                year=year,
+                number=running_number,
+                statement=q["statement"],
+                options=options,
+                correct_option=correct,
+                metadata=metadata,
+            )
+            if not created:
+                skipped_existing += 1
+                continue
             added += 1
+            if added % 10 == 0:
+                db.commit()
+                db.expunge_all()
+                gc.collect()
 
     db.commit()
-    return {"year": year, "total_parsed": total_parsed, "total_added": added, "skipped_existing": 0}
+    db.expunge_all()
+    gc.collect()
+    return {"year": year, "total_parsed": total_parsed, "total_added": added, "skipped_existing": skipped_existing}
 
 
 def import_ufsm_year(year: int, db: Optional[Session] = None) -> dict:

@@ -54,7 +54,6 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
-from app.models import ConcursoFepeseQuestion, ConcursoFepeseQuestionOption
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
 
@@ -169,11 +168,13 @@ def import_fepese_cargo(
     visível na página `?go=provas&edital=N` de cada concurso."""
     import tempfile
 
+    from app.models import VestibularQuestion
     already = (
-        db.query(ConcursoFepeseQuestion)
+        db.query(VestibularQuestion)
         .filter(
-            ConcursoFepeseQuestion.concurso_slug == concurso_slug,
-            ConcursoFepeseQuestion.cargo_code == cargo_code,
+            VestibularQuestion.exam_type == "concurso_fepese",
+            VestibularQuestion.metadata["concurso_slug"].astext == concurso_slug,
+            VestibularQuestion.metadata["cargo_code"].astext == cargo_code,
         )
         .count()
     )
@@ -196,33 +197,44 @@ def import_fepese_cargo(
             "reason": "Nenhuma questão reconhecida (PDF em formato inesperado)",
         }
 
+    from app.services.import_batch import save_vestibular_question
+
     added = 0
+    skipped_existing = 0
     for q in parsed:
         if q["correct"] is None:
             continue  # sem alternativa marcada — não dá pra confiar no gabarito
-        question = ConcursoFepeseQuestion(
-            concurso_slug=concurso_slug,
-            orgao=orgao,
-            edital=edital,
-            exam_type=exam_type,
-            cargo=cargo,
-            cargo_code=cargo_code,
+        options = [
+            {
+                "letter": letter,
+                "text": text,
+                "is_correct": (letter == q["correct"]),
+                "order": order,
+            }
+            for order, (letter, text) in enumerate(q["options"])
+        ]
+        metadata = {
+            "concurso_slug": concurso_slug,
+            "orgao": orgao,
+            "edital": edital,
+            "cargo": cargo,
+            "cargo_code": cargo_code,
+            "subject": q["subject"],
+        }
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="concurso_fepese",
+            exam_name=f"{orgao} {edital}",
             year=year,
             number=q["number"],
-            subject=q["subject"],
             statement=q["statement"],
+            options=options,
+            correct_option=q["correct"],
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        for order, (letter, text) in enumerate(q["options"]):
-            db.add(ConcursoFepeseQuestionOption(
-                question_id=question.id,
-                letter=letter,
-                text=text,
-                is_correct=(letter == q["correct"]),
-                order=order,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
         # Commita em lotes — mesma razão de UFPR/ENEM/ITA: acumular a prova
@@ -236,7 +248,7 @@ def import_fepese_cargo(
     db.commit()
     db.expunge_all()
     gc.collect()
-    return {"concurso_slug": concurso_slug, "cargo_code": cargo_code, "total_parsed": len(parsed), "total_added": added, "skipped_existing": 0}
+    return {"concurso_slug": concurso_slug, "cargo_code": cargo_code, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
 def import_fepese_concurso(

@@ -616,43 +616,9 @@ class SimuladoQuestion(Base):
     simulado_id: Mapped[int] = mapped_column(ForeignKey("simulados.id"), nullable=False, index=True)
     order: Mapped[int] = mapped_column(Integer, nullable=False)
     area: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    ufpel_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufpel_questions.id"), nullable=True)
-    pucrio_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("pucrio_questions.id"), nullable=True)
-    ita_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ita_questions.id"), nullable=True)
-    unesp_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("unesp_questions.id"), nullable=True)
-    cebraspe_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("cebraspe_questions.id"), nullable=True)
-    unifesp_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("unifesp_questions.id"), nullable=True)
-    enem_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("enem_questions.id"), nullable=True)
-    acafe_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("acafe_questions.id"), nullable=True)
-    ufpr_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufpr_questions.id"), nullable=True)
-    ufsc_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufsc_questions.id"), nullable=True)
-    ufrgs_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufrgs_questions.id"), nullable=True)
-    pucpr_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("pucpr_questions.id"), nullable=True)
-    fuvest_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("fuvest_questions.id"), nullable=True)
-    udesc_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("udesc_questions.id"), nullable=True)
-    ufgd_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufgd_questions.id"), nullable=True)
-    uem_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("uem_questions.id"), nullable=True)
-    ufms_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufms_questions.id"), nullable=True)
-    ufg_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufg_questions.id"), nullable=True)
-    ufjf_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufjf_questions.id"), nullable=True)
-    ufu_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufu_questions.id"), nullable=True)
-    ufpa_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufpa_questions.id"), nullable=True)
-    utfpr_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("utfpr_questions.id"), nullable=True)
-    unioeste_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("unioeste_questions.id"), nullable=True)
-    uel_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("uel_questions.id"), nullable=True)
-    espm_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("espm_questions.id"), nullable=True)
-    fgv_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("fgv_questions.id"), nullable=True)
-    uerj_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("uerj_questions.id"), nullable=True)
-    unicamp_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("unicamp_questions.id"), nullable=True)
-    pucrs_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("pucrs_questions.id"), nullable=True)
-    pucminas_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("pucminas_questions.id"), nullable=True)
-    ufrn_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufrn_questions.id"), nullable=True)
-    ufsm_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufsm_questions.id"), nullable=True)
-    ufam_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("ufam_questions.id"), nullable=True)
-    puccampinas_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("puccampinas_questions.id"), nullable=True)
-    unimontes_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("unimontes_questions.id"), nullable=True)
-    unicentro_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("unicentro_questions.id"), nullable=True)
-    unaerp_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("unaerp_questions.id"), nullable=True)
+    # Unified polymorphic reference to vestibular_questions (replaces 30+ legacy FKs)
+    vestibular_question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("vestibular_questions.id"), nullable=True, index=True)
+    vq_exam_type: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)  # "enem", "ufsc", "ita", ...
     # Student's answer
     # A-E para questão de alternativa única; questão tipo somatório (UFSC)
     # guarda várias letras separadas por vírgula (ex.: "A,C,D") — o aluno
@@ -2141,5 +2107,63 @@ class ConcursoFepeseQuestionOption(Base):
     order: Mapped[int] = mapped_column(Integer, default=0)
 
     question: Mapped["ConcursoFepeseQuestion"] = relationship(back_populates="options")
+
+
+# ── Unified Vestibular Questions (replaces per-exam tables) ────────────────────
+# Single schema for all university entrance exams. Exam-specific fields go in
+# metadata JSONB (color, phase, day, module, etc.) instead of dedicated columns.
+# Importers write here via save_vestibular_question() adapter in import_batch.py.
+
+
+class VestibularQuestion(Base):
+    __tablename__ = "vestibular_questions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    exam_type: Mapped[str] = mapped_column(String(30), nullable=False, index=True)  # "enem", "ufsc", "ita", ...
+    exam_name: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    year: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    number: Mapped[int] = mapped_column(Integer, nullable=False)
+    statement: Mapped[str] = mapped_column(Text, nullable=False)
+    html_statement: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    image_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    answer: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    is_annulled: Mapped[bool] = mapped_column(Boolean, default=False)
+    correct_option: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
+    metadata: Mapped[dict] = mapped_column(JSONB, nullable=False, server_default="{}")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    options: Mapped[List["VestibularQuestionOption"]] = relationship(
+        back_populates="question", cascade="all, delete-orphan", order_by="VestibularQuestionOption.order"
+    )
+    images: Mapped[List["VestibularQuestionImage"]] = relationship(
+        back_populates="question", cascade="all, delete-orphan", order_by="VestibularQuestionImage.order"
+    )
+
+    __table_args__ = (UniqueConstraint("exam_type", "exam_name", "number"),)
+
+
+class VestibularQuestionOption(Base):
+    __tablename__ = "vestibular_question_options"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    question_id: Mapped[int] = mapped_column(ForeignKey("vestibular_questions.id", ondelete="CASCADE"), nullable=False, index=True)
+    letter: Mapped[Optional[str]] = mapped_column(String(1), nullable=True)  # A-E or None for summation
+    value: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # power-of-2 for UFSC/UEM summation
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    is_correct: Mapped[bool] = mapped_column(Boolean, default=False)
+    order: Mapped[int] = mapped_column(Integer, default=0)
+
+    question: Mapped["VestibularQuestion"] = relationship(back_populates="options")
+
+
+class VestibularQuestionImage(Base):
+    __tablename__ = "vestibular_question_images"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    question_id: Mapped[int] = mapped_column(ForeignKey("vestibular_questions.id", ondelete="CASCADE"), nullable=False, index=True)
+    image_url: Mapped[str] = mapped_column(String(500), nullable=False)
+    order: Mapped[int] = mapped_column(Integer, default=0)
+
+    question: Mapped["VestibularQuestion"] = relationship(back_populates="images")
 
 

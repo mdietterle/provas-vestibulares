@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import Layout from './components/Layout'
@@ -33,6 +33,11 @@ const UfprBankPage = lazy(() => import('./pages/UfprBankPage'))
 const UfrgsBankPage = lazy(() => import('./pages/UfrgsBankPage'))
 const PucprBankPage = lazy(() => import('./pages/PucprBankPage'))
 const ItaBankPage = lazy(() => import('./pages/ItaBankPage'))
+const VestibularBankPage = lazy(() => import('./pages/VestibularBankPage'))
+function VestibularBankRoute() {
+  const { examType } = useParams<{ examType: string }>()
+  return <VestibularBankPage examType={examType ?? ''} />
+}
 const OwnerPage = lazy(() => import('./pages/OwnerPage'))
 const OwnerSchoolsPage = lazy(() => import('./pages/OwnerSchoolsPage'))
 const OwnerUsersPage = lazy(() => import('./pages/OwnerUsersPage'))
@@ -113,6 +118,7 @@ function AppRoutes() {
           <Route path="ufrgs-bank" element={<UfrgsBankPage />} />
           <Route path="pucpr-bank" element={<PucprBankPage />} />
           <Route path="ita-bank" element={<ItaBankPage />} />
+          <Route path="vestibular/:examType" element={<VestibularBankRoute />} />
           <Route path="simulados" element={<SimuladoPage />} />
           <Route path="simulados/dashboard" element={<SimuladoDashboardPage />} />
           <Route path="simulados/:id" element={<SimuladoExamPage />} />

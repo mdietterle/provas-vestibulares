@@ -45,7 +45,7 @@ quantidade de respostas na página), não por PDF inteiro.
 
 Dentro de cada caderno, a Língua Estrangeira aparece como duas seções
 ("PROVA DE ESPANHOL" / "PROVA DE INGLÊS"), cada uma com as MESMAS questões
-de número (ex. 26-30) — por isso o modelo `PucminasQuestion` tem uma coluna
+de número (ex. 26-30) — por isso o metadata JSONB guarda a matéria
 `subject` (a seção "PROVA DE <disciplina>"), evitando colisão quando as
 duas versões de língua estrangeira usam o mesmo número. O gabarito não
 diferencia por idioma (só um valor por número), então a mesma letra correta
@@ -81,7 +81,6 @@ import base64
 
 from app.services.progress import update_task_progress, complete_task, fail_task
 from app.services.pdf_figures import extract_figure_events, text_content_y_range
-from app.models import PucminasQuestion, PucminasQuestionOption, PucminasQuestionImage
 
 _VESTIBULAR_URL = "https://www.pucminas.br/formas-ingresso/vestibular/Paginas/provas-e-gabaritos.aspx"
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -422,7 +421,13 @@ def _persist_booklet(db, exam_name: str, year: int, questions: list[dict], answe
     (mesmo exam_name), questões sem gabarito conhecido (número ausente,
     anulada — letra "N" — ou que não corresponda a nenhuma alternativa
     extraída)."""
-    already = db.query(PucminasQuestion).filter(PucminasQuestion.exam_name == exam_name).count()
+    from app.services.import_batch import save_vestibular_question
+
+    from app.models import VestibularQuestion
+    already = db.query(VestibularQuestion).filter(
+        VestibularQuestion.exam_type == "pucminas",
+        VestibularQuestion.exam_name == exam_name,
+    ).count()
     if already > 0:
         return 0, already
 
@@ -434,31 +439,46 @@ def _persist_booklet(db, exam_name: str, year: int, questions: list[dict], answe
         if not any(letter == correct for letter, _ in q["alternatives"]):
             continue
 
-        images = q.get("images") or []
-        question = PucminasQuestion(
+        options = [
+            {
+                "letter": letter,
+                "text": text,
+                "is_correct": (letter == correct),
+                "order": order,
+            }
+            for order, (letter, text) in enumerate(q["alternatives"])
+        ]
+
+        images_raw = q.get("images") or []
+        image_list = None
+        image_base64_first = None
+        if images_raw:
+            image_base64_first = f"data:image/png;base64,{base64.b64encode(images_raw[0]).decode()}"
+            if len(images_raw) > 1:
+                image_list = [
+                    f"data:image/png;base64,{base64.b64encode(png).decode()}"
+                    for png in images_raw[1:]
+                ]
+
+        metadata = {
+            "subject": q["subject"],
+        }
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="pucminas",
             exam_name=exam_name,
-            subject=q["subject"],
             year=year,
             number=q["number"],
             statement=q["statement"],
-            image_base64=(f"data:image/png;base64,{base64.b64encode(images[0]).decode()}" if images else None),
+            options=options,
+            images=image_list,
+            correct_option=correct,
+            image_base64=image_base64_first,
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        for order, (letter, text) in enumerate(q["alternatives"]):
-            db.add(PucminasQuestionOption(
-                question_id=question.id,
-                text=text,
-                is_correct=(letter == correct),
-                order=order,
-            ))
-        for order, png in enumerate(images[1:]):
-            db.add(PucminasQuestionImage(
-                question_id=question.id,
-                image_base64=f"data:image/png;base64,{base64.b64encode(png).decode()}",
-                order=order,
-            ))
+        if not created:
+            continue
         added += 1
 
     db.commit()

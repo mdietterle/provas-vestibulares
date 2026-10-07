@@ -14,6 +14,7 @@ from app.models import (
     QuestionType,
     Subject,
     UnicampQuestion,
+    VestibularQuestion,
     User,
 )
 from app.schemas import QuestionOut, UnicampImportRequest, UnicampQuestionOut
@@ -153,7 +154,7 @@ def import_unicamp_question(
     current_user: User = Depends(require_professor),
 ):
     """Copia uma questão UNICAMP para o banco de questões da escola do professor."""
-    unicamp_q = db.get(UnicampQuestion, payload.unicamp_question_id)
+    unicamp_q = db.get(VestibularQuestion, payload.vestibular_question_id)
     if not unicamp_q:
         raise HTTPException(404, "Questão UNICAMP não encontrada")
 

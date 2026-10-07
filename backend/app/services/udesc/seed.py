@@ -440,12 +440,9 @@ def _merge_gabarito(parsed: list[dict], section: dict) -> None:
 
 
 def import_udesc_shift(db, year: int, semester: int, shift: str, prova_url: str, gabarito_map: dict) -> dict:
-    from app.models import UdescQuestion, UdescQuestionImage, UdescQuestionOption
+    from app.services.import_batch import save_vestibular_question
 
     exam_name = f"UDESC {year}.{semester} – {shift}"
-    already = db.query(UdescQuestion).filter(UdescQuestion.exam_name == exam_name).count()
-    if already > 0:
-        return {"exam_name": exam_name, "total_parsed": 0, "total_added": 0, "skipped_existing": already}
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         pdf_path = Path(tmp_dir) / "prova.pdf"
@@ -464,6 +461,7 @@ def import_udesc_shift(db, year: int, semester: int, shift: str, prova_url: str,
     _merge_gabarito(parsed, gabarito_map.get(shift, {}))
 
     added = 0
+    skipped_existing = 0
     seen: set[tuple[int, Optional[str]]] = set()
     for q in parsed:
         key = (q["number"], q["language"])
@@ -471,39 +469,43 @@ def import_udesc_shift(db, year: int, semester: int, shift: str, prova_url: str,
             continue
         seen.add(key)
 
-        question = UdescQuestion(
+        correct = q.get("correct")
+        options = [
+            {"letter": letter, "text": text_, "is_correct": (letter == correct), "order": i}
+            for i, (letter, text_) in enumerate(q["options"])
+        ]
+        images = None
+        if q.get("images"):
+            images = [
+                {"image_base64": img, "order": i}
+                for i, img in enumerate(q["images"])
+            ]
+        metadata = {
+            "semester": semester,
+            "shift": shift,
+            "area": q.get("area"),
+            "language": q["language"],
+        }
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="udesc",
             exam_name=exam_name,
             year=year,
-            semester=semester,
-            shift=shift,
             number=q["number"],
-            area=q.get("area"),
-            language=q["language"],
             statement=q["statement"],
-            image_base64=q["image_base64"],
+            options=options,
+            images=images,
+            image_base64=q.get("image_base64"),
+            correct_option=correct,
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        correct = q.get("correct")
-        for order, (letter, text_) in enumerate(q["options"]):
-            db.add(UdescQuestionOption(
-                question_id=question.id,
-                letter=letter,
-                text=text_,
-                is_correct=(letter == correct),
-                order=order,
-            ))
-        for order, data_url in enumerate(q.get("images", [])):
-            db.add(UdescQuestionImage(
-                question_id=question.id,
-                image_base64=data_url,
-                order=order,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
     db.commit()
-    return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": 0}
+    return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
 def import_udesc_edition(db, edition: dict) -> list[dict]:

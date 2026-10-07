@@ -8,7 +8,8 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal, engine
-from app.models import Base, EnemQuestion, EnemQuestionOption
+from app.models import Base
+from app.services.import_batch import save_vestibular_question
 
 ENEM_DIR = Path(__file__).parent.parent.parent.parent / "provas" / "enem"
 
@@ -121,11 +122,6 @@ def seed_enem(db: Session | None = None, **kwargs) -> dict:
             day = int(day_m.group(1)) if day_m else 1
             exam_name = f"ENEM {year} – Dia {day}"
 
-            already = db.query(EnemQuestion).filter(EnemQuestion.exam_name == exam_name).count()
-            if already > 0:
-                results.append({"exam": exam_name, "added": 0, "existing": already})
-                continue
-
             with open(json_path, encoding="utf-8") as f:
                 data = json.load(f)
 
@@ -138,6 +134,7 @@ def seed_enem(db: Session | None = None, **kwargs) -> dict:
             duplicated_numbers = {n for n, c in number_counts.items() if c > 1}
 
             added = 0
+            skipped_existing = 0
             seen_numbers: set[int] = set()
             for raw in data.get("data", []):
                 number = raw.get("number", 0)
@@ -157,27 +154,47 @@ def seed_enem(db: Session | None = None, **kwargs) -> dict:
                     continue
                 seen_numbers.add(key)
 
-                q = EnemQuestion(
-                    exam_name=exam_name, year=year, number=number,
-                    area=area, language=language, statement=statement, image_base64=image_b64,
-                )
-                db.add(q)
-                db.flush()
-
+                options = []
+                correct_letter = None
                 for idx_str, alt in raw.get("alternatives", {}).items():
                     alt_text = _build_statement(alt.get("content", []))
-                    db.add(EnemQuestionOption(
-                        question_id=q.id,
-                        letter=alt.get("alternative", ""),
-                        text=alt_text,
-                        is_correct=bool(alt.get("correct", False)),
-                        order=int(idx_str),
-                    ))
+                    letter = alt.get("alternative", "")
+                    is_correct = bool(alt.get("correct", False))
+                    if is_correct:
+                        correct_letter = letter
+                    options.append({
+                        "letter": letter,
+                        "text": alt_text,
+                        "is_correct": is_correct,
+                        "order": int(idx_str),
+                    })
+
+                metadata = {
+                    "area": area,
+                    "language": language,
+                    "day": day,
+                }
+
+                vq, created = save_vestibular_question(
+                    db,
+                    exam_type="enem",
+                    exam_name=exam_name,
+                    year=year,
+                    number=number,
+                    statement=statement,
+                    options=options,
+                    image_base64=image_b64,
+                    correct_option=correct_letter,
+                    metadata=metadata,
+                )
+                if not created:
+                    skipped_existing += 1
+                    continue
                 added += 1
 
             db.commit()
             total_added += added
-            results.append({"exam": exam_name, "added": added})
+            results.append({"exam": exam_name, "added": added, "skipped_existing": skipped_existing})
 
         return {"total_added": total_added, "files": results}
     except Exception as e:

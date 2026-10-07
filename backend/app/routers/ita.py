@@ -13,6 +13,7 @@ from app.models import (
     QuestionType,
     Subject,
     ItaQuestion,
+    VestibularQuestion,
     User,
 )
 from app.schemas import QuestionOut, ItaImportRequest, ItaQuestionOut
@@ -156,7 +157,7 @@ def import_ita_question(
     current_user: User = Depends(require_professor),
 ):
     """Copia uma questão ITA para o banco de questões da escola do professor."""
-    ita_q = db.get(ItaQuestion, payload.ita_question_id)
+    ita_q = db.get(VestibularQuestion, payload.vestibular_question_id)
     if not ita_q:
         raise HTTPException(404, "Questão ITA não encontrada")
 

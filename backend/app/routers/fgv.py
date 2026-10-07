@@ -14,6 +14,7 @@ from app.models import (
     QuestionType,
     Subject,
     FgvQuestion,
+    VestibularQuestion,
     User,
 )
 from app.schemas import QuestionOut, FgvImportRequest, FgvQuestionOut
@@ -153,7 +154,7 @@ def import_fgv_question(
     current_user: User = Depends(require_professor),
 ):
     """Copia uma questão FGV para o banco de questões da escola do professor."""
-    fgv_q = db.get(FgvQuestion, payload.fgv_question_id)
+    fgv_q = db.get(VestibularQuestion, payload.vestibular_question_id)
     if not fgv_q:
         raise HTTPException(404, "Questão FGV não encontrada")
 

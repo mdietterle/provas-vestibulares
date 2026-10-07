@@ -88,8 +88,8 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
+from app.services.import_batch import save_vestibular_question
 from app.services.progress import update_task_progress, complete_task, fail_task
-from app.models import UfpaQuestion, UfpaQuestionOption
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
 
@@ -317,15 +317,13 @@ def parse_gabarito(path: Path, n_langs: int = 5) -> tuple[dict[int, str], list[d
 
 def _persist_exam(db, exam_name: str, year: int, questions: list[dict],
                    main_answers: dict[int, str], lang_answers: list[dict[int, str]]) -> tuple:
-    """Grava as questões de UM ano, pulando anos já importados (mesmo
-    exam_name) e questões sem gabarito conhecido (não encontrado, anuladas
-    pela banca — "Anulada" — ou letra que não bate com nenhuma alternativa
-    extraída)."""
-    already = db.query(UfpaQuestion).filter(UfpaQuestion.exam_name == exam_name).count()
-    if already > 0:
-        return 0, already
+    """Grava as questões de UM ano via adapter unificado, pulando questões
+    sem gabarito conhecido (não encontrado, anuladas pela banca — "Anulada"
+    — ou letra que não bate com nenhuma alternativa extraída)."""
+    import gc
 
     added = 0
+    skipped_existing = 0
     for q in questions:
         if q["subject"] in _LANGS:
             li = _LANGS.index(q["subject"])
@@ -338,27 +336,42 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict],
         if not any(letter == correct for letter, _ in q["alternatives"]):
             continue
 
-        question = UfpaQuestion(
+        options = []
+        for order, (letter, text) in enumerate(q["alternatives"]):
+            options.append({
+                "letter": letter,
+                "text": text,
+                "is_correct": (letter == correct),
+                "order": order,
+            })
+
+        metadata = {"subject": q["subject"]}
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="ufpa",
             exam_name=exam_name,
-            subject=q["subject"],
             year=year,
             number=q["number"],
             statement=q["statement"],
+            options=options,
+            correct_option=correct,
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        for order, (letter, text) in enumerate(q["alternatives"]):
-            db.add(UfpaQuestionOption(
-                question_id=question.id,
-                text=text,
-                is_correct=(letter == correct),
-                order=order,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
+        if added % 10 == 0:
+            db.commit()
+            db.expunge_all()
+            gc.collect()
+
     db.commit()
-    return added, 0
+    db.expunge_all()
+    gc.collect()
+    return added, skipped_existing
 
 
 def import_ufpa_year(db, year: int, urls: dict) -> dict:

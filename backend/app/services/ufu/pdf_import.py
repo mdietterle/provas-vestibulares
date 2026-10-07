@@ -55,8 +55,8 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
+from app.services.import_batch import save_vestibular_question
 from app.services.progress import update_task_progress, complete_task, fail_task
-from app.models import UfuQuestion, UfuQuestionOption
 
 _LISTAR_URL = "https://www.portalselecao.ufu.br/servicos/Edital/listar/vestibular"
 _CRONOGRAMA_URL = "https://www.portalselecao.ufu.br/servicos/Edital/cronograma/{id}"
@@ -252,11 +252,17 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
     Língua Estrangeira, Espanhol + Inglês), ambas as ocorrências são
     gravadas como questões separadas, ambas usando a mesma letra do
     gabarito para aquele número — é assim que a banca projeta a prova."""
-    already = db.query(UfuQuestion).filter(UfuQuestion.exam_name == exam_name).count()
+    from app.models import VestibularQuestion
+    already = db.query(VestibularQuestion).filter(
+        VestibularQuestion.exam_type == "ufu",
+        VestibularQuestion.exam_name == exam_name,
+    ).count()
     if already > 0:
         return 0, already
 
     added = 0
+    skipped_existing = 0
+    running_number = 1
     for q in questions:
         correct = gabarito.get(q["number"])
         if not correct:
@@ -264,26 +270,36 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
         if not any(letter == correct for letter, _ in q["alternatives"]):
             continue
 
-        question = UfuQuestion(
+        options = [{"text": text, "is_correct": (letter == correct)} for letter, text in q["alternatives"]]
+        metadata = {"original_number": q["number"]}
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="ufu",
             exam_name=exam_name,
             year=year,
-            number=q["number"],
+            number=running_number,
             statement=q["statement"],
+            options=options,
+            correct_option=correct,
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        for order, (letter, text) in enumerate(q["alternatives"]):
-            db.add(UfuQuestionOption(
-                question_id=question.id,
-                text=text,
-                is_correct=(letter == correct),
-                order=order,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
+        running_number += 1
+
+        if added % 10 == 0:
+            db.commit()
+            db.expunge_all()
+            import gc
+            gc.collect()
 
     db.commit()
-    return added, 0
+    db.expunge_all()
+    import gc
+    gc.collect()
+    return added, skipped_existing
 
 
 def import_ufu_edition(db, year: int, semester: int, cronograma_id: int) -> dict:

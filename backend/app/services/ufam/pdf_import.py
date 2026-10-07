@@ -78,7 +78,7 @@ import fitz  # PyMuPDF
 import requests
 
 from app.services.progress import update_task_progress, complete_task, fail_task
-from app.models import UfamQuestion, UfamQuestionOption
+from app.services.import_batch import save_vestibular_question
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
 
@@ -353,14 +353,11 @@ def _persist_edition(db, exam_name: str, year: int, stage: int, questions: list[
     importadas (mesmo exam_name) e questões sem gabarito conhecido (número
     ausente, anulada, ou que não corresponda a nenhuma alternativa
     extraída)."""
-    already = db.query(UfamQuestion).filter(UfamQuestion.exam_name == exam_name).count()
-    if already > 0:
-        return 0, already
-
     default_answers = gabarito.get("default", {})
     le_answers = gabarito.get("le", {})
 
     added = 0
+    skipped_existing = 0
     for q in questions:
         le_m = _LE_SUBJECT_RE.search(q["subject"])
         if le_m:
@@ -373,28 +370,40 @@ def _persist_edition(db, exam_name: str, year: int, stage: int, questions: list[
         if not any(letter == correct for letter, _ in q["alternatives"]):
             continue
 
-        question = UfamQuestion(
+        options = [
+            {
+                "letter": letter,
+                "text": text,
+                "is_correct": (letter == correct),
+                "order": order,
+            }
+            for order, (letter, text) in enumerate(q["alternatives"])
+        ]
+        metadata = {
+            "stage": stage,
+            "subject": q["subject"],
+            "university": "UFAM",
+        }
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="ufam",
             exam_name=exam_name,
-            stage=stage,
-            subject=q["subject"],
             year=year,
             number=q["number"],
             statement=q["statement"],
+            options=options,
+            images=None,
+            image_base64=None,
+            correct_option=correct,
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        for order, (letter, text) in enumerate(q["alternatives"]):
-            db.add(UfamQuestionOption(
-                question_id=question.id,
-                text=text,
-                is_correct=(letter == correct),
-                order=order,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
     db.commit()
-    return added, 0
+    return added, skipped_existing
 
 
 def import_ufam_edition(db, edition: dict) -> dict:

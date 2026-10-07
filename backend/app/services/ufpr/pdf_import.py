@@ -35,10 +35,8 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
+from app.services.import_batch import save_vestibular_question
 from app.services.ufpr.seed import (
-    UfprQuestion,
-    UfprQuestionImage,
-    UfprQuestionOption,
     _assign_images,
     _detect_area_line,
     _infer_area,
@@ -199,7 +197,11 @@ def import_ufpr_year(db, year: int, pdf_url: str) -> dict:
     import tempfile
 
     exam_name = f"UFPR {year}"
-    already = db.query(UfprQuestion).filter(UfprQuestion.exam_name == exam_name).count()
+    from app.models import VestibularQuestion
+    already = db.query(VestibularQuestion).filter(
+        VestibularQuestion.exam_type == "ufpr",
+        VestibularQuestion.exam_name == exam_name,
+    ).count()
     if already > 0:
         return {"exam_name": exam_name, "total_parsed": 0, "total_added": 0, "skipped_existing": already}
 
@@ -218,6 +220,7 @@ def import_ufpr_year(db, year: int, pdf_url: str) -> dict:
         }
 
     added = 0
+    skipped_existing = 0
     seen: set[tuple[int, Optional[str]]] = set()
     for q in parsed:
         key = (q["number"], q["language"])
@@ -225,33 +228,44 @@ def import_ufpr_year(db, year: int, pdf_url: str) -> dict:
             continue
         seen.add(key)
 
-        question = UfprQuestion(
+        options = []
+        for order, (letter, text) in enumerate(q["alternatives"]):
+            options.append({
+                "letter": letter,
+                "text": text,
+                "is_correct": (letter == q["correct"]),
+                "order": order,
+            })
+
+        images = None
+        if q.get("images"):
+            images = [
+                {"image_base64": data_url, "order": i}
+                for i, data_url in enumerate(q["images"])
+            ]
+
+        metadata = {
+            "area": q["area"],
+            "language": q["language"],
+            "university": "UFPR",
+        }
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="ufpr",
             exam_name=exam_name,
-            university="UFPR",
             year=year,
             number=q["number"],
-            area=q["area"],
-            language=q["language"],
             statement=q["statement"],
-            image_base64=q["image_base64"],
+            options=options,
+            images=images,
+            image_base64=q.get("image_base64"),
+            correct_option=q.get("correct"),
+            metadata=metadata,
         )
-        db.add(question)
-        db.flush()
-
-        for order, (letter, text) in enumerate(q["alternatives"]):
-            db.add(UfprQuestionOption(
-                question_id=question.id,
-                letter=letter,
-                text=text,
-                is_correct=(letter == q["correct"]),
-                order=order,
-            ))
-        for order, data_url in enumerate(q["images"]):
-            db.add(UfprQuestionImage(
-                question_id=question.id,
-                image_base64=data_url,
-                order=order,
-            ))
+        if not created:
+            skipped_existing += 1
+            continue
         added += 1
 
         # Commita em lotes de 10 em vez de esperar a prova inteira: acumular
@@ -267,7 +281,7 @@ def import_ufpr_year(db, year: int, pdf_url: str) -> dict:
     db.commit()
     db.expunge_all()
     gc.collect()
-    return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": 0}
+    return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
 def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = None, db=None, **kwargs) -> dict:
