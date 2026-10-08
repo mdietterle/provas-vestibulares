@@ -74,10 +74,12 @@ html.dark {
   }
   .btn-primary {
     @apply btn text-white active:scale-[0.98]
-           focus:ring-[var(--color-primary)]/40
            hover:-translate-y-0.5;
     background-color: var(--color-primary);
     box-shadow: var(--shadow-card);
+  }
+  .btn-primary:focus {
+    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px rgba(13, 148, 136, 0.4);
   }
   .btn-primary:hover {
     background-color: var(--color-primary-hover);
@@ -117,8 +119,11 @@ html.dark {
     @apply px-2.5 py-1 text-xs rounded-md;
   }
   .btn-ghost {
-    @apply btn bg-transparent hover:bg-[var(--color-surface-low)] focus:ring-[var(--color-primary)]/20;
+    @apply btn bg-transparent hover:bg-[var(--color-surface-low)];
     color: var(--color-on-surface-variant);
+  }
+  .btn-ghost:focus {
+    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px rgba(13, 148, 136, 0.2);
   }
   .btn-ghost:hover {
     color: var(--color-primary);
