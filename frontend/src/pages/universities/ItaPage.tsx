@@ -5,7 +5,7 @@ export default function ItaPage() {
   const customContent = (
     <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       {/* Banner Principal */}
-      <div className="bg-gradient-to-br from-[#4f46e5] via-[#1a3a8a] to-[#712ae2] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-teal-600 via-teal-800 to-amber-500 text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="relative z-10">
           <span className="inline-block text-xs font-semibold uppercase tracking-wider text-yellow-300 bg-white/10 px-3 py-1 rounded-full mb-3">
             Tudo o que você precisa saber
@@ -27,7 +27,7 @@ export default function ItaPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Por que o ITA é referência
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <CampusImage
               variant="polaroid-tilt"
               src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Instituto_Tecnol%C3%B3gico_de_Aeron%C3%A1utica_%28ITA%29_main_street.JPG"
@@ -58,7 +58,7 @@ export default function ItaPage() {
             </h3>
             <div className="flex flex-wrap gap-2 text-xs">
               {['Engenharia Aeronáutica', 'Engenharia Aeroespacial', 'Engenharia Eletrônica', 'Engenharia Mecânica-Aeronáutica', 'Engenharia Civil-Aeronáutica', 'Engenharia de Computação'].map(c => (
-                <span key={c} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#c7c4d7] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
+                <span key={c} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-slate-300 px-2.5 py-1 rounded-md font-semibold text-teal-600 dark:text-teal-400">
                   {c}
                 </span>
               ))}
@@ -73,7 +73,7 @@ export default function ItaPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Como funciona o processo seletivo
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <p>
               O vestibular do ITA é organizado em <strong>três etapas</strong>. As duas primeiras compõem o Exame
               Vestibular, com provas de conhecimentos: a primeira fase, objetiva, funciona como peneira inicial —
@@ -92,19 +92,19 @@ export default function ItaPage() {
 
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">1ª fase (objetiva)</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">1ª fase (objetiva)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Peneira eliminatória por nota de corte</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">2ª fase (discursiva)</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">2ª fase (discursiva)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Prova mais aprofundada por disciplina, define classificação final</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">3ª etapa</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">3ª etapa</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Inspeção de Saúde, obrigatória para convocados</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vagas por cota</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Vagas por cota</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Reservadas para pretos/pardos, indígenas e quilombolas</dd>
           </div>
         </dl>
@@ -123,7 +123,7 @@ export default function ItaPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Carreira militar ou civil: o aluno escolhe
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <p>
               O ITA é uma instituição federal vinculada ao Comando da Aeronáutica, e essa ligação aparece desde o
               primeiro ano de curso: todos os ingressantes começam como alunos militares do CPOR (Centro de Preparação
@@ -141,10 +141,10 @@ export default function ItaPage() {
         </div>
 
         <div className="bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-5 space-y-3">
-          <h3 className="font-bold text-base text-[#4f46e5] dark:text-[#818CF8]">
+          <h3 className="font-bold text-base text-teal-600 dark:text-teal-400">
             Quem escolhe a Aeronáutica
           </h3>
-          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             Quem opta pela carreira militar se forma como <strong>Primeiro Tenente Engenheiro</strong> e ingressa no
             Quadro de Oficiais Engenheiros da ativa da Força Aérea Brasileira, com compromisso mínimo de permanência
             de cinco anos na Aeronáutica. É um caminho direto entre a formação de excelência em engenharia e uma

@@ -17,7 +17,7 @@ const features = [
     ),
     title: 'Correção Automática com IA',
     description: 'Corrija provas dissertativas e testes objetivos em segundos. Análise contextual com feedback construtivo imediato para cada aluno.',
-    color: '#712ae2',
+    color: '#f59e0b',
     bg: '#e9ddff',
   },
   {
@@ -28,8 +28,8 @@ const features = [
     ),
     title: 'Gerador de Questões',
     description: 'Crie bancos de questões inéditas baseadas em qualquer texto ou tópico da BNCC. Diversidade pedagógica com um clique.',
-    color: '#4f46e5',
-    bg: '#dce1ff',
+    color: '#0d9488',
+    bg: 'teal-50',
   },
   {
     icon: (
@@ -89,7 +89,7 @@ export default function LoginPage() {
       <section className="max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center">
         {/* Left — copy */}
         <div>
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6" style={{ background: '#e9ddff', color: '#712ae2' }}>
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6" style={{ background: '#e9ddff', color: '#f59e0b' }}>
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -98,14 +98,14 @@ export default function LoginPage() {
           <h1 className="font-display text-5xl font-bold text-[#1E293B] leading-tight mb-4">
             Revolucionando a educação com IA
           </h1>
-          <p className="text-lg text-[#334155] dark:text-[#c7c4d7] leading-relaxed mb-8">
+          <p className="text-lg text-[#334155] dark:text-slate-300 leading-relaxed mb-8">
             Transforme o ensino com Inteligência Estratégica. Automatize correções, gere questões personalizadas em segundos e obtenha insights profundos sobre o desempenho dos alunos.
           </p>
           <div className="flex flex-wrap gap-4 mb-12">
-            <a href="#login" className="px-6 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
+            <a href="#login" className="px-6 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
               Começar agora
             </a>
-            <Link to="/plans" className="px-6 py-3 rounded-lg text-sm font-semibold text-[#4f46e5] bg-[#EFF6FF] dark:bg-[#464554] hover:bg-[#E2E8F0] dark:hover:bg-[#243756] transition-colors">
+            <Link to="/plans" className="px-6 py-3 rounded-lg text-sm font-semibold text-[#0d9488] bg-[#EFF6FF] dark:bg-[#464554] hover:bg-[#E2E8F0] dark:hover:bg-[#243756] transition-colors">
               Ver preços →
             </Link>
           </div>
@@ -113,7 +113,7 @@ export default function LoginPage() {
           <div className="grid grid-cols-4 gap-4">
             {stats.map(s => (
               <div key={s.label}>
-                <p className="font-display text-2xl font-bold text-[#4f46e5]">{s.value}</p>
+                <p className="font-display text-2xl font-bold text-[#0d9488]">{s.value}</p>
                 <p className="text-xs text-[#64748B] mt-0.5">{s.label}</p>
               </div>
             ))}
@@ -128,10 +128,10 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1">Email institucional</label>
+                <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1">Email institucional</label>
                 <input
                   type="email"
-                  className="w-full border border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="seu@instituicao.edu.br"
@@ -140,12 +140,12 @@ export default function LoginPage() {
               </div>
               <div>
                 <div className="flex justify-between mb-1">
-                  <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide">Senha</label>
-                  <Link to="/esqueci-senha" className="text-xs text-[#712ae2] hover:underline">Esqueceu a senha?</Link>
+                  <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide">Senha</label>
+                  <Link to="/esqueci-senha" className="text-xs text-[#f59e0b] hover:underline">Esqueceu a senha?</Link>
                 </div>
                 <input
                   type="password"
-                  className="w-full border border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
@@ -156,7 +156,7 @@ export default function LoginPage() {
                 type="submit"
                 disabled={loading}
                 className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-60 mt-1"
-                style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
               >
                 {loading ? 'Entrando...' : 'Entrar'}
               </button>
@@ -169,11 +169,11 @@ export default function LoginPage() {
       <section id="features" className="bg-white py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: '#dce1ff', color: '#4f46e5' }}>
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: 'teal-50', color: '#0d9488' }}>
               Funcionalidades
             </span>
             <h2 className="font-display text-3xl font-bold text-[#1E293B] mb-3">Potencialize sua Produtividade</h2>
-            <p className="text-[#334155] dark:text-[#c7c4d7] max-w-xl mx-auto">
+            <p className="text-[#334155] dark:text-slate-300 max-w-xl mx-auto">
               Ferramentas desenhadas para devolver ao professor o tempo que importa: o aluno.
             </p>
           </div>
@@ -184,7 +184,7 @@ export default function LoginPage() {
                   {f.icon}
                 </div>
                 <h3 className="font-display font-semibold text-[#1E293B] mb-2">{f.title}</h3>
-                <p className="text-sm text-[#334155] dark:text-[#c7c4d7] leading-relaxed">{f.description}</p>
+                <p className="text-sm text-[#334155] dark:text-slate-300 leading-relaxed">{f.description}</p>
               </div>
             ))}
           </div>
@@ -195,18 +195,18 @@ export default function LoginPage() {
       <section id="ai-tray" className="py-20">
         <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6 text-white" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6 text-white" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
               ✦ Novo recurso
             </span>
             <h2 className="font-display text-3xl font-bold text-[#1E293B] mb-4">
-              Crie conteúdos em segundos com o <span style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI Tray</span>
+              Crie conteúdos em segundos com o <span style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI Tray</span>
             </h2>
-            <p className="text-[#334155] dark:text-[#c7c4d7] leading-relaxed mb-8">
+            <p className="text-[#334155] dark:text-slate-300 leading-relaxed mb-8">
               Interface flutuante para geração de materiais didáticos diretamente nas suas páginas de planejamento. Como ter um assistente pedagógico 24 horas por dia, 7 dias por semana.
             </p>
             <ul className="space-y-3 mb-8">
               {['Planos de aula alinhados com a BNCC', 'Rubricas de avaliação personalizadas', 'Questões geradas por tema ou habilidade', 'Feedback individualizado por aluno'].map(item => (
-                <li key={item} className="flex items-center gap-3 text-sm text-[#334155] dark:text-[#c7c4d7]">
+                <li key={item} className="flex items-center gap-3 text-sm text-[#334155] dark:text-slate-300">
                   <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: '#d1fae5', color: '#27c38a' }}>
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -222,30 +222,30 @@ export default function LoginPage() {
           <div className="relative">
             <div className="bg-white rounded-2xl p-6 border border-[#E2E8F0]" style={{ boxShadow: '0px 24px 60px rgba(0, 35, 111, 0.1)' }}>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
+                <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
                 <span className="text-sm font-semibold text-[#1E293B]">AI Tray</span>
-                <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: '#e9ddff', color: '#712ae2' }}>Novo</span>
+                <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: '#e9ddff', color: '#f59e0b' }}>Novo</span>
               </div>
-              <div className="bg-[#F4F6F9] dark:bg-[#464554] rounded-lg p-3 mb-4 text-sm text-[#334155] dark:text-[#c7c4d7] border border-[#E2E8F0] dark:border-[#c7c4d7]">
+              <div className="bg-[#F4F6F9] dark:bg-[#464554] rounded-lg p-3 mb-4 text-sm text-[#334155] dark:text-slate-300 border border-[#E2E8F0] dark:border-slate-300">
                 "Gere 5 questões de múltipla escolha sobre Revolução Industrial para o 8º ano, nível médio, alinhadas à BNCC EF08HI20."
               </div>
               <div className="space-y-2 mb-4">
                 {['Questão 1: Qual foi o principal fator...', 'Questão 2: A máquina a vapor representou...', 'Questão 3: As condições de trabalho...'].map((q, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs text-[#334155] dark:text-[#c7c4d7] bg-white rounded-lg p-2 border border-[#E2E8F0]">
-                    <span className="w-4 h-4 rounded-full bg-[#dce1ff] text-[#4f46e5] flex items-center justify-center font-bold shrink-0 text-[10px]">{i + 1}</span>
+                  <div key={i} className="flex items-start gap-2 text-xs text-[#334155] dark:text-slate-300 bg-white rounded-lg p-2 border border-[#E2E8F0]">
+                    <span className="w-4 h-4 rounded-full bg-teal-50 text-[#0d9488] flex items-center justify-center font-bold shrink-0 text-[10px]">{i + 1}</span>
                     {q}
                   </div>
                 ))}
               </div>
               <div className="flex gap-2">
-                <button className="flex-1 py-2 rounded-lg text-xs font-semibold text-white" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
+                <button className="flex-1 py-2 rounded-lg text-xs font-semibold text-white" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
                   Inserir no Plano
                 </button>
-                <button className="px-3 py-2 rounded-lg text-xs font-medium text-[#4f46e5] bg-[#EFF6FF] dark:bg-[#464554] hover:bg-[#E2E8F0] dark:hover:bg-[#243756]">
+                <button className="px-3 py-2 rounded-lg text-xs font-medium text-[#0d9488] bg-[#EFF6FF] dark:bg-[#464554] hover:bg-[#E2E8F0] dark:hover:bg-[#243756]">
                   Refinar
                 </button>
               </div>
@@ -255,7 +255,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-20" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #3525cd 60%, #712ae2 100%)' }}>
+      <section className="py-20" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #115e59 60%, #f59e0b 100%)' }}>
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-display text-3xl font-bold text-white mb-4">
             Pronto para transformar sua escola?
@@ -264,7 +264,7 @@ export default function LoginPage() {
             Muitas <strong className="text-white">instituições</strong> já utilizam o Cognition AI para potencializar o ensino e os resultados dos alunos.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/quote" className="px-6 py-3 rounded-lg text-sm font-semibold text-[#4f46e5] bg-white hover:bg-[#F4F6F9] dark:hover:bg-[#1e2d4a] transition-colors">
+            <Link to="/quote" className="px-6 py-3 rounded-lg text-sm font-semibold text-[#0d9488] bg-white hover:bg-[#F4F6F9] dark:hover:bg-[#1e2d4a] transition-colors">
               Solicitar Orçamento
             </Link>
             <Link to="/contact" className="px-6 py-3 rounded-lg text-sm font-semibold text-white border border-white/30 hover:bg-white/10 transition-colors">

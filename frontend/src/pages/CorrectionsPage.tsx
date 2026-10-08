@@ -68,13 +68,13 @@ export default function CorrectionsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold font-display text-[#4f46e5] dark:text-[#818CF8]">Correções</h1>
+          <h1 className="text-2xl font-bold font-display text-teal-600 dark:text-teal-400">Correções</h1>
           <p className="text-sm text-gray-500 mt-0.5">{classes.length} turma{classes.length !== 1 ? 's' : ''} disponíve{classes.length !== 1 ? 'is' : 'l'}</p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => exportCorrections(classes, examsByClass, submissionsByExam)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold border border-[#E2E8F0] bg-white text-[#4f46e5] hover:bg-[#EFF6FF] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold border border-[#E2E8F0] bg-white text-teal-600 hover:bg-[#EFF6FF] transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Exportar PDF
@@ -104,8 +104,8 @@ export default function CorrectionsPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Turmas', value: classes.length, bg: 'bg-[#eef2ff] dark:bg-[#272a32]', fg: 'text-[#4f46e5] dark:text-[#818CF8]' },
-          { label: 'Submissões', value: totalSubmissions, bg: 'bg-[#f5f0ff] dark:bg-[#251a42]', fg: 'text-[#712ae2] dark:text-[#b79bff]' },
+          { label: 'Turmas', value: classes.length, bg: 'bg-[#eef2ff] dark:bg-slate-800', fg: 'text-teal-600 dark:text-teal-400' },
+          { label: 'Submissões', value: totalSubmissions, bg: 'bg-[#f5f0ff] dark:bg-[#251a42]', fg: 'text-amber-500 dark:text-[#b79bff]' },
           { label: 'Corrigidas', value: totalDone, bg: 'bg-[#f0fdf8] dark:bg-[#0f2e22]', fg: 'text-[#27c38a] dark:text-[#4ade80]' },
         ].map((s) => (
           <div key={s.label} className={`rounded-2xl border p-4 ${s.bg} border-transparent`}>
@@ -188,7 +188,7 @@ export default function CorrectionsPage() {
                 className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm bg-[#eef2ff] dark:bg-slate-800 text-teal-600 dark:text-teal-400">
                     {cls.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="text-left">
@@ -224,15 +224,15 @@ export default function CorrectionsPage() {
                             to={`/exams/${exam.id}/submissions`}
                             className="flex items-center gap-3 px-5 py-3 hover:bg-[#F4F6F9] dark:hover:bg-white/5 transition-colors"
                           >
-                            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#eef2ff] dark:bg-[#272a32]">
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-[#4f46e5] dark:stroke-[#818CF8]" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#eef2ff] dark:bg-slate-800">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="stroke-teal-600 dark:stroke-teal-400" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                 <polyline points="14 2 14 8 20 8" />
                               </svg>
                             </div>
                             <span className="font-medium text-sm text-gray-800 dark:text-gray-200 truncate flex-1 min-w-0">{exam.title}</span>
                             {exam.subject?.name && (
-                              <span className="text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]">
+                              <span className="text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 bg-[#eef2ff] dark:bg-slate-800 text-teal-600 dark:text-teal-400">
                                 {exam.subject.name}
                               </span>
                             )}

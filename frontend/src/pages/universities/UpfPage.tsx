@@ -12,7 +12,7 @@ export default function UpfPage() {
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         UPF: a maior universidade do norte gaúcho
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         A Fundação Universidade de Passo Fundo nasceu em 1967, da fusão da Sociedade Pró-Universidade com o
         Consórcio Universitário Católico, e foi reconhecida oficialmente como universidade em 1968. Mantida sem
         fins lucrativos, é hoje a maior instituição de ensino superior do norte do Rio Grande do Sul, sustentada
@@ -31,7 +31,7 @@ export default function UpfPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Avaliação MEC: nota máxima institucional em 2023
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Em 2023, a UPF recebeu <strong>nota máxima (5) no Conceito Institucional</strong> do MEC — a avaliação
           mais abrangente que o ministério aplica, olhando pra universidade como um todo (não só cursos isolados).
           É um resultado raro entre universidades comunitárias do interior, geralmente mais pequenas e com menos
@@ -40,22 +40,22 @@ export default function UpfPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Sete campi, seis cidades do norte do RS
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed mb-3">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-3">
           Além dos dois campi na sede em Passo Fundo, a UPF tem unidades em outras cinco cidades da região:
         </p>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
         </div>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8">
         São mais de 50 cursos de graduação, 15 mestrados, 9 doutorados e 250+ cursos de pós-graduação lato sensu.
         Cursos de maior destaque incluem <strong>Medicina</strong>, <strong>Direito</strong>,{' '}
         <strong>Agronomia</strong>, <strong>Medicina Veterinária</strong> e <strong>Engenharias</strong> — um
@@ -71,10 +71,10 @@ export default function UpfPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Papel no desenvolvimento do norte gaúcho: o Passo Fundo Valley
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A UPF mantém o <strong>Passo Fundo Valley</strong>, um distrito de inovação de 10 hectares que organiza o
           ecossistema empreendedor da região em cinco verticais estratégicas: Agronegócio, Saúde, Indústria
           Criativa, Educação e Tecnologia da Informação. A universidade também integra o conselho do{' '}
@@ -87,28 +87,28 @@ export default function UpfPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
           Como entrar: nota de redação, não vestibular objetivo
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed mb-4">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-4">
           A UPF simplificou seu processo seletivo: hoje a nota de corte vem da <strong>redação</strong>, não de uma
           prova objetiva tradicional. O candidato escolhe entre três modalidades no ato da inscrição.
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-4">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Redação presencial</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Redação presencial</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Prova de redação aplicada no campus, em data marcada</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Redação on-line</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Redação on-line</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Feita pela internet, dentro de uma janela de datas</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Nota da redação do ENEM</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Nota da redação do ENEM</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Aproveita a nota de redação de qualquer edição do ENEM desde 2010</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Calendário</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Calendário</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Vestibular de Verão (2º semestre do ano anterior) e de Inverno (1º semestre)</dd>
           </div>
         </dl>

@@ -46,7 +46,7 @@ export default function InvitationPage() {
       <div className="w-full max-w-md">
         {/* Logo / header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}>
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}>
             <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
@@ -58,7 +58,7 @@ export default function InvitationPage() {
           {/* Loading */}
           {step === 'loading' && (
             <div className="p-10 flex flex-col items-center gap-4 text-[#64748B]">
-              <svg className="w-8 h-8 animate-spin text-[#712ae2] dark:text-[#818CF8]" fill="none" viewBox="0 0 24 24">
+              <svg className="w-8 h-8 animate-spin text-amber-500 dark:text-teal-400" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
               </svg>
@@ -80,7 +80,7 @@ export default function InvitationPage() {
               <button
                 onClick={() => navigate('/login')}
                 className="mt-4 px-5 py-2.5 rounded-lg text-sm font-semibold text-white"
-                style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}
+                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
               >
                 Ir para o login
               </button>
@@ -102,7 +102,7 @@ export default function InvitationPage() {
               <button
                 onClick={() => navigate('/login')}
                 className="px-6 py-2.5 rounded-lg text-sm font-semibold text-white"
-                style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}
+                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
               >
                 Fazer login
               </button>
@@ -113,7 +113,7 @@ export default function InvitationPage() {
           {step === 'form' && info && (
             <div>
               <div className="px-8 pt-7 pb-5 border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#1d1f27]">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[#712ae2] dark:text-[#818CF8] mb-1">{info.institution_name}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-500 dark:text-teal-400 mb-1">{info.institution_name}</p>
                 <h2 className="text-xl font-bold text-[#1E293B]">Olá, {info.student_name}!</h2>
                 <p className="text-sm text-[#64748B] mt-1">
                   Defina sua senha para acessar a plataforma com o e-mail <strong>{info.email}</strong>.
@@ -129,7 +129,7 @@ export default function InvitationPage() {
                     placeholder="Mínimo 6 caracteres"
                     required
                     minLength={6}
-                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg bg-white text-[#1E293B] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#712ae2] focus:border-transparent"
+                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg bg-white text-[#1E293B] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -141,14 +141,14 @@ export default function InvitationPage() {
                     placeholder="Repita a senha"
                     required
                     minLength={6}
-                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg bg-white text-[#1E293B] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#712ae2] focus:border-transparent"
+                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg bg-white text-[#1E293B] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={saving}
                   className="w-full py-3 rounded-xl text-sm font-semibold text-white disabled:opacity-60 transition-opacity hover:opacity-90"
-                  style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}
+                  style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
                 >
                   {saving ? 'Salvando...' : 'Definir senha e acessar'}
                 </button>
@@ -159,7 +159,7 @@ export default function InvitationPage() {
 
         <p className="text-center text-xs text-[#9ca3af] dark:text-[#908fa0] mt-6">
           Já tem acesso?{' '}
-          <button onClick={() => navigate('/login')} className="text-[#712ae2] dark:text-[#818CF8] font-medium hover:underline">
+          <button onClick={() => navigate('/login')} className="text-amber-500 dark:text-teal-400 font-medium hover:underline">
             Fazer login
           </button>
         </p>

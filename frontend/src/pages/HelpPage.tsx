@@ -24,7 +24,7 @@ function ManualCard({
         href={href}
         target="_blank"
         rel="noreferrer"
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline"
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-500 dark:text-teal-400 hover:underline"
       >
         Ler o manual completo →
       </a>
@@ -113,7 +113,7 @@ export default function HelpPage() {
 
         <p className="text-center text-sm text-[#64748B] mt-16">
           Não encontrou o que precisava?{' '}
-          <Link to="/contact" className="text-[#712ae2] dark:text-[#818CF8] font-semibold hover:underline">Fale com a gente</Link>.
+          <Link to="/contact" className="text-amber-500 dark:text-teal-400 font-semibold hover:underline">Fale com a gente</Link>.
         </p>
 
         <div className="mt-12">

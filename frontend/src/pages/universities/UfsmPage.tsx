@@ -17,7 +17,7 @@ export default function UfsmPage() {
         Pública federal — sem mensalidade
       </div>
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">UFSM: Santa Maria e mais três cidades gaúchas</h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         Além da sede em Santa Maria (RS), a UFSM tem campi em Frederico Westphalen, Palmeira das Missões e Cachoeira
         do Sul — espalhando ensino federal por diferentes regiões do estado.
       </p>
@@ -30,7 +30,7 @@ export default function UfsmPage() {
         credit="Foto: Wikimedia Commons, CC BY-SA 4.0"
       />
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8">
         São 127 cursos de graduação (24 licenciaturas presenciais, 78 bacharelados, 11 tecnólogos, além de 12
         licenciaturas EaD) e 108 cursos de pós-graduação. Áreas de destaque histórico incluem{' '}
         <strong>Medicina</strong>, <strong>Odontologia</strong>, <strong>Agronomia</strong>,{' '}
@@ -38,10 +38,10 @@ export default function UfsmPage() {
       </p>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Avaliação MEC: nota máxima mantida e cursos 5 estrelas
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A UFSM mantém <strong>nota máxima (5) no Índice Geral de Cursos (IGC)</strong> do MEC pela segunda vez
           consecutiva, e nenhum dos 31 cursos avaliados no Enade tirou conceito 1 ou 2 (insuficiente). No Enade
           2023, 15 cursos tiraram nota 5, incluindo <strong>Engenharia Florestal</strong>,{' '}
@@ -53,10 +53,10 @@ export default function UfsmPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Papel na região central do Rio Grande do Sul
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Ser a primeira federal fundada fora de uma capital não foi só um marco simbólico: a UFSM levou pesquisa
           em ciências agrárias, saúde e engenharia pra uma região do RS que, sem essa descentralização, dificilmente
           concentraria hospital-escola, clínicas veterinárias e laboratórios de pesquisa de ponta fora de Porto
@@ -67,10 +67,10 @@ export default function UfsmPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Ingresso: vestibular próprio ou SiSU
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A UFSM combina o vestibular próprio da <strong>COPERVES</strong> (múltipla escolha e redação, com
           inscrições ao longo do ano) e o <strong>SiSU</strong>, que segue o calendário nacional do MEC. Confirme
           sempre em{' '}

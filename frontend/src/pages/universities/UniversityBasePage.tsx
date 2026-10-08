@@ -24,7 +24,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
         <div className="text-center p-8 bg-white dark:bg-[#1a233a] rounded-2xl border shadow-sm">
           <h1 className="text-2xl font-bold mb-2">Universidade não encontrada</h1>
           <p className="text-[#64748B] mb-4">A instituição solicitada não está cadastrada.</p>
-          <Link to="/universidades" className="text-[#712ae2] font-semibold hover:underline">
+          <Link to="/universidades" className="text-amber-500 font-semibold hover:underline">
             &larr; Voltar para todas as universidades
           </Link>
         </div>
@@ -91,7 +91,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
         {/* Hero Section */}
         <div className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 sm:p-8 mb-8 shadow-sm">
           <div className="flex items-center gap-3 flex-wrap mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] bg-[#f1ecfc] dark:bg-[#241f3d] rounded-full px-3 py-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 bg-[#f1ecfc] dark:bg-[#241f3d] rounded-full px-3 py-1">
               {CATEGORY_LABELS[u.category]}
             </span>
             <span className="text-xs font-semibold text-[#64748B] dark:text-[#908fa0]">{u.state} — {u.region}</span>
@@ -116,7 +116,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
         <div className="space-y-8 text-sm leading-relaxed text-[#333] dark:text-[#c7ccd9]">
           <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
             <h2 className="text-lg font-bold mb-3 text-[#1E293B] dark:text-white flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#712ae2]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
               Tipo de Vestibular e Seleção
@@ -126,7 +126,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
 
           <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
             <h2 className="text-lg font-bold mb-3 text-[#1E293B] dark:text-white flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#712ae2]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               Calendário de Ingresso Típico
@@ -140,7 +140,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
           {u.mainCourses.length > 0 && (
             <section className="bg-white dark:bg-[#191b23] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-6 shadow-sm">
               <h2 className="text-lg font-bold mb-3 text-[#1E293B] dark:text-white flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#712ae2]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h5m-5 0V11m0 0h5m-5 0H7" />
                 </svg>
                 Cursos Mais Procurados
@@ -161,7 +161,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
               <p className="text-[#555] dark:text-[#908fa0] mb-3">
                 O que estudar e como estudar em cada matéria, com orientações e sites gratuitos para cada conteúdo.
               </p>
-              <Link to={`/universidades/${u.slug}/como-estudar`} className="text-sm font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline">
+              <Link to={`/universidades/${u.slug}/como-estudar`} className="text-sm font-semibold text-amber-500 dark:text-teal-400 hover:underline">
                 Ver o guia de estudos &rarr;
               </Link>
             </section>
@@ -186,14 +186,14 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
             </div>
           </section>
 
-          <section className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-[#4f46e5] to-[#712ae2] text-white p-6 rounded-2xl shadow-md">
+          <section className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-teal-600 to-amber-500 text-white p-6 rounded-2xl shadow-md">
             <div>
               <h3 className="font-bold text-lg mb-1">Treinar para a {u.shortName}</h3>
               <p className="text-xs text-white/80">Monte simulados com questões no estilo e nível da {u.shortName}.</p>
             </div>
             <Link
               to="/aluno"
-              className="px-5 py-2.5 rounded-xl bg-white text-[#4f46e5] font-bold text-xs hover:bg-white/90 transition-colors shrink-0"
+              className="px-5 py-2.5 rounded-xl bg-white text-teal-600 font-bold text-xs hover:bg-white/90 transition-colors shrink-0"
             >
               Criar Simulado
             </Link>
@@ -204,7 +204,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
               href={u.officialUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#712ae2] dark:text-[#818CF8] hover:underline"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-500 dark:text-teal-400 hover:underline"
             >
               Acessar site oficial do vestibular ({u.shortName}) &rarr;
             </a>

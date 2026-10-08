@@ -96,3 +96,17 @@ export interface Exam {
   created_at: string
   question_count?: number
 }
+
+export interface GeneratedQuestionOption {
+  text: string
+  is_correct: boolean
+}
+
+export interface GeneratedQuestion {
+  statement: string
+  question_type: QuestionType
+  difficulty?: Difficulty
+  options: GeneratedQuestionOption[]
+  correct_answer?: string
+  explanation?: string
+}

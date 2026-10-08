@@ -4,7 +4,7 @@ import CampusImage from '../../components/CampusImage'
 export default function UfpelPage() {
   const customContent = (
     <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
-      <blockquote className="border-l-4 border-[#712ae2] pl-5 italic text-lg text-[#1E293B] dark:text-white mb-6">
+      <blockquote className="border-l-4 border-amber-500 pl-5 italic text-lg text-[#1E293B] dark:text-white mb-6">
         "A escola de Agronomia mais antiga do Brasil segue funcionando dentro de uma universidade federal gaúcha."
       </blockquote>
 
@@ -12,7 +12,7 @@ export default function UfpelPage() {
         Pública federal — sem mensalidade
       </div>
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">UFPel: tradição centenária em ciências agrárias</h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         A Universidade Federal de Pelotas foi oficialmente criada em 1969, a partir da transformação da antiga
         Universidade Federal Rural do Rio Grande do Sul — reunindo escolas que já existiam havia décadas, como a
         centenária Faculdade de Agronomia Eliseu Maciel, a Faculdade de Veterinária e a Faculdade de Ciências
@@ -23,7 +23,7 @@ export default function UfpelPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: a mais antiga escola de Agronomia do país
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           O campus de Capão do Leão abriga a FAEM, a <strong>escola de Agronomia mais antiga do Brasil</strong> —
           fundada décadas antes da própria UFPel existir como universidade. É lá também que fica a Faculdade de
           Veterinária, formando um polo agropecuário histórico raro entre universidades federais brasileiras.
@@ -38,15 +38,15 @@ export default function UfpelPage() {
         credit="Foto: Eugenio Hansen, OFS / Wikimedia Commons, CC BY-SA 3.0"
       />
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8">
         Hoje a UFPel tem 22 unidades acadêmicas e oferece 103 cursos de graduação presenciais, além de 26
         doutorados, 50 mestrados e 34 especializações. Além de Agronomia e Veterinária, se destaca em{' '}
         <strong>Medicina</strong>, <strong>Odontologia</strong> e <strong>Direito</strong>.
       </p>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Campi e unidades</h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Campi e unidades</h3>
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Além do Campus Capão do Leão (agrário) e do Campus Porto (centro histórico), a universidade tem unidades
           espalhadas pela cidade de Pelotas e mantém o Centro Agropecuário da Palma, na BR-116 — uma estrutura de
           campo essencial pras práticas de Agronomia e Veterinária.
@@ -54,10 +54,10 @@ export default function UfpelPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Ingresso: SiSU + processos especiais
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           O ingresso é majoritariamente via <strong>SiSU</strong> (nota do ENEM). A universidade também mantém
           processos seletivos especiais próprios pra quilombolas, indígenas e o PARFOR (formação de professores em
           exercício), ampliando o acesso pra públicos que o SiSU tradicional não alcança bem. Confirme editais em{' '}

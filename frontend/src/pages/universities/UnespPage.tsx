@@ -23,7 +23,7 @@ export default function UnespPage() {
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         UNESP: ensino superior público levado a 24 cidades de São Paulo
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-10 max-w-2xl">
         Criada em 1976 pela fusão de institutos isolados já espalhados pelo interior paulista, a UNESP é
         universidade <strong>pública e gratuita</strong>, mantida pelo governo do estado de São Paulo. Seu maior
         diferencial estrutural é a <strong>descentralização</strong>: em vez de concentrar tudo na capital, a
@@ -34,12 +34,12 @@ export default function UnespPage() {
 
       {/* Mapa de cidades em formato de "selo/carimbo", mesmo padrão da UDESC */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
           34 faculdades e institutos em 24 cidades paulistas
         </h3>
         <div className="flex flex-wrap gap-2">
           {CIDADES.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -61,17 +61,17 @@ export default function UnespPage() {
 
       {/* Barra de composição de vagas por forma de ingresso, mesmo padrão da UDESC */}
       <div className="my-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">Como as vagas são divididas</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Como as vagas são divididas</h3>
         <div className="flex rounded-full overflow-hidden h-7 text-[10px] font-bold text-white mb-4">
-          <div className="bg-[#4f46e5] dark:bg-[#712ae2] flex items-center justify-center" style={{ width: '85%' }}>VUNESP ~85%</div>
-          <div className="bg-[#712ae2] dark:bg-[#8b5cf6] flex items-center justify-center" style={{ width: '10%' }}>Enem ~10%</div>
-          <div className="bg-[#818CF8] dark:bg-[#A5B4FC] flex items-center justify-center text-[#1E293B]" style={{ width: '5%' }}>Outros 5%</div>
+          <div className="bg-teal-600 dark:bg-amber-500 flex items-center justify-center" style={{ width: '85%' }}>VUNESP ~85%</div>
+          <div className="bg-amber-500 dark:bg-[#8b5cf6] flex items-center justify-center" style={{ width: '10%' }}>Enem ~10%</div>
+          <div className="bg-teal-400 dark:bg-[#A5B4FC] flex items-center justify-center text-[#1E293B]" style={{ width: '5%' }}>Outros 5%</div>
         </div>
         <dl className="space-y-3 text-sm">
           {INGRESSO.map(i => (
             <div key={i.via} className="flex gap-3">
               <dt className="font-bold text-[#1E293B] dark:text-white shrink-0 w-64">{i.via}</dt>
-              <dd className="text-[#475569] dark:text-[#c7c4d7]">{i.texto}</dd>
+              <dd className="text-[#475569] dark:text-slate-300">{i.texto}</dd>
             </div>
           ))}
         </dl>
@@ -96,8 +96,8 @@ export default function UnespPage() {
       {/* Cursos e pesquisa lado a lado, mesmo padrão da UDESC */}
       <div className="grid sm:grid-cols-2 gap-6">
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Cursos mais fortes</h3>
-          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Cursos mais fortes</h3>
+          <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             São 136 cursos de graduação, com tradição consolidada em <strong>Medicina</strong>,{' '}
             <strong>Medicina Veterinária</strong>, <strong>Agronomia</strong>, <strong>Odontologia</strong>,{' '}
             <strong>Comunicação Social</strong> e <strong>Educação Física</strong> — áreas em que a universidade
@@ -105,8 +105,8 @@ export default function UnespPage() {
           </p>
         </div>
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Pesquisa e extensão</h3>
-          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Pesquisa e extensão</h3>
+          <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             Além da graduação, a UNESP mantém cerca de <strong>150 programas de pós-graduação</strong> e mais de
             3.000 professores. São mais de <strong>500 projetos de extensão</strong> em andamento, levando
             conhecimento produzido na universidade direto à comunidade em todo o interior paulista.

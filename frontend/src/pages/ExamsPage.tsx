@@ -35,8 +35,8 @@ const QUESTION_TYPE_LABEL: Record<string, string> = {
 }
 
 const EXAM_PALETTES = [
-  { bg: '#eef2ff', icon: '#4f46e5', border: '#c7d2fe', bgClass: 'bg-[#eef2ff] dark:bg-[#1f2547]', textClass: 'text-[#4f46e5] dark:text-[#818CF8]' },
-  { bg: '#f5f0ff', icon: '#7c3aed', border: '#ddd6fe', bgClass: 'bg-[#f5f0ff] dark:bg-[#241b3f]', textClass: 'text-[#7c3aed] dark:text-[#c4a4ff]' },
+  { bg: '#eef2ff', icon: 'teal-600', border: '#c7d2fe', bgClass: 'bg-[#eef2ff] dark:bg-[#1f2547]', textClass: 'text-teal-600 dark:text-teal-400' },
+  { bg: '#fffbeb', icon: '#f59e0b', border: '#fde68a', bgClass: 'bg-[#fffbeb] dark:bg-slate-800', textClass: 'text-amber-500 dark:text-amber-400' },
   { bg: '#f0fdf4', icon: '#16a34a', border: '#bbf7d0', bgClass: 'bg-[#f0fdf4] dark:bg-[#132a1c]', textClass: 'text-[#16a34a] dark:text-[#4ade80]' },
   { bg: '#fff7ed', icon: '#ea580c', border: '#fed7aa', bgClass: 'bg-[#fff7ed] dark:bg-[#2c1c0e]', textClass: 'text-[#ea580c] dark:text-[#fb923c]' },
   { bg: '#f0f9ff', icon: '#0284c7', border: '#bae6fd', bgClass: 'bg-[#f0f9ff] dark:bg-[#0f2333]', textClass: 'text-[#0284c7] dark:text-[#38bdf8]' },
@@ -245,13 +245,13 @@ export default function ExamsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold font-display text-[#4f46e5] dark:text-[#818CF8]">Provas</h1>
+          <h1 className="text-2xl font-bold font-display text-teal-600 dark:text-teal-400">Provas</h1>
           <p className="text-sm text-gray-500 mt-0.5">{exams.length} prova{exams.length !== 1 ? 's' : ''} cadastrada{exams.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => exportExams(filtered)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-[#E2E8F0] bg-white text-[#4f46e5] hover:bg-[#EFF6FF] transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-[#E2E8F0] bg-white text-teal-600 hover:bg-[#EFF6FF] transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Exportar PDF
@@ -260,7 +260,7 @@ export default function ExamsPage() {
             <button
               onClick={() => { setForm({ title: '', instructions: '', subject_id: 0, class_id: 0, questions: [] }); setExtraClassIds([]); setQuestionSearch(''); setRedacaoForm({ title: '', subject_id: 0, class_id: 0, enunciado: '', points: 10, criteria: '' }); setRedacaoExtraClassIds([]); setExamMode('regular'); setShowModal(true) }}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-semibold shadow-sm transition-all hover:opacity-90 active:scale-95"
-              style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -274,8 +274,8 @@ export default function ExamsPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {[
-          { label: 'Total de Provas', value: exams.length, textClass: 'text-[#4f46e5] dark:text-[#818CF8]', bgClass: 'bg-[#eef2ff] dark:bg-[#272a32] border-[#eef2ff] dark:border-[#464554]' },
-          { label: user?.role === 'student' ? 'Disponíveis' : 'Matérias Cobertas', value: user?.role === 'student' ? exams.length : new Set(exams.map(e => e.subject_id)).size, textClass: 'text-[#712ae2] dark:text-[#c4a4ff]', bgClass: 'bg-[#f5f0ff] dark:bg-[#241b3f] border-[#f5f0ff] dark:border-[#3a2a5c]' },
+          { label: 'Total de Provas', value: exams.length, textClass: 'text-teal-600 dark:text-teal-400', bgClass: 'bg-[#eef2ff] dark:bg-slate-800 border-[#eef2ff] dark:border-[#464554]' },
+          { label: user?.role === 'student' ? 'Disponíveis' : 'Matérias Cobertas', value: user?.role === 'student' ? exams.length : new Set(exams.map(e => e.subject_id)).size, textClass: 'text-amber-500 dark:text-[#c4a4ff]', bgClass: 'bg-[#f5f0ff] dark:bg-[#241b3f] border-[#f5f0ff] dark:border-[#3a2a5c]' },
           { label: user?.role === 'student' ? 'Para Responder' : 'Turmas', value: user?.role === 'student' ? exams.length : new Set(exams.map(e => e.class_id)).size, textClass: 'text-[#27c38a] dark:text-[#4ade80]', bgClass: 'bg-[#f0fdf8] dark:bg-[#132a1f] border-[#f0fdf8] dark:border-[#1f4535]' },
         ].map((s) => (
           <div key={s.label} className={`rounded-2xl border p-4 ${s.bgClass}`}>
@@ -293,7 +293,7 @@ export default function ExamsPage() {
           </svg>
           <input
             className="pl-9 pr-4 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#464554] text-sm focus:outline-none focus:ring-2 w-56"
-            style={{ '--tw-ring-color': '#4f46e533' } as React.CSSProperties}
+            style={{ '--tw-ring-color': 'teal-60033' } as React.CSSProperties}
             placeholder="Buscar prova..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -362,7 +362,7 @@ export default function ExamsPage() {
                 <div className="flex items-center gap-2 shrink-0">
                   <Link
                     to={`/exams/${exam.id}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-[#4f46e5] dark:text-[#818CF8]"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-teal-600 dark:text-teal-400"
                   >
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
@@ -375,7 +375,7 @@ export default function ExamsPage() {
                       <Link
                         to={`/exams/${exam.id}/submit`}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-all hover:opacity-90"
-                        style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+                        style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12" />
@@ -384,7 +384,7 @@ export default function ExamsPage() {
                       </Link>
                       <Link
                         to={`/exams/${exam.id}/scan`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-[#712ae2] dark:text-[#c4a4ff]"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-amber-500 dark:text-[#c4a4ff]"
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="3" y1="9" x2="21" y2="9" />
@@ -467,23 +467,23 @@ export default function ExamsPage() {
       </div>
 
       {/* AI Insights */}
-      <div className="rounded-2xl border border-[#ddd6fe] dark:border-[#464554] p-5 bg-[#eef2ff] dark:bg-[#272a32]">
+      <div className="rounded-2xl border border-[#ddd6fe] dark:border-[#464554] p-5 bg-[#eef2ff] dark:bg-slate-800">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #712ae2, #4f46e5)' }}>
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #0d9488 100%)' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2a10 10 0 1 0 10 10" /><path d="M12 6v6l4 2" />
             </svg>
           </div>
-          <span className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8]">Insights das Provas</span>
-          <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-[#ede9fe] dark:bg-[#241b3f] text-[#712ae2] dark:text-[#c4a4ff]">IA</span>
+          <span className="text-sm font-semibold text-teal-600 dark:text-teal-400">Insights das Provas</span>
+          <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-[#ede9fe] dark:bg-[#241b3f] text-amber-500 dark:text-[#c4a4ff]">IA</span>
         </div>
         <div className="grid grid-cols-3 gap-3 text-center">
           <div className="bg-white dark:bg-[#1d1f27] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#464554]">
-            <p className="text-lg font-bold text-[#4f46e5] dark:text-[#818CF8]">{exams.length}</p>
+            <p className="text-lg font-bold text-teal-600 dark:text-teal-400">{exams.length}</p>
             <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Provas</p>
           </div>
           <div className="bg-white dark:bg-[#1d1f27] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#464554]">
-            <p className="text-lg font-bold text-[#712ae2] dark:text-[#c4a4ff]">
+            <p className="text-lg font-bold text-amber-500 dark:text-[#c4a4ff]">
               {exams.reduce((s, e) => s + (e.question_count ?? e.exam_questions?.length ?? 0), 0)}
             </p>
             <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Total de Questões</p>
@@ -508,7 +508,7 @@ export default function ExamsPage() {
                 <button
                   type="button"
                   onClick={() => setExamMode('regular')}
-                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${examMode === 'regular' ? 'bg-white shadow text-[#4f46e5]' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${examMode === 'regular' ? 'bg-white shadow text-teal-600' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                   📝 Prova Regular
                 </button>
@@ -525,7 +525,7 @@ export default function ExamsPage() {
             {examMode === 'redacao' ? (
               /* ── Formulário de Avaliação de Redação ── */
               <>
-                <div className="rounded-xl border border-[#ddd6fe] dark:border-[#464554] p-3 text-sm text-[#5b21b6] dark:text-[#c4a4ff] bg-[#faf5ff] dark:bg-[#241b3f]">
+                <div className="rounded-xl border border-[#ddd6fe] dark:border-[#464554] p-3 text-sm text-teal-900 dark:text-[#c4a4ff] bg-[#faf5ff] dark:bg-[#241b3f]">
                   O sistema cria automaticamente uma questão dissertativa com o enunciado abaixo. O aluno poderá <strong>digitar</strong> ou <strong>enviar foto</strong> da redação, e a IA corrigirá automaticamente.
                 </div>
                 <div>
@@ -694,11 +694,11 @@ export default function ExamsPage() {
                           return (
                             <label
                               key={c.id}
-                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${checked ? 'bg-[#eef2ff] dark:bg-[#1f2547] border-[#c7d2fe] dark:border-[#464554] text-[#4f46e5] dark:text-[#818CF8]' : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#0f1c37]'}`}
+                              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${checked ? 'bg-[#eef2ff] dark:bg-[#1f2547] border-[#c7d2fe] dark:border-[#464554] text-teal-600 dark:text-teal-400' : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-[#0f1c37]'}`}
                             >
                               <input
                                 type="checkbox"
-                                className="accent-[#4f46e5]"
+                                className="accent-teal-600"
                                 checked={checked}
                                 onChange={() => setExtraClassIds(ids => checked ? ids.filter(id => id !== c.id) : [...ids, c.id])}
                               />
@@ -738,7 +738,7 @@ export default function ExamsPage() {
                           >
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                                <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-[#eef2ff] dark:bg-[#1f2547] text-[#4f46e5] dark:text-[#818CF8]">
+                                <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-[#eef2ff] dark:bg-[#1f2547] text-teal-600 dark:text-teal-400">
                                   {QUESTION_TYPE_LABEL[q.question_type] ?? q.question_type}
                                 </span>
                                 <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${q.is_public ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'}`}>
@@ -747,7 +747,7 @@ export default function ExamsPage() {
                               </div>
                               <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{q.statement}</p>
                             </div>
-                            <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-gray-400 dark:text-slate-500 group-hover:bg-[#4f46e5] group-hover:text-white transition-colors mt-0.5">
+                            <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-gray-400 dark:text-slate-500 group-hover:bg-teal-600 group-hover:text-white transition-colors mt-0.5">
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                               </svg>
@@ -774,7 +774,7 @@ export default function ExamsPage() {
                     <div className="space-y-2">
                       {draftQuestionDetails.map((dq, i) => (
                         <div key={dq.question_id} className="flex items-center gap-3 px-4 py-2.5 rounded-xl border bg-[#F4F6F9] dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554]">
-                          <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#eef2ff] dark:bg-[#1f2547] text-[#4f46e5] dark:text-[#818CF8]">
+                          <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#eef2ff] dark:bg-[#1f2547] text-teal-600 dark:text-teal-400">
                             {i + 1}
                           </span>
                           <span className="flex-1 text-sm text-gray-700 dark:text-slate-300 truncate">{dq.question?.statement}</span>
@@ -813,7 +813,7 @@ export default function ExamsPage() {
                 type="submit"
                 disabled={creating}
                 className="px-5 py-2 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-60"
-                style={{ background: examMode === 'redacao' ? 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' : 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+                style={{ background: examMode === 'redacao' ? 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' : 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
               >
                 {creating
                   ? 'Criando...'

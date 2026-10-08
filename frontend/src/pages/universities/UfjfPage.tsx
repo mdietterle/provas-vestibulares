@@ -10,7 +10,7 @@ export default function UfjfPage() {
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         UFJF: referência do interior mineiro, entre as melhores da América Latina
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         A Universidade Federal de Juiz de Fora tem sede em Juiz de Fora (MG) e é uma das principais instituições
         públicas do interior mineiro. Está classificada entre as melhores universidades da América Latina, com
         reconhecimento nacional e internacional pela qualidade do ensino, investimento em pesquisa e forte atuação
@@ -26,8 +26,8 @@ export default function UfjfPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Dois campi, dois estados de formação</h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Dois campi, dois estados de formação</h3>
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Além da sede em Juiz de Fora, a UFJF mantém um campus avançado em <strong>Governador Valadares</strong>{' '}
           (também em Minas Gerais), levando ensino federal pra uma região mineira relativamente distante da capital
           e da Zona da Mata. São 93 opções de curso de graduação, 36 mestrados e 17 doutorados ao todo, cobrindo
@@ -39,7 +39,7 @@ export default function UfjfPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: Faculdade de Direito centenária, referência em aprovação na OAB
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A Faculdade de Direito de Juiz de Fora foi fundada em 1923 por um grupo de juristas locais, décadas antes
           da própria UFJF existir como universidade — e hoje é tradicionalmente reconhecida como escola de
           excelência em Direito, com desempenho consistentemente alto nos exames da OAB e nas avaliações de
@@ -47,7 +47,7 @@ export default function UfjfPage() {
         </p>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-10">
         Além de Direito, outros cursos de destaque incluem <strong>Medicina</strong>, <strong>Psicologia</strong>,{' '}
         <strong>Odontologia</strong>, <strong>Engenharias</strong>, <strong>Farmácia</strong> e{' '}
         <strong>Fisioterapia</strong> — áreas tradicionalmente entre as mais concorridas da universidade.
@@ -62,10 +62,10 @@ export default function UfjfPage() {
       />
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Ligação direta com a população: extensão como ponte
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Os programas e projetos de extensão da UFJF são pensados justamente pra articular ensino, pesquisa e
           demandas reais da sociedade — aproximando a comunidade universitária da população de Juiz de Fora e da
           Zona da Mata mineira. Isso se soma a uma política ativa de assistência estudantil (bolsas e apoio pra
@@ -75,16 +75,16 @@ export default function UfjfPage() {
       </div>
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Egressos de destaque
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed mb-3">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-3">
           O nome mais notável é <strong>Itamar Franco</strong>, ex-presidente do Brasil (1992–1995): formado em
           Engenharia Civil em 1955 pela Escola de Engenharia de Juiz de Fora, uma das instituições que, em 1960, se
           fundiram pra formar a própria UFJF — mesmo caso histórico da Faculdade de Direito, escolas que já existiam
           antes da universidade e depois foram incorporadas a ela.
         </p>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A UFJF instituiu a Medalha JK justamente pra homenagear personalidades notáveis ligadas à instituição. Um
           exemplo é <strong>Izak Carlos da Silva</strong>, mestre e doutor em Economia Aplicada pela
           UFJF, hoje Economista-Chefe do Banco de Desenvolvimento de Minas Gerais (BDMG) — reflexo direto da
@@ -94,10 +94,10 @@ export default function UfjfPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
           Como entrar: PISM (seriado) ou SiSU
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed mb-4">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-4">
           O principal vestibular próprio é o <strong>PISM</strong> (Programa de Ingresso Seletivo Misto), um
           processo seriado que acompanha o estudante ao longo de todo o ensino médio, com desempenho construído em
           três módulos independentes (cada um ligado a um triênio diferente do ensino médio). A outra via de
@@ -105,19 +105,19 @@ export default function UfjfPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Isenção da taxa</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Isenção da taxa</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Meados de junho, resultado no início de julho</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrições PISM</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Inscrições PISM</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Fim de julho a meados de agosto</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Provas (3 módulos)</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Provas (3 módulos)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Início de dezembro, mesma data pros três módulos</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vagas</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Vagas</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">~2.246 no total: 1.846 em Juiz de Fora, 400 em Governador Valadares</dd>
           </div>
         </dl>

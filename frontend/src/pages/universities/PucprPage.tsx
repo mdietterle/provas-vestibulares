@@ -19,27 +19,27 @@ export default function PucprPage() {
   const customContent = (
     <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       {/* Faixa de título simples, sem banner gradiente */}
-      <div className="border-l-4 border-[#712ae2] pl-4 mb-8">
+      <div className="border-l-4 border-amber-500 pl-4 mb-8">
         <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white">PUCPR: um só nome, quatro cidades</h2>
-        <p className="text-sm text-[#64748B] dark:text-[#c7c4d7] mt-1">
+        <p className="text-sm text-[#64748B] dark:text-slate-300 mt-1">
           Uma das maiores universidades privadas confessionais do Sul do país, com presença espalhada pelo Paraná.
         </p>
       </div>
 
       {/* Explorador de campi — faixa horizontal roláveis, formato distinto das outras páginas */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">Onde a PUCPR está</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Onde a PUCPR está</h3>
         <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1">
           {CAMPI.map(c => (
             <div key={c.cidade} className="shrink-0 w-64 rounded-2xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#191b23] p-5">
               <div className="text-lg font-bold text-[#1E293B] dark:text-white mb-1">{c.cidade}</div>
-              <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">{c.destaque}</p>
+              <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">{c.destaque}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-10">
         Mantida pela Sociedade Paranaense de Educação e Cultura, a PUCPR reúne mais de 70 opções de curso de
         graduação entre os quatro campi, com destaque histórico em <strong>Direito</strong>, <strong>Medicina</strong>{' '}
         e forte tradição em <strong>Engenharias, Arquitetura e Design</strong> — áreas que puxam boa parte da
@@ -50,7 +50,7 @@ export default function PucprPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Uma fundação anterior à própria universidade
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A história da PUCPR começa antes de 1959, ano oficial de fundação: já existiam a Escola de Enfermagem
           Madre Léoni (1953), a Faculdade Católica de Direito e a Faculdade de Ciências Médicas (ambas 1956),
           reunidas depois com a Faculdade de Ciências Econômicas pra formar a universidade. Recebeu o título de
@@ -64,11 +64,11 @@ export default function PucprPage() {
 
       {/* Lista simples de formas de ingresso, sem cards nem tabela */}
       <div>
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">Como entrar</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Como entrar</h3>
         <ul className="divide-y divide-[#E2E8F0] dark:divide-[#464554] border-y border-[#E2E8F0] dark:border-[#464554]">
           {INGRESSO.map(i => (
-            <li key={i} className="py-3 text-sm text-[#475569] dark:text-[#c7c4d7] flex items-center gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#712ae2] shrink-0" />
+            <li key={i} className="py-3 text-sm text-[#475569] dark:text-slate-300 flex items-center gap-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
               {i}
             </li>
           ))}

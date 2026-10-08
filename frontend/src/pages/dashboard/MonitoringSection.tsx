@@ -34,7 +34,7 @@ export function MonitoringSection({ monitoring }: { monitoring: DashboardMonitor
               key={v}
               onClick={() => setTab(v)}
               className={tab === v
-                ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#464554] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
+                ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#464554] text-teal-600 dark:text-teal-400 shadow-sm'
                 : 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-gray-500 dark:text-slate-400'
               }
             >
@@ -82,7 +82,7 @@ export function MonitoringSection({ monitoring }: { monitoring: DashboardMonitor
                   </div>
                   {alert.exam_id && (
                     <Link to={`/exams/${alert.exam_id}`}
-                      className="shrink-0 text-xs font-semibold text-[#712ae2] hover:underline whitespace-nowrap">
+                      className="shrink-0 text-xs font-semibold text-amber-500 hover:underline whitespace-nowrap">
                       Ver prova →
                     </Link>
                   )}

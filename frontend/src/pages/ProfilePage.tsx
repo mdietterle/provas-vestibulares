@@ -114,7 +114,7 @@ export default function ProfilePage() {
             ) : (
               <div
                 className="w-20 h-20 rounded-full flex items-center justify-center text-white text-2xl font-bold select-none"
-                style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
               >
                 {initials}
               </div>
@@ -141,7 +141,7 @@ export default function ProfilePage() {
                 onClick={() => fileRef.current?.click()}
                 disabled={uploadingAvatar}
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white disabled:opacity-60 transition-all hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
               >
                 {uploadingAvatar ? 'Enviando...' : 'Alterar foto'}
               </button>
@@ -238,7 +238,7 @@ export default function ProfilePage() {
             type="submit"
             disabled={saving}
             className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60 transition-all hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
           >
             {saving ? 'Salvando...' : 'Salvar alterações'}
           </button>
@@ -246,14 +246,14 @@ export default function ProfilePage() {
       </form>
 
       {/* Account info */}
-      <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] dark:bg-[#272a32] border-[#b6c4ff] dark:border-[#464554]">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)', color: '#fff' }}>
+      <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] dark:bg-slate-800 border-[#b6c4ff] dark:border-[#464554]">
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)', color: '#fff' }}>
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
         <div>
-          <p className="text-sm font-semibold text-[#4f46e5] dark:text-[#a8bfff]">Conta #{user.id}</p>
+          <p className="text-sm font-semibold text-teal-600 dark:text-[#a8bfff]">Conta #{user.id}</p>
           <p className="text-xs text-[#334155] mt-0.5">
             Para alterar email ou tipo de perfil, entre em contato com o administrador da instituição.
           </p>

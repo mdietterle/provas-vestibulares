@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { aiApi, questionsApi } from '../../api'
-import type { GeneratedQuestion, Subject } from '../../types'
+import type { GeneratedQuestion, GeneratedQuestionOption, Subject } from '../../types'
 import Modal from '../../components/Modal'
 import QuotaExceededModal from '../../components/QuotaExceededModal'
 import { useAuth } from '../../contexts/AuthContext'
@@ -13,7 +13,7 @@ const TYPE_LABELS: Record<string, string> = {
   summation: 'Somatório',
 }
 const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
-  multiple_choice: { bg: 'bg-[#eef2ff] dark:bg-[#272a32]', text: 'text-[#4f46e5] dark:text-[#818CF8]' },
+  multiple_choice: { bg: 'bg-teal-50 dark:bg-slate-800', text: 'text-teal-600 dark:text-teal-400' },
   true_false: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400' },
   essay: { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-400' },
   summation: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-400' },
@@ -102,11 +102,11 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
     <>
       <Modal title="Gerar Questões com IA" onClose={onClose} size="xl">
         <div className="space-y-5">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a1530] dark:to-[#272a32] border-[#e0d9ff] dark:border-[#332a5c]">
-            <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br from-[#712ae2] to-[#4f46e5]">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-gradient-to-br from-teal-50 to-teal-50 dark:from-slate-800 dark:to-slate-800 border-teal-200 dark:border-slate-700">
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br from-amber-500 to-teal-600">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </div>
-            <span className="text-xs font-semibold text-[#712ae2] dark:text-[#b8a5ff]">Powered by Groq — qwen3-32b</span>
+            <span className="text-xs font-semibold text-amber-500 dark:text-amber-400">Powered by Groq — qwen3-32b</span>
             <span className="ml-auto text-xs text-gray-400">Revise e edite antes de salvar</span>
           </div>
 
@@ -148,7 +148,7 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
               <div className="flex gap-2">
                 {[1, 3, 5, 8, 10].map(n => (
                   <button key={n} type="button" onClick={() => setAiForm(f => ({ ...f, count: n }))}
-                    className={`w-10 h-10 rounded-lg text-sm font-semibold transition-all border ${aiForm.count === n ? 'bg-[#4f46e5] text-white border-[#4f46e5]' : 'bg-[#F4F6F9] dark:bg-[#464554] text-[#334155] dark:text-gray-300 border-[#E2E8F0] dark:border-[#464554]'}`}>
+                    className={`w-10 h-10 rounded-lg text-sm font-semibold transition-all border ${aiForm.count === n ? 'bg-teal-600 text-white border-teal-600' : 'bg-[#F4F6F9] dark:bg-[#464554] text-[#334155] dark:text-gray-300 border-slate-200 dark:border-slate-700'}`}>
                     {n}
                   </button>
                 ))}
@@ -164,13 +164,13 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
               <label className="label">Imagem de referência <span className="font-normal text-gray-400">(opcional)</span></label>
               {aiForm.image_base64 ? (
                 <div className="relative inline-block">
-                  <img src={`data:image/jpeg;base64,${aiForm.image_base64}`} alt="Imagem de contexto" className="rounded-xl border max-h-48 object-contain border-[#e0d9ff] dark:border-[#332a5c]" />
+                  <img src={`data:image/jpeg;base64,${aiForm.image_base64}`} alt="Imagem de contexto" className="rounded-xl border max-h-48 object-contain border-teal-200 dark:border-slate-700" />
                   <button type="button" onClick={() => setAiForm(f => ({ ...f, image_base64: '' }))} className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                   </button>
                 </div>
               ) : (
-                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-indigo-50 dark:hover:bg-[#1e2d4a] border-[#e0d9ff] dark:border-[#332a5c] text-[#712ae2] dark:text-[#b8a5ff]">
+                <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-teal-50 dark:hover:bg-slate-700 border-teal-200 dark:border-slate-700 text-amber-500 dark:text-amber-400">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
                   Anexar imagem
                   <input type="file" accept="image/*" className="hidden" onChange={e => {
@@ -179,10 +179,10 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
                   }} />
                 </label>
               )}
-              {aiForm.image_base64 && <p className="text-xs text-indigo-500 dark:text-indigo-400 mt-1.5">A IA analisará a imagem para gerar questões sobre ela.</p>}
+              {aiForm.image_base64 && <p className="text-xs text-teal-600 dark:text-teal-400 mt-1.5">A IA analisará a imagem para gerar questões sobre ela.</p>}
             </div>
 
-            <button type="submit" disabled={aiGenerating} className="w-full py-2.5 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-60 bg-gradient-to-br from-[#712ae2] to-[#4f46e5]">
+            <button type="submit" disabled={aiGenerating} className="w-full py-2.5 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-60 bg-gradient-to-br from-amber-500 to-teal-600">
               {aiGenerating ? (
                 <><svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" /></svg> Gerando com IA...</>
               ) : (
@@ -192,11 +192,11 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
           </form>
 
           {aiResults.length > 0 && (
-            <div className="space-y-3 border-t pt-4 border-[#E2E8F0] dark:border-[#464554]">
+            <div className="space-y-3 border-t pt-4 border-slate-200 dark:border-slate-700">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold text-[#1E293B]">{aiResults.length} {aiResults.length !== 1 ? 'questões' : 'questão'} gerada{aiResults.length !== 1 ? 's' : ''}<span className="ml-2 text-xs font-normal text-gray-400">({aiSelected.size} selecionada{aiSelected.size !== 1 ? 's' : ''})</span></p>
                 <div className="flex gap-2">
-                  <button type="button" onClick={() => setAiSelected(new Set(aiResults.map((_, i) => i)))} className="text-xs font-semibold text-[#712ae2] dark:text-[#b8a5ff] hover:underline">Todas</button>
+                  <button type="button" onClick={() => setAiSelected(new Set(aiResults.map((_, i) => i)))} className="text-xs font-semibold text-amber-500 dark:text-amber-400 hover:underline">Todas</button>
                   <span className="text-gray-300">·</span>
                   <button type="button" onClick={() => setAiSelected(new Set())} className="text-xs font-semibold text-gray-400 hover:underline">Nenhuma</button>
                 </div>
@@ -204,13 +204,13 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
               <div className="space-y-3 max-h-[340px] overflow-y-auto pr-1">
                 {aiResults.map((q, idx) => {
                   const selected = aiSelected.has(idx)
-                  const diffCfg = DIFFICULTY_CONFIG[q.difficulty] || DIFFICULTY_CONFIG.medium
-                  const typeStyle = TYPE_COLORS[q.question_type] || TYPE_COLORS_DEFAULT
+                  const diffCfg = DIFFICULTY_CONFIG[q.difficulty ?? 'medium'] ?? DIFFICULTY_CONFIG.medium
+                  const typeStyle = TYPE_COLORS[q.question_type] ?? TYPE_COLORS_DEFAULT
                   return (
                     <div key={idx} onClick={() => setAiSelected(s => { const next = new Set(s); next.has(idx) ? next.delete(idx) : next.add(idx); return next })}
-                      className={`rounded-xl border p-4 cursor-pointer transition-all ${selected ? 'border-[#712ae2] bg-[#faf5ff] dark:bg-[#241a3d]' : 'border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#464554]'}`}>
+                      className={`rounded-xl border p-4 cursor-pointer transition-all ${selected ? 'border-amber-500 bg-teal-50 dark:bg-slate-800' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700'}`}>
                       <div className="flex items-start gap-3">
-                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${selected ? 'bg-[#712ae2] border-[#712ae2]' : 'border-gray-300 dark:border-gray-600'}`}>
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${selected ? 'bg-amber-500 border-amber-500' : 'border-gray-300 dark:border-gray-600'}`}>
                           {selected && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -221,7 +221,7 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
                           <p className="text-sm text-gray-800 dark:text-gray-200 leading-snug">{q.statement}</p>
                           {q.options.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-1.5">
-                              {q.options.map((o, i) => (
+                              {q.options.map((o: GeneratedQuestionOption, i: number) => (
                                 <span key={i} className={`text-xs px-2 py-0.5 rounded-lg border ${o.is_correct ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/40 font-semibold' : 'bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700'}`}>
                                   {OPTION_LETTERS[i]}. {o.text}{o.is_correct ? ' ✓' : ''}
                                 </span>
@@ -234,7 +234,7 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
                   )
                 })}
               </div>
-              <button onClick={handleAiSave} disabled={aiSaving || aiSelected.size === 0} className="w-full py-2.5 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-50 bg-gradient-to-br from-[#4f46e5] to-[#712ae2]">
+              <button onClick={handleAiSave} disabled={aiSaving || aiSelected.size === 0} className="w-full py-2.5 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-50 bg-gradient-to-br from-teal-600 to-amber-500">
                 {aiSaving ? (
                   <><svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" /></svg> Salvando...</>
                 ) : (

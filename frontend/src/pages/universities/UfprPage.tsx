@@ -8,7 +8,7 @@ export default function UfprPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: a universidade mais antiga do Brasil em funcionamento contínuo
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Fundada em 19 de dezembro de 1912, a UFPR é considerada a mais antiga instituição brasileira concebida
           como universidade e em funcionamento ininterrupto desde então — mais de um século de história acadêmica
           sem paralelo entre as federais do país.
@@ -27,14 +27,14 @@ export default function UfprPage() {
         Pública federal — sem mensalidade
       </div>
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">UFPR: do centro histórico de Curitiba ao litoral paranaense</h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         Além dos campi espalhados por Curitiba, a UFPR tem uma presença geográfica pouco comum: dois campi no
         litoral do estado — o Centro de Estudos do Mar, em Pontal do Paraná, e outro em Matinhos — somados a
         unidades em cidades do interior como Palotina e Toledo. É uma das poucas federais brasileiras com estrutura
         acadêmica dedicada especificamente a estudos costeiros e marinhos.
       </p>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8">
         São mais de 100 cursos de graduação entre licenciaturas, bacharelados e tecnólogos, além de mestrados,
         doutorados, residências médicas e cursos técnicos. No Ranking Universitário Folha (RUF) 2024, a UFPR ocupa
         o <strong>9º lugar entre as melhores universidades do Brasil</strong>. Cursos historicamente fortes incluem{' '}
@@ -43,10 +43,10 @@ export default function UfprPage() {
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Ingresso: vestibular próprio ou SiSU
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           O ingresso combina o <strong>vestibular próprio</strong>, conduzido pelo Núcleo de Concursos (NC-UFPR), e
           vagas via <strong>SiSU</strong> (ENEM). O NC-UFPR também organiza modalidades específicas, como Letras
           Libras e cotas para candidatos indígenas. Datas e vagas mudam a cada edital — confirme sempre em{' '}

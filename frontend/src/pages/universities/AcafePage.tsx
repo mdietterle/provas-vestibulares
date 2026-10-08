@@ -5,7 +5,7 @@ export default function AcafePage() {
   const customContent = (
     <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       {/* Banner Principal */}
-      <div className="bg-gradient-to-br from-[#4f46e5] via-[#1a3a8a] to-[#712ae2] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-teal-600 via-teal-800 to-amber-500 text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="relative z-10">
           <span className="inline-block text-xs font-semibold uppercase tracking-wider text-yellow-300 bg-white/10 px-3 py-1 rounded-full mb-3">
             Tudo o que você precisa saber
@@ -27,7 +27,7 @@ export default function AcafePage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             O que é o sistema ACAFE?
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <p>
               A ACAFE (Associação Catarinense das Fundações Educacionais) não é uma universidade — é uma entidade que
               organiza um <strong>vestibular unificado</strong> usado por um conjunto de universidades e centros
@@ -52,7 +52,7 @@ export default function AcafePage() {
             </p>
             <div className="flex flex-wrap gap-2 text-xs">
               {['FURB', 'UNIVALI', 'UNOESC', 'UNESC', 'UNISUL', 'UNIVILLE', 'UnC', 'UNIDAVI', 'UNIFEBE', 'UNIPLAC', 'Uniarp', 'Unibave', 'Católica de SC'].map(u => (
-                <span key={u} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#c7c4d7] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
+                <span key={u} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-slate-300 px-2.5 py-1 rounded-md font-semibold text-teal-600 dark:text-teal-400">
                   {u}
                 </span>
               ))}
@@ -88,7 +88,7 @@ export default function AcafePage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Como funciona a inscrição
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <p>
               A inscrição é feita <strong>exclusivamente pela internet</strong>, no site oficial da ACAFE, dentro do
               prazo definido em edital. Durante o preenchimento, você escolhe três coisas importantes: o <strong>curso</strong>,
@@ -105,11 +105,11 @@ export default function AcafePage() {
 
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vestibular de Verão</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Vestibular de Verão</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Inscrições em setembro do ano anterior, prova em novembro, ingresso no 1º semestre</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vestibular de Inverno</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Vestibular de Inverno</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Inscrições em abril, prova em junho, ingresso no 2º semestre</dd>
           </div>
         </dl>
@@ -127,7 +127,7 @@ export default function AcafePage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             ACAFE x ENEM: qual a diferença?
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <p>
               É fácil confundir os dois porque ambos são "provas que abrem várias portas", mas eles funcionam de jeitos
               opostos. O <strong>ENEM</strong> é um exame nacional único, aplicado pelo INEP/MEC em todo o Brasil, e
@@ -145,10 +145,10 @@ export default function AcafePage() {
         </div>
 
         <div className="bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-5 space-y-3">
-          <h3 className="font-bold text-base text-[#4f46e5] dark:text-[#818CF8]">
+          <h3 className="font-bold text-base text-teal-600 dark:text-teal-400">
             ACAFE não usa TRI — a correção é bem mais direta
           </h3>
-          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             Aqui mora a diferença mais importante pra quem vai estudar: o ENEM usa a TRI (Teoria de Resposta ao Item),
             que pesa a coerência do seu padrão de acertos e pune quem chuta questões difíceis mas erra as fáceis. O
             <strong> ACAFE não usa TRI</strong> — a nota é calculada por soma direta de acertos, com peso definido no
@@ -156,7 +156,7 @@ export default function AcafePage() {
             muda a estratégia de prova: no ACAFE, cada questão certa vale o mesmo peso fixo dentro da sua disciplina,
             sem o efeito de "questão difícil valendo menos se seu padrão for inconsistente" que existe no ENEM.
           </p>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             <p>
               Na prática, muita gente de Santa Catarina faz os dois: usa o ENEM pra tentar vaga em federais/estaduais
               via SiSU e bolsa via ProUni, e faz o ACAFE como plano B (ou A) pras particulares da região — já que são

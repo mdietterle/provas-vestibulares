@@ -70,7 +70,7 @@ export default function TermsOfServicePage() {
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">5. Planos e pagamento</h2>
             <p>
               Os planos disponíveis e seus respectivos preços estão descritos na{' '}
-              <Link to="/plans" className="text-[#712ae2] dark:text-[#818CF8] hover:underline">página de planos</Link>. Instituições
+              <Link to="/plans" className="text-[#f59e0b] dark:text-teal-400 hover:underline">página de planos</Link>. Instituições
               contratantes são responsáveis pelos pagamentos referentes ao plano escolhido, nos termos acordados
               no momento da contratação.
             </p>
@@ -91,7 +91,7 @@ export default function TermsOfServicePage() {
             <p>
               Você pode solicitar o encerramento da sua conta e a exclusão dos seus dados a qualquer momento,
               conforme descrito na{' '}
-              <Link to="/privacidade" className="text-[#712ae2] dark:text-[#818CF8] hover:underline">Política de Privacidade</Link>.
+              <Link to="/privacidade" className="text-[#f59e0b] dark:text-teal-400 hover:underline">Política de Privacidade</Link>.
               Reservamo-nos o direito de suspender contas que violem estes termos.
             </p>
           </section>
@@ -117,11 +117,11 @@ export default function TermsOfServicePage() {
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">10. Contato</h2>
             <p>
               Dúvidas sobre estes termos podem ser enviadas para{' '}
-              <a href="mailto:contato@aiassessmenthub.com.br" className="text-[#712ae2] dark:text-[#818CF8] hover:underline">
+              <a href="mailto:contato@aiassessmenthub.com.br" className="text-[#f59e0b] dark:text-teal-400 hover:underline">
                 contato@aiassessmenthub.com.br
               </a>{' '}
               ou pela{' '}
-              <Link to="/contact" className="text-[#712ae2] dark:text-[#818CF8] hover:underline">página de contato</Link>.
+              <Link to="/contact" className="text-[#f59e0b] dark:text-teal-400 hover:underline">página de contato</Link>.
             </p>
           </section>
         </div>

@@ -10,7 +10,7 @@ export interface BreadcrumbItem {
 export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   return (
     <nav aria-label="Breadcrumb" className="mb-5 text-sm">
-      <ol className="flex flex-wrap items-center gap-1.5 text-[#64748B] dark:text-[#c7c4d7]">
+      <ol className="flex flex-wrap items-center gap-1.5 text-slate-500 dark:text-slate-300">
         {items.map((item, i) => {
           const isLast = i === items.length - 1
           return (
@@ -21,7 +21,7 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
                 </svg>
               )}
               {item.to && !isLast ? (
-                <Link to={item.to} className="hover:text-[#4f46e5] dark:hover:text-[#818CF8] transition-colors font-medium">
+                <Link to={item.to} className="hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-medium">
                   {item.label}
                 </Link>
               ) : (

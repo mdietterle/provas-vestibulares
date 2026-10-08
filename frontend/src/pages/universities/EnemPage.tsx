@@ -5,7 +5,7 @@ export default function EnemPage() {
   const customContent = (
     <div className="space-y-10 mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       {/* Banner Principal */}
-      <div className="bg-gradient-to-br from-[#4f46e5] via-[#1a3a8a] to-[#712ae2] text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-teal-600 via-teal-800 to-amber-500 text-white p-6 sm:p-10 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="relative z-10">
           <span className="inline-block text-xs font-semibold uppercase tracking-wider text-yellow-300 bg-white/10 px-3 py-1 rounded-full mb-3">
             Tudo o que você precisa saber
@@ -25,7 +25,7 @@ export default function EnemPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Calendário oficial do ENEM 2026
           </h2>
-          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-2 leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-slate-300 mt-2 leading-relaxed">
             Datas confirmadas pelo INEP no Edital nº 64, publicado em 21 de maio de 2026. Fique de olho: o edital de cada
             edição costuma ter pequenas variações, então sempre confira o calendário oficial em{' '}
             <a href="https://enem.inep.gov.br/participante/" target="_blank" rel="noreferrer" className="underline font-semibold">
@@ -35,27 +35,27 @@ export default function EnemPage() {
         </div>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrições</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Inscrições</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">25 de maio a 12 de junho de 2026</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Pagamento da taxa (R$ 85)</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Pagamento da taxa (R$ 85)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Até 17 de junho de 2026</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">1º dia de prova</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">1º dia de prova</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">8 de novembro — Linguagens, Ciências Humanas e Redação</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">2º dia de prova</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">2º dia de prova</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">15 de novembro — Ciências da Natureza e Matemática</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Gabarito oficial</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Gabarito oficial</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Até 30 de novembro de 2026</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Resultado individual (TRI)</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Resultado individual (TRI)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Normalmente em janeiro do ano seguinte, seguido das chamadas do SiSU</dd>
           </div>
         </dl>
@@ -71,7 +71,7 @@ export default function EnemPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             O que dá pra fazer com a nota do ENEM?
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <p>
               Diferente dos vestibulares tradicionais em que você faz uma prova específica pra cada faculdade, o ENEM funciona como um passaporte universal. Você faz a prova uma vez e, com aquela nota na mão, um leque gigantesco de opções se abre. O caminho mais conhecido é o <strong>SiSU</strong>, que é o sistema do governo pra distribuir as vagas nas universidades públicas (federais e estaduais) pelo país afora. Você entra no site, vê as notas de corte e aplica pra vaga que mais faz sentido pra você, seja na ampla concorrência ou pelas cotas.
             </p>
@@ -91,7 +91,7 @@ export default function EnemPage() {
             </p>
             <div className="flex flex-wrap gap-2 text-xs">
               {['UFRJ', 'UFMG', 'UFRGS', 'UNIFESP', 'UnB', 'UFPE', 'UFSC', 'UFPR', 'UFF', 'UFBA', 'UFG', 'UFCE', 'UFPA', 'UFAM', 'USP (via Enem-USP)', 'Unicamp (via Enem-Unicamp)'].map(u => (
-                <span key={u} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#c7c4d7] px-2.5 py-1 rounded-md font-semibold text-[#4f46e5] dark:text-[#818CF8]">
+                <span key={u} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-slate-300 px-2.5 py-1 rounded-md font-semibold text-teal-600 dark:text-teal-400">
                   {u}
                 </span>
               ))}
@@ -123,7 +123,7 @@ export default function EnemPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Como funciona o processo de inscrição?
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <p>
               A inscrição do ENEM parece complicada de primeira, mas na real ela segue um ritmo bem previsível todo ano. A primeira coisa que você precisa ficar de olho, lá por volta de abril, é o prazo pra pedir a <strong>isenção da taxa</strong>. Se você tá no terceiro ano do ensino médio em escola pública, a isenção é automática. Se você já se formou numa escola pública, ou se estudou em colégio particular com bolsa integral e a renda da sua família não é tão alta, você também pode pedir pra não pagar a taxa. Só toma cuidado: se você teve a isenção no ano passado e faltou na prova, vai precisar justificar essa ausência no site antes de pedir a isenção de novo.
             </p>
@@ -143,7 +143,7 @@ export default function EnemPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             O que esperar dos dias de prova (e como sua nota é calculada)
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <p>
               O ENEM é uma verdadeira maratona dividida em dois domingos consecutivos lá em novembro. No <strong>primeiro domingo</strong>, você vai encarar as provas de Linguagens, Ciências Humanas e a famosa Redação. São 5 horas e meia pra fazer tudo. Na parte de Linguagens (45 questões), espere muito texto, interpretação, artes e aquela língua estrangeira que você escolheu na inscrição. Nas Humanas (mais 45 questões), o foco é em História, Geografia, Sociologia e Filosofia. Mas o grande peso desse dia costuma ser a Redação, onde você precisa escrever um texto dissertativo-argumentativo sobre um problema social e, no fim, propor uma solução bem detalhada pra ele.
             </p>
@@ -154,10 +154,10 @@ export default function EnemPage() {
         </div>
 
         <div className="bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] rounded-2xl p-5 space-y-3 mt-4">
-          <h3 className="font-bold text-base text-[#4f46e5] dark:text-[#818CF8]">
+          <h3 className="font-bold text-base text-teal-600 dark:text-teal-400">
             A mágica da TRI: por que notas iguais não existem?
           </h3>
-          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+          <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             No ENEM, você não ganha simplesmente um ponto por cada questão que acerta. O sistema usa algo chamado TRI (Teoria de Resposta ao Item). Basicamente, o algoritmo avalia o quão coerente foi o seu desempenho. Funciona assim: as questões já são classificadas previamente como fáceis, médias ou difíceis. Se você acerta várias questões difíceis, mas erra um monte de questões fáceis do mesmo assunto, o sistema desconfia que você chutou. O resultado? Os pontos daquelas questões difíceis que você acertou acabam valendo bem menos. A regra de ouro é sempre garantir as questões fáceis e médias primeiro, porque elas são o alicerce da sua nota.
           </p>
         </div>
@@ -169,7 +169,7 @@ export default function EnemPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white">
             Dicas práticas pra mandar bem
           </h2>
-          <div className="text-sm text-[#475569] dark:text-[#c7c4d7] mt-4 space-y-4 leading-relaxed">
+          <div className="text-sm text-[#475569] dark:text-slate-300 mt-4 space-y-4 leading-relaxed">
             <p>
               Estudar pro ENEM não é só devorar livros, é saber fazer a prova. Uma das melhores coisas que você pode fazer ao longo do ano é treinar com <strong>simulados cronometrados</strong>. A prova é muito extensa, então não basta saber o conteúdo; você precisa criar resistência física e mental pra ler textos enormes por 5 horas seguidas, mantendo uma média ali de 3 minutos por questão.
             </p>

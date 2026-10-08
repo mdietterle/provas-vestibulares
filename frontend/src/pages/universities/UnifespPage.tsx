@@ -16,7 +16,7 @@ export default function UnifespPage() {
         />
         <div>
           <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">UNIFESP: da Escola Paulista de Medicina a sete campi</h2>
-          <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7]">
+          <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300">
             A Escola Paulista de Medicina nasceu em 1933 como escola privada na Vila Clementino, foi federalizada em
             1956 e só em 1994 deu origem à Universidade Federal de São Paulo.
           </p>
@@ -31,7 +31,7 @@ export default function UnifespPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: Medicina nº 1 do Brasil, com mascote próprio de quase um século
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           O curso de Medicina da UNIFESP foi classificado em 1º lugar no Ranking Universitário Folha (2016), e a
           universidade aparece entre as 4 melhores da América Latina segundo a Times Higher Education (2022) — a{' '}
           <strong>3ª melhor do Brasil</strong> e a <strong>1ª entre as federais</strong>. Um detalhe curioso e raro:
@@ -42,17 +42,17 @@ export default function UnifespPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Sete campi na Grande São Paulo e litoral</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Sete campi na Grande São Paulo e litoral</h3>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
         </div>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-10">
         O Campus São Paulo reúne a Escola Paulista de Medicina (Medicina, Biomedicina, Fonoaudiologia, tecnologias
         oftálmica e de Radiologia) e a Escola Paulista de Enfermagem. Nos demais campi, a UNIFESP expandiu pra{' '}
         <strong>Ciências Biológicas</strong>, <strong>Psicologia</strong>, <strong>Relações Internacionais</strong>{' '}
@@ -60,10 +60,10 @@ export default function UnifespPage() {
       </p>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Avaliação MEC: nota máxima por oito anos seguidos
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A UNIFESP alcançou nota máxima (5) do MEC pelo <strong>oitavo ano consecutivo</strong> — entre 2.012
           instituições avaliadas no ciclo, só 46 (2,3%) chegaram nessa nota. Cursos como{' '}
           <strong>Nutrição</strong> (campus Baixada Santista), <strong>Enfermagem</strong>,{' '}
@@ -74,10 +74,10 @@ export default function UnifespPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Papel no desenvolvimento da Grande São Paulo
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Ao se espalhar por sete campi — de Guarulhos a Diadema, de Osasco à Baixada Santista — a UNIFESP levou
           ensino federal gratuito de excelência pra regiões metropolitanas que historicamente dependiam só de
           faculdades privadas ou de deslocamento até a capital. Isso reduz a concentração de vagas públicas só na
@@ -87,10 +87,10 @@ export default function UnifespPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Ingresso: SiSU, com sistema misto em alguns cursos
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           O ingresso é majoritariamente via <strong>SiSU</strong> (nota do ENEM), seguindo o cronograma nacional.
           Alguns cursos usam um sistema misto, com provas complementares próprias além da nota do ENEM. Confirme
           sempre em{' '}

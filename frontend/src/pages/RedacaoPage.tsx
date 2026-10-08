@@ -38,7 +38,7 @@ function CriterionCard({ cs }: { cs: CriterionScore }) {
         <ScorePill score={effective} max={cs.max_points} />
       </div>
       {cs.ai_comment && (
-        <p className="text-xs text-[#334155] dark:text-[#c7c4d7] leading-relaxed">{cs.ai_comment}</p>
+        <p className="text-xs text-[#334155] dark:text-slate-300 leading-relaxed">{cs.ai_comment}</p>
       )}
       {overridden && (
         <p className="text-xs text-purple-700 dark:text-purple-400 font-medium">
@@ -78,7 +78,7 @@ function RedacaoDetail({ id }: { id: number }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <svg className="w-8 h-8 animate-spin text-[#4f46e5]" fill="none" viewBox="0 0 24 24">
+        <svg className="w-8 h-8 animate-spin text-[#0d9488]" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
@@ -99,7 +99,7 @@ function RedacaoDetail({ id }: { id: number }) {
           onClick={() => navigate('/redacoes')}
           className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a] transition-colors"
         >
-          <svg className="w-4 h-4 text-[#334155] dark:text-[#c7c4d7]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-4 h-4 text-[#334155] dark:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
@@ -143,7 +143,7 @@ function RedacaoDetail({ id }: { id: number }) {
           </div>
           <div className="bg-white rounded-xl border border-[#E2E8F0] p-4">
             <p className="text-xs text-[#64748B] font-medium">Nota da IA</p>
-            <p className="text-2xl font-bold text-[#334155] dark:text-[#c7c4d7] mt-1">
+            <p className="text-2xl font-bold text-[#334155] dark:text-slate-300 mt-1">
               {data.ai_total_score?.toFixed(1) ?? '—'}
               <span className="text-sm font-normal text-[#64748B]"> / {data.max_score.toFixed(1)}</span>
             </p>
@@ -166,7 +166,7 @@ function RedacaoDetail({ id }: { id: number }) {
       {data.ai_feedback && (
         <div className="bg-[#f5f3ff] dark:bg-[#1e1a3a] border border-[#e9d5ff] dark:border-[#3d3470] rounded-xl p-4">
           <p className="text-xs font-semibold text-purple-700 dark:text-purple-400 mb-1">Feedback geral da IA</p>
-          <p className="text-sm text-[#334155] dark:text-[#c7c4d7] leading-relaxed">{data.ai_feedback}</p>
+          <p className="text-sm text-[#334155] dark:text-slate-300 leading-relaxed">{data.ai_feedback}</p>
         </div>
       )}
 
@@ -174,7 +174,7 @@ function RedacaoDetail({ id }: { id: number }) {
       {data.professor_comment && (
         <div className="bg-[#f0fdf4] dark:bg-[#0f2419] border border-[#bbf7d0] dark:border-green-800 rounded-xl p-4">
           <p className="text-xs font-semibold text-green-700 dark:text-green-400 mb-1">Comentário do professor</p>
-          <p className="text-sm text-[#334155] dark:text-[#c7c4d7] leading-relaxed">{data.professor_comment}</p>
+          <p className="text-sm text-[#334155] dark:text-slate-300 leading-relaxed">{data.professor_comment}</p>
         </div>
       )}
 
@@ -192,7 +192,7 @@ function RedacaoDetail({ id }: { id: number }) {
       <div>
         <h2 className="text-base font-semibold text-[#1E293B] mb-3">Texto enviado</h2>
         <div className="bg-white rounded-xl border border-[#E2E8F0] p-5">
-          <p className="text-sm text-[#334155] dark:text-[#c7c4d7] leading-relaxed whitespace-pre-wrap">{data.body}</p>
+          <p className="text-sm text-[#334155] dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{data.body}</p>
         </div>
       </div>
     </div>
@@ -255,7 +255,7 @@ function RedacaoSubmitForm() {
             value={theme}
             onChange={e => setTheme(e.target.value)}
             placeholder="Ex: Os desafios da educação no Brasil contemporâneo"
-            className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-xl px-4 py-2.5 text-sm text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8]"
+            className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-xl px-4 py-2.5 text-sm text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-teal-400"
           />
         </div>
 
@@ -269,7 +269,7 @@ function RedacaoSubmitForm() {
             onChange={e => setBody(e.target.value)}
             rows={18}
             placeholder="Escreva aqui o texto completo da sua redação…"
-            className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-xl px-4 py-3 text-sm text-[#1E293B] leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8]"
+            className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-xl px-4 py-3 text-sm text-[#1E293B] leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-teal-400"
           />
         </div>
 
@@ -277,7 +277,7 @@ function RedacaoSubmitForm() {
           <button
             type="button"
             onClick={() => navigate('/redacoes')}
-            className="px-5 py-2.5 rounded-xl border border-[#c5ceff] dark:border-[#464554] text-sm font-semibold text-[#334155] dark:text-[#c7c4d7] hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a] transition-colors"
+            className="px-5 py-2.5 rounded-xl border border-[#c5ceff] dark:border-[#464554] text-sm font-semibold text-[#334155] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a] transition-colors"
           >
             Cancelar
           </button>
@@ -285,7 +285,7 @@ function RedacaoSubmitForm() {
             type="submit"
             disabled={submitting}
             className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity disabled:opacity-60"
-            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
           >
             {submitting ? 'Enviando…' : 'Enviar para correção'}
           </button>

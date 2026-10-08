@@ -182,9 +182,11 @@ export const profileApi = {
 // ── AI ────────────────────────────────────────────────────────────────────────
 export interface GeneratedQuestion {
   statement: string
-  question_type: string
-  difficulty: string
-  options: { text: string; is_correct: boolean; order: number }[]
+  question_type: 'multiple_choice' | 'true_false' | 'essay' | 'summation'
+  difficulty?: 'easy' | 'medium' | 'hard'
+  options: { text: string; is_correct: boolean; order?: number }[]
+  correct_answer?: string
+  explanation?: string
 }
 
 export const aiApi = {

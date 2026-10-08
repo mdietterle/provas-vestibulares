@@ -13,34 +13,34 @@ export default function AiInsightsPanel({ questions }: Props) {
   }
 
   return (
-    <div className="rounded-2xl border p-5 bg-gradient-to-br from-[#f5f0ff] to-[#eef2ff] dark:from-[#1a1530] dark:to-[#272a32] border-[#e0d9ff] dark:border-[#332a5c]">
+    <div className="rounded-2xl border p-5 bg-gradient-to-br from-teal-50 to-teal-50 dark:from-slate-800 dark:to-slate-800 border-teal-200 dark:border-slate-700">
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-[#712ae2] to-[#4f46e5]">
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-gradient-to-br from-amber-500 to-teal-600">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2a10 10 0 1 0 10 10" /><path d="M12 6v6l4 2" />
           </svg>
         </div>
-        <span className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8]">Análise do Banco</span>
-        <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-[#ede9fe] dark:bg-[#2a2050] text-[#712ae2] dark:text-[#b8a5ff]">IA</span>
+        <span className="text-sm font-semibold text-teal-600 dark:text-teal-400">Análise do Banco</span>
+        <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium bg-teal-100 dark:bg-slate-700 text-amber-500 dark:text-amber-400">IA</span>
       </div>
       <div className="grid grid-cols-4 gap-3 text-center">
-        <div className="bg-white dark:bg-[#464554] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
-          <p className="text-lg font-bold text-[#4f46e5] dark:text-[#818CF8]">{questions.length}</p>
+        <div className="bg-white dark:bg-slate-700 rounded-xl p-3 border border-teal-200 dark:border-slate-600">
+          <p className="text-lg font-bold text-teal-600 dark:text-teal-400">{questions.length}</p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Total</p>
         </div>
-        <div className="bg-white dark:bg-[#464554] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
-          <p className="text-lg font-bold text-[#4f46e5] dark:text-[#818CF8]">
+        <div className="bg-white dark:bg-slate-700 rounded-xl p-3 border border-teal-200 dark:border-slate-600">
+          <p className="text-lg font-bold text-teal-600 dark:text-teal-400">
             {questions.length > 0 ? Math.round((counts.mc / questions.length) * 100) : 0}%
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Múltipla Escolha</p>
         </div>
-        <div className="bg-white dark:bg-[#464554] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
+        <div className="bg-white dark:bg-slate-700 rounded-xl p-3 border border-teal-200 dark:border-slate-600">
           <p className="text-lg font-bold text-[#27c38a] dark:text-[#4ade80]">
             {questions.filter(q => q.is_public).length}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Públicas</p>
         </div>
-        <div className="bg-white dark:bg-[#464554] rounded-xl p-3 border border-[#e0d9ff] dark:border-[#332a5c]">
+        <div className="bg-white dark:bg-slate-700 rounded-xl p-3 border border-teal-200 dark:border-slate-600">
           <p className="text-lg font-bold text-[#ef4444] dark:text-red-400">
             {questions.length > 0 ? Math.round((questions.filter(q => q.difficulty === 'hard').length / questions.length) * 100) : 0}%
           </p>

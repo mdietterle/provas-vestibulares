@@ -18,7 +18,7 @@ export default function PucrioPage() {
       <div className="flex items-center gap-3 mb-2">
         <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white">A universidade privada mais internacional do Brasil</h2>
       </div>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         Fundada em 1941 no campus da Gávea, no Rio de Janeiro, a PUC-Rio está entre as 5 melhores universidades do país
         e lidera o ranking QS de universidades privadas brasileiras. Um sinal claro dessa vocação internacional: é uma
         das poucas instituições do país que aceita diplomas de ensino médio estrangeiros como via direta de ingresso.
@@ -34,7 +34,7 @@ export default function PucrioPage() {
 
       {/* Seletor de abas (tabs) pras 4 modalidades de ingresso — formato interativo, único entre as páginas de universidade */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">4 formas de entrar — clique pra ver cada uma</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">4 formas de entrar — clique pra ver cada uma</h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {MODALIDADES.map(m => (
             <button
@@ -42,8 +42,8 @@ export default function PucrioPage() {
               onClick={() => setAtivo(m.id)}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
                 ativo === m.id
-                  ? 'bg-[#4f46e5] dark:bg-[#712ae2] text-white border-transparent'
-                  : 'bg-white dark:bg-[#191b23] text-[#475569] dark:text-[#c7c4d7] border-[#E2E8F0] dark:border-[#464554] hover:border-[#712ae2]'
+                  ? 'bg-teal-600 dark:bg-amber-500 text-white border-transparent'
+                  : 'bg-white dark:bg-[#191b23] text-[#475569] dark:text-slate-300 border-[#E2E8F0] dark:border-[#464554] hover:border-amber-500'
               }`}
             >
               {m.nome}
@@ -52,11 +52,11 @@ export default function PucrioPage() {
         </div>
         <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#191b23] p-5">
           <div className="text-base font-bold text-[#1E293B] dark:text-white mb-1">{selecionado.nome}</div>
-          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">{selecionado.texto}</p>
+          <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">{selecionado.texto}</p>
         </div>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-6">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-6">
         São 36 cursos de graduação distribuídos em 4 grandes centros acadêmicos (Teologia e Ciências Humanas, Ciências
         Sociais, Estudos Técnico-Científicos, e Ciências Biológicas e Médicas), com tradição forte em{' '}
         <strong>Direito</strong>, <strong>Engenharia</strong> e <strong>Administração</strong>. Em 2024, a
@@ -68,7 +68,7 @@ export default function PucrioPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Parceria de 30 anos com a Petrobras
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           O <strong>Instituto Tecgraf</strong>, laboratório de computação gráfica da PUC-Rio, colabora há mais de 30
           anos com a Petrobras — um caso raro de parceria universidade-indústria sustentada por décadas no Brasil.
           Um dos projetos recentes usa inteligência artificial pra identificar reservas de gás natural em parceria
@@ -78,7 +78,7 @@ export default function PucrioPage() {
         </p>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7]">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300">
         Confirme datas e requisitos de cada modalidade em{' '}
         <a href="https://www.puc-rio.br/vestibular/" target="_blank" rel="noreferrer" className="underline font-semibold">
           puc-rio.br/vestibular

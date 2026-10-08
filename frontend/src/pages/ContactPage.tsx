@@ -62,7 +62,7 @@ export default function ContactPage() {
         {/* Left — info */}
         <div className="lg:col-span-2 space-y-6">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-[#dce1ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-teal-50 dark:bg-slate-800 text-[#0d9488] dark:text-teal-400">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
               Falar com Especialista
             </span>
@@ -86,7 +86,7 @@ export default function ContactPage() {
                 title: 'E-mail',
                 value: 'dietterle@gmail.com',
                 sub: 'Respondemos em até 4h em dias úteis',
-                cls: 'bg-[#dce1ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]',
+                cls: 'bg-teal-50 dark:bg-slate-800 text-[#0d9488] dark:text-teal-400',
               },
               {
                 icon: (
@@ -108,7 +108,7 @@ export default function ContactPage() {
                 title: 'Videochamada',
                 value: 'Agende uma demo',
                 sub: 'Demonstração gratuita de 30 min',
-                cls: 'bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]',
+                cls: 'bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-teal-400',
               },
             ].map(c => (
               <div key={c.title} className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
@@ -116,7 +116,7 @@ export default function ContactPage() {
                   {c.icon}
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide">{c.title}</p>
+                  <p className="text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide">{c.title}</p>
                   <p className="text-sm font-medium text-[#1E293B]">{c.value}</p>
                   <p className="text-xs text-[#64748B]">{c.sub}</p>
                 </div>
@@ -126,7 +126,7 @@ export default function ContactPage() {
 
           {/* Topics quick-select */}
           <div className="rounded-xl border border-[#E2E8F0] p-4 bg-white dark:bg-[#1d1f27]">
-            <p className="text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-3">Perguntas mais comuns</p>
+            <p className="text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-3">Perguntas mais comuns</p>
             <div className="flex flex-wrap gap-1.5">
               {TOPICS.slice(0, 6).map(t => (
                 <button
@@ -134,8 +134,8 @@ export default function ContactPage() {
                   onClick={() => setForm(f => ({ ...f, topic: t }))}
                   className={`text-xs px-2.5 py-1 rounded-full border transition-all ${
                     form.topic === t
-                      ? 'bg-[#4f46e5] dark:bg-[#3355c9] text-white border-[#4f46e5] dark:border-[#3355c9]'
-                      : 'bg-[#F4F6F9] dark:bg-[#272a32] text-[#334155] dark:text-[#c7c4d7] border-[#E2E8F0] dark:border-[#464554]'
+                      ? 'bg-[#0d9488] dark:bg-[#3355c9] text-white border-[#0d9488] dark:border-[#3355c9]'
+                      : 'bg-[#F4F6F9] dark:bg-slate-800 text-[#334155] dark:text-slate-300 border-[#E2E8F0] dark:border-[#464554]'
                   }`}
                 >
                   {t}
@@ -145,8 +145,8 @@ export default function ContactPage() {
           </div>
 
           <div className="rounded-xl border border-[#E2E8F0] overflow-hidden">
-            <div className="px-4 py-3 bg-[#F4F6F9] dark:bg-[#272a32] border-b border-[#E2E8F0]">
-              <p className="text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide">Horário de atendimento</p>
+            <div className="px-4 py-3 bg-[#F4F6F9] dark:bg-slate-800 border-b border-[#E2E8F0]">
+              <p className="text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide">Horário de atendimento</p>
             </div>
             {[
               { day: 'Segunda – Sexta', hours: '08:00 – 18:00' },
@@ -175,10 +175,10 @@ export default function ContactPage() {
                 Recebemos sua mensagem e um especialista entrará em contato pelo canal escolhido em até 4 horas (dias úteis).
               </p>
               <div className="flex gap-3 justify-center flex-wrap">
-                <Link to="/login" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
+                <Link to="/login" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}>
                   Voltar ao início
                 </Link>
-                <Link to="/quote" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-[#4f46e5] dark:text-[#818CF8] border border-[#dce1ff] dark:border-[#2a3a63] bg-[#EFF6FF] dark:bg-[#272a32] hover:bg-[#E2E8F0] dark:hover:bg-[#20325a] transition-colors">
+                <Link to="/quote" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-[#0d9488] dark:text-teal-400 border border-teal-50 dark:border-[#2a3a63] bg-[#EFF6FF] dark:bg-slate-800 hover:bg-[#E2E8F0] dark:hover:bg-[#20325a] transition-colors">
                   Solicitar orçamento
                 </Link>
               </div>
@@ -189,21 +189,21 @@ export default function ContactPage() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1.5">Nome *</label>
+                  <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1.5">Nome *</label>
                   <input
                     required
-                    className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                    className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                     placeholder="Seu nome"
                     value={form.name}
                     onChange={set('name')}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1.5">E-mail *</label>
+                  <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1.5">E-mail *</label>
                   <input
                     required
                     type="email"
-                    className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                    className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                     placeholder="voce@escola.edu.br"
                     value={form.email}
                     onChange={set('email')}
@@ -212,9 +212,9 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1.5">Instituição</label>
+                <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1.5">Instituição</label>
                 <input
-                  className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                   placeholder="Nome da escola / rede (opcional)"
                   value={form.institution}
                   onChange={set('institution')}
@@ -222,10 +222,10 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1.5">Assunto *</label>
+                <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1.5">Assunto *</label>
                 <select
                   required
-                  className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                   value={form.topic}
                   onChange={set('topic')}
                 >
@@ -235,11 +235,11 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1.5">Sua mensagem *</label>
+                <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1.5">Sua mensagem *</label>
                 <textarea
                   required
                   rows={5}
-                  className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all resize-none"
+                  className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all resize-none"
                   placeholder="Descreva sua dúvida com o máximo de detalhes. Quanto mais contexto você fornecer, melhor poderemos ajudar."
                   value={form.message}
                   onChange={set('message')}
@@ -248,7 +248,7 @@ export default function ContactPage() {
 
               {/* Preferred contact */}
               <div>
-                <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-2">Prefiro ser contactado por</label>
+                <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-2">Prefiro ser contactado por</label>
                 <div className="flex gap-3 flex-wrap">
                   {[
                     { value: 'email', label: 'E-mail' },
@@ -259,8 +259,8 @@ export default function ContactPage() {
                       key={opt.value}
                       className={`flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border transition-all text-sm ${
                         form.preferred_contact === opt.value
-                          ? 'border-[#4f46e5] dark:border-[#3355c9] bg-[#EFF6FF] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]'
-                          : 'border-[#E2E8F0] dark:border-[#464554] bg-[#F4F6F9] dark:bg-[#10131a] text-[#334155] dark:text-[#c7c4d7]'
+                          ? 'border-[#0d9488] dark:border-[#3355c9] bg-[#EFF6FF] dark:bg-slate-800 text-[#0d9488] dark:text-teal-400'
+                          : 'border-[#E2E8F0] dark:border-[#464554] bg-[#F4F6F9] dark:bg-[#10131a] text-[#334155] dark:text-slate-300'
                       }`}
                     >
                       <input
@@ -269,7 +269,7 @@ export default function ContactPage() {
                         value={opt.value}
                         checked={form.preferred_contact === opt.value}
                         onChange={set('preferred_contact')}
-                        className="accent-[#4f46e5]"
+                        className="accent-[#0d9488]"
                       />
                       {opt.label}
                     </label>
@@ -281,11 +281,11 @@ export default function ContactPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   {form.preferred_contact === 'whatsapp' && (
                     <div>
-                      <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1.5">Número WhatsApp *</label>
+                      <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1.5">Número WhatsApp *</label>
                       <input
                         required
                         type="tel"
-                        className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                        className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                         placeholder="(11) 9 0000-0000"
                         value={form.phone}
                         onChange={set('phone')}
@@ -293,9 +293,9 @@ export default function ContactPage() {
                     </div>
                   )}
                   <div>
-                    <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1.5">Melhor horário</label>
+                    <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1.5">Melhor horário</label>
                     <select
-                      className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent transition-all"
+                      className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                       value={form.best_time}
                       onChange={set('best_time')}
                     >
@@ -312,7 +312,7 @@ export default function ContactPage() {
                 type="submit"
                 disabled={loading}
                 className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
               >
                 {loading ? 'Enviando...' : 'Enviar mensagem →'}
               </button>

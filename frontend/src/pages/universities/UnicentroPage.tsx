@@ -18,7 +18,7 @@ export default function UnicentroPage() {
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         UNICENTRO: a única pública estadual do centro-sul do Paraná
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         A UNICENTRO nasceu da fusão de duas faculdades públicas paranaenses já existentes havia décadas: a
         Faculdade de Filosofia, Ciências e Letras de Guarapuava (Fafig, 1970) e a Faculdade de Educação, Ciências e
         Letras de Irati (Fecli, 1974). A instituição foi transformada em universidade em 1997, com sede em
@@ -37,7 +37,7 @@ export default function UnicentroPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: referência regional numa região sem outra pública estadual por perto
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A UNICENTRO é a principal (e praticamente única) universidade pública estadual cobrindo o centro-sul do
           Paraná, uma região historicamente mais distante do eixo Curitiba-Londrina-Maringá que concentra a maioria
           das outras estaduais paranaenses. Sua estrutura multicampi leva ensino público gratuito a sete cidades,
@@ -47,17 +47,17 @@ export default function UnicentroPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">Sete campi e unidades no Paraná</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Sete campi e unidades no Paraná</h3>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
         </div>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-10">
         São 43 cursos de graduação, presenciais e a distância, com tradição consolidada em{' '}
         <strong>Fisioterapia</strong>, <strong>Enfermagem</strong>, <strong>Psicologia</strong>,{' '}
         <strong>Nutrição</strong>, <strong>Farmácia</strong> e <strong>Engenharia Ambiental</strong> — perfil
@@ -68,14 +68,14 @@ export default function UnicentroPage() {
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
           Como entrar: três vias de ingresso
         </h3>
         <dl className="space-y-3 text-sm mb-4">
           {INGRESSO.map(i => (
             <div key={i.via} className="flex gap-3">
               <dt className="font-bold text-[#1E293B] dark:text-white shrink-0 w-56">{i.via}</dt>
-              <dd className="text-[#475569] dark:text-[#c7c4d7]">{i.texto}</dd>
+              <dd className="text-[#475569] dark:text-slate-300">{i.texto}</dd>
             </div>
           ))}
         </dl>

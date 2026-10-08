@@ -8,7 +8,7 @@ export default function UfpePage() {
         Pública federal — sem mensalidade
       </div>
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">UFPE: da sala de aula ao maior polo de tecnologia do Nordeste</h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         Com sede em Recife e mais dois campi — Caruaru (Centro Acadêmico do Agreste) e Vitória de Santo Antão
         (Centro Acadêmico de Vitória) —, a UFPE é uma das principais federais do Nordeste, com 106 cursos de
         graduação distribuídos entre as três unidades.
@@ -26,7 +26,7 @@ export default function UfpePage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: o Porto Digital nasceu dentro da UFPE
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           O <strong>Porto Digital</strong>, um dos maiores polos de tecnologia do Brasil, nasceu dentro do{' '}
           <strong>Centro de Informática (CIn/UFPE)</strong> e nunca deixou de estar ligado à universidade — empresas
           como a In Loco Media surgiram diretamente de trabalhos acadêmicos do CIn. O setor de TI, que representava
@@ -36,7 +36,7 @@ export default function UfpePage() {
         </p>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8">
         A UFPE mantém <strong>nota 4 no IGC/MEC</strong>, e no Enade 2023, <strong>14 dos 22 cursos avaliados (63%)
         tiraram nota máxima (5)</strong> — incluindo Engenharia de Alimentos (2º melhor do Brasil na área) e
         Medicina em Recife (3º melhor do país, a melhor entre federais). Outros cursos de destaque incluem{' '}
@@ -53,10 +53,10 @@ export default function UfpePage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Papel no desenvolvimento de Pernambuco
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Além do impacto direto do Porto Digital, os campi de Caruaru e Vitória de Santo Antão levaram ensino
           federal gratuito pro interior pernambucano — regiões que historicamente dependiam só de faculdades
           privadas ou de deslocamento até Recife. Isso ajuda a fixar profissionais qualificados em cidades do
@@ -66,10 +66,10 @@ export default function UfpePage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Ingresso: SiSU (com exceções pra cursos específicos)
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A maior parte das vagas é preenchida via <strong>SiSU</strong> (nota do ENEM). Um vestibular próprio
           existe só pra cursos que exigem habilidade específica — <strong>Dança</strong>, <strong>Música</strong> e{' '}
           <strong>Letras-Libras</strong> — além de cursos EaD e processos seletivos extravestibular pontuais.

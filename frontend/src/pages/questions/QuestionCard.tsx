@@ -9,7 +9,7 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
-  multiple_choice: { bg: 'bg-[#eef2ff] dark:bg-[#272a32]', text: 'text-[#4f46e5] dark:text-[#818CF8]' },
+  multiple_choice: { bg: 'bg-teal-50 dark:bg-slate-800', text: 'text-teal-600 dark:text-teal-400' },
   true_false: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400' },
   essay: { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-400' },
   summation: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-400' },
@@ -72,7 +72,7 @@ export default function QuestionCard({ q, isExpanded, onToggleExpand, onEdit, on
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8]">
+            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400">
               {q.subject.name}
             </span>
             <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${typeStyle.bg} ${typeStyle.text}`}>
@@ -150,7 +150,7 @@ export default function QuestionCard({ q, isExpanded, onToggleExpand, onEdit, on
           </button>
           {canEdit && (
             <>
-              <button onClick={onEdit} className="p-2 rounded-lg text-gray-400 hover:bg-indigo-50 hover:text-indigo-600 transition-colors" title="Editar">
+              <button onClick={onEdit} className="p-2 rounded-lg text-gray-400 hover:bg-teal-50 hover:text-teal-600 transition-colors" title="Editar">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />

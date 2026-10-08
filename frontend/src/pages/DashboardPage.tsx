@@ -14,7 +14,7 @@ import {
 } from './dashboard'
 import type { Tone } from './dashboard'
 
-function CircleProgress({ pct, size = 80, stroke = 7, color = '#712ae2', label }: {
+function CircleProgress({ pct, size = 80, stroke = 7, color = '#f59e0b', label }: {
   pct: number; size?: number; stroke?: number; color?: string; label?: string
 }) {
   const r = (size - stroke) / 2
@@ -38,14 +38,14 @@ function CircleProgress({ pct, size = 80, stroke = 7, color = '#712ae2', label }
 function ActionTile({ to, icon, label, sub }: { to: string; icon: React.ReactNode; label: string; sub: string }) {
   return (
     <Link to={to} className="flex items-center gap-4 bg-white rounded-2xl border border-[#E2E8F0] p-4 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-all group" style={{ boxShadow: '0 2px 12px rgba(0,35,111,0.04)' }}>
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#EFF6FF] text-[#4f46e5]">
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#EFF6FF] text-[#0d9488]">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-[#1E293B]">{label}</p>
         <p className="text-xs text-[#64748B] mt-0.5">{sub}</p>
       </div>
-      <svg className="w-4 h-4 text-[#c5c5d3] group-hover:text-[#712ae2] transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+      <svg className="w-4 h-4 text-[#c5c5d3] group-hover:text-[#f59e0b] transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
     </Link>
   )
 }
@@ -55,8 +55,8 @@ function QuickAction({ to, icon, label, gradient }: { to: string; icon: React.Re
   return (
     <Link
       to={to}
-      className={gradient ? `${base} text-white` : `${base} bg-[#EFF6FF] text-[#4f46e5]`}
-      style={gradient ? { background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' } : undefined}
+      className={gradient ? `${base} text-white` : `${base} bg-[#EFF6FF] text-[#0d9488]`}
+      style={gradient ? { background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' } : undefined}
     >
       {icon}
       {label}
@@ -83,10 +83,10 @@ function SubjectBar({ subject, count, max }: { subject: string; count: number; m
       <div className="flex-1 h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
         <div
           className="h-full rounded-full transition-all"
-          style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#4f46e5,#712ae2)' }}
+          style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#0d9488,#f59e0b)' }}
         />
       </div>
-      <span className="text-xs font-semibold text-[#4f46e5] w-6 text-right shrink-0">{count}</span>
+      <span className="text-xs font-semibold text-[#0d9488] w-6 text-right shrink-0">{count}</span>
     </div>
   )
 }
@@ -116,7 +116,7 @@ function AdminDashboard() {
   const rawExamGrowth = stats?.monthly_exam_growth ?? []
   const chartData = ((chartMode === 'users' ? rawUserGrowth : rawExamGrowth) as unknown as Record<string, number>[]).slice(-chartRange)
   const chartValueKey = chartMode === 'users' ? 'new_users' : 'new_exams'
-  const chartColor = chartMode === 'users' ? '#712ae2' : '#27c38a'
+  const chartColor = chartMode === 'users' ? '#f59e0b' : '#27c38a'
   const chartTotal = chartData.reduce((s, d) => s + (Number((d as any)[chartValueKey]) || 0), 0)
   const userGrowthPct = growth.new_users_last_month > 0
     ? Math.round(((growth.new_users_this_month - growth.new_users_last_month) / growth.new_users_last_month) * 100)
@@ -129,7 +129,7 @@ function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#712ae2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 12a9 9 0 1 1-6.219-8.56" />
         </svg>
       </div>
@@ -147,7 +147,7 @@ function AdminDashboard() {
         <div className="flex gap-3 flex-wrap">
           <button
             onClick={() => stats && exportDashboardReport(stats)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border border-[#E2E8F0] bg-white text-[#4f46e5] hover:bg-[#EFF6FF] transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border border-[#E2E8F0] bg-white text-[#0d9488] hover:bg-[#EFF6FF] transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Relatório Gerencial PDF
@@ -171,7 +171,7 @@ function AdminDashboard() {
       {/* 6 KPI cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         {[
-          { label: 'Professores', value: c.professors, tone: 'purple' as Tone, sub: growth.new_users_this_month > 0 ? `+${growth.new_users_this_month} este mês` : undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> },
+          { label: 'Professores', value: c.professors, tone: 'teal' as Tone, sub: growth.new_users_this_month > 0 ? `+${growth.new_users_this_month} este mês` : undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> },
           { label: 'Alunos',      value: c.students,   tone: 'green' as Tone, sub: undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg> },
           { label: 'Matérias',    value: c.subjects,   tone: 'amber' as Tone, sub: undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/></svg> },
           { label: 'Turmas',      value: c.classes,    tone: 'navy' as Tone, sub: undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg> },
@@ -199,7 +199,7 @@ function AdminDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Taxa de correção */}
             <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 flex items-center gap-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
-              <CircleProgress pct={correctionRate} size={72} stroke={7} color="#712ae2" />
+              <CircleProgress pct={correctionRate} size={72} stroke={7} color="#f59e0b" />
               <div>
                 <p className="text-xs text-[#64748B] font-medium mb-0.5">Taxa de Correção</p>
                 <p className="text-sm font-semibold text-[#1E293B]">
@@ -273,7 +273,7 @@ function AdminDashboard() {
                   key={val}
                   onClick={() => setChartMode(val)}
                   className={chartMode === val
-                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#464554] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
+                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#464554] text-[#0d9488] dark:text-[#2dd4bf] shadow-sm'
                     : 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-gray-500 dark:text-slate-400'
                   }
                 >
@@ -288,7 +288,7 @@ function AdminDashboard() {
                   key={r}
                   onClick={() => setChartRange(r)}
                   className={chartRange === r
-                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#464554] text-[#4f46e5] dark:text-[#818CF8] shadow-sm'
+                    ? 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-white dark:bg-[#464554] text-[#0d9488] dark:text-[#2dd4bf] shadow-sm'
                     : 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all text-gray-500 dark:text-slate-400'
                   }
                 >
@@ -307,7 +307,7 @@ function AdminDashboard() {
         <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Pipeline de Correções</SectionTitle>
-            <Link to="/corrections" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver todas →</Link>
+            <Link to="/corrections" className="text-xs font-semibold text-[#f59e0b] hover:underline">Ver todas →</Link>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {(['pending','correcting','done','released'] as const).map(key => {
@@ -344,7 +344,7 @@ function AdminDashboard() {
         <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Provas por Matéria</SectionTitle>
-            <Link to="/exams" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver provas →</Link>
+            <Link to="/exams" className="text-xs font-semibold text-[#f59e0b] hover:underline">Ver provas →</Link>
           </div>
           {(stats?.exams_by_subject ?? []).length === 0 ? (
             <p className="text-xs text-[#9ca3af] text-center py-6">Nenhuma prova cadastrada</p>
@@ -367,7 +367,7 @@ function AdminDashboard() {
         <div className="lg:col-span-2 bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Atividade Recente</SectionTitle>
-            <Link to="/corrections" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver correções →</Link>
+            <Link to="/corrections" className="text-xs font-semibold text-[#f59e0b] hover:underline">Ver correções →</Link>
           </div>
           {(stats?.recent_activity ?? []).length === 0 ? (
             <div className="rounded-xl border border-dashed border-[#c5c5d3] p-6 text-center text-sm text-[#64748B]">
@@ -382,7 +382,7 @@ function AdminDashboard() {
                   : '—'
                 return (
                   <div key={act.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-[#E2E8F0] hover:bg-[#F4F6F9] transition-colors">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-[#eef2ff] text-[#4f46e5] dark:bg-[#1e2547] dark:text-[#a5b4fc]">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-[#eef2ff] text-[#0d9488] dark:bg-[#1e2547] dark:text-[#a5b4fc]">
                       {act.student_name.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -398,7 +398,7 @@ function AdminDashboard() {
                     </div>
                     {act.total_score != null && (
                       <div className="text-right shrink-0 w-12">
-                        <span className="text-sm font-bold text-[#4f46e5]">{act.total_score}</span>
+                        <span className="text-sm font-bold text-[#0d9488]">{act.total_score}</span>
                         <span className="text-xs text-[#9ca3af]"> pts</span>
                       </div>
                     )}
@@ -481,7 +481,7 @@ function ProfessorDashboard() {
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-[#1E293B]">Olá, Prof. {user?.name?.split(' ')[0]}! 👋</h1>
-          <p className="text-sm mt-0.5 flex items-center gap-1.5 text-[#712ae2] dark:text-[#b794f6]">
+          <p className="text-sm mt-0.5 flex items-center gap-1.5 text-[#f59e0b] dark:text-[#b794f6]">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             {aiProgress > 0
               ? `Sua IA assistente já corrigiu ${aiProgress}% das provas desta semana`
@@ -506,7 +506,7 @@ function ProfessorDashboard() {
         <MetricCard label="Questões Criadas" value={data?.question_count ?? '—'} tone="navy" sub="no banco"
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>}
         />
-        <MetricCard label="Provas Criadas" value={data?.exam_count ?? '—'} tone="purple" sub="no total"
+        <MetricCard label="Provas Criadas" value={data?.exam_count ?? '—'} tone="teal" sub="no total"
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>}
         />
         <MetricCard label="Tempo Economizado (estimado)" value={data?.time_saved ?? '—'} tone="green" sub="~2min por correção automática de IA"
@@ -526,7 +526,7 @@ function ProfessorDashboard() {
         <div className="lg:col-span-2 bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}>
+              <span className="w-7 h-7 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg,#0d9488,#f59e0b)' }}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
               </span>
               <span className="text-sm font-semibold text-[#1E293B]">Correções IA — Esta Semana</span>
@@ -535,7 +535,7 @@ function ProfessorDashboard() {
           </div>
 
           <div className="flex items-center gap-6 mb-5">
-            <CircleProgress pct={aiProgress} size={88} stroke={8} color="#712ae2" label="corrigido" />
+            <CircleProgress pct={aiProgress} size={88} stroke={8} color="#f59e0b" label="corrigido" />
             <div className="flex-1 space-y-1 text-sm">
               <p className="text-[#334155]">
                 <span className="font-bold text-[#1E293B]">{aiProgress}%</span> das submissões desta semana já foram processadas pela IA.
@@ -559,10 +559,10 @@ function ProfessorDashboard() {
                 <div key={t.turma}>
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="font-medium text-[#334155]">{t.turma}</span>
-                    <span className="text-[#64748B]">{t.corrigidos}/{t.total} alunos · <strong className={t.pct >= 80 ? TONE_TEXT.green : t.pct >= 50 ? TONE_TEXT.purple : TONE_TEXT.amber}>{t.pct}%</strong></span>
+                    <span className="text-[#64748B]">{t.corrigidos}/{t.total} alunos · <strong className={t.pct >= 80 ? TONE_TEXT.green : t.pct >= 50 ? TONE_TEXT.teal : TONE_TEXT.amber}>{t.pct}%</strong></span>
                   </div>
                   <div className="h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
-                    <div className="h-full rounded-full transition-all" style={{ width: `${t.pct}%`, background: t.pct >= 80 ? '#22c55e' : t.pct >= 50 ? '#712ae2' : '#f59e0b' }} />
+                    <div className="h-full rounded-full transition-all" style={{ width: `${t.pct}%`, background: t.pct >= 80 ? '#22c55e' : t.pct >= 50 ? '#f59e0b' : '#f59e0b' }} />
                   </div>
                 </div>
               ))}
@@ -574,25 +574,25 @@ function ProfessorDashboard() {
         <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Provas Recentes</SectionTitle>
-            <Link to="/exams" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver todas →</Link>
+            <Link to="/exams" className="text-xs font-semibold text-[#f59e0b] hover:underline">Ver todas →</Link>
           </div>
           <div className="space-y-2">
             {exams.length === 0 && (
               <div className="rounded-xl border border-dashed border-[#c5c5d3] p-5 text-center text-sm text-[#64748B]">
                 Nenhuma prova criada ainda.{' '}
-                <Link to="/exams" className="text-[#712ae2] font-medium hover:underline">Criar →</Link>
+                <Link to="/exams" className="text-[#f59e0b] font-medium hover:underline">Criar →</Link>
               </div>
             )}
             {exams.map(exam => (
               <Link key={exam.id} to={`/exams/${exam.id}`} className="flex items-center gap-3 rounded-xl border border-[#E2E8F0] px-3 py-2.5 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-[#dce1ff] flex items-center justify-center shrink-0 text-[#4f46e5]">
+                <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center shrink-0 text-[#0d9488]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-[#1E293B] truncate">{exam.title}</p>
                   <p className="text-xs text-[#64748B] truncate">{exam.subject?.name} · {exam.class_?.name}</p>
                 </div>
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${TONE_BADGE.purple}`}>
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${TONE_BADGE.teal}`}>
                   {exam.exam_questions?.length ?? exam.question_count ?? 0}q
                 </span>
               </Link>
@@ -663,7 +663,7 @@ function StudentDashboard() {
         <div>
           <h1 className="font-display text-2xl font-bold text-[#1E293B]">Olá, {user?.name?.split(' ')[0]}! 👋</h1>
           <p className="text-sm text-[#64748B] mt-0.5">
-            Você tem <span className="font-semibold text-[#4f46e5]">{totalAssessments} avaliações</span> disponíveis
+            Você tem <span className="font-semibold text-[#0d9488]">{totalAssessments} avaliações</span> disponíveis
             ({allExams.length} {allExams.length === 1 ? 'prova' : 'provas'}, {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}).
           </p>
         </div>
@@ -708,7 +708,7 @@ function StudentDashboard() {
         {/* Ranking */}
         <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-start justify-between mb-2">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${TONE_BADGE.purple}`}>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${TONE_BADGE.teal}`}>
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
             </div>
           </div>
@@ -751,7 +751,7 @@ function StudentDashboard() {
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
               {allExams.length} {allExams.length === 1 ? 'prova tradicional' : 'provas tradicionais'}
             </span>
-            <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${TONE_BADGE.purple}`}>
+            <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${TONE_BADGE.teal}`}>
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}
             </span>
@@ -763,7 +763,7 @@ function StudentDashboard() {
             <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-2">Provas tradicionais por matéria</p>
             <div className="flex flex-wrap gap-2">
               {subjectBreakdown.map(([subject, count]) => (
-                <span key={subject} className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-[#F4F6F9] dark:bg-[#10131a] text-[#334155] dark:text-[#c7c4d7] border border-[#E2E8F0] dark:border-[#464554]">
+                <span key={subject} className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-[#F4F6F9] dark:bg-[#10131a] text-[#334155] dark:text-[#cbd5e1] border border-[#E2E8F0] dark:border-[#464554]">
                   {subject}
                   <span className="font-bold text-[#1E293B] dark:text-[#e2e8f0]">{count}</span>
                 </span>
@@ -784,8 +784,8 @@ function StudentDashboard() {
               </span>
             )}
             <div className="flex items-center gap-3 text-xs text-[#64748B]">
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#4f46e5] inline-block"/>Prova formal</span>
-              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#4f46e5] opacity-55 inline-block" style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 2px, transparent 2px, transparent 4px)' }}/>Simulado</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#0d9488] inline-block"/>Prova formal</span>
+              <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#0d9488] opacity-55 inline-block" style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 2px, transparent 2px, transparent 4px)' }}/>Simulado</span>
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#27c38a] inline-block"/>Meta 7,0</span>
             </div>
           </div>
@@ -839,7 +839,7 @@ function StudentDashboard() {
                             style={{
                               height: `${h}%`,
                               minHeight: h > 0 ? 3 : 0,
-                              background: nota >= 7 ? 'linear-gradient(180deg,#4f46e5,#712ae2)' : nota >= 5 ? '#f59e0b' : '#ef4444',
+                              background: nota >= 7 ? 'linear-gradient(180deg,#0d9488,#f59e0b)' : nota >= 5 ? '#f59e0b' : '#ef4444',
                               opacity: fonte === 'simulado' ? 0.55 : 1,
                               backgroundImage: fonte === 'simulado'
                                 ? 'repeating-linear-gradient(135deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 3px, transparent 3px, transparent 6px)'
@@ -875,7 +875,7 @@ function StudentDashboard() {
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-3">
             <SectionTitle>Provas Disponíveis</SectionTitle>
-            <Link to="/exams" className="text-xs font-semibold text-[#712ae2] hover:underline">Ver todas →</Link>
+            <Link to="/exams" className="text-xs font-semibold text-[#f59e0b] hover:underline">Ver todas →</Link>
           </div>
           <div className="space-y-2">
             {exams.length === 0 && (
@@ -885,14 +885,14 @@ function StudentDashboard() {
             )}
             {exams.map(exam => (
               <Link key={exam.id} to={`/exams/${exam.id}/submit`} className="flex items-center gap-4 bg-white rounded-xl border border-[#E2E8F0] px-4 py-3 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-colors group">
-                <div className="w-9 h-9 rounded-lg bg-[#dce1ff] flex items-center justify-center shrink-0 text-[#4f46e5]">
+                <div className="w-9 h-9 rounded-lg bg-teal-50 flex items-center justify-center shrink-0 text-[#0d9488]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-[#1E293B] truncate">{exam.title}</p>
                   <p className="text-xs text-[#64748B]">{exam.subject?.name} · {exam.class_?.name}</p>
                 </div>
-                <span className="text-xs font-semibold text-white px-2.5 py-1 rounded-lg shrink-0" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}>
+                <span className="text-xs font-semibold text-white px-2.5 py-1 rounded-lg shrink-0" style={{ background: 'linear-gradient(135deg,#0d9488,#f59e0b)' }}>
                   Realizar →
                 </span>
               </Link>

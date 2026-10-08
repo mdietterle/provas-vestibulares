@@ -78,7 +78,7 @@ export default function OwnerSchoolsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#4f46e5] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -88,11 +88,11 @@ export default function OwnerSchoolsPage() {
       <div className="bg-white dark:bg-[#1d1f27] border-b border-[#E2E8F0] dark:border-[#464554] px-6 py-4 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-[#1E293B] dark:text-[#e1e2ec]">Gestão de Escolas</h1>
-          <p className="text-sm text-[#64748B] dark:text-[#c7c4d7]">Cadastre, inative ou exclua instituições da plataforma</p>
+          <p className="text-sm text-[#64748B] dark:text-slate-300">Cadastre, inative ou exclua instituições da plataforma</p>
         </div>
         <button
           onClick={() => setShowCreateSchool(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#1D4ED8] transition-colors"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-semibold hover:bg-[#1D4ED8] transition-colors"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -107,17 +107,17 @@ export default function OwnerSchoolsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[#E2E8F0] dark:border-[#464554] bg-[#F4F6F9] dark:bg-[#10131a]">
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Instituição</th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Situação</th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Usuários</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Criada em</th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide">Ações</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-slate-300 uppercase tracking-wide">Instituição</th>
+                  <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-slate-300 uppercase tracking-wide">Situação</th>
+                  <th className="text-center px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-slate-300 uppercase tracking-wide">Usuários</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-[#64748B] dark:text-slate-300 uppercase tracking-wide">Criada em</th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold text-[#64748B] dark:text-slate-300 uppercase tracking-wide">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#464554]">
                 {institutions.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="text-center py-10 text-[#64748B] dark:text-[#c7c4d7] text-sm">
+                    <td colSpan={5} className="text-center py-10 text-[#64748B] dark:text-slate-300 text-sm">
                       Nenhuma escola cadastrada ainda
                     </td>
                   </tr>
@@ -125,7 +125,7 @@ export default function OwnerSchoolsPage() {
                   <tr key={inst.id} className="hover:bg-[#F4F6F9] dark:hover:bg-[#0F172A] transition-colors">
                     <td className="px-5 py-3.5">
                       <div className="font-medium text-[#1E293B] dark:text-[#e1e2ec]">{inst.name}</div>
-                      {inst.cnpj && <div className="text-xs text-[#64748B] dark:text-[#c7c4d7]">{inst.cnpj}</div>}
+                      {inst.cnpj && <div className="text-xs text-[#64748B] dark:text-slate-300">{inst.cnpj}</div>}
                     </td>
                     <td className="px-4 py-3.5 text-center">
                       {inst.is_active ? (
@@ -138,8 +138,8 @@ export default function OwnerSchoolsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 text-center text-[#334155] dark:text-[#c7c4d7]">{inst.professors + inst.students}</td>
-                    <td className="px-4 py-3.5 text-xs text-[#64748B] dark:text-[#c7c4d7]">
+                    <td className="px-4 py-3.5 text-center text-[#334155] dark:text-slate-300">{inst.professors + inst.students}</td>
+                    <td className="px-4 py-3.5 text-xs text-[#64748B] dark:text-slate-300">
                       {inst.created_at ? new Date(inst.created_at).toLocaleDateString('pt-BR') : '—'}
                     </td>
                     <td className="px-5 py-3.5">
@@ -175,53 +175,53 @@ export default function OwnerSchoolsPage() {
         <Modal title="Nova Escola" onClose={() => setShowCreateSchool(false)}>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1">Nome da escola *</label>
+              <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1">Nome da escola *</label>
               <input
                 type="text"
                 value={schoolForm.name}
                 onChange={e => setSchoolForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
+                className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
                 placeholder="Ex: Colégio Exemplo"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#334155] dark:text-[#c7c4d7] uppercase tracking-wide mb-1">CNPJ (opcional)</label>
+              <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1">CNPJ (opcional)</label>
               <input
                 type="text"
                 value={schoolForm.cnpj}
                 onChange={e => setSchoolForm(f => ({ ...f, cnpj: e.target.value }))}
-                className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
+                className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
                 placeholder="00.000.000/0001-00"
               />
             </div>
             <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#464554]">
-              <p className="text-xs font-semibold text-[#64748B] dark:text-[#c7c4d7] uppercase tracking-wide mb-3">Administrador inicial</p>
+              <p className="text-xs font-semibold text-[#64748B] dark:text-slate-300 uppercase tracking-wide mb-3">Administrador inicial</p>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-[#334155] dark:text-[#c7c4d7] mb-1">Nome *</label>
+                  <label className="block text-xs font-medium text-[#334155] dark:text-slate-300 mb-1">Nome *</label>
                   <input
                     type="text"
                     value={schoolForm.admin_name}
                     onChange={e => setSchoolForm(f => ({ ...f, admin_name: e.target.value }))}
-                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
+                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#334155] dark:text-[#c7c4d7] mb-1">E-mail *</label>
+                  <label className="block text-xs font-medium text-[#334155] dark:text-slate-300 mb-1">E-mail *</label>
                   <input
                     type="email"
                     value={schoolForm.admin_email}
                     onChange={e => setSchoolForm(f => ({ ...f, admin_email: e.target.value }))}
-                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
+                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#334155] dark:text-[#c7c4d7] mb-1">Senha inicial *</label>
+                  <label className="block text-xs font-medium text-[#334155] dark:text-slate-300 mb-1">Senha inicial *</label>
                   <input
                     type="password"
                     value={schoolForm.admin_password}
                     onChange={e => setSchoolForm(f => ({ ...f, admin_password: e.target.value }))}
-                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-[#4f46e5]"
+                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
                     placeholder="Mínimo 6 caracteres"
                   />
                 </div>
@@ -230,14 +230,14 @@ export default function OwnerSchoolsPage() {
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setShowCreateSchool(false)}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-[#334155] dark:text-[#c7c4d7] hover:bg-[#F4F6F9] dark:hover:bg-[#0F172A] transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-[#334155] dark:text-slate-300 hover:bg-[#F4F6F9] dark:hover:bg-[#0F172A] transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleCreateSchool}
                 disabled={creatingSchool}
-                className="px-4 py-2 rounded-lg bg-[#4f46e5] text-white text-sm font-semibold hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
+                className="px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-semibold hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
               >
                 {creatingSchool ? 'Criando...' : 'Criar escola'}
               </button>

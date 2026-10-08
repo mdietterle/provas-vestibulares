@@ -21,7 +21,7 @@ export default function ThemeToggle() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-[#f0f4ff] hover:text-[#4f46e5] dark:hover:bg-[#192745] dark:hover:text-[#93c5fd] transition-colors"
+        className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-teal-50 hover:text-teal-600 dark:hover:bg-slate-800 dark:hover:text-teal-300 transition-colors"
         title={`Tema atual: ${theme === 'system' ? 'Sistema' : theme === 'dark' ? 'Escuro' : 'Claro'}`}
         aria-label="Alternar tema"
       >
@@ -43,8 +43,8 @@ export default function ThemeToggle() {
             onClick={() => { setTheme('light'); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium transition-colors ${
               theme === 'light'
-                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#464554]'
-                : 'text-[#374060] dark:text-[#c7c4d7] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
+                ? 'text-teal-600 dark:text-teal-300 font-semibold bg-teal-50 dark:bg-slate-700'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-slate-800'
             }`}
           >
             <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -56,11 +56,11 @@ export default function ThemeToggle() {
             onClick={() => { setTheme('dark'); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium transition-colors ${
               theme === 'dark'
-                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#464554]'
-                : 'text-[#374060] dark:text-[#c7c4d7] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
+                ? 'text-teal-600 dark:text-teal-300 font-semibold bg-teal-50 dark:bg-slate-700'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-slate-800'
             }`}
           >
-            <svg className="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <svg className="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
             Escuro
@@ -69,8 +69,8 @@ export default function ThemeToggle() {
             onClick={() => { setTheme('system'); setOpen(false) }}
             className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium transition-colors ${
               theme === 'system'
-                ? 'text-[#4f46e5] dark:text-[#93c5fd] font-semibold bg-[#f0f4ff] dark:bg-[#464554]'
-                : 'text-[#374060] dark:text-[#c7c4d7] hover:bg-[#f4f6fb] dark:hover:bg-[#182643]'
+                ? 'text-teal-600 dark:text-teal-300 font-semibold bg-teal-50 dark:bg-slate-700'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-slate-800'
             }`}
           >
             <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>

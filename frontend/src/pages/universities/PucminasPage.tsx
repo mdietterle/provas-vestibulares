@@ -23,7 +23,7 @@ export default function PucminasPage() {
   const customContent = (
     <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">Sete cidades, uma só universidade</h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         A PUC Minas é uma das maiores universidades privadas do Brasil em oferta de vagas, mantida pela Rede Marista.
         Em vez de se concentrar numa única cidade, espalhou unidades por sete municípios mineiros — uma estrutura
         que vale a pena entender em camadas, de dentro pra fora da capital.
@@ -43,19 +43,19 @@ export default function PucminasPage() {
           <div key={r.nome} className="rounded-2xl border border-[#E2E8F0] dark:border-[#464554] overflow-hidden">
             <div className="bg-[#F4F6F9] dark:bg-[#1d1f27] px-5 py-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full bg-[#4f46e5] dark:bg-[#712ae2] text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                <span className="w-6 h-6 rounded-full bg-teal-600 dark:bg-amber-500 text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
                 <span className="font-bold text-[#1E293B] dark:text-white">{r.nome}</span>
               </div>
-              <span className="text-xs font-semibold text-[#712ae2] dark:text-[#818CF8]">{r.vagas}</span>
+              <span className="text-xs font-semibold text-amber-500 dark:text-teal-400">{r.vagas}</span>
             </div>
-            <div className="px-5 py-3 text-sm text-[#475569] dark:text-[#c7c4d7]">
+            <div className="px-5 py-3 text-sm text-[#475569] dark:text-slate-300">
               Unidades: {r.unidades}
             </div>
           </div>
         ))}
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8">
         No total são mais de 150 cursos de graduação e pós-graduação e cerca de 7.175 vagas por ciclo, considerando
         todas as unidades — com destaque histórico em <strong>Medicina</strong>, <strong>Engenharia Civil</strong> e{' '}
         <strong>Direito</strong>, cursos que tradicionalmente concentram a maior concorrência da instituição.
@@ -70,8 +70,8 @@ export default function PucminasPage() {
       />
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Como entrar</h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Como entrar</h3>
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A PUC Minas realiza <strong>dois vestibulares próprios por ano</strong>, além de aceitar a nota do ENEM em
           todos os campi e unidades — dando mais de uma chance por ciclo letivo pra quem quer entrar. Datas variam por
           edição; confirme sempre em{' '}

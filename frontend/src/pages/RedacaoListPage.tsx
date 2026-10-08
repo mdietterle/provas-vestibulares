@@ -69,8 +69,8 @@ function ProfessorList() {
             onClick={() => { setLoading(true); setFilterStatus(s) }}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
               filterStatus === s
-                ? 'bg-[#4f46e5] text-white'
-                : 'bg-white dark:bg-[#1d1f27] border border-[#c5ceff] dark:border-[#464554] text-[#334155] dark:text-[#c7c4d7] hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a]'
+                ? 'bg-[#0d9488] text-white'
+                : 'bg-white dark:bg-[#1d1f27] border border-[#c5ceff] dark:border-[#464554] text-[#334155] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a]'
             }`}
           >
             {s === '' ? 'Todas' : STATUS_LABEL[s]}
@@ -108,8 +108,8 @@ function ProfessorList() {
                 return (
                   <tr key={r.id} className="hover:bg-[#F4F6F9] dark:hover:bg-[#131f37] transition-colors">
                     <td className="px-4 py-3 font-semibold text-[#1E293B]">{r.student.name}</td>
-                    <td className="px-4 py-3 text-[#334155] dark:text-[#c7c4d7] max-w-xs truncate">{r.theme}</td>
-                    <td className="px-4 py-3 text-[#334155] dark:text-[#c7c4d7]">
+                    <td className="px-4 py-3 text-[#334155] dark:text-slate-300 max-w-xs truncate">{r.theme}</td>
+                    <td className="px-4 py-3 text-[#334155] dark:text-slate-300">
                       {new Date(r.created_at).toLocaleDateString('pt-BR')}
                     </td>
                     <td className="px-4 py-3">
@@ -127,7 +127,7 @@ function ProfessorList() {
                             ? `/redacoes/${r.id}/review`
                             : `/redacoes/${r.id}/review`
                         )}
-                        className="text-xs font-semibold text-[#4f46e5] hover:underline"
+                        className="text-xs font-semibold text-[#0d9488] hover:underline"
                       >
                         {r.status === 'ai_done' ? 'Revisar' : 'Abrir'}
                       </button>
@@ -167,7 +167,7 @@ function StudentList() {
         <button
           onClick={() => navigate('/redacoes/nova')}
           className="px-4 py-2 rounded-xl text-sm font-bold text-white"
-          style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
         >
           + Nova redação
         </button>
@@ -187,7 +187,7 @@ function StudentList() {
           <button
             onClick={() => navigate('/redacoes/nova')}
             className="px-6 py-3 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
           >
             Enviar redação
           </button>

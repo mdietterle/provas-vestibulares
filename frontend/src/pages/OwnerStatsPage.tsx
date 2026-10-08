@@ -24,11 +24,11 @@ function SortableHeader<K extends string>({
   return (
     <th
       onClick={() => onSort(sortKey)}
-      className={`px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-[#4f46e5] ${align === 'right' ? 'text-right' : 'text-left'}`}
+      className={`px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-teal-600 ${align === 'right' ? 'text-right' : 'text-left'}`}
     >
       <span className={`inline-flex items-center gap-1 ${align === 'right' ? 'flex-row-reverse' : ''}`}>
         {label}
-        <Icon className={`w-3 h-3 ${active ? 'text-[#4f46e5]' : 'text-gray-300'}`} />
+        <Icon className={`w-3 h-3 ${active ? 'text-teal-600' : 'text-gray-300'}`} />
       </span>
     </th>
   )
@@ -98,7 +98,7 @@ function QuestionBankByUniversity({ questions }: { questions: DetailedStatsRespo
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Buscar universidade..."
-          className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#4f46e5] w-48"
+          className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:border-teal-600 w-48"
         />
       </div>
       <div className="max-h-[420px] overflow-y-auto border border-gray-100 rounded-lg">
@@ -126,7 +126,7 @@ function QuestionBankByUniversity({ questions }: { questions: DetailedStatsRespo
                       {u.university}
                     </td>
                     <td className="px-3 py-2 text-right text-xs text-gray-400">{u.years.length}</td>
-                    <td className="px-3 py-2 text-right font-bold text-[#4f46e5]">{u.total.toLocaleString('pt-BR')}</td>
+                    <td className="px-3 py-2 text-right font-bold text-teal-600">{u.total.toLocaleString('pt-BR')}</td>
                   </tr>
                   {isOpen && (
                     <tr>
@@ -135,7 +135,7 @@ function QuestionBankByUniversity({ questions }: { questions: DetailedStatsRespo
                           {u.years.map(([year, count]) => (
                             <span key={year} className="inline-flex items-center gap-1 text-xs bg-white border border-gray-200 rounded-full px-2.5 py-1">
                               <span className="text-gray-500">{year}</span>
-                              <span className="font-bold text-[#4f46e5]">{count}</span>
+                              <span className="font-bold text-teal-600">{count}</span>
                             </span>
                           ))}
                         </div>
@@ -169,7 +169,7 @@ function DetailedStatsPanel() {
   return (
     <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-sm mt-6 mb-6">
       <h3 className="text-lg font-semibold text-[#1E293B] mb-6 flex items-center gap-2">
-        <Activity className="w-5 h-5 text-[#4f46e5]" />
+        <Activity className="w-5 h-5 text-teal-600" />
         Estatísticas Detalhadas
       </h3>
 
@@ -187,7 +187,7 @@ function DetailedStatsPanel() {
             {stats.simulados_stages.map(s => (
               <div key={s.status} className="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
                 <span className="text-xs font-medium text-gray-600 uppercase">{s.status}</span>
-                <span className="text-sm font-bold text-[#4f46e5]">{s.count}</span>
+                <span className="text-sm font-bold text-teal-600">{s.count}</span>
               </div>
             ))}
           </div>

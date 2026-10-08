@@ -26,7 +26,7 @@ function ScoreInput({
       </div>
 
       {cs.ai_comment && (
-        <p className="text-xs text-[#334155] dark:text-[#c7c4d7] bg-[#f5f3ff] dark:bg-[#1e1a3a] border border-[#e9d5ff] dark:border-[#3d3470] rounded px-3 py-2 leading-relaxed">
+        <p className="text-xs text-[#334155] dark:text-slate-300 bg-[#f5f3ff] dark:bg-[#1e1a3a] border border-[#e9d5ff] dark:border-[#3d3470] rounded px-3 py-2 leading-relaxed">
           <span className="font-semibold text-purple-700 dark:text-purple-400">IA: </span>{cs.ai_comment}
         </p>
       )}
@@ -34,7 +34,7 @@ function ScoreInput({
       <div className="flex items-center gap-3">
         <div className="flex-1">
           <label className="block text-xs text-[#64748B] mb-1">
-            Nota da IA: <span className="font-semibold text-[#334155] dark:text-[#c7c4d7]">{cs.ai_score?.toFixed(1) ?? '—'}</span>
+            Nota da IA: <span className="font-semibold text-[#334155] dark:text-slate-300">{cs.ai_score?.toFixed(1) ?? '—'}</span>
           </label>
           <input
             type="number"
@@ -43,7 +43,7 @@ function ScoreInput({
             step={0.1}
             value={value}
             onChange={e => onChange(e.target.value)}
-            className={`w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8] ${
+            className={`w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-teal-400 ${
               !valid && value !== '' ? 'border-red-400' : 'border-[#c5ceff] dark:border-[#464554]'
             }`}
           />
@@ -60,7 +60,7 @@ function ScoreInput({
           value={note}
           onChange={e => onNoteChange(e.target.value)}
           placeholder="Comentário sobre este critério…"
-          className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8]"
+          className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-teal-400"
         />
       </div>
     </div>
@@ -132,7 +132,7 @@ export default function RedacaoReviewPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <svg className="w-8 h-8 animate-spin text-[#4f46e5]" fill="none" viewBox="0 0 24 24">
+        <svg className="w-8 h-8 animate-spin text-[#0d9488]" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
@@ -155,7 +155,7 @@ export default function RedacaoReviewPage() {
           onClick={() => navigate('/redacoes/professor')}
           className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a] transition-colors"
         >
-          <svg className="w-4 h-4 text-[#334155] dark:text-[#c7c4d7]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="w-4 h-4 text-[#334155] dark:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
@@ -168,7 +168,7 @@ export default function RedacaoReviewPage() {
         </div>
         <div className="text-right">
           <p className="text-xs text-[#64748B]">Total atual</p>
-          <p className="text-xl font-bold text-[#4f46e5]">
+          <p className="text-xl font-bold text-[#0d9488]">
             {currentTotal.toFixed(1)} <span className="text-sm font-normal text-[#64748B]">/ {data.max_score.toFixed(1)}</span>
           </p>
         </div>
@@ -184,7 +184,7 @@ export default function RedacaoReviewPage() {
       {data.ai_feedback && (
         <div className="bg-[#f5f3ff] dark:bg-[#1e1a3a] border border-[#e9d5ff] dark:border-[#3d3470] rounded-xl p-4">
           <p className="text-xs font-semibold text-purple-700 dark:text-purple-400 mb-1">Feedback geral da IA</p>
-          <p className="text-sm text-[#334155] dark:text-[#c7c4d7] leading-relaxed">{data.ai_feedback}</p>
+          <p className="text-sm text-[#334155] dark:text-slate-300 leading-relaxed">{data.ai_feedback}</p>
         </div>
       )}
 
@@ -213,7 +213,7 @@ export default function RedacaoReviewPage() {
           onChange={e => setProfessorComment(e.target.value)}
           rows={4}
           placeholder="Deixe um comentário geral para o aluno…"
-          className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#4f46e5] dark:focus:ring-[#818CF8] resize-none"
+          className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-teal-400 resize-none"
         />
       </div>
 
@@ -221,7 +221,7 @@ export default function RedacaoReviewPage() {
       <div className="flex items-center justify-between pt-2">
         <button
           onClick={handleRecorrect}
-          className="px-5 py-2.5 rounded-xl border border-[#c5ceff] dark:border-[#464554] text-sm font-semibold text-[#334155] dark:text-[#c7c4d7] hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a] transition-colors"
+          className="px-5 py-2.5 rounded-xl border border-[#c5ceff] dark:border-[#464554] text-sm font-semibold text-[#334155] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a] transition-colors"
         >
           Recorrigir com IA
         </button>
@@ -229,7 +229,7 @@ export default function RedacaoReviewPage() {
           onClick={handleSave}
           disabled={saving}
           className="px-6 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 transition-opacity"
-          style={{ background: 'linear-gradient(135deg, #065f46 0%, #10b981 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
         >
           {saving ? 'Salvando…' : 'Salvar revisão'}
         </button>

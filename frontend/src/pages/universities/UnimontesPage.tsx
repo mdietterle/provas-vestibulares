@@ -12,7 +12,7 @@ export default function UnimontesPage() {
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         Unimontes: referência pública do norte de Minas
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         Credenciada pelo MEC em 1962, a Universidade Estadual de Montes Claros é a principal universidade pública
         do norte mineiro, com sede em Montes Claros e atuação em diversos campi da região. Oferece 35 cursos de
         graduação, além de pós-graduação e cursos técnicos, presenciais e a distância.
@@ -30,7 +30,7 @@ export default function UnimontesPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: nota máxima em Medicina e Enfermagem no ENADE
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           No Exame Nacional de Desempenho dos Estudantes (ENADE) 2023, seis cursos da Unimontes se destacaram, com{' '}
           <strong>Medicina</strong> e <strong>Enfermagem</strong> recebendo nota máxima (5). O IGC (Índice Geral de
           Cursos) da universidade também subiu de 3 para 4 no MEC — uma evolução consistente de qualidade, não só
@@ -38,14 +38,14 @@ export default function UnimontesPage() {
         </p>
         <div className="flex flex-wrap gap-2 mt-3">
           {NOTA5.map(c => (
-            <span key={c} className="text-xs font-semibold text-[#4f46e5] dark:text-[#818CF8] bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#c7c4d7] rounded-full px-3 py-1">
+            <span key={c} className="text-xs font-semibold text-teal-600 dark:text-teal-400 bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-slate-300 rounded-full px-3 py-1">
               {c} — nota 5 no ENADE 2023
             </span>
           ))}
         </div>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8">
         Além de Medicina e Enfermagem, cursos de destaque incluem <strong>Direito</strong>,{' '}
         <strong>Odontologia</strong>, <strong>Engenharia Civil</strong>, <strong>Engenharia
         Elétrica/Eletrônica</strong> e <strong>Psicologia</strong>. A universidade também investe forte em
@@ -54,10 +54,10 @@ export default function UnimontesPage() {
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Ingresso: vestibular próprio (80%) ou SiSU (20%)
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A Unimontes reserva <strong>80% das vagas</strong> pro vestibular próprio, aplicado pela COTEPS
           (Coordenação Técnica de Processos Seletivos) e aberto tanto a quem já concluiu o ensino médio quanto a
           quem está no 3º ano. Os outros <strong>20%</strong> vão pro <strong>SiSU</strong>, com dois processos

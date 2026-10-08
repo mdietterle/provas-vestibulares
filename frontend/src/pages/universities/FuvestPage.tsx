@@ -35,7 +35,7 @@ export default function FuvestPage() {
         credit="Foto: Hector.carvalho / Wikimedia Commons, CC BY-SA 3.0"
       />
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-10">
         A Fuvest organiza o vestibular de ingresso na USP, uma das universidades mais concorridas do Brasil. Diferente
         de um exame único, o processo é dividido em duas fases bem distintas — e entender o peso de cada uma é tão
         importante quanto estudar o conteúdo em si.
@@ -46,8 +46,8 @@ export default function FuvestPage() {
         <h2 className="text-xl font-bold text-[#1E293B] dark:text-white mb-4">Fase 1 x Fase 2: o duelo que define a nota</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="rounded-2xl border-2 border-[#E2E8F0] dark:border-[#464554] p-5">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">1ª Fase — a peneira</div>
-            <ul className="text-sm text-[#475569] dark:text-[#c7c4d7] space-y-1.5 leading-relaxed">
+            <div className="text-xs font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">1ª Fase — a peneira</div>
+            <ul className="text-sm text-[#475569] dark:text-slate-300 space-y-1.5 leading-relaxed">
               <li>80 questões de múltipla escolha</li>
               <li>5 horas de duração</li>
               <li>Conteúdo geral do ensino médio</li>
@@ -55,9 +55,9 @@ export default function FuvestPage() {
               <li className="text-red-600 dark:text-red-400 font-semibold">Elimina quem não acerta 30% das questões</li>
             </ul>
           </div>
-          <div className="rounded-2xl border-2 border-[#712ae2] dark:border-[#818CF8] p-5 bg-[#F4F6F9] dark:bg-[#1d1f27]">
-            <div className="text-xs font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">2ª Fase — o desempate</div>
-            <ul className="text-sm text-[#475569] dark:text-[#c7c4d7] space-y-1.5 leading-relaxed">
+          <div className="rounded-2xl border-2 border-amber-500 dark:border-teal-400 p-5 bg-[#F4F6F9] dark:bg-[#1d1f27]">
+            <div className="text-xs font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">2ª Fase — o desempate</div>
+            <ul className="text-sm text-[#475569] dark:text-slate-300 space-y-1.5 leading-relaxed">
               <li>Provas dissertativas em 2 dias</li>
               <li>Redação + questões por disciplina</li>
               <li>Disciplinas específicas do curso escolhido</li>
@@ -73,19 +73,19 @@ export default function FuvestPage() {
         <h2 className="text-xl font-bold text-[#1E293B] dark:text-white mb-4">Quanto cada fase pesa na nota final</h2>
         <div className="space-y-3">
           <div>
-            <div className="flex justify-between text-xs font-semibold text-[#475569] dark:text-[#c7c4d7] mb-1">
+            <div className="flex justify-between text-xs font-semibold text-[#475569] dark:text-slate-300 mb-1">
               <span>1ª Fase</span><span>peso 1</span>
             </div>
             <div className="h-3 rounded-full bg-[#E2E8F0] dark:bg-[#464554] overflow-hidden">
-              <div className="h-full bg-[#712ae2]" style={{ width: '33%' }} />
+              <div className="h-full bg-amber-500" style={{ width: '33%' }} />
             </div>
           </div>
           <div>
-            <div className="flex justify-between text-xs font-semibold text-[#475569] dark:text-[#c7c4d7] mb-1">
+            <div className="flex justify-between text-xs font-semibold text-[#475569] dark:text-slate-300 mb-1">
               <span>2ª Fase</span><span>peso 2 (até peso 3 em alguns cursos)</span>
             </div>
             <div className="h-3 rounded-full bg-[#E2E8F0] dark:bg-[#464554] overflow-hidden">
-              <div className="h-full bg-[#4f46e5] dark:bg-[#818CF8]" style={{ width: '66%' }} />
+              <div className="h-full bg-teal-600 dark:bg-teal-400" style={{ width: '66%' }} />
             </div>
           </div>
         </div>
@@ -99,10 +99,10 @@ export default function FuvestPage() {
       <div>
         <h2 className="text-xl font-bold text-[#1E293B] dark:text-white mb-4">Calendário (Vestibular Fuvest 2027)</h2>
         <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm border-y border-[#E2E8F0] dark:border-[#464554] py-4">
-          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrição: </span>17 de agosto a 9 de outubro</div>
-          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">1ª fase: </span>1º de novembro</div>
-          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">2ª fase: </span>6 e 7 de dezembro</div>
-          <div><span className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vagas: </span>8.147</div>
+          <div><span className="font-bold text-teal-600 dark:text-teal-400">Inscrição: </span>17 de agosto a 9 de outubro</div>
+          <div><span className="font-bold text-teal-600 dark:text-teal-400">1ª fase: </span>1º de novembro</div>
+          <div><span className="font-bold text-teal-600 dark:text-teal-400">2ª fase: </span>6 e 7 de dezembro</div>
+          <div><span className="font-bold text-teal-600 dark:text-teal-400">Vagas: </span>8.147</div>
         </div>
         <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-3">
           Novidade da edição: provas também aplicadas em Fortaleza (CE), além dos locais tradicionais em São Paulo.

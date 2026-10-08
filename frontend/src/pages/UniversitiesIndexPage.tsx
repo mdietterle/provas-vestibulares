@@ -15,7 +15,7 @@ function UniversityCard({ u }: { u: University }) {
   return (
     <Link
       to={`/universidades/${u.slug}`}
-      className="block rounded-xl border border-[#E2E8F0] p-4 bg-white hover:border-[#712ae2] dark:hover:border-[#818CF8] hover:shadow-sm transition-all"
+      className="block rounded-xl border border-[#E2E8F0] p-4 bg-white hover:border-amber-500 dark:hover:border-teal-400 hover:shadow-sm transition-all"
     >
       <div className="flex items-center justify-between gap-2 mb-1">
         <h3 className="font-display font-bold text-[#1E293B]">{u.shortName}</h3>
@@ -56,7 +56,7 @@ export default function UniversitiesIndexPage() {
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h1 className="font-display text-3xl font-bold text-[#1E293B] mb-3">Universidades e vestibulares</h1>
           <p className="text-sm mb-1">
-            <Link to="/calendario" className="text-[#712ae2] dark:text-[#818CF8] hover:underline font-semibold">
+            <Link to="/calendario" className="text-amber-500 dark:text-teal-400 hover:underline font-semibold">
               Ver calendário das próximas provas →
             </Link>
           </p>
@@ -79,7 +79,7 @@ export default function UniversitiesIndexPage() {
           <div className="space-y-8">
             {byCategory.map(g => (
               <div key={g.category}>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
                   {CATEGORY_LABELS[g.category]}
                   <span className="ml-2 text-[#a0a3af] dark:text-[#908fa0] font-normal">({g.items.length})</span>
                 </h3>
@@ -100,7 +100,7 @@ export default function UniversitiesIndexPage() {
           <div className="space-y-8">
             {byRegion.map(g => (
               <div key={g.region}>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
                   {REGION_LABELS[g.region]}
                   <span className="ml-2 text-[#a0a3af] dark:text-[#908fa0] font-normal">({g.items.length})</span>
                 </h3>

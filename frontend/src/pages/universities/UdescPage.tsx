@@ -21,7 +21,7 @@ export default function UdescPage() {
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         UDESC: ensino superior público levado a dez cidades de Santa Catarina
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-10 max-w-2xl">
         Fundada em 1965 e mantida pelo governo do estado, a UDESC é universidade <strong>pública e gratuita</strong> —
         diferente das instituições privadas catarinenses do consórcio ACAFE. Seu maior diferencial estrutural é a{' '}
         <strong>descentralização</strong>: em vez de concentrar tudo na capital, a universidade espalhou seus 13
@@ -31,12 +31,12 @@ export default function UdescPage() {
 
       {/* Mapa de cidades em formato de "selo/carimbo", não em cards nem faixa rolável — visual de rede espalhada */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
           13 centros de ensino em 10 cidades catarinenses
         </h3>
         <div className="flex flex-wrap gap-2">
           {CENTROS.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -50,17 +50,17 @@ export default function UdescPage() {
 
       {/* Barra de composição de vagas por forma de ingresso — visualização de proporção, diferente das outras páginas */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">Como as vagas são divididas</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Como as vagas são divididas</h3>
         <div className="flex rounded-full overflow-hidden h-7 text-[10px] font-bold text-white mb-4">
-          <div className="bg-[#4f46e5] dark:bg-[#712ae2] flex items-center justify-center" style={{ width: '50%' }}>Vestibular 50%</div>
-          <div className="bg-[#712ae2] dark:bg-[#8b5cf6] flex items-center justify-center" style={{ width: '25%' }}>Histórico 25%</div>
-          <div className="bg-[#818CF8] dark:bg-[#A5B4FC] flex items-center justify-center text-[#1E293B]" style={{ width: '25%' }}>SiSU 25%</div>
+          <div className="bg-teal-600 dark:bg-amber-500 flex items-center justify-center" style={{ width: '50%' }}>Vestibular 50%</div>
+          <div className="bg-amber-500 dark:bg-[#8b5cf6] flex items-center justify-center" style={{ width: '25%' }}>Histórico 25%</div>
+          <div className="bg-teal-400 dark:bg-[#A5B4FC] flex items-center justify-center text-[#1E293B]" style={{ width: '25%' }}>SiSU 25%</div>
         </div>
         <dl className="space-y-3 text-sm">
           {INGRESSO.map(i => (
             <div key={i.via} className="flex gap-3">
               <dt className="font-bold text-[#1E293B] dark:text-white shrink-0 w-48">{i.via}</dt>
-              <dd className="text-[#475569] dark:text-[#c7c4d7]">{i.texto}</dd>
+              <dd className="text-[#475569] dark:text-slate-300">{i.texto}</dd>
             </div>
           ))}
         </dl>
@@ -76,8 +76,8 @@ export default function UdescPage() {
       {/* Cursos e pesquisa lado a lado, formato de duas colunas simples */}
       <div className="grid sm:grid-cols-2 gap-6">
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Cursos mais fortes</h3>
-          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Cursos mais fortes</h3>
+          <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             Mais de 60 cursos de graduação, com tradição consolidada em <strong>Fisioterapia</strong>,{' '}
             <strong>Educação Física</strong>, <strong>Medicina Veterinária</strong>, <strong>Design</strong> e{' '}
             <strong>Zootecnia</strong> — áreas em que a universidade é referência nacional, sobretudo em ciências
@@ -85,8 +85,8 @@ export default function UdescPage() {
           </p>
         </div>
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Pesquisa e extensão</h3>
-          <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Pesquisa e extensão</h3>
+          <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             Além da graduação, a UDESC mantém mais de 50 programas de mestrado e doutorado. São cerca de{' '}
             <strong>1.200 atividades de extensão por ano</strong>, levando conhecimento produzido na universidade
             direto à comunidade — ações gratuitas que já beneficiam mais de 600 mil pessoas anualmente em Santa

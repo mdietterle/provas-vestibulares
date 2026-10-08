@@ -12,7 +12,7 @@ export default function UfmsPage() {
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         UFMS: a maior instituição pública de Mato Grosso do Sul
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         A Universidade Federal de Mato Grosso do Sul tem sede em Campo Grande e raízes que remontam a 1962, embora
         só tenha sido oficializada como universidade federal em 1979. Hoje é a maior instituição pública de ensino
         superior do estado, com estrutura multicampi que leva ensino federal pra praticamente todas as regiões de
@@ -28,14 +28,14 @@ export default function UfmsPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">Nove campi pelo interior de MS</h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Nove campi pelo interior de MS</h3>
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-3">
           Além da sede em Campo Grande, a UFMS tem unidades em outras nove cidades do estado, cobrindo desde a
           fronteira com o Paraguai (Ponta Porã) até o Pantanal (Corumbá):
         </p>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -46,7 +46,7 @@ export default function UfmsPage() {
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: ciência com endereço no Pantanal
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Com o campus de Corumbá dentro do próprio bioma, a UFMS tem atuação forte e diferenciada em pesquisa e
           preservação ambiental ligada diretamente ao <strong>Pantanal</strong> — um dos biomas mais estudados e
           mais frágeis do planeta. Some a isso uma estrutura de mais de <strong>660 laboratórios, oficinas e
@@ -55,7 +55,7 @@ export default function UfmsPage() {
         </p>
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-10">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-10">
         São mais de 100 cursos de graduação em Ciências Exatas, Humanas, Biológicas, Engenharias, Saúde, Artes e
         Ciências Sociais Aplicadas — com destaque histórico em <strong>Medicina</strong>,{' '}
         <strong>Medicina Veterinária</strong>, <strong>Agronomia</strong>, <strong>Direito</strong> e{' '}
@@ -72,10 +72,10 @@ export default function UfmsPage() {
       />
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Serviço direto à comunidade: hospital e extensão
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A UFMS mantém o Hospital Universitário Maria Aparecida Pedrossian, referência em saúde de alta
           complexidade integrada ao SUS em Campo Grande, e uma agenda ativa de extensão universitária que conecta
           projetos de pesquisa e ensino diretamente com a comunidade — do apoio a pequenos produtores rurais até
@@ -84,10 +84,10 @@ export default function UfmsPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
           Como entrar: Vestibular, PASSE ou SiSU
         </h3>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed mb-4">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-4">
           A UFMS combina três vias principais: o <strong>Vestibular</strong> tradicional (prova objetiva anual), o{' '}
           <strong>PASSE</strong> (avaliação seriada em três etapas ao longo do ensino médio) e o <strong>SiSU</strong>{' '}
           com nota do ENEM. Se ainda sobrarem vagas depois das primeiras chamadas, existe ainda a modalidade
@@ -95,19 +95,19 @@ export default function UfmsPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Inscrições</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Inscrições</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Fim de agosto a meados de novembro (taxa ~R$ 100)</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Prova do Vestibular</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Prova do Vestibular</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Início de dezembro</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Provas do PASSE (3 etapas)</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Provas do PASSE (3 etapas)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Mesma semana do vestibular, em dezembro</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vagas</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Vagas</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">~9.363 vagas em 131 cursos</dd>
           </div>
         </dl>

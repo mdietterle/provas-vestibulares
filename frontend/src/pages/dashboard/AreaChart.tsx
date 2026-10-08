@@ -1,7 +1,7 @@
 export function AreaChart({
   data,
   valueKey,
-  color = '#712ae2',
+  color = '#f59e0b',
   height = 80,
 }: {
   data: Record<string, number>[]

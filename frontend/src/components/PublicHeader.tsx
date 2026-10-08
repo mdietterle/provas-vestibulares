@@ -5,12 +5,12 @@ import ThemeToggle from './ThemeToggle'
 
 const LOGO = (
   <div className="flex items-center gap-2">
-    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}>
+    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
       <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
       </svg>
     </div>
-    <span className="font-display font-bold text-[#4f46e5] dark:text-[#818CF8] text-lg tracking-tight">Cognition AI</span>
+    <span className="font-display font-bold text-teal-600 dark:text-teal-400 text-lg tracking-tight">Cognition AI</span>
   </div>
 )
 
@@ -36,7 +36,7 @@ export default function PublicHeader() {
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-5 text-sm">
           {NAV_LINKS.map(l => (
-            <Link key={l.to} to={l.to} className="font-medium text-[#334155] dark:text-[#c7c4d7] hover:text-[#4f46e5] dark:hover:text-[#818CF8] transition-colors">
+            <Link key={l.to} to={l.to} className="font-medium text-[#334155] dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
               {l.label}
             </Link>
           ))}
@@ -44,19 +44,19 @@ export default function PublicHeader() {
             <Link
               to="/"
               className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5 shadow-[0_2px_10px_rgba(0,35,111,0.25)]"
-              style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
             >
               Ir para o painel
             </Link>
           ) : (
             <>
-              <Link to="/aluno" className="font-medium text-[#334155] dark:text-[#c7c4d7] hover:text-[#4f46e5] dark:hover:text-[#818CF8] transition-colors">
+              <Link to="/aluno" className="font-medium text-[#334155] dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                 Sou aluno
               </Link>
               <Link
                 to="/login"
                 className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:-translate-y-0.5 shadow-[0_2px_10px_rgba(0,35,111,0.25)]"
-                style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
               >
                 Entrar
               </Link>
@@ -73,7 +73,7 @@ export default function PublicHeader() {
             aria-label={open ? 'Fechar menu' : 'Abrir menu'}
             aria-expanded={open}
             onClick={() => setOpen(o => !o)}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#eef1ff] dark:hover:bg-[#241c47] transition-colors"
+            className="w-9 h-9 flex items-center justify-center rounded-lg text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-slate-800 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               {open
@@ -88,20 +88,20 @@ export default function PublicHeader() {
       {open && (
         <div className="md:hidden border-t border-[#eef1fb] dark:border-[#464554] bg-white dark:bg-[#1d1f27] px-6 py-4 flex flex-col gap-3 text-sm">
           {NAV_LINKS.map(l => (
-            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="font-medium text-[#334155] dark:text-[#c7c4d7] hover:text-[#4f46e5] dark:hover:text-[#818CF8]">
+            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="font-medium text-[#334155] dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400">
               {l.label}
             </Link>
           ))}
           {user ? (
-            <Link to="/" onClick={() => setOpen(false)} className="font-semibold text-[#4f46e5] dark:text-[#818CF8]">
+            <Link to="/" onClick={() => setOpen(false)} className="font-semibold text-teal-600 dark:text-teal-400">
               Ir para o painel
             </Link>
           ) : (
             <>
-              <Link to="/aluno" onClick={() => setOpen(false)} className="font-medium text-[#334155] dark:text-[#c7c4d7] hover:text-[#4f46e5] dark:hover:text-[#818CF8]">
+              <Link to="/aluno" onClick={() => setOpen(false)} className="font-medium text-[#334155] dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400">
                 Sou aluno
               </Link>
-              <Link to="/login" onClick={() => setOpen(false)} className="font-semibold text-[#4f46e5] dark:text-[#818CF8]">
+              <Link to="/login" onClick={() => setOpen(false)} className="font-semibold text-teal-600 dark:text-teal-400">
                 Entrar
               </Link>
             </>

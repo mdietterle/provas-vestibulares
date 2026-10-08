@@ -12,7 +12,7 @@ export default function UemPage() {
       <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white mb-2">
         UEM: referência regional no noroeste do Paraná
       </h2>
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8 max-w-2xl">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8 max-w-2xl">
         A Universidade Estadual de Maringá tem sede em Maringá — a 3ª maior cidade do Paraná e polo regional de
         saúde, indústria e agronegócio — e é mantida pelo governo do estado, vinculada à Secretaria de Estado da
         Ciência, Tecnologia e Ensino Superior (SETI). Fundada em 1970, a UEM se consolidou como uma das principais
@@ -28,18 +28,18 @@ export default function UemPage() {
         credit="Foto: Charherjun / Wikimedia Commons, CC BY-SA 4.0"
       />
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8">
         Além da sede, a UEM tem uma estrutura multicampi que leva o ensino público a seis outras cidades da região:
       </p>
       <div className="flex flex-wrap gap-2 mb-10">
         {CAMPI.map(c => (
-          <span key={c} className="text-sm font-semibold text-[#4f46e5] dark:text-[#818CF8] border-2 border-dashed border-[#c5c5d3] dark:border-[#c7c4d7] rounded-lg px-3 py-1.5">
+          <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
             {c}
           </span>
         ))}
       </div>
 
-      <p className="text-sm leading-relaxed text-[#475569] dark:text-[#c7c4d7] mb-8">
+      <p className="text-sm leading-relaxed text-[#475569] dark:text-slate-300 mb-8">
         São mais de 65 cursos de graduação e cerca de 21 mil estudantes entre graduação e pós-graduação. A UEM tem
         avaliação de excelência (nota 5, máxima do MEC) em <strong>Engenharia Civil</strong>, e também é referência
         em <strong>Medicina</strong>, <strong>Odontologia</strong> e <strong>Farmácia</strong>. Um diferencial
@@ -56,20 +56,20 @@ export default function UemPage() {
       />
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-[#712ae2] dark:text-[#818CF8] mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
           Vestibular: duas janelas de inscrição por ano
         </h3>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-3">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vestibular de Inverno</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Vestibular de Inverno</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Inscrições entre abril e maio, ingresso no ano letivo seguinte</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-[#4f46e5] dark:text-[#818CF8]">Vestibular de Verão</dt>
+            <dt className="font-bold text-teal-600 dark:text-teal-400">Vestibular de Verão</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Inscrições entre agosto e setembro</dd>
           </div>
         </dl>
-        <p className="text-sm text-[#475569] dark:text-[#c7c4d7] leading-relaxed">
+        <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           O processo é organizado pela CVU (Comissão do Vestibular Unificado), além de vagas via SiSU/ENEM e PAS
           (Programa de Avaliação Seriada). Datas exatas mudam a cada edital — confirme sempre em{' '}
           <a href="https://www.cvu.uem.br/" target="_blank" rel="noreferrer" className="underline font-semibold">

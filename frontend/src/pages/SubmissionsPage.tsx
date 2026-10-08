@@ -302,7 +302,7 @@ export default function SubmissionsPage() {
 
   if (!exam) return (
     <div className="flex items-center justify-center py-20">
-      <div className="w-6 h-6 border-2 border-[#4f46e5] border-t-transparent rounded-full animate-spin" />
+      <div className="w-6 h-6 border-2 border-[#0d9488] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -330,7 +330,7 @@ export default function SubmissionsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/exams')}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-white hover:text-[#4f46e5] border border-[#e8eeff] transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-white hover:text-[#0d9488] border border-[#e8eeff] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -394,14 +394,14 @@ export default function SubmissionsPage() {
             <p className="text-sm font-medium text-[#1E293B]">
               Turma {exam.class_.name} · {exam.class_.year}
             </p>
-            <p className="text-sm font-bold text-[#4f46e5]">{deliveredPct}%</p>
+            <p className="text-sm font-bold text-[#0d9488]">{deliveredPct}%</p>
           </div>
           <div className="h-2 bg-[#edf0fb] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${deliveredPct}%`,
-                background: deliveredPct === 100 ? '#27c38a' : 'linear-gradient(90deg, #4f46e5, #712ae2)',
+                background: deliveredPct === 100 ? '#27c38a' : 'linear-gradient(90deg, #0d9488, #f59e0b)',
               }}
             />
           </div>
@@ -437,8 +437,8 @@ export default function SubmissionsPage() {
             onClick={() => setFilterStatus(tab.key)}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
               filterStatus === tab.key
-                ? 'bg-[#4f46e5] text-white'
-                : 'bg-white dark:bg-[#1d1f27] text-[#5a6480] dark:text-[#c7c4d7] border border-[#e8eeff] dark:border-[#464554] hover:bg-[#f4f6fb] dark:hover:bg-[#1a2947]'
+                ? 'bg-[#0d9488] text-white'
+                : 'bg-white dark:bg-[#1d1f27] text-[#5a6480] dark:text-slate-300 border border-[#e8eeff] dark:border-[#464554] hover:bg-[#f4f6fb] dark:hover:bg-[#1a2947]'
             }`}
           >
             {tab.label}
@@ -510,7 +510,7 @@ export default function SubmissionsPage() {
                             onClick={() => handleCorrectOne(sub)}
                             disabled={correctingId === sub.id}
                             title="Corrige esta submissão"
-                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#eef2ff] dark:bg-[#272a32] text-[#4f46e5] dark:text-[#818CF8] hover:bg-[#e0e7ff] dark:hover:bg-[#1e2d4a] transition-colors disabled:opacity-60 whitespace-nowrap"
+                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-teal-400 hover:bg-[#e0e7ff] dark:hover:bg-[#1e2d4a] transition-colors disabled:opacity-60 whitespace-nowrap"
                           >
                             {correctingId === sub.id ? 'Corrigindo…' : 'Corrigir'}
                           </button>
@@ -537,7 +537,7 @@ export default function SubmissionsPage() {
                         )}
                         <button
                           onClick={() => openDetail(sub.id)}
-                          className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#f0f4ff] dark:bg-[#272a32] text-[#2845b5] dark:text-[#818CF8] hover:bg-[#e5edff] dark:hover:bg-[#1e2d4a] transition-colors whitespace-nowrap"
+                          className="text-xs font-medium px-2.5 py-1 rounded-lg bg-teal-50 dark:bg-slate-800 text-[#2845b5] dark:text-teal-400 hover:bg-[#e5edff] dark:hover:bg-[#1e2d4a] transition-colors whitespace-nowrap"
                         >
                           Ver detalhes
                         </button>
@@ -627,7 +627,7 @@ export default function SubmissionsPage() {
                       </div>
 
                       {ans.ai_feedback && (
-                        <div className="bg-[#f0f4ff] rounded-xl px-4 py-3 border border-[#e5edff]">
+                        <div className="bg-teal-50 rounded-xl px-4 py-3 border border-[#e5edff]">
                           <p className="text-[10px] font-semibold text-[#5a78c0] uppercase tracking-wide mb-1.5">
                             {ans.is_auto_corrected ? 'Feedback da IA' : 'Observação'}
                           </p>
@@ -639,7 +639,7 @@ export default function SubmissionsPage() {
                       {ans.essay_image_base64 && (
                         <button
                           onClick={() => handleAiCorrect(detail.id, ans.id)}
-                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm bg-indigo-600 hover:bg-indigo-700 text-white transition-colors"
+                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm bg-teal-600 hover:bg-teal-700 text-white transition-colors"
                         >
                           <span>✨</span>
                           {ans.is_auto_corrected ? 'Re-corrigir redação com IA' : 'Corrigir redação com IA'}

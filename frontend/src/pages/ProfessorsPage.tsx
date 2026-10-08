@@ -17,7 +17,7 @@ function Avatar({ name }: { name: string }) {
   return (
     <div
       className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 select-none"
-      style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #712ae2 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
     >
       {initials}
     </div>
@@ -32,7 +32,7 @@ function StatusBadge({ active }: { active: boolean }) {
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
         active
           ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-          : 'bg-gray-100 text-gray-600 dark:bg-[#464554] dark:text-[#c7c4d7]'
+          : 'bg-gray-100 text-gray-600 dark:bg-[#464554] dark:text-slate-300'
       }`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-[#27c38a]' : 'bg-gray-400 dark:bg-[#908fa0]'}`} />
@@ -53,7 +53,7 @@ function IconBtn({ onClick, title, children, danger }: {
       className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
         danger
           ? 'text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30'
-          : 'text-[#334155] dark:text-[#c7c4d7] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947]'
+          : 'text-[#334155] dark:text-slate-300 hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947]'
       }`}
     >
       {children}
@@ -296,7 +296,7 @@ export default function ProfessorsPage() {
               onClick={() => setFilterStatus(s)}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0]' : ''} ${
                 filterStatus === s
-                  ? 'bg-[#4f46e5] text-white'
+                  ? 'bg-teal-600 text-white'
                   : 'bg-white text-[#5a6480] hover:bg-[#f4f6fb]'
               }`}
             >
@@ -332,7 +332,7 @@ export default function ProfessorsPage() {
                     <div>
                       <p className="font-medium text-[#1E293B] text-[13px]">{p.name}</p>
                       {p.car_access && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-[#272a32] text-[#712ae2] dark:text-[#818CF8]">CAR</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-slate-800 text-amber-500 dark:text-teal-400">CAR</span>
                       )}
                     </div>
                   </div>
@@ -343,7 +343,7 @@ export default function ProfessorsPage() {
                 <td className="table-cell">
                   <button
                     onClick={() => openAssignments(p)}
-                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#f0f4ff] dark:bg-[#272a32] text-[#2845b5] dark:text-[#818CF8] hover:bg-[#e5edff] dark:hover:bg-[#20335a] transition-colors"
+                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-teal-50 dark:bg-slate-800 text-[#2845b5] dark:text-teal-400 hover:bg-[#e5edff] dark:hover:bg-[#20335a] transition-colors"
                   >
                     Gerenciar
                   </button>
@@ -388,7 +388,7 @@ export default function ProfessorsPage() {
                       {search || filterStatus !== 'all' ? 'Nenhum professor encontrado' : 'Nenhum professor cadastrado'}
                     </p>
                     {!search && filterStatus === 'all' && (
-                      <button onClick={openCreate} className="mt-2 text-sm font-medium text-[#712ae2] hover:underline">
+                      <button onClick={openCreate} className="mt-2 text-sm font-medium text-amber-500 hover:underline">
                         Cadastrar primeiro professor
                       </button>
                     )}
@@ -417,7 +417,7 @@ export default function ProfessorsPage() {
             </div>
             {editing ? (
               <p className="text-xs text-[#64748B] bg-[#F4F6F9] border border-[#E2E8F0] rounded-lg px-3 py-2">
-                Para redefinir a senha deste professor, use <Link to="/user-access" className="font-semibold text-[#712ae2] hover:underline">Controle de Acesso</Link>.
+                Para redefinir a senha deste professor, use <Link to="/user-access" className="font-semibold text-amber-500 hover:underline">Controle de Acesso</Link>.
               </p>
             ) : (
               <div>
@@ -430,7 +430,7 @@ export default function ProfessorsPage() {
                 type="checkbox"
                 checked={form.car_access}
                 onChange={e => setForm({ ...form, car_access: e.target.checked })}
-                className="w-4 h-4 rounded accent-[#712ae2]"
+                className="w-4 h-4 rounded accent-amber-500"
               />
               <div>
                 <p className="text-sm font-semibold text-[#1E293B]">Acesso ao CAR <span className="font-normal text-[#64748B]">(Correção Automática de Redações)</span></p>
@@ -441,7 +441,7 @@ export default function ProfessorsPage() {
               <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-[#334155] bg-[#EFF6FF] hover:bg-[#E2E8F0]">
                 Cancelar
               </button>
-              <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-60" style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}>
+              <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-60" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}>
                 {saving ? 'Salvando...' : 'Salvar'}
               </button>
             </div>
@@ -487,13 +487,13 @@ export default function ProfessorsPage() {
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                             already ? 'opacity-40 cursor-not-allowed' :
                             checked
-                              ? 'bg-[#eef2ff] dark:bg-[#272a32] border-[#c7d2fe] dark:border-[#464554] text-[#4f46e5] dark:text-[#818CF8]'
-                              : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-[#c7c4d7] hover:bg-gray-50 dark:hover:bg-[#1a2947]'
+                              ? 'bg-[#eef2ff] dark:bg-slate-800 border-[#c7d2fe] dark:border-[#464554] text-teal-600 dark:text-teal-400'
+                              : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1a2947]'
                           }`}
                         >
                           <input
                             type="checkbox"
-                            className="accent-[#4f46e5]"
+                            className="accent-teal-600"
                             checked={checked}
                             disabled={already}
                             onChange={() => setAssignClassIds(ids => checked ? ids.filter(id => id !== c.id) : [...ids, c.id])}
@@ -510,7 +510,7 @@ export default function ProfessorsPage() {
                   type="submit"
                   disabled={!assignSubjectId || assignClassIds.length === 0 || addingAssignment}
                   className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-40 shrink-0"
-                  style={{ background: 'linear-gradient(135deg,#4f46e5,#712ae2)' }}
+                  style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
                 >
                   {addingAssignment ? 'Adicionando...' : assignClassIds.length > 1 ? `Adicionar (${assignClassIds.length} turmas)` : 'Adicionar'}
                 </button>
@@ -528,7 +528,7 @@ export default function ProfessorsPage() {
               ) : (
                 <div className="space-y-2">
                   {assignments.map(a => (
-                    <div key={a.id} className="flex items-center justify-between bg-[#F4F6F9] dark:bg-[#272a32] rounded-lg px-4 py-2.5 border border-[#E2E8F0]">
+                    <div key={a.id} className="flex items-center justify-between bg-[#F4F6F9] dark:bg-slate-800 rounded-lg px-4 py-2.5 border border-[#E2E8F0]">
                       <div className="flex items-center gap-2 text-sm">
                         <span className="font-semibold text-[#1E293B]">{subjectLabel(a.subject_id)}</span>
                         <span className="text-[#c5c5d3]">·</span>
