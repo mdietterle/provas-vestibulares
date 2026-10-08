@@ -30,7 +30,7 @@ export default function AboutPage() {
               corrigindo provas e redações manualmente, tempo que poderia ser usado para dar atenção
               individualizada aos alunos. A plataforma automatiza a correção de provas objetivas e
               dissertativas, a geração de bancos de questões e a aplicação de simulados de vestibular, usando
-              Inteligência Artificial como apoio — não substituto — do trabalho pedagógico do professor.
+              Inteligência Artificial como apoio - não substituto - do trabalho pedagógico do professor.
             </p>
           </section>
 
