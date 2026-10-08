@@ -25,7 +25,7 @@ function TopicItem({ topic }: { topic: StudyTopic }) {
                 href={l.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-amber-500 dark:text-teal-400 font-medium hover:underline"
+                className="text-slate-500 dark:text-slate-400 font-medium hover:underline"
               >
                 {l.label}
               </a>
@@ -76,7 +76,7 @@ function Section({ section }: { section: GuideSection }) {
         <ul className="mt-4 list-disc pl-5 space-y-1.5">
           {section.sources.map(l => (
             <li key={l.url}>
-              <a href={l.url} target="_blank" rel="noopener noreferrer" className="text-amber-500 dark:text-teal-400 font-medium hover:underline">
+              <a href={l.url} target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-slate-400 font-medium hover:underline">
                 {l.label}
               </a>
             </li>
@@ -85,7 +85,7 @@ function Section({ section }: { section: GuideSection }) {
       )}
       {section.link && (
         <p className="mt-4">
-          <Link to={section.link.to} className="font-semibold text-amber-500 dark:text-teal-400 hover:underline">
+          <Link to={section.link.to} className="font-semibold text-slate-500 dark:text-slate-400 hover:underline">
             {section.link.label} &rarr;
           </Link>
         </p>
@@ -122,7 +122,7 @@ export default function StudyGuidePage({ guide }: { guide: StudyGuide }) {
         <Breadcrumb items={guide.breadcrumb} />
 
         <header className={`${CARD} p-6 sm:p-8 mb-8`}>
-          <span className="text-xs font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 bg-[#f1ecfc] dark:bg-[#241f3d] rounded-full px-3 py-1">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-[#f1ecfc] dark:bg-[#241f3d] rounded-full px-3 py-1">
             {guide.badge}
           </span>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1E293B] dark:text-white mt-3 mb-3">
@@ -147,7 +147,7 @@ export default function StudyGuidePage({ guide }: { guide: StudyGuide }) {
 
         {guide.subjects.length > 0 && (
         <nav aria-label="Matérias" className={`${CARD} p-6 mb-8`}>
-          <h2 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
             Matérias do guia
           </h2>
           <ul className="flex flex-wrap gap-2">
@@ -155,7 +155,7 @@ export default function StudyGuidePage({ guide }: { guide: StudyGuide }) {
               <li key={s.id}>
                 <a
                   href={`#${s.id}`}
-                  className="inline-block px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] text-[#1E293B] dark:text-[#e1e7f5] hover:border-amber-500 transition-colors"
+                  className="inline-block px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] text-[#1E293B] dark:text-[#e1e7f5] hover:border-slate-500 transition-colors"
                 >
                   {s.name}
                 </a>
@@ -172,7 +172,7 @@ export default function StudyGuidePage({ guide }: { guide: StudyGuide }) {
               <h2 className="text-xl font-bold mb-2 text-[#1E293B] dark:text-white">{subject.name}</h2>
               <p className="mb-5 text-[#555] dark:text-[#b4b6c4]">{subject.intro}</p>
 
-              <div className="rounded-xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-4 mb-6">
+              <div className="rounded-xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-4 mb-6">
                 <h3 className="font-bold text-[#1E293B] dark:text-white mb-2">Orientações</h3>
                 <ul className="list-disc pl-5 space-y-1.5 text-[#475569] dark:text-slate-300">
                   {subject.orientacoes.map(o => (
@@ -185,7 +185,7 @@ export default function StudyGuidePage({ guide }: { guide: StudyGuide }) {
               {groupTopics(subject.topics).map(block => (
                 <div key={block.group ?? 'all'} className="mb-4 last:mb-0">
                   {block.group && (
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                       {block.group}
                     </h3>
                   )}
@@ -211,21 +211,21 @@ export default function StudyGuidePage({ guide }: { guide: StudyGuide }) {
             </section>
           ))}
 
-          <section className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-teal-600 to-amber-500 text-white p-6 rounded-2xl shadow-md">
+          <section className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-slate-600 to-slate-500 text-white p-6 rounded-2xl shadow-md">
             <div>
               <h3 className="font-bold text-lg mb-1">{guide.ctaTitle}</h3>
               <p className="text-xs text-white/80">{guide.ctaText}</p>
             </div>
             <Link
               to="/aluno"
-              className="px-5 py-2.5 rounded-xl bg-white text-teal-600 font-bold text-xs hover:bg-white/90 transition-colors shrink-0"
+              className="px-5 py-2.5 rounded-xl bg-white text-slate-600 font-bold text-xs hover:bg-white/90 transition-colors shrink-0"
             >
               Criar Simulado
             </Link>
           </section>
 
           <p>
-            <Link to={guide.backTo} className="font-semibold text-amber-500 dark:text-teal-400 hover:underline">
+            <Link to={guide.backTo} className="font-semibold text-slate-500 dark:text-slate-400 hover:underline">
               &larr; {guide.backLabel}
             </Link>
           </p>

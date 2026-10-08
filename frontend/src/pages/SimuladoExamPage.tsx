@@ -66,7 +66,7 @@ function ReportQuestionButton({ sqId, reported, onReported }: { sqId: number; re
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs font-semibold text-amber-800 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800/50 hover:bg-amber-200 dark:hover:bg-amber-900/50 rounded-lg px-3 py-1.5 flex items-center gap-1.5 shrink-0 transition-colors"
+        className="text-xs font-semibold text-slate-800 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-900/50 rounded-lg px-3 py-1.5 flex items-center gap-1.5 shrink-0 transition-colors"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -170,7 +170,7 @@ function QuestionCard({
         <div className="flex items-center gap-2 shrink-0">
           <span
             className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
           >
             {index}
           </span>
@@ -180,7 +180,7 @@ function QuestionCard({
             </span>
           )}
           {isSummation && (
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400">
+            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-900/30 text-slate-800 dark:text-slate-400">
               Somatório — marque todas as afirmativas corretas
             </span>
           )}
@@ -230,8 +230,8 @@ function QuestionCard({
           ))}
 
           {sq.options.length === 0 && (
-            <div className="rounded-xl p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40">
-              <p className="text-xs text-amber-800 dark:text-amber-400">
+            <div className="rounded-xl p-4 bg-slate-50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800/40">
+              <p className="text-xs text-slate-800 dark:text-slate-400">
                 Esta questão não tem alternativas cadastradas (falha na importação). Pule pra próxima —
                 ela não será contabilizada na correção.
               </p>
@@ -247,7 +247,7 @@ function QuestionCard({
                   onClick={() => onSelect(opt.letter)}
                   className={`w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-all text-sm ${
                     isSelected
-                      ? 'border-[#0d9488] dark:border-teal-400 bg-[#EFF6FF] dark:bg-slate-800'
+                      ? 'border-[#0d9488] dark:border-slate-400 bg-[#EFF6FF] dark:bg-slate-800'
                       : 'border-[#E2E8F0] dark:border-[#464554] hover:border-[#b6c4ff] dark:hover:border-[#334670] hover:bg-[#F4F6F9] dark:hover:bg-slate-800'
                   }`}
                 >
@@ -258,7 +258,7 @@ function QuestionCard({
                   >
                     {isSummation ? (isSelected ? '✓' : opt.letter) : opt.letter}
                   </span>
-                  <span className={isSelected ? 'text-[#0d9488] dark:text-teal-400 font-medium' : 'text-[#334155] dark:text-[#e1e2ec]'}>
+                  <span className={isSelected ? 'text-[#0d9488] dark:text-slate-400 font-medium' : 'text-[#334155] dark:text-[#e1e2ec]'}>
                     {isSummation && typeof opt.value === 'number' && (
                       <span className="text-xs text-[#9ca3af] dark:text-[#908fa0] mr-1.5">({opt.value})</span>
                     )}
@@ -299,7 +299,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
             </span>
           )}
           {isSummation && (
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400">
+            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-900/30 text-slate-800 dark:text-slate-400">
               Somatório
             </span>
           )}
@@ -607,7 +607,7 @@ export default function SimuladoExamPage() {
         </div>
         {isDone && (
           <div className="text-right">
-            <p className={`text-2xl font-bold ${simulado.total_score! >= 70 ? 'text-green-700 dark:text-green-400' : simulado.total_score! >= 50 ? 'text-amber-800 dark:text-amber-400' : 'text-red-700 dark:text-red-400'}`}>
+            <p className={`text-2xl font-bold ${simulado.total_score! >= 70 ? 'text-green-700 dark:text-green-400' : simulado.total_score! >= 50 ? 'text-slate-800 dark:text-slate-400' : 'text-red-700 dark:text-red-400'}`}>
               {simulado.total_score?.toFixed(1)}%
             </p>
             <p className="text-xs text-[#64748B]">{correct}/{total} corretas</p>
@@ -654,16 +654,16 @@ export default function SimuladoExamPage() {
             simulado.total_score! >= 70
               ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-800/40'
               : simulado.total_score! >= 50
-              ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-800/40'
+              ? 'bg-slate-50 dark:bg-slate-900/20 border-slate-300 dark:border-slate-800/40'
               : 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-800/40'
           }`}
         >
-          <p className={`text-3xl font-bold mb-1 ${simulado.total_score! >= 70 ? 'text-green-800 dark:text-green-400' : simulado.total_score! >= 50 ? 'text-amber-900 dark:text-amber-400' : 'text-red-900 dark:text-red-400'}`}>
+          <p className={`text-3xl font-bold mb-1 ${simulado.total_score! >= 70 ? 'text-green-800 dark:text-green-400' : simulado.total_score! >= 50 ? 'text-slate-900 dark:text-slate-400' : 'text-red-900 dark:text-red-400'}`}>
             {simulado.total_score?.toFixed(1)}%
           </p>
           <p className="text-sm font-semibold text-[#1E293B]">{correct} de {total} questões corretas</p>
           {simulado.total_score! >= 70 && <p className="text-xs text-green-700 mt-1">Excelente desempenho!</p>}
-          {simulado.total_score! >= 50 && simulado.total_score! < 70 && <p className="text-xs text-amber-700 mt-1">Bom desempenho. Continue praticando!</p>}
+          {simulado.total_score! >= 50 && simulado.total_score! < 70 && <p className="text-xs text-slate-700 mt-1">Bom desempenho. Continue praticando!</p>}
           {simulado.total_score! < 50 && <p className="text-xs text-red-700 mt-1">Continue praticando para melhorar!</p>}
         </div>
       )}
@@ -769,7 +769,7 @@ export default function SimuladoExamPage() {
               onClick={handleNext}
               disabled={submitting}
               className="flex-1 py-4 rounded-xl text-white font-bold text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
             >
               {submitting ? (
                 <span className="flex items-center justify-center gap-2">
@@ -805,7 +805,7 @@ export default function SimuladoExamPage() {
           <button
             onClick={() => navigate('/simulados/dashboard')}
             className="flex-1 py-3 rounded-xl text-sm font-bold text-white transition-colors"
-            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
           >
             Ver meu desempenho
           </button>

@@ -56,7 +56,7 @@ function QuickAction({ to, icon, label, gradient }: { to: string; icon: React.Re
     <Link
       to={to}
       className={gradient ? `${base} text-white` : `${base} bg-[#EFF6FF] text-[#0d9488]`}
-      style={gradient ? { background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' } : undefined}
+      style={gradient ? { background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' } : undefined}
     >
       {icon}
       {label}
@@ -417,7 +417,7 @@ function AdminDashboard() {
             <div className="space-y-2">
               {[
                 { key: 'easy',   label: 'Fácil',   tone: 'green' as Tone, fill: 'bg-green-500' },
-                { key: 'medium', label: 'Médio',   tone: 'amber' as Tone, fill: 'bg-amber-500' },
+                { key: 'medium', label: 'Médio',   tone: 'amber' as Tone, fill: 'bg-slate-500' },
                 { key: 'hard',   label: 'Difícil', tone: 'red' as Tone,   fill: 'bg-red-500' },
               ].map(d => (
                 <div key={d.key} className="flex items-center gap-2">
@@ -585,7 +585,7 @@ function ProfessorDashboard() {
             )}
             {exams.map(exam => (
               <Link key={exam.id} to={`/exams/${exam.id}`} className="flex items-center gap-3 rounded-xl border border-[#E2E8F0] px-3 py-2.5 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center shrink-0 text-[#0d9488]">
+                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 text-[#0d9488]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -690,7 +690,7 @@ function StudentDashboard() {
           <p className="text-sm text-[#334155] mt-0.5">Média Geral</p>
           {data?.avg_grade != null && (
             <div className="mt-2 h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
-              <div className={`h-full rounded-full ${data.avg_grade >= 7 ? 'bg-green-500' : data.avg_grade >= 5 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${(data.avg_grade / 10) * 100}%` }} />
+              <div className={`h-full rounded-full ${data.avg_grade >= 7 ? 'bg-green-500' : data.avg_grade >= 5 ? 'bg-slate-500' : 'bg-red-500'}`} style={{ width: `${(data.avg_grade / 10) * 100}%` }} />
             </div>
           )}
           {data?.growth_pct != null && (
@@ -885,7 +885,7 @@ function StudentDashboard() {
             )}
             {exams.map(exam => (
               <Link key={exam.id} to={`/exams/${exam.id}/submit`} className="flex items-center gap-4 bg-white rounded-xl border border-[#E2E8F0] px-4 py-3 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-colors group">
-                <div className="w-9 h-9 rounded-lg bg-teal-50 flex items-center justify-center shrink-0 text-[#0d9488]">
+                <div className="w-9 h-9 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 text-[#0d9488]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
                 <div className="flex-1 min-w-0">

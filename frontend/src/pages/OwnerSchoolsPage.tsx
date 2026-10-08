@@ -78,7 +78,7 @@ export default function OwnerSchoolsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-slate-600 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -92,7 +92,7 @@ export default function OwnerSchoolsPage() {
         </div>
         <button
           onClick={() => setShowCreateSchool(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-semibold hover:bg-[#1D4ED8] transition-colors"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#1D4ED8] transition-colors"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -149,7 +149,7 @@ export default function OwnerSchoolsPage() {
                           disabled={togglingActiveId === inst.id}
                           className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-50 ${
                             inst.is_active
-                              ? 'border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+                              ? 'border-slate-200 dark:border-slate-800/50 text-slate-700 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900/20'
                               : 'border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
                           }`}
                         >
@@ -180,7 +180,7 @@ export default function OwnerSchoolsPage() {
                 type="text"
                 value={schoolForm.name}
                 onChange={e => setSchoolForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
+                className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-slate-600"
                 placeholder="Ex: Colégio Exemplo"
               />
             </div>
@@ -190,7 +190,7 @@ export default function OwnerSchoolsPage() {
                 type="text"
                 value={schoolForm.cnpj}
                 onChange={e => setSchoolForm(f => ({ ...f, cnpj: e.target.value }))}
-                className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
+                className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-slate-600"
                 placeholder="00.000.000/0001-00"
               />
             </div>
@@ -203,7 +203,7 @@ export default function OwnerSchoolsPage() {
                     type="text"
                     value={schoolForm.admin_name}
                     onChange={e => setSchoolForm(f => ({ ...f, admin_name: e.target.value }))}
-                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
+                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-slate-600"
                   />
                 </div>
                 <div>
@@ -212,7 +212,7 @@ export default function OwnerSchoolsPage() {
                     type="email"
                     value={schoolForm.admin_email}
                     onChange={e => setSchoolForm(f => ({ ...f, admin_email: e.target.value }))}
-                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
+                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-slate-600"
                   />
                 </div>
                 <div>
@@ -221,7 +221,7 @@ export default function OwnerSchoolsPage() {
                     type="password"
                     value={schoolForm.admin_password}
                     onChange={e => setSchoolForm(f => ({ ...f, admin_password: e.target.value }))}
-                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
+                    className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-slate-600"
                     placeholder="Mínimo 6 caracteres"
                   />
                 </div>
@@ -237,7 +237,7 @@ export default function OwnerSchoolsPage() {
               <button
                 onClick={handleCreateSchool}
                 disabled={creatingSchool}
-                className="px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-semibold hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
+                className="px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#1D4ED8] transition-colors disabled:opacity-50"
               >
                 {creatingSchool ? 'Criando...' : 'Criar escola'}
               </button>

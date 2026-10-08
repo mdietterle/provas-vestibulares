@@ -60,7 +60,7 @@ export default function PrivacyPolicyPage() {
               <li><strong>Resend</strong> — envio de e-mails transacionais (confirmação de cadastro, convites).</li>
               <li><strong>Groq</strong> — processamento de IA para geração e correção de questões/redações.</li>
               <li><strong>Google AdMob</strong> — exibição de anúncios no aplicativo mobile. O AdMob pode coletar identificadores de publicidade conforme a{' '}
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="text-amber-500 dark:text-teal-400 hover:underline">
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="text-slate-500 dark:text-slate-400 hover:underline">
                   política de privacidade do Google
                 </a>.
               </li>
@@ -90,7 +90,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">7. Contato</h2>
             <p>
               Para exercer seus direitos ou tirar dúvidas sobre esta política, entre em contato pelo e-mail{' '}
-              <a href="mailto:dietterle@gmail.com" className="text-amber-500 dark:text-teal-400 hover:underline">
+              <a href="mailto:dietterle@gmail.com" className="text-slate-500 dark:text-slate-400 hover:underline">
                 dietterle@gmail.com
               </a>.
             </p>

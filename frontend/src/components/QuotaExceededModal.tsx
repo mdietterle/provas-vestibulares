@@ -37,8 +37,8 @@ export default function QuotaExceededModal({
   return (
     <Modal title="Limite do plano atingido" onClose={onClose} size="sm">
       <div className="flex flex-col items-center text-center gap-4">
-        <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center">
-          <ExclamationTriangleIcon className="w-7 h-7 text-amber-500" />
+        <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center">
+          <ExclamationTriangleIcon className="w-7 h-7 text-slate-500" />
         </div>
 
         <div>

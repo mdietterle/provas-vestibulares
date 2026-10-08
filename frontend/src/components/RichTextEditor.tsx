@@ -64,7 +64,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Digite 
       title={title}
       onMouseDown={e => { e.preventDefault(); onClick() }}
       className={`px-2 py-1 text-sm rounded transition-colors leading-none select-none ${
-        active ? 'bg-teal-100 text-teal-700 dark:bg-slate-800 dark:text-teal-300 font-bold' : 'hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-[#e1e2ec]'
+        active ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 font-bold' : 'hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-[#e1e2ec]'
       }`}
     >
       {children}
@@ -72,7 +72,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Digite 
   )
 
   return (
-    <div className="border border-[#c5c5d3] dark:border-[#464554] rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-teal-600 dark:focus-within:ring-amber-500 focus-within:border-transparent">
+    <div className="border border-[#c5c5d3] dark:border-[#464554] rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-slate-600 dark:focus-within:ring-slate-500 focus-within:border-transparent">
       {/* Toolbar */}
       <div className="flex items-center gap-0.5 px-2 py-1.5 border-b border-[#e5e7eb] dark:border-[#464554] bg-gray-50 dark:bg-[#1d1f27] flex-wrap">
         <Btn active={editor.isActive('bold')} onClick={() => editor.chain().focus().toggleBold().run()} title="Negrito (Ctrl+B)">

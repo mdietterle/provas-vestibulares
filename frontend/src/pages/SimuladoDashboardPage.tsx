@@ -20,7 +20,7 @@ function StatCard({ label, value, sub }: { label: string; value: string | number
   )
 }
 
-function ScoreBar({ pct, color = 'teal-600' }: { pct: number; color?: string }) {
+function ScoreBar({ pct, color = 'slate-600' }: { pct: number; color?: string }) {
   return (
     <div className="h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
       <div
@@ -71,7 +71,7 @@ export default function SimuladoDashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <svg className="w-8 h-8 animate-spin text-teal-600" fill="none" viewBox="0 0 24 24">
+        <svg className="w-8 h-8 animate-spin text-slate-600" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
         </svg>
@@ -103,7 +103,7 @@ export default function SimuladoDashboardPage() {
           <button
             onClick={() => navigate('/simulados')}
             className="px-4 py-2 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
           >
             + Novo simulado
           </button>
@@ -120,7 +120,7 @@ export default function SimuladoDashboardPage() {
           <button
             onClick={() => navigate('/simulados')}
             className="mt-6 px-6 py-3 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
           >
             Fazer meu primeiro simulado
           </button>
@@ -160,7 +160,7 @@ export default function SimuladoDashboardPage() {
                     <div className="flex items-center gap-3 mb-3">
                       <div
                         className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold"
-                        style={{ background: EXAM_TYPE_COLOR[type] || 'teal-600' }}
+                        style={{ background: EXAM_TYPE_COLOR[type] || 'slate-600' }}
                       >
                         {(EXAM_TYPE_LABEL[type] || type).substring(0, 2)}
                       </div>
@@ -172,7 +172,7 @@ export default function SimuladoDashboardPage() {
                     {stats.avg_score != null ? (
                       <>
                         <p
-                          className={`text-2xl font-bold mb-1 ${stats.avg_score >= 70 ? 'text-green-700 dark:text-green-400' : stats.avg_score >= 50 ? 'text-amber-800 dark:text-amber-400' : 'text-red-700 dark:text-red-400'}`}
+                          className={`text-2xl font-bold mb-1 ${stats.avg_score >= 70 ? 'text-green-700 dark:text-green-400' : stats.avg_score >= 50 ? 'text-slate-800 dark:text-slate-400' : 'text-red-700 dark:text-red-400'}`}
                         >
                           {stats.avg_score.toFixed(1)}%
                         </p>
@@ -221,7 +221,7 @@ export default function SimuladoDashboardPage() {
                       const scoreColorClass =
                         s.total_score == null ? 'text-[#64748B]'
                         : s.total_score >= 70 ? 'text-green-700 dark:text-green-400'
-                        : s.total_score >= 50 ? 'text-amber-800 dark:text-amber-400'
+                        : s.total_score >= 50 ? 'text-slate-800 dark:text-slate-400'
                         : 'text-red-700 dark:text-red-400'
                       return (
                         <tr key={s.id} className="hover:bg-[#F4F6F9] transition-colors">
@@ -238,7 +238,7 @@ export default function SimuladoDashboardPage() {
                                   ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400'
                                   : s.status === 'correcting'
                                   ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400'
-                                  : 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400'
+                                  : 'bg-slate-100 dark:bg-slate-900/30 text-slate-800 dark:text-slate-400'
                               }`}
                             >
                               {STATUS_LABEL[s.status] || s.status}
@@ -250,7 +250,7 @@ export default function SimuladoDashboardPage() {
                           <td className="px-4 py-3 text-right">
                             <button
                               onClick={() => navigate(`/simulados/${s.id}`)}
-                              className="text-xs font-semibold text-teal-600 hover:underline"
+                              className="text-xs font-semibold text-slate-600 hover:underline"
                             >
                               {s.status === 'done' ? 'Ver resultado' : 'Abrir'}
                             </button>

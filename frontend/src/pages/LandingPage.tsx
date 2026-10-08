@@ -12,7 +12,7 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
     <div className="group rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-6 bg-white dark:bg-[#1d1f27] transition-all duration-300 hover:-translate-y-1 hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:shadow-[0_16px_40px_rgba(0,35,111,0.10)]">
       <div
         className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-white shadow-[0_4px_14px_rgba(107,56,212,0.28)] transition-transform duration-300 group-hover:scale-110"
-        style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
       >
         {icon}
       </div>
@@ -25,13 +25,13 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
 function AudienceCard({ icon, audience, description, to, cta }: { icon: React.ReactNode; audience: string; description: string; to: string; cta: string }) {
   return (
     <div className="group relative rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-6 bg-white dark:bg-[#1d1f27] flex flex-col gap-3 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:shadow-[0_16px_40px_rgba(0,35,111,0.10)]">
-      <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full opacity-[0.06] transition-transform duration-500 group-hover:scale-125" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }} />
-      <div className="relative w-10 h-10 rounded-xl flex items-center justify-center bg-[#e9ddff] dark:bg-slate-800 text-amber-500 dark:text-teal-400">
+      <div className="absolute -right-8 -top-8 w-28 h-28 rounded-full opacity-[0.06] transition-transform duration-500 group-hover:scale-125" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }} />
+      <div className="relative w-10 h-10 rounded-xl flex items-center justify-center bg-[#e9ddff] dark:bg-slate-800 text-slate-500 dark:text-slate-400">
         {icon}
       </div>
       <h3 className="relative font-display text-lg font-bold text-[#1E293B]">{audience}</h3>
       <p className="relative text-sm text-[#6b7a9a] dark:text-slate-300 leading-relaxed flex-1">{description}</p>
-      <Link to={to} className="relative inline-flex items-center gap-1.5 text-sm font-semibold text-amber-500 dark:text-teal-400 group-hover:gap-2.5 transition-all">
+      <Link to={to} className="relative inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 dark:text-slate-400 group-hover:gap-2.5 transition-all">
         {cta}
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -46,7 +46,7 @@ function StepCard({ number, title, description }: { number: string; title: strin
     <div className="relative flex-1">
       <div
         className="w-11 h-11 rounded-xl flex items-center justify-center font-display font-bold text-white text-base mb-4 shadow-[0_4px_14px_rgba(0,35,111,0.25)]"
-        style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
       >
         {number}
       </div>
@@ -71,16 +71,16 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-brand-mesh pointer-events-none dark:hidden" />
         <div
           className="absolute top-10 -left-24 w-72 h-72 rounded-full opacity-[0.12] blur-3xl animate-float pointer-events-none dark:hidden"
-          style={{ background: 'radial-gradient(circle, amber-500, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, slate-500, transparent 70%)' }}
         />
         <div
           className="absolute top-24 -right-16 w-80 h-80 rounded-full opacity-[0.10] blur-3xl animate-float pointer-events-none dark:hidden"
-          style={{ background: 'radial-gradient(circle, teal-600, transparent 70%)', animationDelay: '1.5s' }}
+          style={{ background: 'radial-gradient(circle, slate-600, transparent 70%)', animationDelay: '1.5s' }}
         />
 
         <div className="relative max-w-4xl mx-auto px-6 pt-20 sm:pt-28 pb-16 text-center animate-fade-in-up">
           <div
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-6 ring-1 ring-inset bg-[#e9ddff] dark:bg-slate-800 text-amber-500 dark:text-teal-400"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-6 ring-1 ring-inset bg-[#e9ddff] dark:bg-slate-800 text-slate-500 dark:text-slate-400"
             style={{ boxShadow: '0 2px 10px rgba(107,56,212,0.12)' }}
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -92,7 +92,7 @@ export default function LandingPage() {
             Provas, redações e simulados{' '}
             <span
               className="bg-clip-text text-transparent"
-              style={{ backgroundImage: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+              style={{ backgroundImage: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
             >
               corrigidos por IA
             </span>
@@ -106,13 +106,13 @@ export default function LandingPage() {
             <Link
               to="/aluno"
               className="px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 shadow-[0_4px_16px_rgba(79,70,229,0.3)] hover:shadow-[0_10px_28px_rgba(107,56,212,0.4)]"
-              style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
             >
               Sou aluno, quero praticar
             </Link>
             <Link
               to="/quote"
-              className="px-6 py-3 rounded-xl text-sm font-bold border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] text-teal-600 dark:text-teal-400 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:-translate-y-0.5 transition-all"
+              className="px-6 py-3 rounded-xl text-sm font-bold border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] text-slate-600 dark:text-slate-400 hover:bg-[#EFF6FF] dark:hover:bg-slate-800 hover:border-[#d6e0ff] dark:hover:border-[#2a3a63] hover:-translate-y-0.5 transition-all"
             >
               Sou professor ou escola
             </Link>
@@ -123,7 +123,7 @@ export default function LandingPage() {
       {/* Features */}
       <div className="max-w-5xl mx-auto px-6 pb-20">
         <div className="text-center mb-10">
-          <p className="text-xs font-bold tracking-wider uppercase text-amber-500 dark:text-teal-400 mb-2">Recursos</p>
+          <p className="text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400 mb-2">Recursos</p>
           <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B]">
             O que a plataforma oferece
           </h2>
@@ -156,7 +156,7 @@ export default function LandingPage() {
       <div className="max-w-5xl mx-auto px-6 pb-20">
         <div className="rounded-3xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] p-8 sm:p-10">
           <div className="text-center mb-10">
-            <p className="text-xs font-bold tracking-wider uppercase text-amber-500 dark:text-teal-400 mb-2">Como funciona</p>
+            <p className="text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400 mb-2">Como funciona</p>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B]">
               Da prova pronta à nota, em três passos
             </h2>
@@ -172,7 +172,7 @@ export default function LandingPage() {
       {/* Audience */}
       <div className="max-w-5xl mx-auto px-6 pb-20">
         <div className="text-center mb-10">
-          <p className="text-xs font-bold tracking-wider uppercase text-amber-500 dark:text-teal-400 mb-2">Para quem é</p>
+          <p className="text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400 mb-2">Para quem é</p>
           <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B]">
             Feito para cada perfil de usuário
           </h2>
@@ -206,7 +206,7 @@ export default function LandingPage() {
       <div className="max-w-5xl mx-auto px-6 pb-20">
         <div
           className="relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center"
-          style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)', boxShadow: '0 20px 60px -15px rgba(107,56,212,0.35)' }}
+          style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)', boxShadow: '0 20px 60px -15px rgba(107,56,212,0.35)' }}
         >
           <div className="absolute -right-10 -top-10 w-56 h-56 rounded-full opacity-10 animate-float" style={{ background: '#fff' }} />
           <div className="absolute -left-10 bottom-[-30px] w-40 h-40 rounded-full opacity-10 animate-float" style={{ background: '#fff', animationDelay: '2s' }} />
@@ -220,7 +220,7 @@ export default function LandingPage() {
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <Link
                 to="/plans"
-                className="px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-teal-600 hover:bg-white/90 hover:-translate-y-0.5 transition-all shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
+                className="px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-600 hover:bg-white/90 hover:-translate-y-0.5 transition-all shadow-[0_4px_16px_rgba(0,0,0,0.15)]"
               >
                 Ver planos e preços
               </Link>

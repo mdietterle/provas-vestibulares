@@ -24,7 +24,7 @@ export default function UfcPage() {
         credit="Foto: Túllio F / Wikimedia Commons, CC BY-SA 4.0"
       />
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 my-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 my-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Avaliação MEC: nota máxima por dois anos seguidos, 2ª melhor do Nordeste
         </h3>
@@ -38,12 +38,12 @@ export default function UfcPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Seis polos entre a capital e o interior cearense
         </h3>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -66,7 +66,7 @@ export default function UfcPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Papel no desenvolvimento do Ceará e do Nordeste
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
@@ -80,7 +80,7 @@ export default function UfcPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Ingresso: praticamente só SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">

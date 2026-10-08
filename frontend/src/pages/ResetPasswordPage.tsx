@@ -167,7 +167,7 @@ export default function ResetPasswordPage() {
 
         <p className="text-center text-xs text-[#9ca3af] dark:text-[#908fa0] mt-6">
           Lembrou a senha?{' '}
-          <button onClick={() => navigate(loginPath)} className="text-[#f59e0b] dark:text-teal-400 font-medium hover:underline">
+          <button onClick={() => navigate(loginPath)} className="text-[#f59e0b] dark:text-slate-400 font-medium hover:underline">
             Fazer login
           </button>
         </p>

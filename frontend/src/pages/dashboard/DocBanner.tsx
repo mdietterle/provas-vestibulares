@@ -12,7 +12,7 @@ export function DocBanner({
   return (
     <div
       className="relative overflow-hidden rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4"
-      style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)', boxShadow: '0 8px 32px rgba(13,148,136,0.25)' }}
+      style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)', boxShadow: '0 8px 32px rgba(13,148,136,0.25)' }}
     >
       <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full opacity-10" style={{ background: '#fff' }} />
       <div className="absolute -right-2 bottom-[-30px] w-24 h-24 rounded-full opacity-10" style={{ background: '#fff' }} />
@@ -50,7 +50,7 @@ export function DocBanner({
         href={docUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white hover:bg-white/90 z-10 text-teal-600"
+        className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all bg-white hover:bg-white/90 z-10 text-slate-600"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

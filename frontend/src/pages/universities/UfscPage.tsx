@@ -22,7 +22,7 @@ export default function UfscPage() {
         e a única instituição catarinense com nota máxima nesse indicador.
       </p>
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: único vestibular unificado com dois institutos federais
         </h3>
@@ -41,7 +41,7 @@ export default function UfscPage() {
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Ingresso: vestibular unificado ou SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">

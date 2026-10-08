@@ -401,7 +401,7 @@ export default function SubmissionsPage() {
               className="h-full rounded-full transition-all duration-500"
               style={{
                 width: `${deliveredPct}%`,
-                background: deliveredPct === 100 ? '#27c38a' : 'linear-gradient(90deg, #0d9488, #f59e0b)',
+                background: deliveredPct === 100 ? '#27c38a' : 'linear-gradient(90deg, #475569, #64748b)',
               }}
             />
           </div>
@@ -486,7 +486,7 @@ export default function SubmissionsPage() {
                       if (mins == null || mins < STUCK_THRESHOLD_MIN) return null
                       return (
                         <span
-                          className="ml-1.5 text-[10px] font-semibold text-amber-700"
+                          className="ml-1.5 text-[10px] font-semibold text-slate-700"
                           title="Corrigindo há mais tempo que o normal — pode ter travado numa questão. Use Finalizar para destravar."
                         >
                           há {mins} min ⚠
@@ -510,7 +510,7 @@ export default function SubmissionsPage() {
                             onClick={() => handleCorrectOne(sub)}
                             disabled={correctingId === sub.id}
                             title="Corrige esta submissão"
-                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-teal-400 hover:bg-[#e0e7ff] dark:hover:bg-[#1e2d4a] transition-colors disabled:opacity-60 whitespace-nowrap"
+                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-slate-400 hover:bg-[#e0e7ff] dark:hover:bg-[#1e2d4a] transition-colors disabled:opacity-60 whitespace-nowrap"
                           >
                             {correctingId === sub.id ? 'Corrigindo…' : 'Corrigir'}
                           </button>
@@ -520,7 +520,7 @@ export default function SubmissionsPage() {
                             onClick={() => handleFinalize(sub)}
                             disabled={finalizingId === sub.id}
                             title="Encerra a correção, pontuando com 0 qualquer resposta ainda sem nota"
-                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors disabled:opacity-60 whitespace-nowrap"
+                            className="text-xs font-medium px-2.5 py-1 rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 transition-colors disabled:opacity-60 whitespace-nowrap"
                           >
                             {finalizingId === sub.id ? 'Finalizando…' : 'Finalizar'}
                           </button>
@@ -537,7 +537,7 @@ export default function SubmissionsPage() {
                         )}
                         <button
                           onClick={() => openDetail(sub.id)}
-                          className="text-xs font-medium px-2.5 py-1 rounded-lg bg-teal-50 dark:bg-slate-800 text-[#2845b5] dark:text-teal-400 hover:bg-[#e5edff] dark:hover:bg-[#1e2d4a] transition-colors whitespace-nowrap"
+                          className="text-xs font-medium px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-slate-800 text-[#2845b5] dark:text-slate-400 hover:bg-[#e5edff] dark:hover:bg-[#1e2d4a] transition-colors whitespace-nowrap"
                         >
                           Ver detalhes
                         </button>
@@ -627,7 +627,7 @@ export default function SubmissionsPage() {
                       </div>
 
                       {ans.ai_feedback && (
-                        <div className="bg-teal-50 rounded-xl px-4 py-3 border border-[#e5edff]">
+                        <div className="bg-slate-50 rounded-xl px-4 py-3 border border-[#e5edff]">
                           <p className="text-[10px] font-semibold text-[#5a78c0] uppercase tracking-wide mb-1.5">
                             {ans.is_auto_corrected ? 'Feedback da IA' : 'Observação'}
                           </p>
@@ -639,7 +639,7 @@ export default function SubmissionsPage() {
                       {ans.essay_image_base64 && (
                         <button
                           onClick={() => handleAiCorrect(detail.id, ans.id)}
-                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm bg-teal-600 hover:bg-teal-700 text-white transition-colors"
+                          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-medium text-sm bg-slate-600 hover:bg-slate-700 text-white transition-colors"
                         >
                           <span>✨</span>
                           {ans.is_auto_corrected ? 'Re-corrigir redação com IA' : 'Corrigir redação com IA'}

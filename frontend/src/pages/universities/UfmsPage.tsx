@@ -28,21 +28,21 @@ export default function UfmsPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Nove campi pelo interior de MS</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Nove campi pelo interior de MS</h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-3">
           Além da sede em Campo Grande, a UFMS tem unidades em outras nove cidades do estado, cobrindo desde a
           fronteira com o Paraguai (Ponta Porã) até o Pantanal (Corumbá):
         </p>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
         </div>
       </div>
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: ciência com endereço no Pantanal
         </h3>
@@ -72,7 +72,7 @@ export default function UfmsPage() {
       />
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Serviço direto à comunidade: hospital e extensão
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
@@ -84,7 +84,7 @@ export default function UfmsPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
           Como entrar: Vestibular, PASSE ou SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-4">
@@ -95,19 +95,19 @@ export default function UfmsPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Inscrições</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Inscrições</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Fim de agosto a meados de novembro (taxa ~R$ 100)</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Prova do Vestibular</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Prova do Vestibular</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Início de dezembro</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Provas do PASSE (3 etapas)</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Provas do PASSE (3 etapas)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Mesma semana do vestibular, em dezembro</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Vagas</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Vagas</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">~9.363 vagas em 131 cursos</dd>
           </div>
         </dl>

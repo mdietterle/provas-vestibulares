@@ -11,7 +11,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 const STATUS_STYLE: Record<string, string> = {
-  pending: 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400',
+  pending: 'bg-slate-100 dark:bg-slate-900/30 text-slate-800 dark:text-slate-400',
   correcting: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400',
   ai_done: 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400',
   reviewed: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400',
@@ -167,7 +167,7 @@ function StudentList() {
         <button
           onClick={() => navigate('/redacoes/nova')}
           className="px-4 py-2 rounded-xl text-sm font-bold text-white"
-          style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
         >
           + Nova redação
         </button>
@@ -187,7 +187,7 @@ function StudentList() {
           <button
             onClick={() => navigate('/redacoes/nova')}
             className="px-6 py-3 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
           >
             Enviar redação
           </button>

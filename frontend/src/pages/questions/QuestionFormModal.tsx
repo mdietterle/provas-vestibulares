@@ -215,7 +215,7 @@ export default function QuestionFormModal({ editing, subjects, onClose, onSaved 
               </button>
             </div>
           ) : (
-            <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-gray-50 dark:hover:bg-[#1e2d4a] border-[#E2E8F0] dark:border-[#464554] text-amber-500 dark:text-amber-400">
+            <label className="flex items-center gap-2 cursor-pointer w-fit px-4 py-2 rounded-xl border text-sm font-medium transition-colors hover:bg-gray-50 dark:hover:bg-[#1e2d4a] border-[#E2E8F0] dark:border-[#464554] text-slate-500 dark:text-slate-400">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" />
                 <polyline points="21 15 16 10 5 21" />
@@ -263,7 +263,7 @@ export default function QuestionFormModal({ editing, subjects, onClose, onSaved 
                 <button
                   type="button"
                   onClick={addOption}
-                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors hover:bg-teal-50 dark:hover:bg-slate-700 text-amber-500 dark:text-amber-400 border-teal-200 dark:border-slate-700"
+                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -310,7 +310,7 @@ export default function QuestionFormModal({ editing, subjects, onClose, onSaved 
                     )}
                   </button>
                   <span
-                    className={`flex items-center justify-center text-xs font-bold flex-shrink-0 ${form.question_type === 'summation' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300' : 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400'}`}
+                    className={`flex items-center justify-center text-xs font-bold flex-shrink-0 ${form.question_type === 'summation' ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}
                     style={{
                       width: 24, height: 24,
                       borderRadius: form.question_type === 'summation' ? 4 : '50%',
@@ -346,7 +346,7 @@ export default function QuestionFormModal({ editing, subjects, onClose, onSaved 
           <button type="button" onClick={onClose} className="btn-secondary">Cancelar</button>
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 bg-gradient-to-br from-teal-600 to-amber-500"
+            className="px-5 py-2 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 bg-gradient-to-br from-slate-600 to-slate-500"
           >
             {editing ? 'Salvar Alterações' : 'Criar Questão'}
           </button>

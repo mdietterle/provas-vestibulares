@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,12 +14,12 @@
   --color-on-surface-variant: #334155;
   --color-muted: #64748B;
   --color-outline: #CBD5E1;
-  --color-primary: #0d9488;
-  --color-primary-hover: #0f766e;
-  --color-secondary: #f59e0b;
+  --color-primary: #475569;
+  --color-primary-hover: #334155;
+  --color-secondary: #64748b;
   --color-sidebar-bg: #0F172A;
   --color-sidebar-text: #94A3B8;
-  --color-sidebar-active: #0d9488;
+  --color-sidebar-active: #475569;
   --shadow-card: 0px 4px 20px rgba(15, 23, 42, 0.06);
   --shadow-card-hover: 0px 8px 30px rgba(15, 23, 42, 0.10);
 }
@@ -32,16 +31,16 @@ html.dark {
   --color-surface-low: #1E293B;
   --color-surface-mid: #334155;
   --color-surface-high: #475569;
-  --color-on-surface: #F1F5F9;
-  --color-on-surface-variant: #CBD5E1;
+  --color-on-surface: #F8FAFC;
+  --color-on-surface-variant: #E2E8F0;
   --color-muted: #94A3B8;
   --color-outline: #334155;
-  --color-primary: #14b8a6;
-  --color-primary-hover: #0d9488;
-  --color-secondary: #fbbf24;
+  --color-primary: #94a3b8;
+  --color-primary-hover: #cbd5e1;
+  --color-secondary: #cbd5e1;
   --color-sidebar-bg: #020617;
   --color-sidebar-text: #64748B;
-  --color-sidebar-active: #14b8a6;
+  --color-sidebar-active: #475569;
   --shadow-card: 0px 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-card-hover: 0px 8px 30px rgba(0, 0, 0, 0.4);
 }
@@ -53,11 +52,9 @@ html.dark {
     color: var(--color-on-surface);
     -webkit-font-smoothing: antialiased;
   }
-
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
-
   html.dark option,
   html.dark select {
     background-color: var(--color-surface);
@@ -66,7 +63,7 @@ html.dark {
 }
 
 @layer components {
-  /* ── Buttons ── */
+  /* ── Buttons ─ */
   .btn {
     @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200
            focus:outline-none focus:ring-2 focus:ring-offset-1
@@ -79,7 +76,7 @@ html.dark {
     box-shadow: var(--shadow-card);
   }
   .btn-primary:focus {
-    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px rgba(13, 148, 136, 0.4);
+    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px rgba(71, 85, 105, 0.4);
   }
   .btn-primary:hover {
     background-color: var(--color-primary-hover);
@@ -96,13 +93,14 @@ html.dark {
     border-color: var(--color-primary);
   }
   .btn-ai {
-    @apply btn text-white focus:ring-emerald-500/40 active:scale-[0.98]
+    @apply btn text-white focus:ring-slate-500/40 active:scale-[0.98]
            hover:-translate-y-0.5;
-    background: linear-gradient(135deg, var(--color-primary) 0%, #10B981 100%);
-    box-shadow: 0 2px 14px rgba(13, 148, 136, 0.3);
+    background-color: var(--color-primary);
+    box-shadow: 0 2px 14px rgba(71, 85, 105, 0.2);
   }
   .btn-ai:hover {
-    box-shadow: 0 8px 24px rgba(13, 148, 136, 0.4);
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 8px 24px rgba(71, 85, 105, 0.3);
   }
   .btn-danger {
     @apply btn bg-red-50 text-red-700 border border-red-200
@@ -123,13 +121,13 @@ html.dark {
     color: var(--color-on-surface-variant);
   }
   .btn-ghost:focus {
-    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px rgba(13, 148, 136, 0.2);
+    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px rgba(71, 85, 105, 0.2);
   }
   .btn-ghost:hover {
     color: var(--color-primary);
   }
 
-  /* ── Cards ── */
+  /* ── Cards ─ */
   .card {
     @apply rounded-2xl border p-6 transition-shadow duration-200;
     background-color: var(--color-surface);
@@ -153,7 +151,7 @@ html.dark {
     box-shadow: var(--shadow-card-hover);
   }
 
-  /* ── Inputs ── */
+  /* ── Inputs ─ */
   .input {
     @apply w-full border rounded-xl px-3 py-2 text-sm
            focus:outline-none focus:ring-4 focus:border-[var(--color-primary)]
@@ -166,7 +164,7 @@ html.dark {
     color: var(--color-muted);
   }
   .input:focus {
-    box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1);
+    box-shadow: 0 0 0 4px rgba(71, 85, 105, 0.1);
   }
   .input-sm {
     @apply input py-1.5 text-xs;
@@ -196,9 +194,9 @@ html.dark {
   }
   .badge-primary {
     @apply badge ring-1;
-    background-color: rgba(13, 148, 136, 0.1);
+    background-color: rgba(71, 85, 105, 0.1);
     color: var(--color-primary);
-    ring-color: rgba(13, 148, 136, 0.2);
+    ring-color: rgba(71, 85, 105, 0.2);
   }
   .badge-danger {
     @apply badge bg-red-50 text-red-700 ring-1 ring-red-200/60
@@ -206,7 +204,7 @@ html.dark {
   }
   .badge-ai {
     @apply badge text-white;
-    background: linear-gradient(135deg, var(--color-primary) 0%, #10B981 100%);
+    background-color: var(--color-primary);
   }
 
   /* ── Page layout ── */
@@ -277,7 +275,6 @@ html.dark {
   }
   .rich-editor-body p { @apply mb-1; }
   .rich-editor-body p:last-child { @apply mb-0; }
-
   .rich-statement {
     @apply text-sm leading-relaxed;
     color: var(--color-on-surface);

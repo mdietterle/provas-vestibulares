@@ -31,12 +31,12 @@ export default function UdescPage() {
 
       {/* Mapa de cidades em formato de "selo/carimbo", não em cards nem faixa rolável — visual de rede espalhada */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
           13 centros de ensino em 10 cidades catarinenses
         </h3>
         <div className="flex flex-wrap gap-2">
           {CENTROS.map(c => (
-            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -50,11 +50,11 @@ export default function UdescPage() {
 
       {/* Barra de composição de vagas por forma de ingresso — visualização de proporção, diferente das outras páginas */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Como as vagas são divididas</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Como as vagas são divididas</h3>
         <div className="flex rounded-full overflow-hidden h-7 text-[10px] font-bold text-white mb-4">
-          <div className="bg-teal-600 dark:bg-amber-500 flex items-center justify-center" style={{ width: '50%' }}>Vestibular 50%</div>
-          <div className="bg-amber-500 dark:bg-[#8b5cf6] flex items-center justify-center" style={{ width: '25%' }}>Histórico 25%</div>
-          <div className="bg-teal-400 dark:bg-[#A5B4FC] flex items-center justify-center text-[#1E293B]" style={{ width: '25%' }}>SiSU 25%</div>
+          <div className="bg-slate-600 dark:bg-slate-500 flex items-center justify-center" style={{ width: '50%' }}>Vestibular 50%</div>
+          <div className="bg-slate-500 dark:bg-[#8b5cf6] flex items-center justify-center" style={{ width: '25%' }}>Histórico 25%</div>
+          <div className="bg-slate-400 dark:bg-[#A5B4FC] flex items-center justify-center text-[#1E293B]" style={{ width: '25%' }}>SiSU 25%</div>
         </div>
         <dl className="space-y-3 text-sm">
           {INGRESSO.map(i => (
@@ -76,7 +76,7 @@ export default function UdescPage() {
       {/* Cursos e pesquisa lado a lado, formato de duas colunas simples */}
       <div className="grid sm:grid-cols-2 gap-6">
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Cursos mais fortes</h3>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Cursos mais fortes</h3>
           <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             Mais de 60 cursos de graduação, com tradição consolidada em <strong>Fisioterapia</strong>,{' '}
             <strong>Educação Física</strong>, <strong>Medicina Veterinária</strong>, <strong>Design</strong> e{' '}
@@ -85,7 +85,7 @@ export default function UdescPage() {
           </p>
         </div>
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Pesquisa e extensão</h3>
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Pesquisa e extensão</h3>
           <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
             Além da graduação, a UDESC mantém mais de 50 programas de mestrado e doutorado. São cerca de{' '}
             <strong>1.200 atividades de extensão por ano</strong>, levando conhecimento produzido na universidade

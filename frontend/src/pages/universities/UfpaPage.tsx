@@ -14,7 +14,7 @@ export default function UfpaPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-[#E2E8F0] dark:bg-[#464554] rounded-2xl overflow-hidden mb-8 border border-[#E2E8F0] dark:border-[#464554]">
         {NUMEROS.map(n => (
           <div key={n.rotulo} className="bg-white dark:bg-[#191b23] p-4 text-center">
-            <div className="text-2xl font-extrabold text-teal-600 dark:text-teal-400">{n.valor}</div>
+            <div className="text-2xl font-extrabold text-slate-600 dark:text-slate-400">{n.valor}</div>
             <div className="text-[11px] text-[#64748B] dark:text-slate-300 mt-1">{n.rotulo}</div>
           </div>
         ))}
@@ -32,7 +32,7 @@ export default function UfpaPage() {
         papel central em áreas como Genética, Geociências e Neurociências.
       </p>
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: líder amazônica em patentes registradas
         </h3>
@@ -59,7 +59,7 @@ export default function UfpaPage() {
       </p>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Avaliação MEC: Direito e Psicologia nota máxima no Enade
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
@@ -72,7 +72,7 @@ export default function UfpaPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Papel no desenvolvimento da Amazônia
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
@@ -86,7 +86,7 @@ export default function UfpaPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Ingresso: só pelo SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">

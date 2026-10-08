@@ -80,7 +80,7 @@ export default function QuotePage() {
         {/* Left — info */}
         <div className="lg:col-span-2 space-y-6">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-[#e9ddff] dark:bg-slate-800 text-[#f59e0b] dark:text-teal-400">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-[#e9ddff] dark:bg-slate-800 text-[#f59e0b] dark:text-slate-400">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
               Solicitar Orçamento
             </span>
@@ -145,7 +145,7 @@ export default function QuotePage() {
               <p className="text-sm text-[#64748B] leading-relaxed mb-6">
                 Obrigado! Nossa equipe analisará suas necessidades e entrará em contato em até 1 dia útil com uma proposta personalizada.
               </p>
-              <Link to="/login" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
+              <Link to="/login" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
                 Voltar à página inicial
               </Link>
             </div>
@@ -306,7 +306,7 @@ export default function QuotePage() {
                 type="submit"
                 disabled={loading}
                 className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
               >
                 {loading ? 'Enviando...' : 'Solicitar orçamento gratuito →'}
               </button>

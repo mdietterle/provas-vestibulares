@@ -9,7 +9,7 @@ import { exportSubjects } from '../utils/pdf'
 import Pagination from '../components/Pagination'
 
 const PALETTES = [
-  { color: '#0d9488', bg: 'teal-50', icon: '#4059aa' },
+  { color: '#0d9488', bg: 'slate-50', icon: '#4059aa' },
   { color: '#f59e0b', bg: '#e9ddff', icon: '#8455ef' },
   { color: '#065f46', bg: '#d1fae5', icon: '#27c38a' },
   { color: '#78350f', bg: '#fef3c7', icon: '#d97706' },
@@ -124,7 +124,7 @@ export default function SubjectsPage() {
             <button
               onClick={openCreate}
               className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

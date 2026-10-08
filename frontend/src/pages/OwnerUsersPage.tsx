@@ -79,7 +79,7 @@ export default function OwnerUsersPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-slate-600 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -97,12 +97,12 @@ export default function OwnerUsersPage() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Buscar por nome, e-mail ou escola..."
-            className="w-64 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
+            className="w-64 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-slate-600"
           />
           <select
             value={roleFilter}
             onChange={e => setRoleFilter(e.target.value)}
-            className="text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600"
+            className="text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-slate-600"
           >
             <option value="">Todos os papéis</option>
             <option value="admin">Administrador</option>
@@ -145,7 +145,7 @@ export default function OwnerUsersPage() {
                         value={u.role}
                         disabled={busyId === u.id}
                         onChange={e => handleChangeRole(u, e.target.value)}
-                        className="text-xs font-semibold border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-2 py-1 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-teal-600 disabled:opacity-50"
+                        className="text-xs font-semibold border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-2 py-1 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-slate-600 disabled:opacity-50"
                       >
                         <option value="admin">{ROLE_LABEL.admin}</option>
                         <option value="professor">{ROLE_LABEL.professor}</option>
@@ -173,7 +173,7 @@ export default function OwnerUsersPage() {
                           disabled={busyId === u.id}
                           className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-50 ${
                             u.is_active
-                              ? 'border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+                              ? 'border-slate-200 dark:border-slate-800/50 text-slate-700 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900/20'
                               : 'border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
                           }`}
                         >

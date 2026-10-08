@@ -19,7 +19,7 @@ export default function UfgdPage() {
         consecutivos no Índice Geral de Cursos (IGC) do MEC.
       </p>
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: nota máxima no recredenciamento junto ao INEP/MEC
         </h3>
@@ -40,12 +40,12 @@ export default function UfgdPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Avaliação MEC por curso (nota máxima em 2024)
         </h3>
         <div className="flex flex-wrap gap-2">
           {NOTA5.map(c => (
-            <span key={c} className="text-xs font-semibold text-teal-600 dark:text-teal-400 bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] rounded-full px-3 py-1">
+            <span key={c} className="text-xs font-semibold text-slate-600 dark:text-slate-400 bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] rounded-full px-3 py-1">
               {c} — nota 5
             </span>
           ))}
@@ -60,7 +60,7 @@ export default function UfgdPage() {
       </p>
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Inovação e extensão: da sala de aula ao empreendedorismo local
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
@@ -83,7 +83,7 @@ export default function UfgdPage() {
       />
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
           Como entrar: PSV (vestibular próprio) ou SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-4">
@@ -93,19 +93,19 @@ export default function UfgdPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Inscrições</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Inscrições</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Até início de setembro (taxa ~R$ 120)</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Prova (fase única)</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Prova (fase única)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Meados de outubro, 60 questões + redação</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Resultado final</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Resultado final</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Meados de janeiro do ano seguinte</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Vagas</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Vagas</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Cerca de 1.047 por edição, entre PSV e SiSU</dd>
           </div>
         </dl>

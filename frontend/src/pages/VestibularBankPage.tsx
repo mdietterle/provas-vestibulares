@@ -119,7 +119,7 @@ export default function VestibularBankPage({ examType }: Props) {
       {/* Questions list */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="amber-500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="slate-500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 12a9 9 0 1 1-6.219-8.56" />
           </svg>
         </div>
@@ -155,7 +155,7 @@ function QuestionCard({ question: q, config }: { question: VestibularQuestion; c
       {/* Header row */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs font-bold text-amber-500">#{q.number}</span>
+          <span className="text-xs font-bold text-slate-500">#{q.number}</span>
           {q.exam_name && <span className="text-xs text-[#64748B]">{q.exam_name}</span>}
           {q.metadata?.area && (
             <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${areaColor}`}>

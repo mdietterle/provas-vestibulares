@@ -33,7 +33,7 @@ export default function UemPage() {
       </p>
       <div className="flex flex-wrap gap-2 mb-10">
         {CAMPI.map(c => (
-          <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
+          <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
             {c}
           </span>
         ))}
@@ -56,16 +56,16 @@ export default function UemPage() {
       />
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Vestibular: duas janelas de inscrição por ano
         </h3>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-3">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Vestibular de Inverno</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Vestibular de Inverno</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Inscrições entre abril e maio, ingresso no ano letivo seguinte</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Vestibular de Verão</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Vestibular de Verão</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Inscrições entre agosto e setembro</dd>
           </div>
         </dl>

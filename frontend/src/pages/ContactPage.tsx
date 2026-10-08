@@ -62,7 +62,7 @@ export default function ContactPage() {
         {/* Left — info */}
         <div className="lg:col-span-2 space-y-6">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-teal-50 dark:bg-slate-800 text-[#0d9488] dark:text-teal-400">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4 bg-slate-50 dark:bg-slate-800 text-[#0d9488] dark:text-slate-400">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
               Falar com Especialista
             </span>
@@ -86,7 +86,7 @@ export default function ContactPage() {
                 title: 'E-mail',
                 value: 'dietterle@gmail.com',
                 sub: 'Respondemos em até 4h em dias úteis',
-                cls: 'bg-teal-50 dark:bg-slate-800 text-[#0d9488] dark:text-teal-400',
+                cls: 'bg-slate-50 dark:bg-slate-800 text-[#0d9488] dark:text-slate-400',
               },
               {
                 icon: (
@@ -108,7 +108,7 @@ export default function ContactPage() {
                 title: 'Videochamada',
                 value: 'Agende uma demo',
                 sub: 'Demonstração gratuita de 30 min',
-                cls: 'bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-teal-400',
+                cls: 'bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-slate-400',
               },
             ].map(c => (
               <div key={c.title} className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
@@ -175,10 +175,10 @@ export default function ContactPage() {
                 Recebemos sua mensagem e um especialista entrará em contato pelo canal escolhido em até 4 horas (dias úteis).
               </p>
               <div className="flex gap-3 justify-center flex-wrap">
-                <Link to="/login" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}>
+                <Link to="/login" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
                   Voltar ao início
                 </Link>
-                <Link to="/quote" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-[#0d9488] dark:text-teal-400 border border-teal-50 dark:border-[#2a3a63] bg-[#EFF6FF] dark:bg-slate-800 hover:bg-[#E2E8F0] dark:hover:bg-[#20325a] transition-colors">
+                <Link to="/quote" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-[#0d9488] dark:text-slate-400 border border-slate-50 dark:border-[#2a3a63] bg-[#EFF6FF] dark:bg-slate-800 hover:bg-[#E2E8F0] dark:hover:bg-[#20325a] transition-colors">
                   Solicitar orçamento
                 </Link>
               </div>
@@ -259,7 +259,7 @@ export default function ContactPage() {
                       key={opt.value}
                       className={`flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border transition-all text-sm ${
                         form.preferred_contact === opt.value
-                          ? 'border-[#0d9488] dark:border-[#3355c9] bg-[#EFF6FF] dark:bg-slate-800 text-[#0d9488] dark:text-teal-400'
+                          ? 'border-[#0d9488] dark:border-[#3355c9] bg-[#EFF6FF] dark:bg-slate-800 text-[#0d9488] dark:text-slate-400'
                           : 'border-[#E2E8F0] dark:border-[#464554] bg-[#F4F6F9] dark:bg-[#10131a] text-[#334155] dark:text-slate-300'
                       }`}
                     >
@@ -312,7 +312,7 @@ export default function ContactPage() {
                 type="submit"
                 disabled={loading}
                 className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
               >
                 {loading ? 'Enviando...' : 'Enviar mensagem →'}
               </button>

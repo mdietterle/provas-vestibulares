@@ -166,7 +166,7 @@ export default function SubscriptionPage() {
                 className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                   isCurrent
                     ? 'bg-[#eef1fb] dark:bg-[#464554] text-[#9ca3af] dark:text-[#908fa0] cursor-default'
-                    : 'bg-[#f59e0b] text-white hover:bg-[teal-700 disabled:opacity-50'
+                    : 'bg-[#f59e0b] text-white hover:bg-[slate-700 disabled:opacity-50'
                 }`}
               >
                 {actionLoading === `plan-${plan.key}` ? (

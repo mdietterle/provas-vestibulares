@@ -147,7 +147,7 @@ export default function SchoolSettingsPage() {
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-semibold shadow-sm transition-all hover:opacity-90 active:scale-95 disabled:opacity-60"
-                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
               >
                 {uploading ? (
                   <>
@@ -233,7 +233,7 @@ export default function SchoolSettingsPage() {
               type="submit"
               disabled={saving}
               className="flex items-center gap-2 px-5 py-2 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 active:scale-95 disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
             >
               {saving ? (
                 <>
@@ -327,7 +327,7 @@ export default function SchoolSettingsPage() {
           <button
             onClick={() => setAiAutoSuggest(v => !v)}
             className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${aiAutoSuggest ? '' : 'bg-[#d1d5db] dark:bg-slate-300'}`}
-            style={aiAutoSuggest ? { background: 'linear-gradient(135deg, #0d9488, #f59e0b)' } : undefined}
+            style={aiAutoSuggest ? { background: 'linear-gradient(135deg, #475569, #64748b)' } : undefined}
           >
             <span
               className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform"
@@ -372,7 +372,7 @@ export default function SchoolSettingsPage() {
           <div className="flex items-center gap-4">
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-bold flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)', color: '#fff' }}
+              style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)', color: '#fff' }}
             >
               {user.name?.charAt(0).toUpperCase() ?? '?'}
             </div>
@@ -380,7 +380,7 @@ export default function SchoolSettingsPage() {
               <p className="font-semibold text-gray-900">{user.name}</p>
               <p className="text-sm text-gray-500">{user.email}</p>
               <span
-                className="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full capitalize bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-teal-300"
+                className="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full capitalize bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-slate-300"
               >
                 {user.role === 'admin' ? 'Administrador' : user.role === 'professor' ? 'Professor' : 'Aluno'}
               </span>

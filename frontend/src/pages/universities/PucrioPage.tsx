@@ -34,7 +34,7 @@ export default function PucrioPage() {
 
       {/* Seletor de abas (tabs) pras 4 modalidades de ingresso — formato interativo, único entre as páginas de universidade */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">4 formas de entrar — clique pra ver cada uma</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">4 formas de entrar — clique pra ver cada uma</h3>
         <div className="flex flex-wrap gap-2 mb-4">
           {MODALIDADES.map(m => (
             <button
@@ -42,8 +42,8 @@ export default function PucrioPage() {
               onClick={() => setAtivo(m.id)}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
                 ativo === m.id
-                  ? 'bg-teal-600 dark:bg-amber-500 text-white border-transparent'
-                  : 'bg-white dark:bg-[#191b23] text-[#475569] dark:text-slate-300 border-[#E2E8F0] dark:border-[#464554] hover:border-amber-500'
+                  ? 'bg-slate-600 dark:bg-slate-500 text-white border-transparent'
+                  : 'bg-white dark:bg-[#191b23] text-[#475569] dark:text-slate-300 border-[#E2E8F0] dark:border-[#464554] hover:border-slate-500'
               }`}
             >
               {m.nome}
@@ -64,7 +64,7 @@ export default function PucrioPage() {
         sinal de que a instituição segue expandindo pra áreas de fronteira tecnológica.
       </p>
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-6">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-6">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Parceria de 30 anos com a Petrobras
         </h3>

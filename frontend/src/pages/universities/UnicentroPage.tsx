@@ -33,7 +33,7 @@ export default function UnicentroPage() {
         credit="Foto: recados.net.br / Wikimedia Commons, CC BY 2.0"
       />
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 my-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 my-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: referência regional numa região sem outra pública estadual por perto
         </h3>
@@ -47,10 +47,10 @@ export default function UnicentroPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Sete campi e unidades no Paraná</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Sete campi e unidades no Paraná</h3>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -68,7 +68,7 @@ export default function UnicentroPage() {
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
           Como entrar: três vias de ingresso
         </h3>
         <dl className="space-y-3 text-sm mb-4">

@@ -27,21 +27,21 @@ export default function UfgPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Seis campi, quatro cidades</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Seis campi, quatro cidades</h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-3">
           A sede fica no campus Samambaia, o maior deles, com quase 190 mil m² de área construída. Além dele, a UFG
           tem mais um campus em Goiânia (Colemar Natal e Silva) e unidades em outras três cidades goianas:
         </p>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
         </div>
       </div>
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: curso de IA pioneiro na América Latina, mais concorrido que Medicina
         </h3>
@@ -54,7 +54,7 @@ export default function UfgPage() {
           com os tradicionalmente mais concorridos do Brasil.
         </p>
 
-        <div className="mt-4 pt-4 border-t border-amber-200 dark:border-amber-900/40 space-y-3 text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
+        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-900/40 space-y-3 text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           <p>
             O curso nasceu de uma parceria entre a UFG e a Fundação de Amparo à Pesquisa do Estado de Goiás (Fapeg),
             firmada em 2019, e foi o <strong>primeiro bacharelado público em Inteligência Artificial do Brasil</strong>,
@@ -99,7 +99,7 @@ export default function UfgPage() {
       </p>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
           Como entrar: metade SiSU, metade vestibular próprio
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-4">
@@ -110,19 +110,19 @@ export default function UfgPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Inscrições</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Inscrições</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Fim de junho a início de agosto (taxa ~R$ 130)</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Prova (fase única)</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Prova (fase única)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Fim de setembro, dois turnos</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">1ª chamada</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">1ª chamada</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Meados de dezembro</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">SiSU</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">SiSU</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Segue o calendário nacional do MEC</dd>
           </div>
         </dl>

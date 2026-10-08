@@ -57,7 +57,7 @@ function PriceBreakdown({
               className="p-3 text-center border-r border-[#E2E8F0] dark:border-[#464554] last:border-r-0 bg-[#F4F6F9] dark:bg-[#10131a]"
             >
               <p className="text-xs text-[#64748B] dark:text-slate-300 mb-0.5">{s} professores</p>
-              <p className="font-display text-base font-bold text-teal-600 dark:text-teal-400">
+              <p className="font-display text-base font-bold text-slate-600 dark:text-slate-400">
                 R$ {total.toLocaleString('pt-BR')}
               </p>
             </div>
@@ -115,20 +115,20 @@ function PlanCard({
       ? 'w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90'
       : ctaStyle === 'primary'
       ? 'w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90'
-      : 'w-full py-3 rounded-xl text-sm font-bold transition-all border-[1.5px] border-teal-50 dark:border-[#464554] bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400 hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a]'
+      : 'w-full py-3 rounded-xl text-sm font-bold transition-all border-[1.5px] border-slate-50 dark:border-[#464554] bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-[#EFF6FF] dark:hover:bg-[#1e2d4a]'
 
   const ctaInlineStyle =
     ctaStyle === 'gradient'
-      ? { background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }
+      ? { background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }
       : ctaStyle === 'primary'
-      ? { background: 'teal-600' }
+      ? { background: 'slate-600' }
       : undefined
 
   return (
     <div
       className={`relative flex flex-col rounded-2xl border p-6 ${
         highlight
-          ? 'border-amber-500 dark:border-[#8b5cf6] shadow-lg bg-[#faf8ff] dark:bg-[#1b1642]'
+          ? 'border-slate-500 dark:border-[#8b5cf6] shadow-lg bg-[#faf8ff] dark:bg-[#1b1642]'
           : 'border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27]'
       }`}
       style={{
@@ -141,7 +141,7 @@ function PlanCard({
       {highlight && (
         <div
           className="absolute top-0 inset-x-0 h-1 rounded-t-2xl"
-          style={{ background: 'linear-gradient(90deg, #0d9488, #f59e0b)' }}
+          style={{ background: 'linear-gradient(90deg, #475569, #64748b)' }}
         />
       )}
 
@@ -153,10 +153,10 @@ function PlanCard({
             style={
               badgeGradient
                 ? {
-                    background: 'linear-gradient(135deg, #0d9488, #f59e0b)',
+                    background: 'linear-gradient(135deg, #475569, #64748b)',
                     color: '#fff',
                   }
-                : { background: '#e9ddff', color: 'amber-500' }
+                : { background: '#e9ddff', color: 'slate-500' }
             }
           >
             {badge}
@@ -233,7 +233,7 @@ function AddOnRow({ label, price, sub }: { label: string; price: string; sub?: s
     <div className="flex items-center justify-between py-3 border-b border-[#f0f0f8] dark:border-[#464554] last:border-b-0">
       <span className="text-sm text-[#1E293B] dark:text-[#e1e2ec]">{label}</span>
       <div className="text-right">
-        <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{price}</span>
+        <span className="text-sm font-bold text-slate-600 dark:text-slate-400">{price}</span>
         {sub && <p className="text-[11px] text-[#9ca3af] dark:text-[#908fa0]">{sub}</p>}
       </div>
     </div>
@@ -295,7 +295,7 @@ export default function PlansPage() {
       <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: 'Preços' }]} />
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4 bg-[#e9ddff] dark:bg-[#3a2166] text-amber-500 dark:text-[#A5B4FC]">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4 bg-[#e9ddff] dark:bg-[#3a2166] text-slate-500 dark:text-[#A5B4FC]">
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
@@ -376,7 +376,7 @@ export default function PlansPage() {
         style={{ boxShadow: '0 2px 8px rgba(0,35,111,0.04)' }}
       >
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#e9ddff] dark:bg-[#3a2166] text-amber-500 dark:text-[#A5B4FC]">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#e9ddff] dark:bg-[#3a2166] text-slate-500 dark:text-[#A5B4FC]">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
@@ -390,12 +390,12 @@ export default function PlansPage() {
           </div>
         </div>
         <div className="text-right">
-          <p className="font-display text-xl font-bold text-teal-600 dark:text-teal-400">R$ 59/mês</p>
+          <p className="font-display text-xl font-bold text-slate-600 dark:text-slate-400">R$ 59/mês</p>
           <p className="text-xs text-[#64748B] dark:text-slate-300">30 questões IA + 50 correções IA incluso</p>
         </div>
         <button
           className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
-          style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
         >
           Assinar agora
         </button>
@@ -408,7 +408,7 @@ export default function PlansPage() {
           style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#e9ddff] dark:bg-[#3a2166] text-amber-500 dark:text-[#A5B4FC]">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#e9ddff] dark:bg-[#3a2166] text-slate-500 dark:text-[#A5B4FC]">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -438,7 +438,7 @@ export default function PlansPage() {
           </h2>
           <p className="text-xs text-[#64748B] dark:text-slate-300 mb-4">
             Dúvidas sobre o uso da plataforma? Consulte a{' '}
-            <Link to="/ajuda" className="text-amber-500 dark:text-[#A5B4FC] font-semibold hover:underline">Central de Ajuda</Link>.
+            <Link to="/ajuda" className="text-slate-500 dark:text-[#A5B4FC] font-semibold hover:underline">Central de Ajuda</Link>.
           </p>
           <div className="space-y-4">
             {[
@@ -471,7 +471,7 @@ export default function PlansPage() {
       {/* CTA banner */}
       <div
         className="relative overflow-hidden rounded-2xl p-8 text-center"
-        style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)', boxShadow: '0 8px 32px rgba(107,56,212,0.25)' }}
+        style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)', boxShadow: '0 8px 32px rgba(107,56,212,0.25)' }}
       >
         <div className="absolute -right-10 -top-10 w-48 h-48 rounded-full opacity-10" style={{ background: '#fff' }} />
         <div className="absolute -left-6 bottom-[-20px] w-32 h-32 rounded-full opacity-10" style={{ background: '#fff' }} />
@@ -485,7 +485,7 @@ export default function PlansPage() {
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link
               to="/contact"
-              className="px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-teal-600 hover:bg-white/90 transition-all"
+              className="px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-slate-600 hover:bg-white/90 transition-all"
             >
               Falar com a gente
             </Link>

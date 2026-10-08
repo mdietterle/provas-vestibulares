@@ -30,7 +30,7 @@ export default function Pagination({ page, totalPages, total, pageSize, onChange
       disabled={disabled}
       className={`min-w-[32px] h-8 px-2 rounded text-sm font-medium transition-colors ${
         active
-          ? 'bg-teal-600 text-white'
+          ? 'bg-slate-600 text-white'
           : disabled
           ? 'text-gray-300 dark:text-[#475569] cursor-not-allowed'
           : 'text-gray-600 hover:bg-gray-100'

@@ -4,7 +4,7 @@ import CampusImage from '../../components/CampusImage'
 export default function UfpelPage() {
   const customContent = (
     <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
-      <blockquote className="border-l-4 border-amber-500 pl-5 italic text-lg text-[#1E293B] dark:text-white mb-6">
+      <blockquote className="border-l-4 border-slate-500 pl-5 italic text-lg text-[#1E293B] dark:text-white mb-6">
         "A escola de Agronomia mais antiga do Brasil segue funcionando dentro de uma universidade federal gaúcha."
       </blockquote>
 
@@ -19,7 +19,7 @@ export default function UfpelPage() {
         Domésticas, somadas depois às Faculdades de Direito e Odontologia.
       </p>
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: a mais antiga escola de Agronomia do país
         </h3>
@@ -45,7 +45,7 @@ export default function UfpelPage() {
       </p>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Campi e unidades</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Campi e unidades</h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Além do Campus Capão do Leão (agrário) e do Campus Porto (centro histórico), a universidade tem unidades
           espalhadas pela cidade de Pelotas e mantém o Centro Agropecuário da Palma, na BR-116 — uma estrutura de
@@ -54,7 +54,7 @@ export default function UfpelPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Ingresso: SiSU + processos especiais
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">

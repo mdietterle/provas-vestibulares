@@ -6,14 +6,14 @@ export default {
     extend: {
       colors: {
         cognition: {
-          primary: '#0d9488',
-          'primary-hover': '#0f766e',
-          'primary-container': '#115e59',
+          primary: '#475569',
+          'primary-hover': '#334155',
+          'primary-container': '#1e293b',
           'on-primary': '#ffffff',
-          secondary: '#f59e0b',
-          'secondary-hover': '#d97706',
-          'secondary-container': '#b45309',
-          tertiary: '#10B981',
+          secondary: '#64748b',
+          'secondary-hover': '#475569',
+          'secondary-container': '#334155',
+          tertiary: '#94a3b8',
           bg: '#F8FAFC',
           surface: '#ffffff',
           'surface-low': '#F1F5F9',
@@ -26,7 +26,7 @@ export default {
           'outline-variant': '#CBD5E1',
           'sidebar-bg': '#0F172A',
           'sidebar-text': '#94A3B8',
-          'sidebar-active': '#0d9488',
+          'sidebar-active': '#475569',
         },
       },
       fontFamily: {
@@ -36,15 +36,15 @@ export default {
       boxShadow: {
         card: '0px 4px 20px rgba(15, 23, 42, 0.06)',
         'card-hover': '0px 8px 30px rgba(15, 23, 42, 0.10)',
-        glow: '0 0 0 1px rgba(13,148,136,0.15), 0 8px 30px rgba(13,148,136,0.20)',
+        glow: '0 0 0 1px rgba(71,85,105,0.15), 0 8px 30px rgba(71,85,105,0.20)',
         'soft-xl': '0 20px 60px -15px rgba(15, 23, 42, 0.15)',
       },
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',
-        'brand-gradient-radial': 'radial-gradient(circle at 30% 20%, #115e59 0%, #0d9488 55%, #0F172A 100%)',
-        'brand-mesh': `radial-gradient(circle at 15% 15%, rgba(13,148,136,0.12) 0%, transparent 45%),
-          radial-gradient(circle at 85% 10%, rgba(245,158,11,0.08) 0%, transparent 40%),
-          radial-gradient(circle at 50% 100%, rgba(13,148,136,0.06) 0%, transparent 50%)`,
+        'brand-gradient': 'linear-gradient(135deg, #475569 0%, #64748b 100%)',
+        'brand-gradient-radial': 'radial-gradient(circle at 30% 20%, #1e293b 0%, #475569 55%, #0F172A 100%)',
+        'brand-mesh': `radial-gradient(circle at 15% 15%, rgba(71,85,105,0.08) 0%, transparent 45%),
+          radial-gradient(circle at 85% 10%, rgba(100,116,139,0.06) 0%, transparent 40%),
+          radial-gradient(circle at 50% 100%, rgba(71,85,105,0.04) 0%, transparent 50%)`,
       },
       keyframes: {
         'fade-in-up': {

@@ -37,7 +37,7 @@ function Avatar({ name }: { name: string }) {
 function StatusBadge({ active, invitationStatus }: { active: boolean; invitationStatus?: string | null }) {
   if (invitationStatus === 'pending') {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400">
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
         Aguardando convite
       </span>
@@ -70,7 +70,7 @@ function InvitationBadge({ status }: { status: 'pending' | 'accepted' | null | u
   }
   if (status === 'pending') {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400">
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         Pendente
       </span>
@@ -268,7 +268,7 @@ export default function StudentsPage() {
           <button
             onClick={openCreate}
             className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+            style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -281,9 +281,9 @@ export default function StudentsPage() {
       {/* Stats row */}
       <div className="grid grid-cols-4 gap-4">
         {[
-          { label: 'Total de Alunos', value: students.length, cls: 'bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-teal-400' },
+          { label: 'Total de Alunos', value: students.length, cls: 'bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-slate-400' },
           { label: 'Ativos', value: activeCount, cls: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
-          { label: 'Convite pendente', value: pendingInviteCount, cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' },
+          { label: 'Convite pendente', value: pendingInviteCount, cls: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400' },
           { label: 'Inativos', value: inactiveCount, cls: 'bg-gray-100 text-gray-600 dark:bg-[#464554] dark:text-slate-300' },
         ].map(stat => (
           <div key={stat.label} className="bg-white rounded-xl border border-[#E2E8F0] px-5 py-4 flex items-center gap-4" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
@@ -423,7 +423,7 @@ export default function StudentsPage() {
                       {search || filterStatus !== 'all' ? 'Nenhum aluno encontrado' : 'Nenhum aluno cadastrado'}
                     </p>
                     {!search && filterStatus === 'all' && (
-                      <button onClick={openCreate} className="text-sm font-semibold text-[#f59e0b] dark:text-teal-400 hover:underline">
+                      <button onClick={openCreate} className="text-sm font-semibold text-[#f59e0b] dark:text-slate-400 hover:underline">
                         Cadastrar primeiro aluno →
                       </button>
                     )}
@@ -466,7 +466,7 @@ export default function StudentsPage() {
           </svg>
         </div>
         <div>
-          <p className="text-sm font-semibold text-[#0d9488] dark:text-teal-400">Insights da IA</p>
+          <p className="text-sm font-semibold text-[#0d9488] dark:text-slate-400">Insights da IA</p>
           <p className="text-xs text-[#334155] mt-0.5">
             {students.length === 0
               ? 'Comece cadastrando alunos para sua instituição.'
@@ -508,7 +508,7 @@ export default function StudentsPage() {
             </div>
             {editing ? (
               <p className="text-xs text-[#64748B] dark:text-slate-300 bg-[#F4F6F9] dark:bg-slate-800 border border-[#E2E8F0] dark:border-[#464554] rounded-lg px-3 py-2">
-                Para redefinir a senha deste aluno, use <Link to="/user-access" className="font-semibold text-[#f59e0b] dark:text-teal-400 hover:underline">Controle de Acesso</Link>.
+                Para redefinir a senha deste aluno, use <Link to="/user-access" className="font-semibold text-[#f59e0b] dark:text-slate-400 hover:underline">Controle de Acesso</Link>.
               </p>
             ) : (
               <>
@@ -537,7 +537,7 @@ export default function StudentsPage() {
                   </div>
                 ) : (
                   <div className="flex items-start gap-3 p-3 rounded-lg border border-[#b6c4ff] dark:border-[#464554] bg-[#EFF6FF] dark:bg-slate-800">
-                    <svg className="w-5 h-5 text-[#f59e0b] dark:text-teal-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="w-5 h-5 text-[#f59e0b] dark:text-slate-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     <p className="text-xs text-[#334155] leading-relaxed">
@@ -557,7 +557,7 @@ export default function StudentsPage() {
                             key={c.id}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                               checked
-                                ? 'bg-[#eef2ff] dark:bg-slate-800 border-[#c7d2fe] dark:border-[#464554] text-[#0d9488] dark:text-teal-400'
+                                ? 'bg-[#eef2ff] dark:bg-slate-800 border-[#c7d2fe] dark:border-[#464554] text-[#0d9488] dark:text-slate-400'
                                 : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1a2947]'
                             }`}
                           >

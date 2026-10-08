@@ -43,7 +43,7 @@ function ScoreInput({
             step={0.1}
             value={value}
             onChange={e => onChange(e.target.value)}
-            className={`w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-teal-400 ${
+            className={`w-full border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-slate-400 ${
               !valid && value !== '' ? 'border-red-400' : 'border-[#c5ceff] dark:border-[#464554]'
             }`}
           />
@@ -60,7 +60,7 @@ function ScoreInput({
           value={note}
           onChange={e => onNoteChange(e.target.value)}
           placeholder="Comentário sobre este critério…"
-          className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-teal-400"
+          className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-slate-400"
         />
       </div>
     </div>
@@ -213,7 +213,7 @@ export default function RedacaoReviewPage() {
           onChange={e => setProfessorComment(e.target.value)}
           rows={4}
           placeholder="Deixe um comentário geral para o aluno…"
-          className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-teal-400 resize-none"
+          className="w-full border border-[#c5ceff] dark:border-[#464554] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0d9488] dark:focus:ring-slate-400 resize-none"
         />
       </div>
 
@@ -229,7 +229,7 @@ export default function RedacaoReviewPage() {
           onClick={handleSave}
           disabled={saving}
           className="px-6 py-2.5 rounded-xl text-sm font-bold text-white disabled:opacity-60 transition-opacity"
-          style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
         >
           {saving ? 'Salvando…' : 'Salvar revisão'}
         </button>

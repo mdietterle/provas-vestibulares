@@ -26,7 +26,7 @@ export default function UfjfPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Dois campi, dois estados de formação</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Dois campi, dois estados de formação</h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           Além da sede em Juiz de Fora, a UFJF mantém um campus avançado em <strong>Governador Valadares</strong>{' '}
           (também em Minas Gerais), levando ensino federal pra uma região mineira relativamente distante da capital
@@ -35,7 +35,7 @@ export default function UfjfPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial: Faculdade de Direito centenária, referência em aprovação na OAB
         </h3>
@@ -62,7 +62,7 @@ export default function UfjfPage() {
       />
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Ligação direta com a população: extensão como ponte
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
@@ -75,7 +75,7 @@ export default function UfjfPage() {
       </div>
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Egressos de destaque
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-3">
@@ -94,7 +94,7 @@ export default function UfjfPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
           Como entrar: PISM (seriado) ou SiSU
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-4">
@@ -105,19 +105,19 @@ export default function UfjfPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Isenção da taxa</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Isenção da taxa</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Meados de junho, resultado no início de julho</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Inscrições PISM</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Inscrições PISM</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Fim de julho a meados de agosto</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Provas (3 módulos)</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Provas (3 módulos)</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Início de dezembro, mesma data pros três módulos</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Vagas</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Vagas</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">~2.246 no total: 1.846 em Juiz de Fora, 400 em Governador Valadares</dd>
           </div>
         </dl>

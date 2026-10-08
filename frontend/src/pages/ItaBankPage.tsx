@@ -7,7 +7,7 @@ const LETTERS = 'ABCDE'
 
 const AREA_COLORS: Record<string, string> = {
   'Matemática': 'bg-orange-100 text-orange-700',
-  'Física': 'bg-teal-100 text-teal-700',
+  'Física': 'bg-slate-100 text-slate-700',
   'Química': 'bg-pink-100 text-pink-700',
   'Inglês': 'bg-cyan-100 text-cyan-700',
   'Português': 'bg-blue-100 text-blue-700',
@@ -67,7 +67,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
             <select
               value={subjectId}
               onChange={e => setSubjectId(Number(e.target.value))}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-600"
             >
               {subjects.map(s => (
                 <option key={s.id} value={s.id}>{s.name}</option>
@@ -80,7 +80,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
             <select
               value={difficulty}
               onChange={e => setDifficulty(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-600"
             >
               <option value="easy">Fácil</option>
               <option value="medium">Médio</option>
@@ -106,7 +106,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
           <button
             onClick={handleImport}
             disabled={loading}
-            className="flex-1 py-2 text-sm font-semibold rounded-lg bg-teal-600 text-white hover:bg-[#001a54] transition-colors disabled:opacity-50"
+            className="flex-1 py-2 text-sm font-semibold rounded-lg bg-slate-600 text-white hover:bg-[#001a54] transition-colors disabled:opacity-50"
           >
             {loading ? 'Importando...' : 'Importar'}
           </button>
@@ -134,7 +134,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
     <div className="card border border-gray-100 hover:border-[#c7d7ff] dark:hover:border-[#1e2d4a] transition-colors">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className="shrink-0 w-9 h-9 rounded-full bg-[#EFF6FF] flex items-center justify-center text-sm font-bold text-teal-600">
+          <div className="shrink-0 w-9 h-9 rounded-full bg-[#EFF6FF] flex items-center justify-center text-sm font-bold text-slate-600">
             {question.number}
           </div>
           <div className="flex-1 min-w-0">
@@ -142,12 +142,12 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
               <span className="text-xs font-semibold text-gray-500">{question.exam_name}</span>
               {question.area && <AreaBadge area={question.area} />}
               {question.phase && (
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-50 text-slate-700 border border-slate-200">
                   Fase {question.phase}
                 </span>
               )}
               {question.question_type === 'discursive' && (
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-50 text-slate-700 border border-slate-200">
                   Dissertativa
                 </span>
               )}
@@ -166,7 +166,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
           <button
             onClick={onImport}
             title="Importar para meu banco"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-slate-800 text-teal-600 dark:text-teal-400 hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -219,9 +219,9 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
               ))}
             </div>
           ) : (
-            <div className="p-3 bg-teal-50 border border-teal-200 rounded-lg">
-              <span className="text-xs font-bold text-teal-800 block mb-1">Gabarito Dissertativo / Critério</span>
-              <p className="text-sm text-teal-800">
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+              <span className="text-xs font-bold text-slate-800 block mb-1">Gabarito Dissertativo / Critério</span>
+              <p className="text-sm text-slate-800">
                 {question.answer ? question.answer : 'Esta questão é dissertativa e não possui alternativa correta objetiva.'}
               </p>
             </div>
@@ -307,7 +307,7 @@ export default function ItaBankPage() {
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-amber-500 text-white text-sm font-semibold shadow">
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-slate-600 to-slate-500 text-white text-sm font-semibold shadow">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
@@ -334,7 +334,7 @@ export default function ItaBankPage() {
               <select
                 value={filterYear}
                 onChange={e => { setFilterYear(e.target.value); setPage(0) }}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-600"
               >
                 <option value="">Todos os anos</option>
                 {years.map(y => (
@@ -347,7 +347,7 @@ export default function ItaBankPage() {
               <select
                 value={filterArea}
                 onChange={e => { setFilterArea(e.target.value); setPage(0) }}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-600"
               >
                 <option value="">Todas as matérias</option>
                 {areas.map(a => (
@@ -360,7 +360,7 @@ export default function ItaBankPage() {
               <select
                 value={filterPhase}
                 onChange={e => { setFilterPhase(e.target.value); setPage(0) }}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-600"
               >
                 <option value="">Todas as fases</option>
                 <option value="1">1ª Fase</option>
@@ -376,9 +376,9 @@ export default function ItaBankPage() {
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
-              className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+              className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-600"
             />
-            <button onClick={handleSearch} className="px-4 py-2 bg-teal-600 hover:bg-[#001a54] text-white text-sm font-semibold rounded-lg transition-colors">
+            <button onClick={handleSearch} className="px-4 py-2 bg-slate-600 hover:bg-[#001a54] text-white text-sm font-semibold rounded-lg transition-colors">
               Buscar
             </button>
           </div>
@@ -387,7 +387,7 @@ export default function ItaBankPage() {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 dark:border-teal-400"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600 dark:border-slate-400"></div>
         </div>
       ) : questions.length === 0 ? (
         <div className="card p-12 text-center text-gray-500">

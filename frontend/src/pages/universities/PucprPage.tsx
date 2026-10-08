@@ -19,7 +19,7 @@ export default function PucprPage() {
   const customContent = (
     <div className="mb-12 font-sans text-[#2d3748] dark:text-[#e1e2ec]">
       {/* Faixa de título simples, sem banner gradiente */}
-      <div className="border-l-4 border-amber-500 pl-4 mb-8">
+      <div className="border-l-4 border-slate-500 pl-4 mb-8">
         <h2 className="text-2xl font-bold text-[#1E293B] dark:text-white">PUCPR: um só nome, quatro cidades</h2>
         <p className="text-sm text-[#64748B] dark:text-slate-300 mt-1">
           Uma das maiores universidades privadas confessionais do Sul do país, com presença espalhada pelo Paraná.
@@ -28,7 +28,7 @@ export default function PucprPage() {
 
       {/* Explorador de campi — faixa horizontal roláveis, formato distinto das outras páginas */}
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Onde a PUCPR está</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Onde a PUCPR está</h3>
         <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1">
           {CAMPI.map(c => (
             <div key={c.cidade} className="shrink-0 w-64 rounded-2xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#191b23] p-5">
@@ -46,7 +46,7 @@ export default function PucprPage() {
         infraestrutura de laboratórios e espaços de convivência da universidade.
       </p>
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-10">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-10">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Uma fundação anterior à própria universidade
         </h3>
@@ -64,11 +64,11 @@ export default function PucprPage() {
 
       {/* Lista simples de formas de ingresso, sem cards nem tabela */}
       <div>
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Como entrar</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Como entrar</h3>
         <ul className="divide-y divide-[#E2E8F0] dark:divide-[#464554] border-y border-[#E2E8F0] dark:border-[#464554]">
           {INGRESSO.map(i => (
             <li key={i} className="py-3 text-sm text-[#475569] dark:text-slate-300 flex items-center gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0" />
               {i}
             </li>
           ))}

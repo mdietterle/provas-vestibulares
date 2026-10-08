@@ -9,11 +9,11 @@ const AREA_COLORS: Record<string, string> = {
   'Língua Portuguesa': 'bg-blue-100 text-blue-700',
   'Língua Estrangeira': 'bg-cyan-100 text-cyan-700',
   'Matemática': 'bg-orange-100 text-orange-700',
-  'Física': 'bg-teal-100 text-teal-700',
+  'Física': 'bg-slate-100 text-slate-700',
   'Química': 'bg-pink-100 text-pink-700',
   'Biologia': 'bg-green-100 text-green-700',
-  'História': 'bg-amber-100 text-amber-700',
-  'Geografia': 'bg-teal-100 text-teal-700',
+  'História': 'bg-slate-100 text-slate-700',
+  'Geografia': 'bg-slate-100 text-slate-700',
   'Geral': 'bg-gray-100 text-gray-600',
 }
 
@@ -36,7 +36,7 @@ function LanguageBadge({ language }: { language: string | null }) {
   if (!language) return null
   const isEnglish = language === 'Inglês'
   return (
-    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${isEnglish ? 'bg-teal-100 text-teal-700' : 'bg-red-100 text-red-700'}`}>
+    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${isEnglish ? 'bg-slate-100 text-slate-700' : 'bg-red-100 text-red-700'}`}>
       {isEnglish ? '🇺🇸 Inglês' : '🇪🇸 Espanhol'}
     </span>
   )
@@ -90,7 +90,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
             <select
               value={subjectId}
               onChange={e => setSubjectId(Number(e.target.value))}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-600"
             >
               {subjects.map(s => (
                 <option key={s.id} value={s.id}>{s.name}</option>
@@ -103,7 +103,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
             <select
               value={difficulty}
               onChange={e => setDifficulty(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-600"
             >
               <option value="easy">Fácil</option>
               <option value="medium">Médio</option>
@@ -129,7 +129,7 @@ function ImportModal({ question, subjects, onClose, onSuccess }: ImportModalProp
           <button
             onClick={handleImport}
             disabled={loading}
-            className="flex-1 py-2 text-sm font-semibold rounded-lg bg-teal-600 text-white hover:bg-[#001a54] transition-colors disabled:opacity-50"
+            className="flex-1 py-2 text-sm font-semibold rounded-lg bg-slate-600 text-white hover:bg-[#001a54] transition-colors disabled:opacity-50"
           >
             {loading ? 'Importando...' : 'Importar'}
           </button>
@@ -151,7 +151,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
     <div className="card border border-gray-100 hover:border-[#c7d7ff] dark:hover:border-[#1e2d4a] transition-colors">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className="shrink-0 w-9 h-9 rounded-full bg-[#EFF6FF] flex items-center justify-center text-sm font-bold text-teal-600">
+          <div className="shrink-0 w-9 h-9 rounded-full bg-[#EFF6FF] flex items-center justify-center text-sm font-bold text-slate-600">
             {question.number}
           </div>
           <div className="flex-1 min-w-0">
@@ -170,7 +170,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
           <button
             onClick={onImport}
             title="Importar para meu banco"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-slate-800 text-teal-600 dark:text-teal-400 hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#EFF6FF] dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-[#dde9ff] dark:hover:bg-[#1e2d4a] transition-colors"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -329,7 +329,7 @@ export default function AcafeBankPage() {
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-amber-500 text-white text-sm font-semibold shadow">
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-slate-600 to-slate-500 text-white text-sm font-semibold shadow">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
@@ -353,7 +353,7 @@ export default function AcafeBankPage() {
         <select
           value={filterYear}
           onChange={e => { setFilterYear(e.target.value); setPage(0) }}
-          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-600"
+          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-slate-600"
         >
           <option value="">Todos os anos</option>
           {years.map(y => <option key={y} value={y}>{y}</option>)}
@@ -362,7 +362,7 @@ export default function AcafeBankPage() {
         <select
           value={filterPeriod}
           onChange={e => { setFilterPeriod(e.target.value); setPage(0) }}
-          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-600"
+          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-slate-600"
         >
           <option value="">Todos os períodos</option>
           {periods.map(p => <option key={p} value={p}>{p}</option>)}
@@ -371,7 +371,7 @@ export default function AcafeBankPage() {
         <select
           value={filterArea}
           onChange={e => { setFilterArea(e.target.value); setPage(0) }}
-          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-600"
+          className="border rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-slate-600"
         >
           <option value="">Todas as áreas</option>
           {areas.map(a => <option key={a} value={a}>{a}</option>)}
@@ -384,11 +384,11 @@ export default function AcafeBankPage() {
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+            className="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-600"
           />
           <button
             onClick={handleSearch}
-            className="px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-semibold hover:bg-[#001a54] transition-colors"
+            className="px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#001a54] transition-colors"
           >
             Buscar
           </button>

@@ -17,7 +17,7 @@ function Avatar({ name }: { name: string }) {
   return (
     <div
       className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 select-none"
-      style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
     >
       {initials}
     </div>
@@ -296,7 +296,7 @@ export default function ProfessorsPage() {
               onClick={() => setFilterStatus(s)}
               className={`px-3 py-1.5 text-xs font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0]' : ''} ${
                 filterStatus === s
-                  ? 'bg-teal-600 text-white'
+                  ? 'bg-slate-600 text-white'
                   : 'bg-white text-[#5a6480] hover:bg-[#f4f6fb]'
               }`}
             >
@@ -332,7 +332,7 @@ export default function ProfessorsPage() {
                     <div>
                       <p className="font-medium text-[#1E293B] text-[13px]">{p.name}</p>
                       {p.car_access && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-slate-800 text-amber-500 dark:text-teal-400">CAR</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#eef2ff] dark:bg-slate-800 text-slate-500 dark:text-slate-400">CAR</span>
                       )}
                     </div>
                   </div>
@@ -343,7 +343,7 @@ export default function ProfessorsPage() {
                 <td className="table-cell">
                   <button
                     onClick={() => openAssignments(p)}
-                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-teal-50 dark:bg-slate-800 text-[#2845b5] dark:text-teal-400 hover:bg-[#e5edff] dark:hover:bg-[#20335a] transition-colors"
+                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-slate-800 text-[#2845b5] dark:text-slate-400 hover:bg-[#e5edff] dark:hover:bg-[#20335a] transition-colors"
                   >
                     Gerenciar
                   </button>
@@ -388,7 +388,7 @@ export default function ProfessorsPage() {
                       {search || filterStatus !== 'all' ? 'Nenhum professor encontrado' : 'Nenhum professor cadastrado'}
                     </p>
                     {!search && filterStatus === 'all' && (
-                      <button onClick={openCreate} className="mt-2 text-sm font-medium text-amber-500 hover:underline">
+                      <button onClick={openCreate} className="mt-2 text-sm font-medium text-slate-500 hover:underline">
                         Cadastrar primeiro professor
                       </button>
                     )}
@@ -417,7 +417,7 @@ export default function ProfessorsPage() {
             </div>
             {editing ? (
               <p className="text-xs text-[#64748B] bg-[#F4F6F9] border border-[#E2E8F0] rounded-lg px-3 py-2">
-                Para redefinir a senha deste professor, use <Link to="/user-access" className="font-semibold text-amber-500 hover:underline">Controle de Acesso</Link>.
+                Para redefinir a senha deste professor, use <Link to="/user-access" className="font-semibold text-slate-500 hover:underline">Controle de Acesso</Link>.
               </p>
             ) : (
               <div>
@@ -430,7 +430,7 @@ export default function ProfessorsPage() {
                 type="checkbox"
                 checked={form.car_access}
                 onChange={e => setForm({ ...form, car_access: e.target.checked })}
-                className="w-4 h-4 rounded accent-amber-500"
+                className="w-4 h-4 rounded accent-slate-500"
               />
               <div>
                 <p className="text-sm font-semibold text-[#1E293B]">Acesso ao CAR <span className="font-normal text-[#64748B]">(Correção Automática de Redações)</span></p>
@@ -441,7 +441,7 @@ export default function ProfessorsPage() {
               <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-[#334155] bg-[#EFF6FF] hover:bg-[#E2E8F0]">
                 Cancelar
               </button>
-              <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-60" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}>
+              <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-60" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
                 {saving ? 'Salvando...' : 'Salvar'}
               </button>
             </div>
@@ -487,13 +487,13 @@ export default function ProfessorsPage() {
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                             already ? 'opacity-40 cursor-not-allowed' :
                             checked
-                              ? 'bg-[#eef2ff] dark:bg-slate-800 border-[#c7d2fe] dark:border-[#464554] text-teal-600 dark:text-teal-400'
+                              ? 'bg-[#eef2ff] dark:bg-slate-800 border-[#c7d2fe] dark:border-[#464554] text-slate-600 dark:text-slate-400'
                               : 'bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#1a2947]'
                           }`}
                         >
                           <input
                             type="checkbox"
-                            className="accent-teal-600"
+                            className="accent-slate-600"
                             checked={checked}
                             disabled={already}
                             onChange={() => setAssignClassIds(ids => checked ? ids.filter(id => id !== c.id) : [...ids, c.id])}
@@ -510,7 +510,7 @@ export default function ProfessorsPage() {
                   type="submit"
                   disabled={!assignSubjectId || assignClassIds.length === 0 || addingAssignment}
                   className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-40 shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #0d9488 0%, #f59e0b 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
                 >
                   {addingAssignment ? 'Adicionando...' : assignClassIds.length > 1 ? `Adicionar (${assignClassIds.length} turmas)` : 'Adicionar'}
                 </button>

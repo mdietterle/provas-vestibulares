@@ -19,7 +19,7 @@ export default function UfamPage() {
       </p>
 
       {/* Destaque diferenciador, isolado logo no topo */}
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 mb-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 mb-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Diferencial único: 6,7 milhões de m² de área verde dentro do campus
         </h3>
@@ -40,14 +40,14 @@ export default function UfamPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Seis campi pela Amazônia</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Seis campi pela Amazônia</h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-3">
           Além da sede, a UFAM tem unidades acadêmicas espalhadas pelo interior do estado, levando ensino federal
           pra municípios distantes da capital:
         </p>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -63,7 +63,7 @@ export default function UfamPage() {
       </p>
 
       <div className="mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Pesquisa, extensão e estrutura pra comunidade
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
@@ -84,7 +84,7 @@ export default function UfamPage() {
       />
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
           Como entrar: PSC ou SiSU, metade das vagas pra cada
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-4">
@@ -94,19 +94,19 @@ export default function UfamPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Isenção da taxa</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Isenção da taxa</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Fim de agosto a início de setembro, pra quem está no CadÚnico</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Inscrições PSC</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Inscrições PSC</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Meados de setembro a início de outubro (taxa ~R$ 105)</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Prova das 3 etapas</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Prova das 3 etapas</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Fim de novembro, aplicada em ~22 municípios do Amazonas</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">SiSU</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">SiSU</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Segue o calendário nacional do MEC</dd>
           </div>
         </dl>

@@ -29,7 +29,7 @@ const features = [
     title: 'Gerador de Questões',
     description: 'Crie bancos de questões inéditas baseadas em qualquer texto ou tópico da BNCC. Diversidade pedagógica com um clique.',
     color: '#0d9488',
-    bg: 'teal-50',
+    bg: 'slate-50',
   },
   {
     icon: (
@@ -102,7 +102,7 @@ export default function LoginPage() {
             Transforme o ensino com Inteligência Estratégica. Automatize correções, gere questões personalizadas em segundos e obtenha insights profundos sobre o desempenho dos alunos.
           </p>
           <div className="flex flex-wrap gap-4 mb-12">
-            <a href="#login" className="px-6 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
+            <a href="#login" className="px-6 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
               Começar agora
             </a>
             <Link to="/plans" className="px-6 py-3 rounded-lg text-sm font-semibold text-[#0d9488] bg-[#EFF6FF] dark:bg-[#464554] hover:bg-[#E2E8F0] dark:hover:bg-[#243756] transition-colors">
@@ -156,7 +156,7 @@ export default function LoginPage() {
                 type="submit"
                 disabled={loading}
                 className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-60 mt-1"
-                style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
               >
                 {loading ? 'Entrando...' : 'Entrar'}
               </button>
@@ -169,7 +169,7 @@ export default function LoginPage() {
       <section id="features" className="bg-white py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: 'teal-50', color: '#0d9488' }}>
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: 'slate-50', color: '#0d9488' }}>
               Funcionalidades
             </span>
             <h2 className="font-display text-3xl font-bold text-[#1E293B] mb-3">Potencialize sua Produtividade</h2>
@@ -195,11 +195,11 @@ export default function LoginPage() {
       <section id="ai-tray" className="py-20">
         <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6 text-white" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6 text-white" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
               ✦ Novo recurso
             </span>
             <h2 className="font-display text-3xl font-bold text-[#1E293B] mb-4">
-              Crie conteúdos em segundos com o <span style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI Tray</span>
+              Crie conteúdos em segundos com o <span style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI Tray</span>
             </h2>
             <p className="text-[#334155] dark:text-slate-300 leading-relaxed mb-8">
               Interface flutuante para geração de materiais didáticos diretamente nas suas páginas de planejamento. Como ter um assistente pedagógico 24 horas por dia, 7 dias por semana.
@@ -222,7 +222,7 @@ export default function LoginPage() {
           <div className="relative">
             <div className="bg-white rounded-2xl p-6 border border-[#E2E8F0]" style={{ boxShadow: '0px 24px 60px rgba(0, 35, 111, 0.1)' }}>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
+                <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
@@ -236,13 +236,13 @@ export default function LoginPage() {
               <div className="space-y-2 mb-4">
                 {['Questão 1: Qual foi o principal fator...', 'Questão 2: A máquina a vapor representou...', 'Questão 3: As condições de trabalho...'].map((q, i) => (
                   <div key={i} className="flex items-start gap-2 text-xs text-[#334155] dark:text-slate-300 bg-white rounded-lg p-2 border border-[#E2E8F0]">
-                    <span className="w-4 h-4 rounded-full bg-teal-50 text-[#0d9488] flex items-center justify-center font-bold shrink-0 text-[10px]">{i + 1}</span>
+                    <span className="w-4 h-4 rounded-full bg-slate-50 text-[#0d9488] flex items-center justify-center font-bold shrink-0 text-[10px]">{i + 1}</span>
                     {q}
                   </div>
                 ))}
               </div>
               <div className="flex gap-2">
-                <button className="flex-1 py-2 rounded-lg text-xs font-semibold text-white" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)' }}>
+                <button className="flex-1 py-2 rounded-lg text-xs font-semibold text-white" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
                   Inserir no Plano
                 </button>
                 <button className="px-3 py-2 rounded-lg text-xs font-medium text-[#0d9488] bg-[#EFF6FF] dark:bg-[#464554] hover:bg-[#E2E8F0] dark:hover:bg-[#243756]">
@@ -255,7 +255,7 @@ export default function LoginPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-20" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #115e59 60%, #f59e0b 100%)' }}>
+      <section className="py-20" style={{ background: 'linear-gradient(135deg, #475569 0%, #334155 60%, #64748b 100%)' }}>
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="font-display text-3xl font-bold text-white mb-4">
             Pronto para transformar sua escola?

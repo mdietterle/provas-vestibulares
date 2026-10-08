@@ -43,10 +43,10 @@ export default function PucminasPage() {
           <div key={r.nome} className="rounded-2xl border border-[#E2E8F0] dark:border-[#464554] overflow-hidden">
             <div className="bg-[#F4F6F9] dark:bg-[#1d1f27] px-5 py-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full bg-teal-600 dark:bg-amber-500 text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                <span className="w-6 h-6 rounded-full bg-slate-600 dark:bg-slate-500 text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
                 <span className="font-bold text-[#1E293B] dark:text-white">{r.nome}</span>
               </div>
-              <span className="text-xs font-semibold text-amber-500 dark:text-teal-400">{r.vagas}</span>
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{r.vagas}</span>
             </div>
             <div className="px-5 py-3 text-sm text-[#475569] dark:text-slate-300">
               Unidades: {r.unidades}
@@ -70,7 +70,7 @@ export default function PucminasPage() {
       />
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">Como entrar</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Como entrar</h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
           A PUC Minas realiza <strong>dois vestibulares próprios por ano</strong>, além de aceitar a nota do ENEM em
           todos os campi e unidades — dando mais de uma chance por ciclo letivo pra quem quer entrar. Datas variam por

@@ -42,10 +42,10 @@ export default function PuccampinasPage() {
 
       {/* Barra de progresso simbólica mostrando as janelas de ingresso no ano, formato distinto */}
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">Duas janelas de ingresso por ano</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Duas janelas de ingresso por ano</h3>
         <div className="flex rounded-full overflow-hidden h-8 text-xs font-bold text-white">
-          <div className="flex-1 bg-teal-600 dark:bg-amber-500 flex items-center justify-center">Vestibular de Verão</div>
-          <div className="flex-1 bg-amber-500 dark:bg-[#8b5cf6] flex items-center justify-center">Vestibular de Inverno</div>
+          <div className="flex-1 bg-slate-600 dark:bg-slate-500 flex items-center justify-center">Vestibular de Verão</div>
+          <div className="flex-1 bg-slate-500 dark:bg-[#8b5cf6] flex items-center justify-center">Vestibular de Inverno</div>
         </div>
         <p className="text-xs text-[#a0a3af] dark:text-[#908fa0] mt-2">
           Além das duas edições próprias, a PUC-Campinas aceita nota do ENEM das três últimas edições, transferência
@@ -54,7 +54,7 @@ export default function PuccampinasPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Avaliação MEC: seis cursos nota máxima e liderança em tecnologia
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
@@ -68,7 +68,7 @@ export default function PuccampinasPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Papel no desenvolvimento tecnológico da região de Campinas
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">

@@ -27,7 +27,7 @@ export default function UpfPage() {
         credit="Foto: Portal UPF / Wikimedia Commons, CC BY-SA 4.0"
       />
 
-      <div className="rounded-2xl border-l-4 border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/20 p-5 my-8">
+      <div className="rounded-2xl border-l-4 border-slate-500 dark:border-slate-400 bg-slate-50 dark:bg-slate-950/20 p-5 my-8">
         <h3 className="font-bold text-base text-[#1E293B] dark:text-white mb-2">
           Avaliação MEC: nota máxima institucional em 2023
         </h3>
@@ -40,7 +40,7 @@ export default function UpfPage() {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Sete campi, seis cidades do norte do RS
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-3">
@@ -48,7 +48,7 @@ export default function UpfPage() {
         </p>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-teal-600 dark:text-teal-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}
@@ -71,7 +71,7 @@ export default function UpfPage() {
       />
 
       <div className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
           Papel no desenvolvimento do norte gaúcho: o Passo Fundo Valley
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed">
@@ -87,7 +87,7 @@ export default function UpfPage() {
       </div>
 
       <div className="border-t border-[#E2E8F0] dark:border-[#464554] pt-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-teal-400 mb-3">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
           Como entrar: nota de redação, não vestibular objetivo
         </h3>
         <p className="text-sm text-[#475569] dark:text-slate-300 leading-relaxed mb-4">
@@ -96,19 +96,19 @@ export default function UpfPage() {
         </p>
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-4">
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Redação presencial</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Redação presencial</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Prova de redação aplicada no campus, em data marcada</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Redação on-line</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Redação on-line</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Feita pela internet, dentro de uma janela de datas</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Nota da redação do ENEM</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Nota da redação do ENEM</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Aproveita a nota de redação de qualquer edição do ENEM desde 2010</dd>
           </div>
           <div className="p-4 rounded-xl bg-[#F4F6F9] dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554]">
-            <dt className="font-bold text-teal-600 dark:text-teal-400">Calendário</dt>
+            <dt className="font-bold text-slate-600 dark:text-slate-400">Calendário</dt>
             <dd className="text-[#475569] dark:text-[#e1e2ec] mt-1">Vestibular de Verão (2º semestre do ano anterior) e de Inverno (1º semestre)</dd>
           </div>
         </dl>

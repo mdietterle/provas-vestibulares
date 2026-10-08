@@ -105,7 +105,7 @@ export default function QuestionsPage() {
           </button>
           <button
             onClick={() => setShowAiModal(true)}
-            className="btn-sm inline-flex items-center gap-1.5 font-medium text-amber-500 dark:text-[#b8a5ff] border border-[#e0d9ff] dark:border-[#332a5c] bg-[#f5f0ff] dark:bg-[#241a3d] hover:bg-[#ede9fe] dark:hover:bg-[#2a2050] rounded-lg transition-colors"
+            className="btn-sm inline-flex items-center gap-1.5 font-medium text-slate-500 dark:text-[#b8a5ff] border border-[#e0d9ff] dark:border-[#332a5c] bg-[#f5f0ff] dark:bg-[#241a3d] hover:bg-[#ede9fe] dark:hover:bg-[#2a2050] rounded-lg transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -124,8 +124,8 @@ export default function QuestionsPage() {
       {/* Stats — compact row */}
       <div className="grid grid-cols-5 gap-3">
         {[
-          { label: 'Total', value: questions.length, color: 'teal-600', bg: 'teal-50' },
-          { label: 'M. Escolha', value: questions.filter(q => q.question_type === 'multiple_choice').length, color: 'teal-600', bg: 'teal-50' },
+          { label: 'Total', value: questions.length, color: 'slate-600', bg: 'slate-50' },
+          { label: 'M. Escolha', value: questions.filter(q => q.question_type === 'multiple_choice').length, color: 'slate-600', bg: 'slate-50' },
           { label: 'V/F', value: questions.filter(q => q.question_type === 'true_false').length, color: '#16a34a', bg: '#f0fdf4' },
           { label: 'Dissertativas', value: questions.filter(q => q.question_type === 'essay').length, color: '#9333ea', bg: '#fdf4ff' },
           { label: 'Somatório', value: questions.filter(q => q.question_type === 'summation').length, color: '#c2410c', bg: '#fff7ed' },
@@ -173,7 +173,7 @@ export default function QuestionsPage() {
               key={opt.val}
               onClick={() => setFilterType(opt.val)}
               className={`px-2.5 py-1.5 text-[11px] font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0] dark:border-[#464554]' : ''} ${
-                filterType === opt.val ? 'bg-teal-600 text-white' : 'bg-white dark:bg-[#464554] text-[#5a6480] dark:text-slate-300 hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
+                filterType === opt.val ? 'bg-slate-600 text-white' : 'bg-white dark:bg-[#464554] text-[#5a6480] dark:text-slate-300 hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
               }`}
             >
               {opt.label}
@@ -192,7 +192,7 @@ export default function QuestionsPage() {
               key={opt.val}
               onClick={() => setFilterDifficulty(opt.val)}
               className={`px-2.5 py-1.5 text-[11px] font-medium transition-colors ${i > 0 ? 'border-l border-[#d0d9f0] dark:border-[#464554]' : ''} ${
-                filterDifficulty === opt.val ? 'bg-teal-600 text-white' : 'bg-white dark:bg-[#464554] text-[#5a6480] dark:text-slate-300 hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
+                filterDifficulty === opt.val ? 'bg-slate-600 text-white' : 'bg-white dark:bg-[#464554] text-[#5a6480] dark:text-slate-300 hover:bg-[#f4f6fb] dark:hover:bg-[#243456]'
               }`}
             >
               {opt.label}
