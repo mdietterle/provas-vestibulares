@@ -697,7 +697,7 @@ export default function SubmissionsPage() {
           onClose={() => setQuotaModal(null)}
           onContactSupport={() => {
             setQuotaModal(null)
-            window.open('mailto:suporte@savecompany.com.br?subject=Pacote avulso de IA', '_blank')
+            window.open('mailto:dietterle@gmail.com?subject=Pacote avulso de IA', '_blank')
           }}
         />
       )}

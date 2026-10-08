@@ -247,7 +247,7 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
       </Modal>
       {quotaModal && (
         <QuotaExceededModal resource={quotaModal.resource} used={quotaModal.used} limit={quotaModal.limit} onClose={() => setQuotaModal(null)}
-          onContactSupport={() => { setQuotaModal(null); window.open('mailto:suporte@savecompany.com.br?subject=Pacote avulso de IA', '_blank') }} />
+          onContactSupport={() => { setQuotaModal(null); window.open('mailto:dietterle@gmail.com?subject=Pacote avulso de IA', '_blank') }} />
       )}
     </>
   )

@@ -117,8 +117,8 @@ export default function TermsOfServicePage() {
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">10. Contato</h2>
             <p>
               Dúvidas sobre estes termos podem ser enviadas para{' '}
-              <a href="mailto:contato@aiassessmenthub.com.br" className="text-[#f59e0b] dark:text-teal-400 hover:underline">
-                contato@aiassessmenthub.com.br
+              <a href="mailto:dietterle@gmail.com" className="text-[#f59e0b] dark:text-teal-400 hover:underline">
+                dietterle@gmail.com
               </a>{' '}
               ou pela{' '}
               <Link to="/contact" className="text-[#f59e0b] dark:text-teal-400 hover:underline">página de contato</Link>.

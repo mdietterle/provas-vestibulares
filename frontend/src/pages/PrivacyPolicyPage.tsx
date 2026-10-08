@@ -90,8 +90,8 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">7. Contato</h2>
             <p>
               Para exercer seus direitos ou tirar dúvidas sobre esta política, entre em contato pelo e-mail{' '}
-              <a href="mailto:contato@aiassessmenthub.com.br" className="text-amber-500 dark:text-teal-400 hover:underline">
-                contato@aiassessmenthub.com.br
+              <a href="mailto:dietterle@gmail.com" className="text-amber-500 dark:text-teal-400 hover:underline">
+                dietterle@gmail.com
               </a>.
             </p>
           </section>
