@@ -44,7 +44,7 @@ export default function AboutPage() {
               <li><strong>Professores</strong>, que ganham tempo com correção automática e geração de questões alinhadas à BNCC;</li>
               <li><strong>Alunos</strong>, que podem treinar com simulados de vestibulares reais — veja a lista completa de{' '}
                 <Link to="/universidades" className="text-amber-500 dark:text-teal-400 hover:underline">universidades e exames</Link>{' '}
-                que fazem parte do sistema — e receber explicações de IA sobre onde erraram.</li>
+                que fazem parte do sistema - e receber explicações de IA sobre onde erraram.</li>
             </ul>
           </section>
 
