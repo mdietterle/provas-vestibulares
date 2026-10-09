@@ -23,7 +23,7 @@ def _discover_routers() -> List[Tuple[str, APIRouter, str]]:
         router = getattr(module, "router", None)
         if router is None or not isinstance(router, APIRouter):
             continue
-        prefix = getattr(module, "ROUTER_PREFIX", "")
+        prefix = getattr(module, "ROUTER_PREFIX", "/api")
         results.append((module_info.name, router, prefix))
     return results
 
