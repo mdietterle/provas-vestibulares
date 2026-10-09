@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/uerj/como-estudar",
-  "seoTitle": "Como estudar para a UERJ: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a UERJ: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular Estadual UERJ 2027: Exame de Qualificação objetivo e Exame Discursivo com redação e duas provas específicas por curso, pesos, leituras indispensáveis e o que estudar em cada matéria.",
   "badge": "Vestibular Estadual UERJ 2027",
   "headline": "Como estudar para a UERJ: o que estudar em cada matéria",

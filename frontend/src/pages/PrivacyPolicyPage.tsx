@@ -10,8 +10,8 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#10131a] text-[#1E293B]">
       <Seo
-        title="Política de Privacidade — Cognition AI"
-        description="Como o Cognition AI coleta, usa e protege dados pessoais de professores, alunos e instituições de ensino na plataforma."
+        title="Política de Privacidade — Prova Online"
+        description="Como o Prova Online coleta, usa e protege dados pessoais de professores, alunos e instituições de ensino na plataforma."
         path="/privacidade"
       />
       <PublicHeader />

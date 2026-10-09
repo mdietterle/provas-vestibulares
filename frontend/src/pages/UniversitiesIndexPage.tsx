@@ -45,7 +45,7 @@ export default function UniversitiesIndexPage() {
   return (
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
-        title={`Vestibulares e universidades no Brasil (${UNIVERSITIES.length} instituições) — calendário e cursos | Cognition AI`}
+        title={`Vestibulares e universidades no Brasil (${UNIVERSITIES.length} instituições) — calendário e cursos | Prova Online`}
         description={`Guia com calendário, tipo de prova e cursos mais procurados de ${UNIVERSITIES.length} vestibulares brasileiros, incluindo ENEM, FUVEST, ITA, UFPR, UFRGS e mais.`}
         path="/universidades"
       />
@@ -61,7 +61,7 @@ export default function UniversitiesIndexPage() {
             </Link>
           </p>
           <p className="text-[#64748B] leading-relaxed mb-4">
-            O Cognition AI monta simulados a partir de provas e gabaritos publicados oficialmente pelas
+            O Prova Online monta simulados a partir de provas e gabaritos publicados oficialmente pelas
             próprias bancas organizadoras. Reunimos aqui informações sobre o tipo de vestibular, calendário
             típico e principais cursos de cada instituição cujo banco de questões fazemos parte do sistema.
           </p>

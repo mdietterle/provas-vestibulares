@@ -48,8 +48,8 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
-        title="Fale conosco — Cognition AI"
-        description="Entre em contato com o time do Cognition AI para dúvidas sobre a plataforma, suporte técnico ou parcerias com escolas."
+        title="Fale conosco — Prova Online"
+        description="Entre em contato com o time do Prova Online para dúvidas sobre a plataforma, suporte técnico ou parcerias com escolas."
         path="/contact"
       />
       <PublicHeader />

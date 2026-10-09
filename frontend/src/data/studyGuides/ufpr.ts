@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/ufpr/como-estudar",
-  "seoTitle": "Como estudar para a UFPR: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a UFPR: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular UFPR 2027, agora em fase única: 80 questões objetivas e prova discursiva no mesmo dia, pesos por curso, obras de Literatura e o que estudar em cada matéria, com sites gratuitos.",
   "badge": "Vestibular UFPR 2027 (Edital nº 50/2026-NC/PROGRAP)",
   "headline": "Como estudar para a UFPR: o que estudar em cada matéria",

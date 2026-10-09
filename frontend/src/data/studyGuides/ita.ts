@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/ita/como-estudar",
-  "seoTitle": "Como estudar para o ITA: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para o ITA: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular ITA 2027: 1ª fase com 48 questões objetivas, 2ª fase dissertativa com redação e Português, nota mínima, composição da média e o programa oficial de cada matéria, com sites gratuitos.",
   "badge": "Concurso de Admissão ao ITA 2027",
   "headline": "Como estudar para o ITA: o que estudar em cada matéria",

@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/fgv/como-estudar",
-  "seoTitle": "Como estudar para a FGV: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a FGV: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular FGV 2027: provas objetivas e discursivas por escola, pesos de cada prova, redação, exame oral de Direito SP, obras de Artes e Questões Contemporâneas e o que estudar em cada matéria.",
   "badge": "Vestibular FGV 1º/2027 (Edital Unificado)",
   "headline": "Como estudar para a FGV: o que estudar em cada matéria",

@@ -45,8 +45,8 @@ export default function HelpPage() {
   return (
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
-        title="Central de Ajuda — Cognition AI"
-        description="Tire dúvidas sobre como usar o Cognition AI: correção de provas com IA, simulados de vestibular, cadastro de turmas e planos."
+        title="Central de Ajuda — Prova Online"
+        description="Tire dúvidas sobre como usar o Prova Online: correção de provas com IA, simulados de vestibular, cadastro de turmas e planos."
         path="/ajuda"
       />
       <PublicHeader />
@@ -56,7 +56,7 @@ export default function HelpPage() {
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h1 className="font-display text-3xl font-bold text-[#1E293B] mb-3">Central de Ajuda</h1>
           <p className="text-[#64748B] leading-relaxed">
-            A Cognition AI é uma plataforma de avaliações que ajuda instituições de ensino a aplicar provas,
+            A Prova Online é uma plataforma de avaliações que ajuda instituições de ensino a aplicar provas,
             corrigir redações com apoio de Inteligência Artificial e preparar alunos para vestibulares como
             ENEM, UFPR e ACAFE através de simulados com questões reais. Reunimos aqui os manuais completos
             para cada perfil de usuário e as dúvidas mais frequentes.

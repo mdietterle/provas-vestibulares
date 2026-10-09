@@ -50,7 +50,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
     {
       q: `Como praticar simulados para a ${u.shortName}?`,
       a: u.hasRealImporter
-        ? `No Cognition AI você encontra questões e simulados baseados nas provas reais publicadas pela ${u.shortName}.`
+        ? `No Prova Online você encontra questões e simulados baseados nas provas reais publicadas pela ${u.shortName}.`
         : `Você pode realizar simulados no formato da ${u.shortName} gerados com suporte de IA segundo a matriz da instituição.`,
     },
   ]
@@ -78,7 +78,7 @@ export default function UniversityBasePage({ slug, customContent }: Props) {
   return (
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
-        title={`${u.shortName} (${u.fullName}) — Simulados, Provas e Informações | Cognition AI`}
+        title={`${u.shortName} (${u.fullName}) — Simulados, Provas e Informações | Prova Online`}
         description={`Guia completo da ${u.fullName} (${u.shortName}): vestibulares, cursos mais procurados, formato de provas e simulados.`}
         path={`/universidades/${u.slug}`}
         jsonLd={jsonLd}

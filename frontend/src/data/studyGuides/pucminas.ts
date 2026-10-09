@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/pucminas/como-estudar",
-  "seoTitle": "Como estudar para a PUC Minas: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a PUC Minas: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular PUC Minas com base no programa oficial de provas: formato, redação e o que estudar em Português, Matemática, Ciências da Natureza e Humanas.",
   "badge": "Vestibular PUC Minas 2027",
   "headline": "Como estudar para a PUC Minas: o que estudar em cada matéria",

@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/cebraspe/como-estudar",
-  "seoTitle": "Como estudar para a UnB (Cebraspe): o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a UnB (Cebraspe): o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular UnB (Cebraspe) com base no edital 2027: provas, tipos de item, pesos por grupo de cursos e o que estudar em cada matéria, com sites gratuitos.",
   "badge": "Vestibular UnB 2027 (Cebraspe)",
   "headline": "Como estudar para a UnB: o que estudar em cada matéria",

@@ -11,8 +11,8 @@ export default function TermsOfServicePage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#10131a] text-[#1E293B]">
       <Seo
-        title="Termos de Uso — Cognition AI"
-        description="Condições de uso da plataforma Cognition AI para escolas, professores e alunos: cadastro, assinatura, responsabilidades e limites de uso."
+        title="Termos de Uso — Prova Online"
+        description="Condições de uso da plataforma Prova Online para escolas, professores e alunos: cadastro, assinatura, responsabilidades e limites de uso."
         path="/termos"
       />
       <PublicHeader />
@@ -26,7 +26,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">1. Sobre estes termos</h2>
             <p>
-              Estes Termos de Uso regulam o acesso e uso da plataforma Cognition AI (site e aplicativo mobile),
+              Estes Termos de Uso regulam o acesso e uso da plataforma Prova Online (site e aplicativo mobile),
               que oferece serviços de avaliação educacional, correção automática de provas e redações com apoio
               de Inteligência Artificial, geração de questões e simulados de vestibular/ENEM. O serviço é
               mantido e operado de forma independente por seu responsável, atualmente sem constituição de
@@ -79,7 +79,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-lg font-bold mb-2 text-[#1E293B]">6. Propriedade intelectual</h2>
             <p>
-              O software, marca e identidade visual da Cognition AI pertencem ao seu responsável. Provas e
+              O software, marca e identidade visual da Prova Online pertencem ao seu responsável. Provas e
               questões de vestibulares públicos (como ENEM, ACAFE, UFPR, UFRGS, UFSC e PUCPR) são importadas de
               fontes oficiais para fins educacionais; os direitos sobre o conteúdo original dessas provas
               permanecem com as respectivas instituições organizadoras.

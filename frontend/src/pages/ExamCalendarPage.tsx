@@ -70,7 +70,7 @@ export default function ExamCalendarPage() {
   return (
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
-        title="Calendário de vestibulares 2027 — datas de inscrição e prova | Cognition AI"
+        title="Calendário de vestibulares 2027 — datas de inscrição e prova | Prova Online"
         description="Calendário atualizado com datas de inscrição e prova dos principais vestibulares brasileiros: ENEM, FUVEST, ITA, UFPR, UFRGS e outros."
         path="/calendario"
       />
@@ -81,7 +81,7 @@ export default function ExamCalendarPage() {
 
         <h1 className="font-display text-3xl font-bold text-[#1E293B] mt-2 mb-2">Calendário de vestibulares</h1>
         <p className="text-sm text-[#64748B] mb-4 max-w-2xl">
-          Próximas edições dos vestibulares cujas provas anteriores já estão no banco de questões do Cognition AI.
+          Próximas edições dos vestibulares cujas provas anteriores já estão no banco de questões do Prova Online.
         </p>
         <p className="text-sm text-[#64748B] mb-10 max-w-2xl leading-relaxed">
           Cada vestibular tem sua própria lógica de calendário: exames nacionais como o ENEM seguem um cronograma

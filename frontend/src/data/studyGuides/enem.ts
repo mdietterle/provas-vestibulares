@@ -3,7 +3,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   path: '/universidades/enem/como-estudar',
-  seoTitle: 'Como estudar para o ENEM: o que estudar em cada matéria | Cognition AI',
+  seoTitle: 'Como estudar para o ENEM: o que estudar em cada matéria | Prova Online',
   seoDescription:
     'Guia de estudos do ENEM: estrutura da prova, cronograma, como estudar sozinho, competências da redação e o que estudar em cada matéria, com sites gratuitos para cada conteúdo.',
   badge: 'Guia de estudos do ENEM',

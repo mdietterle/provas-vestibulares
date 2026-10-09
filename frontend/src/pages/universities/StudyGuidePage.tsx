@@ -109,7 +109,7 @@ export default function StudyGuidePage({ guide }: { guide: StudyGuide }) {
       headline: guide.headline,
       description: guide.seoDescription,
       inLanguage: 'pt-BR',
-      publisher: { '@type': 'Organization', name: 'Cognition AI' },
+      publisher: { '@type': 'Organization', name: 'Prova Online' },
     },
   ]
 

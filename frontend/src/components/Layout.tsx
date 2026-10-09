@@ -751,7 +751,7 @@ export default function Layout() {
               </svg>
             </div>
             <span className="font-display font-bold text-slate-600 dark:text-slate-400 text-sm tracking-tight hidden sm:block">
-              Cognition AI
+              Prova Online
             </span>
           </div>
         </div>

@@ -5,7 +5,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/unicamp/como-estudar",
-  "seoTitle": "Como estudar para a UNICAMP: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a UNICAMP: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular Unicamp 2027 com base no programa oficial da Comvest: fases, pesos, leituras obrigatórias e o que estudar em cada matéria, com links.",
   "badge": "Vestibular Unicamp 2027",
   "headline": "Como estudar para a UNICAMP: o que estudar em cada matéria",

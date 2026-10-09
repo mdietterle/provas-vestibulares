@@ -1,5 +1,5 @@
 // Conteúdo público sobre as instituições/exames cujo banco de provas o
-// Cognition AI importa (implementados de verdade ou ainda em desenvolvimento).
+// Prova Online importa (implementados de verdade ou ainda em desenvolvimento).
 // Pesquisado a partir das páginas oficiais de cada vestibular em 2026-08.
 // Datas de calendário são padrões recorrentes, não datas fixas de uma edição
 // específica — elas mudam a cada ano e devem ser confirmadas no edital vigente.

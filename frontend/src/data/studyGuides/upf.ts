@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/upf/como-estudar",
-  "seoTitle": "Como estudar para a UPF: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a UPF: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia da UPF: redação presencial, on-line ou nota do ENEM, e o programa oficial da prova de Medicina por matéria (Verão 2027), com sites para estudar.",
   "badge": "Vestibular de Verão UPF 2027 (Medicina e redação)",
   "headline": "Como estudar para a UPF: o que estudar em cada matéria",

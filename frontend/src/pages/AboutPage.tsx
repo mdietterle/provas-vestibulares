@@ -11,22 +11,22 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#10131a] text-slate-800">
       <Seo
-        title="Sobre o Cognition AI — plataforma de correção de provas com IA"
-        description="Conheça o Cognition AI: como a plataforma corrige provas e redações com apoio de Inteligência Artificial e monta simulados de vestibular a partir de provas oficiais."
+        title="Sobre o Prova Online — plataforma de correção de provas com IA"
+        description="Conheça o Prova Online: como a plataforma corrige provas e redações com apoio de Inteligência Artificial e monta simulados de vestibular a partir de provas oficiais."
         path="/sobre"
       />
       <PublicHeader />
       <div className="max-w-3xl mx-auto px-6 py-16">
         <Breadcrumb items={[{ label: 'Início', to: '/' }, { label: 'Sobre nós' }]} />
 
-        <h1 className="text-3xl font-bold mt-2 mb-2">Sobre o Cognition AI</h1>
+        <h1 className="text-3xl font-bold mt-2 mb-2">Sobre o Prova Online</h1>
         <p className="text-sm text-[#64748B] mb-10">Uma plataforma de avaliação educacional com apoio de Inteligência Artificial</p>
 
         <div className="space-y-8 text-sm leading-relaxed text-[#333] dark:text-[#e1e2ec]">
           <section>
             <h2 className="text-lg font-bold mb-2 text-slate-800">O que fazemos</h2>
             <p>
-              O Cognition AI nasceu de um problema concreto do dia a dia escolar: professores gastam horas
+              O Prova Online nasceu de um problema concreto do dia a dia escolar: professores gastam horas
               corrigindo provas e redações manualmente, tempo que poderia ser usado para dar atenção
               individualizada aos alunos. A plataforma automatiza a correção de provas objetivas e
               dissertativas, a geração de bancos de questões e a aplicação de simulados de vestibular, usando
@@ -37,7 +37,7 @@ export default function AboutPage() {
           <section>
             <h2 className="text-lg font-bold mb-2 text-slate-800">Para quem é</h2>
             <p>
-              Construímos o Cognition AI para três públicos que trabalham juntos no dia a dia escolar:
+              Construímos o Prova Online para três públicos que trabalham juntos no dia a dia escolar:
             </p>
             <ul className="list-disc pl-5 space-y-1 mt-2">
               <li><strong>Instituições de ensino</strong>, que precisam de um painel centralizado para gerenciar turmas, provas e desempenho;</li>
@@ -61,7 +61,7 @@ export default function AboutPage() {
           <section>
             <h2 className="text-lg font-bold mb-2 text-slate-800">Quem mantém o projeto</h2>
             <p>
-              O Cognition AI é desenvolvido e mantido de forma independente. Ainda estamos em fase de
+              O Prova Online é desenvolvido e mantido de forma independente. Ainda estamos em fase de
               crescimento e evoluindo a plataforma com frequência — se você notar algo que pode melhorar, ou
               tiver sugestões, adoraríamos ouvir através da nossa{' '}
               <Link to="/contact" className="text-slate-500 dark:text-slate-400 hover:underline">página de contato</Link>.

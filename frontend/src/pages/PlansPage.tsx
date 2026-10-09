@@ -286,8 +286,8 @@ export default function PlansPage() {
   return (
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
-        title="Planos e Preços — Cognition AI"
-        description="Conheça os planos do Cognition AI para escolas: correção de provas e redações com IA, simulados de vestibular e gestão de turmas."
+        title="Planos e Preços — Prova Online"
+        description="Conheça os planos do Prova Online para escolas: correção de provas e redações com IA, simulados de vestibular e gestão de turmas."
         path="/plans"
       />
       <PublicHeader />

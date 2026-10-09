@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/unesp/como-estudar",
-  "seoTitle": "Como estudar para a Unesp: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a Unesp: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular Unesp 2027: 90 questões objetivas na 1ª fase, 36 discursivas e redação na 2ª, como a nota é calculada, critérios da redação da Vunesp e o que estudar em cada matéria, com sites gratuitos.",
   "badge": "Vestibular Unesp 2027 (Resolução Unesp nº 26/2026)",
   "headline": "Como estudar para a Unesp: o que estudar em cada matéria",

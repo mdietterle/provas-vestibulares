@@ -116,7 +116,7 @@ export default function UpfPage() {
           Datas, taxas e vagas mudam a cada edição — confirme sempre em{' '}
           <a href="https://www.upf.br/ingresso" target="_blank" rel="noreferrer" className="underline font-semibold">
             upf.br/ingresso
-          </a>. O banco de simulados do Cognition AI já traz questões reais de edições anteriores do vestibular
+          </a>. O banco de simulados do Prova Online já traz questões reais de edições anteriores do vestibular
           objetivo da UPF (anos em que a prova ainda seguia o formato de múltipla escolha).
         </p>
       </div>

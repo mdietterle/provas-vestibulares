@@ -261,7 +261,7 @@ export default function LoginPage() {
             Pronto para transformar sua escola?
           </h2>
           <p className="text-[#b6c4ff] mb-8">
-            Muitas <strong className="text-white">instituições</strong> já utilizam o Cognition AI para potencializar o ensino e os resultados dos alunos.
+            Muitas <strong className="text-white">instituições</strong> já utilizam o Prova Online para potencializar o ensino e os resultados dos alunos.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/quote" className="px-6 py-3 rounded-lg text-sm font-semibold text-[#0d9488] bg-white hover:bg-[#F4F6F9] dark:hover:bg-[#1e2d4a] transition-colors">

@@ -60,7 +60,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans overflow-x-hidden">
       <Seo
-        title="Cognition AI — Provas, Redações e Simulados corrigidos por IA"
+        title="Prova Online — Provas, Redações e Simulados corrigidos por IA"
         description="Plataforma de avaliações para escolas: aplique provas, corrija redações com apoio de Inteligência Artificial e prepare seus alunos para o ENEM, UFPR e ACAFE com simulados de vestibular."
         path="/"
       />

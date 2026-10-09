@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/ufrn/como-estudar",
-  "seoTitle": "Como entrar na UFRN: SiSU, Comperve e formas de ingresso | Cognition AI",
+  "seoTitle": "Como entrar na UFRN: SiSU, Comperve e formas de ingresso | Prova Online",
   "seoDescription": "Como ingressar na UFRN: SiSU com a nota do ENEM, vagas remanescentes e residuais da Comperve, testes de Música, Letras-Libras e Dança, cotas e plano de estudo.",
   "badge": "SiSU, Comperve e ingresso alternativo",
   "headline": "Como entrar na UFRN: SiSU, Comperve e formas de ingresso",

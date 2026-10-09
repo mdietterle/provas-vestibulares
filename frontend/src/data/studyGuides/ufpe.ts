@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/ufpe/como-estudar",
-  "seoTitle": "Como entrar na UFPE: SiSU, pesos por curso e como se preparar | Cognition AI",
+  "seoTitle": "Como entrar na UFPE: SiSU, pesos por curso e como se preparar | Prova Online",
   "seoDescription": "Como ingressar na UFPE: SiSU com pesos e notas mínimas por curso, testes próprios de Música, Dança e Letras-Libras, transferência, reintegração e plano de estudo.",
   "badge": "SiSU, pesos por curso e ingresso alternativo",
   "headline": "Como entrar na UFPE: SiSU, pesos por curso e como se preparar",

@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   path: '/universidades/ufba/como-estudar',
-  seoTitle: 'Como entrar na UFBA: SiSU, pesos por curso e como se preparar | Cognition AI',
+  seoTitle: 'Como entrar na UFBA: SiSU, pesos por curso e como se preparar | Prova Online',
   seoDescription:
     'Guia para entrar na UFBA: SiSU com a nota do ENEM, pesos e notas mínimas por curso no Termo de Adesão 2026, vagas residuais, transferência, Música e Teatro e como distribuir o estudo.',
   badge: 'Ingresso pelo SiSU (nota do ENEM)',

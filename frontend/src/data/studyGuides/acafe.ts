@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/acafe/como-estudar",
-  "seoTitle": "Como estudar para o Vestibular ACAFE: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para o Vestibular ACAFE: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia de estudos para o Vestibular de Medicina ACAFE: 63 questões objetivas e redação, peso de cada disciplina, critérios da redação, obras literárias e o que estudar em cada matéria, com sites gratuitos.",
   "badge": "Vestibular de Medicina ACAFE Verão 2027",
   "headline": "Como estudar para o Vestibular ACAFE: o que estudar em cada matéria",

@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/ufsm/como-estudar",
-  "seoTitle": "Como estudar para a UFSM: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a UFSM: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular UFSM: estrutura das 3 provas de 40 questões e da redação, áreas cobradas e o que estudar em cada matéria, com sites gratuitos.",
   "badge": "Vestibular UFSM 2026 (edição mais recente com manual publicado)",
   "headline": "Como estudar para a UFSM: o que estudar em cada matéria",

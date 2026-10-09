@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/ufrgs/como-estudar",
-  "seoTitle": "Como estudar para a UFRGS: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a UFRGS: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular UFRGS 2027: 9 provas de 15 questões e redação, regras de eliminação, peso por curso, leituras obrigatórias de Literatura e o que estudar em cada matéria, com sites gratuitos.",
   "badge": "Vestibular UFRGS 2027 (Edital COPERSE nº 16/2026)",
   "headline": "Como estudar para a UFRGS: o que estudar em cada matéria",

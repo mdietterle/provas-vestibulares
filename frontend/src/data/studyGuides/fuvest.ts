@@ -22,7 +22,7 @@ export const guide: StudyGuide = {
       "label": "Como estudar"
     }
   ],
-  "seoTitle": "Como estudar para a FUVEST 2027: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a FUVEST 2027: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia da FUVEST 2027 (USP) baseado no programa oficial: estrutura das duas fases, leituras obrigatórias e o que estudar em cada matéria, com sites gratuitos.",
   "badge": "Vestibular FUVEST 2027 (USP)",
   "headline": "Como estudar para a FUVEST: o que estudar em cada matéria",

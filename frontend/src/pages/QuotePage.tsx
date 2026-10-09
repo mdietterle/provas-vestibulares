@@ -66,8 +66,8 @@ export default function QuotePage() {
   return (
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
       <Seo
-        title="Solicitar orçamento — Cognition AI"
-        description="Peça um orçamento personalizado do Cognition AI para sua escola: correção de provas e redações com IA e simulados de vestibular."
+        title="Solicitar orçamento — Prova Online"
+        description="Peça um orçamento personalizado do Prova Online para sua escola: correção de provas e redações com IA e simulados de vestibular."
         path="/quote"
       />
       <PublicHeader />
@@ -280,7 +280,7 @@ export default function QuotePage() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <Label>Como conheceu o Cognition AI?</Label>
+                  <Label>Como conheceu o Prova Online?</Label>
                   <Select id="how" value={form.how} onChange={set('how')}>
                     <option value="">Selecione...</option>
                     <option>Indicação de colega</option>

@@ -1,4 +1,4 @@
-// Estimativa de calendário dos vestibulares que o Cognition AI já importa de
+// Estimativa de calendário dos vestibulares que o Prova Online já importa de
 // verdade (ver `REAL_IMPORTER_SLUGS` em `universities.ts`), usada só pra
 // mostrar QUANDO a próxima edição costuma acontecer, de forma aproximada.
 //

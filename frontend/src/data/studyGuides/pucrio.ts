@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/pucrio/como-estudar",
-  "seoTitle": "Como estudar para a PUC-Rio: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a PUC-Rio: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular PUC-Rio 2027 baseado no Manual do Candidato: provas por grupo de curso e o que estudar em cada matéria, com sites gratuitos.",
   "badge": "Vestibular PUC-Rio 2027",
   "headline": "Como estudar para a PUC-Rio: o que estudar em cada matéria",

@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/pucpr/como-estudar",
-  "seoTitle": "Como estudar para a PUCPR: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a PUCPR: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular PUCPR: prova de 40 questões e redação, pontuação por disciplina, obras de literatura e filosofia e o que estudar em cada matéria.",
   "badge": "Vestibular PUCPR presencial 2026/2027",
   "headline": "Como estudar para a PUCPR: o que estudar em cada matéria",

@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/pucrs/como-estudar",
-  "seoTitle": "Como estudar para a PUCRS: redação e o programa de Medicina | Cognition AI",
+  "seoTitle": "Como estudar para a PUCRS: redação e o programa de Medicina | Prova Online",
   "seoDescription": "Guia do Vestibular de Verão 2027 da PUCRS: redação presencial nos demais cursos, prova de 70 questões e redação em Medicina, nota do ENEM, pesos e o que estudar em cada matéria, com sites gratuitos.",
   "badge": "Vestibular de Verão 2027 da PUCRS (prova em 5 de dezembro de 2026)",
   "headline": "Como estudar para a PUCRS: redação e o programa de Medicina",

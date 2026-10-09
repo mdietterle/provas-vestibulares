@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   path: '/universidades/ufc/como-estudar',
-  seoTitle: 'Como entrar na UFC: SiSU, média mínima de 450 e como se preparar | Cognition AI',
+  seoTitle: 'Como entrar na UFC: SiSU, média mínima de 450 e como se preparar | Prova Online',
   seoDescription:
     'Guia para entrar na UFC: SiSU com a nota do ENEM, média mínima de 450, pesos iguais em todos os cursos, Sisu+, transferência, mudança de curso e como organizar o estudo.',
   badge: 'Ingresso pelo SiSU (nota do ENEM)',

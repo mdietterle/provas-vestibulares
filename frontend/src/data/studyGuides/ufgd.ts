@@ -5,7 +5,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/ufgd/como-estudar",
-  "seoTitle": "Como estudar para a UFGD: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a UFGD: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia do Vestibular UFGD 2027 baseado no edital de conteúdos oficial: estrutura da prova, obras indicadas e o que estudar em cada matéria, com links gratuitos.",
   "badge": "Vestibular UFGD 2027",
   "headline": "Como estudar para a UFGD: o que estudar em cada matéria",

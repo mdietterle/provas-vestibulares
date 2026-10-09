@@ -2,7 +2,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   "path": "/universidades/ulbra/como-estudar",
-  "seoTitle": "Como estudar para a ULBRA: o que estudar em cada matéria | Cognition AI",
+  "seoTitle": "Como estudar para a ULBRA: o que estudar em cada matéria | Prova Online",
   "seoDescription": "Guia de estudos para o vestibular da ULBRA: redação online de 1 hora, ingresso pela nota da redação do ENEM, regras da prova online e revisão opcional por área, com sites gratuitos.",
   "badge": "Vestibular ULBRA 2027/1 (redação online)",
   "headline": "Como estudar para a ULBRA: o que estudar em cada matéria",

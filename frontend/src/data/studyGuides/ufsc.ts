@@ -3,7 +3,7 @@ import type { StudyGuide } from '../studyGuideTypes'
 
 export const guide: StudyGuide = {
   path: '/universidades/ufsc/como-estudar',
-  seoTitle: 'Como estudar para a UFSC 2027: o que estudar em cada matéria | Cognition AI',
+  seoTitle: 'Como estudar para a UFSC 2027: o que estudar em cada matéria | Prova Online',
   seoDescription:
     'Guia do Vestibular UFSC/IFC 2027 baseado no programa oficial da COPERVE: o que estudar e como estudar em Matemática, Física, Química, Biologia, Português, História, Geografia e mais, com sites para cada conteúdo.',
   badge: 'Vestibular UFSC/IFC 2027',
