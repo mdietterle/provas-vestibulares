@@ -252,7 +252,7 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
     Língua Estrangeira, Espanhol + Inglês), ambas as ocorrências são
     gravadas como questões separadas, ambas usando a mesma letra do
     gabarito para aquele número — é assim que a banca projeta a prova."""
-    from app.models import VestibularQuestion
+    from app.vestibular.models import VestibularQuestion
     already = db.query(VestibularQuestion).filter(
         VestibularQuestion.exam_type == "ufu",
         VestibularQuestion.exam_name == exam_name,

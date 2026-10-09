@@ -168,7 +168,7 @@ def import_fepese_cargo(
     visível na página `?go=provas&edital=N` de cada concurso."""
     import tempfile
 
-    from app.models import VestibularQuestion
+    from app.vestibular.models import VestibularQuestion
     already = (
         db.query(VestibularQuestion)
         .filter(

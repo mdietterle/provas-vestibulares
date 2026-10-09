@@ -19,7 +19,9 @@ from typing import Any, Callable, Dict, List, Optional
 
 from sqlalchemy.orm import Session
 
-from app.models import VestibularQuestion, VestibularQuestionOption, VestibularQuestionImage
+from app.vestibular.models import VestibularQuestion, VestibularQuestionOption, VestibularQuestionImage
+from app.vestibular.models import VestibularQuestion, VestibularQuestionOption
+from app.models import Image
 from app.services.progress import update_task_progress, complete_task, fail_task
 from app.services.r2_storage import upload_image
 

@@ -538,7 +538,7 @@ def _persist_segment(db, exam_name: str, year: int, questions: list[dict], gabar
     edições já importadas (mesmo exam_name) e questões sem gabarito
     conhecido (não encontrado na tabela de respostas)."""
     from app.services.import_batch import save_vestibular_question
-    from app.models import VestibularQuestion
+    from app.vestibular.models import VestibularQuestion
     already = db.query(VestibularQuestion).filter(
         VestibularQuestion.exam_type == "puccampinas",
         VestibularQuestion.exam_name == exam_name,

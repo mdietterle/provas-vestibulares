@@ -197,7 +197,7 @@ def import_ufpr_year(db, year: int, pdf_url: str) -> dict:
     import tempfile
 
     exam_name = f"UFPR {year}"
-    from app.models import VestibularQuestion
+    from app.vestibular.models import VestibularQuestion
     already = db.query(VestibularQuestion).filter(
         VestibularQuestion.exam_type == "ufpr",
         VestibularQuestion.exam_name == exam_name,

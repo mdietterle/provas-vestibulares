@@ -423,7 +423,7 @@ def _persist_booklet(db, exam_name: str, year: int, questions: list[dict], answe
     extraída)."""
     from app.services.import_batch import save_vestibular_question
 
-    from app.models import VestibularQuestion
+    from app.vestibular.models import VestibularQuestion
     already = db.query(VestibularQuestion).filter(
         VestibularQuestion.exam_type == "pucminas",
         VestibularQuestion.exam_name == exam_name,

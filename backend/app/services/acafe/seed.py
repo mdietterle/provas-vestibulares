@@ -797,7 +797,7 @@ def import_acafe_edition(db: Session, year: int, period: str, edition: dict) -> 
     if label:
         exam_name += f" ({label})"
 
-    from app.models import VestibularQuestion
+    from app.vestibular.models import VestibularQuestion
     already = db.query(VestibularQuestion).filter(
         VestibularQuestion.exam_type == "acafe",
         VestibularQuestion.exam_name == exam_name,
