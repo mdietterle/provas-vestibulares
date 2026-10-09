@@ -7,7 +7,7 @@ from app.deps import require_professor
 from app.database import Base
 from app.models import User
 
-router = APIRouter(prefix="/api/question-banks", tags=["question-banks"])
+router = APIRouter(prefix="/question-banks", tags=["question-banks"])
 
 # Universidades com uma tela dedicada de banco de questões no ambiente do professor
 # (rota do frontend + endpoint de importação). Mantido em código pois cada uma exige

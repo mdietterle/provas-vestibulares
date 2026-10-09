@@ -13,7 +13,7 @@ from app.deps import require_owner
 from app.models import QuestionReport, User
 from app.routers.simulados import EXAM_TYPE_MODELS, REPORT_REASONS, _option_letter
 
-router = APIRouter(prefix="/api/owner/question-reports", tags=["owner"])
+router = APIRouter(prefix="/owner/question-reports", tags=["owner"])
 
 
 def _get_question(exam_type: str, question_id: int, db: Session):

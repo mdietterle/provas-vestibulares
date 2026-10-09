@@ -13,7 +13,7 @@ from app.models import Institution, User, UserRole
 from app.services.billing import plan_price
 from app.services.subjects import seed_default_subjects
 
-router = APIRouter(prefix="/api/owner", tags=["owner"])
+router = APIRouter(prefix="/owner", tags=["owner"])
 
 
 class SchoolCreate(BaseModel):
