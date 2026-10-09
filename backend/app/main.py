@@ -4,9 +4,7 @@ import time
 
 import sentry_sdk
 from fastapi import FastAPI
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import Response
+from fastapi.middleware.cors import CORSMiddleware
 import re
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
@@ -46,38 +44,22 @@ if _IS_PRODUCTION_LIKE and settings.SECRET_KEY == "change-this-secret-key-in-pro
 
 app = FastAPI(title="Sistema de Provas", version="1.0.0")
 
-_VERCEL_PATTERN = re.compile(r"^https://[a-z0-9-]+\.vercel\.app$")
-_LOCAL_ORIGINS = {
+_VERCEL_REGEX = r"^https://[a-z0-9-]+\.vercel\.app$"
+_LOCAL_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
-}
+]
 _extra = os.getenv("ALLOWED_ORIGINS", "")
-_EXTRA_ORIGINS = {o.strip() for o in _extra.split(",") if o.strip()}
-
-
-class DynamicCORSMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        origin = request.headers.get("origin", "")
-        allowed = (
-            origin in _LOCAL_ORIGINS
-            or origin in _EXTRA_ORIGINS
-            or bool(_VERCEL_PATTERN.match(origin))
-        )
-        if request.method == "OPTIONS":
-            response = Response(status_code=204)
-        else:
-            response = await call_next(request)
-        if allowed and origin:
-            response.headers["Access-Control-Allow-Origin"] = origin
-            response.headers["Access-Control-Allow-Credentials"] = "true"
-            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-            response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-Requested-With"
-            response.headers["Vary"] = "Origin"
-        return response
-
-
-app.add_middleware(DynamicCORSMiddleware)
+_EXTRA_ORIGINS = [o.strip() for o in _extra.split(",") if o.strip()]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_LOCAL_ORIGINS + _EXTRA_ORIGINS,
+    allow_origin_regex=_VERCEL_REGEX,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(RequestContextMiddleware)
 app.add_middleware(TenantRateLimitMiddleware)
 
