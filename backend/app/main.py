@@ -50,6 +50,11 @@ _default_origins = [
     "https://cognition-ai.vercel.app",
     "https://cognition-ai-martimdietterle-4980s-projects.vercel.app",
     "https://frontend-cyan-three-63.vercel.app",
+    "https://provas-vestibulares.vercel.app",
+    "https://provas-vestibulares-martimdietterle-4980s-projects.vercel.app",
+    "https://provas-vestibulares-git-master-martimdietterle-4980s-projects.vercel.app",
+    "https://prova-online.vercel.app",
+    "https://prova-online-martimdietterle-4980s-projects.vercel.app",
 ]
 _extra = os.getenv("ALLOWED_ORIGINS", "")
 _origins = _default_origins + [o.strip() for o in _extra.split(",") if o.strip()]
