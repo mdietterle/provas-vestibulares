@@ -173,8 +173,8 @@ def import_fepese_cargo(
         db.query(VestibularQuestion)
         .filter(
             VestibularQuestion.exam_type == "concurso_fepese",
-            VestibularQuestion.metadata["concurso_slug"].astext == concurso_slug,
-            VestibularQuestion.metadata["cargo_code"].astext == cargo_code,
+            VestibularQuestion.extra_data["concurso_slug"].astext == concurso_slug,
+            VestibularQuestion.extra_data["cargo_code"].astext == cargo_code,
         )
         .count()
     )

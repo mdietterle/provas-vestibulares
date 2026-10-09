@@ -25,8 +25,8 @@ def to_legacy_dict(vq: VestibularQuestion) -> Dict[str, Any]:
         "correct_option": vq.correct_option,
     }
     # Expand JSONB metadata into top-level keys
-    if vq.metadata_:
-        for k, v in vq.metadata_.items():
+    if vq.extra_data:
+        for k, v in vq.extra_data.items():
             out[k] = v
     # Options
     out["options"] = [

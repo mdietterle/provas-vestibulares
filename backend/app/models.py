@@ -2130,7 +2130,7 @@ class VestibularQuestion(Base):
     answer: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     is_annulled: Mapped[bool] = mapped_column(Boolean, default=False)
     correct_option: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
-    metadata: Mapped[dict] = mapped_column(JSONB, nullable=False, server_default="{}")
+    extra_data: Mapped[dict] = mapped_column("metadata", JSONB, nullable=False, server_default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     options: Mapped[List["VestibularQuestionOption"]] = relationship(
