@@ -13,7 +13,6 @@ from app.models import (
     QuestionType,
     Subject,
     ItaQuestion,
-    VestibularQuestion,
     User,
 )
 from app.schemas import QuestionOut, ItaImportRequest, ItaQuestionOut

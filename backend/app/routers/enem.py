@@ -16,7 +16,6 @@ from app.models import (
     QuestionType,
     Subject,
     User,
-    VestibularQuestion,
 )
 
 from app.schemas import EnemImportRequest, EnemQuestionOut, QuestionOut

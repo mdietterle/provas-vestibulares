@@ -14,7 +14,6 @@ from app.models import (
     UfprQuestion,
     UfprQuestionOption,
     User,
-    VestibularQuestion,
 )
 
 from app.schemas import QuestionOut, UfprImportRequest, UfprQuestionOut

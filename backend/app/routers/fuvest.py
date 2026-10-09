@@ -12,7 +12,6 @@ from app.models import (
     QuestionOption,
     QuestionType,
     Subject,
-    VestibularQuestion,
     User,
 )
 from app.schemas import FuvestImportRequest, FuvestQuestionOut, QuestionOut

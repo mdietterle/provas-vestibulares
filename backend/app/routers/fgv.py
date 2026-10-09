@@ -14,7 +14,6 @@ from app.models import (
     QuestionType,
     Subject,
     FgvQuestion,
-    VestibularQuestion,
     User,
 )
 from app.schemas import QuestionOut, FgvImportRequest, FgvQuestionOut

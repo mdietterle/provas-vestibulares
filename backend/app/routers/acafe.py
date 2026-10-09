@@ -14,7 +14,6 @@ from app.models import (
     QuestionType,
     Subject,
     User,
-    VestibularQuestion,
 )
 
 from app.schemas import AcafeImportRequest, AcafeQuestionOut, AcafeUrlImportRequest, QuestionOut

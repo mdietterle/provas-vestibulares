@@ -14,7 +14,6 @@ from app.models import (
     QuestionType,
     Subject,
     UnicampQuestion,
-    VestibularQuestion,
     User,
 )
 from app.schemas import QuestionOut, UnicampImportRequest, UnicampQuestionOut
