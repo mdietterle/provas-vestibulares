@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.deps import require_professor
-from app.models import Base, User
+from app.database import Base
+from app.models import User
 
 router = APIRouter(prefix="/api/question-banks", tags=["question-banks"])
 

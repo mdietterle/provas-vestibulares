@@ -535,7 +535,7 @@ def delete_questions(
     _: User = Depends(require_owner),
 ):
     from fastapi import HTTPException
-    from app.models import Base
+    from app.database import Base
     from sqlalchemy import select
     
     # Prefix tables
@@ -585,7 +585,8 @@ def get_detailed_stats(
     db: Session = Depends(get_db),
     _: User = Depends(require_owner),
 ):
-    from app.models import Base, Simulado, User, Institution, Subject
+    from app.database import Base
+    from app.models import Simulado, User, Institution, Subject
     from sqlalchemy import func, select
 
     # 1. Question Stats

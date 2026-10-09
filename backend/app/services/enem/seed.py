@@ -8,7 +8,7 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal, engine
-from app.models import Base
+from app.database import Base
 from app.services.import_batch import save_vestibular_question
 
 ENEM_DIR = Path(__file__).parent.parent.parent.parent / "provas" / "enem"
