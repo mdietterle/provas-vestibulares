@@ -40,12 +40,14 @@ def save_vestibular_question(
     is_annulled: bool = False,
     correct_option: Optional[str] = None,
     metadata: Optional[Dict[str, Any]] = None,
+    force_reimport: bool = False,
 ) -> tuple[Optional[VestibularQuestion], bool]:
     """Unified output adapter for all vestibular importers.
 
     Writes to `vestibular_questions` + options/images tables. Returns
     (question, created). If question already exists (same exam_type +
-    exam_name + number), returns (existing, False) without modifying data.
+    exam_name + number) and force_reimport=False, returns (existing, False) without modifying data.
+    If force_reimport=True, deletes existing question and reimports with new data/images.
 
     Images are uploaded to R2 automatically; only URLs are stored in DB.
     Pass `image_base64` for the main question image or `images` list for
@@ -60,8 +62,12 @@ def save_vestibular_question(
         .filter_by(exam_type=exam_type, exam_name=exam_name, number=number)
         .first()
     )
-    if existing:
+    if existing and not force_reimport:
         return existing, False
+    if existing and force_reimport:
+        # Delete existing question and its related data
+        db.delete(existing)
+        db.flush()
 
     # Upload main question image to R2 if provided
     image_url = None
