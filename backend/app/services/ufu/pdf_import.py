@@ -58,6 +58,73 @@ import requests
 from app.services.import_batch import save_vestibular_question
 from app.services.progress import update_task_progress, complete_task, fail_task
 
+def _xref_to_dataurl(doc, xref: int) -> str | None:
+    """Converte imagem embutida (xref) em data-URL base64 PNG."""
+    import base64
+    try:
+        pix = doc.extract_image(xref)
+        if not pix or not pix.get("image"):
+            return None
+        ext = pix.get("ext", "png")
+        data = pix["image"]
+        mime = f"image/{ext}" if ext != "jpg" else "image/jpeg"
+        return f"data:{mime};base64," + base64.b64encode(data).decode()
+    except Exception:
+        return None
+
+def _page_image_positions(page) -> list[tuple[float, int]]:
+    """Retorna [(y_topo, xref)] das imagens reais da página, filtrando artefatos pequenos."""
+    positions = []
+    for im in page.get_image_info(xrefs=True):
+        xref = im.get("xref")
+        if not xref:
+            continue
+        bbox = im.get("bbox", (0, 0, 0, 0))
+        width = bbox[2] - bbox[0]
+        height = bbox[3] - bbox[1]
+        area = width * height
+        if area < 100:  # Filtra imagens decorativas/artefatos
+            continue
+        y_top = bbox[1]
+        positions.append((y_top, xref))
+    return sorted(positions, key=lambda x: x[0])
+
+def _assign_images_by_reading_order(doc, started_page: int) -> dict[tuple[int, str | None], list[str]]:
+    """Associa imagens às questões por ordem de leitura (página, y)."""
+    import re as _re
+    images: dict[tuple[int, str | None], list[str]] = {}
+    cur_key: tuple[int, str | None] | None = None
+
+    for pno in range(started_page, doc.page_count):
+        page = doc[pno]
+        text = page.get_text()
+        # Detecta marcadores de questão "NN)"
+        q_markers = list(_re.finditer(r"(?m)^\s*(\d{1,2})\)\s", text))
+
+        # Eventos: (y, tipo, dados)
+        events = []
+        for m in q_markers:
+            # Estima y do marcador
+            lines = text[:m.start()].split("\n")
+            y_est = len(lines) * 12  # Aproximação
+            events.append((y_est, "question", int(m.group(1))))
+
+        for y, xref in _page_image_positions(page):
+            events.append((y, "image", xref))
+
+        events.sort(key=lambda x: x[0])
+
+        for y, etype, data in events:
+            if etype == "question":
+                cur_key = (data, None)  # language=None por enquanto
+            elif etype == "image" and cur_key:
+                data_url = _xref_to_dataurl(doc, xref)
+                if data_url:
+                    images.setdefault(cur_key, []).append(data_url)
+
+    return images
+
+
 _LISTAR_URL = "https://www.portalselecao.ufu.br/servicos/Edital/listar/vestibular"
 _CRONOGRAMA_URL = "https://www.portalselecao.ufu.br/servicos/Edital/cronograma/{id}"
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
