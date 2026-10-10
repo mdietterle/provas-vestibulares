@@ -631,10 +631,6 @@ class SimuladoQuestion(Base):
 
     simulado: Mapped["Simulado"] = relationship(back_populates="questions")
     vestibular_question: Mapped[Optional["VestibularQuestion"]] = relationship()
-    puccampinas_question: Mapped[Optional["PuccampinasQuestion"]] = relationship()
-    unimontes_question: Mapped[Optional["UnimontesQuestion"]] = relationship()
-    unicentro_question: Mapped[Optional["UnicentroQuestion"]] = relationship()
-    unaerp_question: Mapped[Optional["UnaerpQuestion"]] = relationship()
 
 
 # ── Denúncia de questão problemática ──────────────────────────────────────────
