@@ -83,14 +83,20 @@ def save_vestibular_question(
         number=number,
         statement=statement,
         html_statement=html_statement,
-        image_url=image_url,
         answer=answer,
         is_annulled=is_annulled,
         correct_option=correct_option,
-        metadata=metadata or {},
+        metadata_=metadata or {},
     )
     db.add(vq)
     db.flush()
+    # Main question image goes to images table, not model field
+    if image_url:
+        db.add(VestibularQuestionImage(
+            question_id=vq.id,
+            image_url=image_url,
+            order=0,
+        ))
 
     for opt in options:
         db.add(VestibularQuestionOption(question_id=vq.id, **opt))
