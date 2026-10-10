@@ -589,63 +589,27 @@ def get_detailed_stats(
     from app.models import Simulado, User, Institution, Subject
     from sqlalchemy import func, select
 
-    # 1. Question Stats
-    question_mappers = [
-        m for m in Base.registry.mappers 
-        if m.class_.__name__.endswith('Question') 
-        and m.class_.__name__ not in ('Question', 'SimuladoQuestion', 'ExamQuestion')
-    ]
-    
+    # 1. Question Stats - from unified vestibular_questions table
+    from app.vestibular.models import VestibularQuestion
+
+    question_stats_rows = db.execute(
+        select(
+            VestibularQuestion.exam_type,
+            VestibularQuestion.year,
+            func.count(VestibularQuestion.id).label("count")
+        )
+        .group_by(VestibularQuestion.exam_type, VestibularQuestion.year)
+        .order_by(VestibularQuestion.exam_type, VestibularQuestion.year)
+    ).all()
+
     question_stats = []
-    
-    for mapper in question_mappers:
-        cls = mapper.class_
-        if not hasattr(cls, 'year'):
-            continue
-
-        university = cls.__name__.replace('Question', '')
-        has_area = hasattr(cls, 'area')
-        has_subject_id = hasattr(cls, 'subject_id')
-
-        try:
-            if has_area:
-                query = select(cls.year, cls.area, func.count(cls.id)).group_by(cls.year, cls.area)
-                rows = db.execute(query).all()
-                for year, area, count in rows:
-                    question_stats.append({
-                        "university": university,
-                        "year": year,
-                        "subject": area or "N/A",
-                        "count": count
-                    })
-            elif has_subject_id:
-                query = select(cls.year, Subject.name, func.count(cls.id)).join(Subject, cls.subject_id == Subject.id).group_by(cls.year, Subject.name)
-                rows = db.execute(query).all()
-                for year, subj_name, count in rows:
-                    question_stats.append({
-                        "university": university,
-                        "year": year,
-                        "subject": subj_name or "N/A",
-                        "count": count
-                    })
-            else:
-                query = select(cls.year, func.count(cls.id)).group_by(cls.year)
-                rows = db.execute(query).all()
-                for year, count in rows:
-                    question_stats.append({
-                        "university": university,
-                        "year": year,
-                        "subject": "N/A",
-                        "count": count
-                    })
-        except Exception:
-            # Um modelo com coluna nova sem migração aplicada (ex.: coluna
-            # existe na classe mas não na tabela real) não pode derrubar a
-            # página de estatísticas inteira — melhor pular essa universidade
-            # e seguir com as demais do que dar 500 em tudo.
-            db.rollback()
-            continue
-
+    for exam_type, year, count in question_stats_rows:
+        question_stats.append({
+            "university": exam_type.upper(),
+            "year": year,
+            "subject": "N/A",
+            "count": count
+        })
     # 2. Simulados por etapa
     simulados_stages = db.execute(select(Simulado.status, func.count(Simulado.id)).group_by(Simulado.status)).all()
     stage_stats = [{"status": s, "count": c} for s, c in simulados_stages]
