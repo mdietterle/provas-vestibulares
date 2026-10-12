@@ -762,7 +762,9 @@ def import_enem_pdf(
                 number=q["number"],
                 statement=q["statement"],
                 options=options,
-                image_base64=q.get("image_base64"),
+                image_base64=q.get("image_base64",
+            force_reimport=force_reimport,
+        ),
                 correct_option=gab_letter,
                 metadata=metadata,
             )

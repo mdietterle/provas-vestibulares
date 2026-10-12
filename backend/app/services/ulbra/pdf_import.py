@@ -334,6 +334,8 @@ def _persist_edition(db: Session, edition: str, year: int, questions: list[dict]
             options=options,
             correct_option=correct,
             metadata=metadata,
+        
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1

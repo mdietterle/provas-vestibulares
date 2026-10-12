@@ -186,7 +186,9 @@ def seed_enem(db: Session | None = None, **kwargs) -> dict:
                     image_base64=image_b64,
                     correct_option=correct_letter,
                     metadata=metadata,
-                )
+                
+            force_reimport=force_reimport,
+        )
                 if not created:
                     skipped_existing += 1
                     continue

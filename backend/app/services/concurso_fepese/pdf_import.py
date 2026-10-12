@@ -298,6 +298,8 @@ def import_fepese_cargo(
             options=options,
             correct_option=q["correct"],
             metadata=metadata,
+        
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1

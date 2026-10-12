@@ -534,6 +534,8 @@ def _import_parsed_exam(db, exam_name: str, year: int, season, course, color, pa
             options=options,
             correct_option=correct_letter,
             metadata=metadata,
+        
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1

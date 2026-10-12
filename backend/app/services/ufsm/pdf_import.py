@@ -325,7 +325,9 @@ def _persist_year(db: Session, year: int, cadernos: list[dict]) -> dict:
                 options=options,
                 correct_option=correct,
                 metadata=metadata,
-            )
+            
+            force_reimport=force_reimport,
+        )
             if not created:
                 skipped_existing += 1
                 continue

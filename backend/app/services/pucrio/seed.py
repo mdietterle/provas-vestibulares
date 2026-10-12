@@ -467,7 +467,9 @@ def import_pucrio_edition(
                 statement=q["statement"],
                 options=options,
                 images=images,
-                image_base64=q["images"][0] if q.get("images") else None,
+                image_base64=q["images"][0] if q.get("images",
+            force_reimport=force_reimport,
+        ) else None,
                 correct_option=q.get("correct"),
                 metadata=metadata,
             )

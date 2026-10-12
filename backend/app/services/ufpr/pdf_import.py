@@ -259,7 +259,9 @@ def import_ufpr_year(db, year: int, pdf_url: str) -> dict:
             statement=q["statement"],
             options=options,
             images=images,
-            image_base64=q.get("image_base64"),
+            image_base64=q.get("image_base64",
+            force_reimport=force_reimport,
+        ),
             correct_option=q.get("correct"),
             metadata=metadata,
         )

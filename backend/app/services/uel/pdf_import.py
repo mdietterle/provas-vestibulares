@@ -367,6 +367,8 @@ def _persist_year(db: Session, year: int, questions: list[dict]) -> dict:
             options=options,
             correct_option=correct,
             metadata={},
+        
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1
