@@ -41,6 +41,7 @@ def import_all_ufpr(
     background_tasks: BackgroundTasks,
     since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano (padrão: 2009)"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano (padrão: 2026)"),
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre o site oficial do NC-UFPR (não a coletânea local) e

@@ -24,6 +24,7 @@ def import_all_fuvest(
     background_tasks: BackgroundTasks,
     since_year: int = Query(2015, description="Importa a partir desse ano (padrão: 2015)"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano (padrão: ano mais recente listado no acervo)"),
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre fuvest.br/acervo-vestibular e importa a prova

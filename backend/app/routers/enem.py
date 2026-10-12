@@ -43,6 +43,7 @@ def import_all_enem(
     background_tasks: BackgroundTasks,
     since_year: int = Query(2015, description="Importa a partir desse ano (padrão: 2015 — limite de estabilidade do padrão de nome de arquivo reconhecido)"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano (padrão: 2025)"),
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre gov.br/inep/.../enem/provas-e-gabaritos/{ano} de

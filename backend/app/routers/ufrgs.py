@@ -26,6 +26,7 @@ def import_all_ufrgs(
     since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano (padrão: 2011)"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano (padrão: 2026)"),
     language: str = Query("Inglês", description="Variante de Língua Estrangeira Moderna a importar quando o dia tiver mais de uma opção"),
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre ufrgs.br/coperse/aquisicao-de-provas/ (2011-2026,
