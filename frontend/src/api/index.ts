@@ -525,137 +525,137 @@ export { pucrioApi } from './pucrio'
 export { udescApi } from './udesc'
 
 export const unespApi = {
-  runSeed: (since?: number, until?: number) => api.post('/unesp/import', undefined, { params: { since_year: since, until_year: until } }),
+  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/unesp/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
 };
 
 export const cebraspeApi = {
-  runSeed: (since?: number, until?: number) => api.post('/cebraspe/import', undefined, { params: { since_year: since, until_year: until } }),
+  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/cebraspe/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
 };
 
 export const unifespApi = {
-  runSeed: (since?: number, until?: number) => api.post('/unifesp/import', undefined, { params: { since_year: since, until_year: until } }),
+  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/unifesp/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
 };
 
 export const pucrsApi = {
-  runImportAll: (since?: number, until?: number) => api.post('/pucrs-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/pucrs-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
 };
 
 export const ufpelApi = {
-  runImportAll: (since?: number, until?: number) => api.post('/ufpel-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/ufpel-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
 };
 
 export const unicampApi = {
-  runImportAll: (since?: number, until?: number) => api.post('/unicamp-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/unicamp-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
 };
 
 export const ufgApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/ufg/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/ufg/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const ufjfApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/ufjf/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/ufjf/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const ufuApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/ufu/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/ufu/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const ufpaApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/ufpa/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/ufpa/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const utfprApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/utfpr/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/utfpr/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const unioesteApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/unioeste/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/unioeste/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const uelApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/uel/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/uel/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const pucminasApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/pucminas/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/pucminas/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const ufrnApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/ufrn/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/ufrn/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const ufsmApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/ufsm/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/ufsm/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const ulbraApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/ulbra/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/ulbra/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const ufamApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/ufam/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/ufam/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const puccampinasApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/puccampinas/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/puccampinas/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const unimontesApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/unimontes/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/unimontes/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const unicentroApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/unicentro/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/unicentro/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }
 
 export const unaerpApi = {
-  runImportAll: async (since?: number, until?: number) => {
-    const response = await api.post('/unaerp/import', undefined, { params: { since_year: since, until_year: until } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
+    const response = await api.post('/unaerp/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
     return response
   }
 }

@@ -441,7 +441,7 @@ def import_fuvest_year(db, year: int, edition: dict) -> dict:
             statement=q["statement"],
             options=options,
             images=images,
-            image_base64=q.get("image_base64"),
+            image_base64=q.get("image_base64", force_reimport=force_reimport),
             correct_option=correct,
             metadata=metadata,
         )
@@ -460,7 +460,7 @@ def import_fuvest_year(db, year: int, edition: dict) -> dict:
     }
 
 
-def import_all_fuvest_exams(since_year: int = 2015, until_year: Optional[int] = None, db=None, **kwargs) -> dict:
+def import_all_fuvest_exams(since_year: int = 2015, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
     """Importa TODAS as edições da FUVEST (1ª fase) listadas em
     fuvest.br/acervo-vestibular, em regressão de `until_year` (padrão: ano
     mais recente listado) até `since_year` (padrão: 2015).

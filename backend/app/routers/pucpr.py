@@ -54,6 +54,7 @@ def import_all_pucpr(
     background_tasks: BackgroundTasks,
     since_year: Optional[int] = Query(None, description="Se informado, importa só provas desse ano em diante"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só provas até esse ano"),
+    force_reimport: bool = Query(False, description="Se True, deleta questões existentes antes de reimportar"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre https://www.pucpr.br/vestibular/editais/, encontra

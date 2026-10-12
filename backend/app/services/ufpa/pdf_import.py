@@ -424,7 +424,7 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict],
             options=options,
             correct_option=correct,
             metadata=metadata,
-        )
+        , force_reimport=force_reimport)
         if not created:
             skipped_existing += 1
             continue
@@ -486,7 +486,7 @@ def import_ufpa_year(db, year: int, urls: dict) -> dict:
 
 def import_all_ufpa_exams(
     since_year: Optional[int] = None,
-    until_year: Optional[int] = None,
+    until_year: Optional[int] = None, force_reimport: bool = False,
     db=None,
     task_id: Optional[str] = None,
     **kwargs,

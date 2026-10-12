@@ -51,7 +51,7 @@ def run_acafe_seed(
     try:
         from app.services.progress import create_task, run_import_with_timeout
         task_id = create_task()
-        background_tasks.add_task(run_import_with_timeout, import_all_acafe_exams, since_year=since_year, until_year=until_year, task_id=task_id)
+        background_tasks.add_task(run_import_with_timeout, import_all_acafe_exams, force_reimport=force_reimport, since_year=since_year, until_year=until_year, task_id=task_id)
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(500, f"Erro no seed: {e}")

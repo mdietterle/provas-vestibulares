@@ -238,7 +238,7 @@ def fetch_unicamp_exam_links(html: Optional[str] = None) -> list[dict]:
     return _UNICAMP_LEGACY_LINKS + discovered
 
 
-def import_all_unicamp_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, db=None, **kwargs) -> dict:
+def import_all_unicamp_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
     from app.database import SessionLocal
     from app.services.import_batch import run_batch_import
 
@@ -275,7 +275,7 @@ def import_all_unicamp_exams(since_year: Optional[int] = None, until_year: Optio
         if not parsed:
             return {"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida."}
 
-        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed)
+        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed, force_reimport=force_reimport)
         return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
     try:
@@ -319,7 +319,7 @@ def import_unicamp_pdf(
             gabarito = _parse_gabarito(gabarito_path)
 
         parsed = _parse_exam(prova_path, gabarito, subject=subject)
-        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed)
+        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed, force_reimport=force_reimport)
 
         return {
             "exam_name": exam_name,

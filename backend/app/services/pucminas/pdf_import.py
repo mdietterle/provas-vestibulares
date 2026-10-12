@@ -476,7 +476,7 @@ def _persist_booklet(db, exam_name: str, year: int, questions: list[dict], answe
             correct_option=correct,
             image_base64=image_base64_first,
             metadata=metadata,
-        )
+        , force_reimport=force_reimport)
         if not created:
             continue
         added += 1
@@ -532,7 +532,7 @@ def import_pucminas_booklet(
 
 def import_all_pucminas_exams(
     since_year: Optional[int] = None,
-    until_year: Optional[int] = None,
+    until_year: Optional[int] = None, force_reimport: bool = False,
     db=None,
     task_id: Optional[str] = None,
     **kwargs,

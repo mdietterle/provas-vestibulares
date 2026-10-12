@@ -582,7 +582,7 @@ def _persist_segment(db, exam_name: str, year: int, questions: list[dict], gabar
             images=image_list,
             correct_option=correct,
             metadata={},
-        )
+        , force_reimport=force_reimport)
         if not created:
             skipped_no_answer += 1
             continue
@@ -655,7 +655,7 @@ def import_puccampinas_track(db, track: dict) -> dict:
 
 def import_all_puccampinas_exams(
     since_year: Optional[int] = None,
-    until_year: Optional[int] = None,
+    until_year: Optional[int] = None, force_reimport: bool = False,
     db=None,
     task_id: Optional[str] = None,
     **kwargs,

@@ -14,48 +14,48 @@ type ImportSource = {
   key: string
   label: string
   description: string
-  runSeed: (since_year?: number, until_year?: number) => Promise<any>
+  runSeed: (since_year?: number, until_year?: number, forceReimport?: boolean) => Promise<any>
 }
 
 const IMPORT_SOURCES: ImportSource[] = [
-  { key: 'enem', label: 'ENEM', description: 'Varredura ENEM no site do INEP (PDF)', runSeed: (s?: number, u?: number) => enemApi.runImportAll(s, u) },
-  { key: 'acafe', label: 'ACAFE', description: 'Vestibular ACAFE — Santa Catarina (PDF)', runSeed: (s?: number, u?: number) => acafeApi.runSeed(s, u) },
-  { key: 'ufpr', label: 'UFPR', description: 'Coletânea UFPR 2010–2026 (PDF + OCR de gabarito)', runSeed: (s?: number, u?: number) => ufprApi.runSeed(s, u) },
-  { key: 'ufsc', label: 'UFSC', description: 'Vestibular UFSC/IFSC/IFC — varredura online (vestibularunificado2025.ufsc.br). Preencha Ano Inicial E Ano Final (ex: 2020–2020) para evitar OOM no plano free.', runSeed: (s?: number, u?: number) => ufscApi.runImportAll(s, u) },
-  { key: 'ita', label: 'ITA', description: 'Varredura automática do site do ITA (2019-2026) (PDF)', runSeed: (s?: number, u?: number) => itaApi.runImportAll(s, u) },
-  { key: 'uerj', label: 'UERJ', description: 'Importador UERJ (PDF)', runSeed: (s?: number, u?: number) => uerjApi.runImportAll(s, u) },
-  { key: 'ufgd', label: 'UFGD', description: 'Importador UFGD (PDF)', runSeed: (s?: number, u?: number) => ufgdApi.runImportAll(s, u) },
-  { key: 'uem', label: 'UEM', description: 'Importador UEM (PDF)', runSeed: (s?: number, u?: number) => uemApi.runImportAll(s, u) },
-  { key: 'ufms', label: 'UFMS', description: 'Importador UFMS (PDF)', runSeed: (s?: number, u?: number) => ufmsApi.runImportAll(s, u) },
-  { key: 'fuvest', label: 'FUVEST', description: 'Importador USP/FUVEST (PDF)', runSeed: (s?: number, u?: number) => fuvestApi.runImportAll(s, u) },
-  { key: 'pucrio', label: 'PUC-Rio', description: 'Importador PUC-Rio (PDF)', runSeed: (s?: number, u?: number) => pucrioApi.runImportAll(s, u) },
-  { key: 'udesc', label: 'UDESC', description: 'Importador UDESC (PDF)', runSeed: (s?: number, u?: number) => udescApi.runImportAll(s, u) },
-  { key: 'unesp', label: 'UNESP', description: 'Importador UNESP (PDF)', runSeed: (s?: number, u?: number) => unespApi.runSeed(s, u) },
-  { key: 'cebraspe', label: 'UnB/CEBRASPE', description: 'Importador UnB/CEBRASPE (PDF) - Certo/Errado', runSeed: (s?: number, u?: number) => cebraspeApi.runSeed(s, u) },
-  { key: 'unifesp', label: 'UNIFESP', description: 'Importador UNIFESP (PDF)', runSeed: (s?: number, u?: number) => unifespApi.runSeed(s, u) },
-  { key: 'espm', label: 'ESPM', description: 'Importador ESPM (PDF)', runSeed: (s?: number, u?: number) => espmApi.runImportAll(s, u) },
-  { key: 'fgv', label: 'FGV', description: 'Importador FGV (PDF)', runSeed: (s?: number, u?: number) => fgvApi.runImportAll(s, u) },
-  { key: 'pucpr', label: 'PUCPR', description: 'Importador PUCPR (PDF)', runSeed: (s?: number, u?: number) => pucprApi.runImportAll(s, u) },
-  { key: 'pucrs', label: 'PUCRS', description: 'Importador PUCRS (PDF)', runSeed: (s?: number, u?: number) => pucrsApi.runImportAll(s, u) },
-  { key: 'ufpel', label: 'UFPEL', description: 'Importador UFPEL (PDF)', runSeed: (s?: number, u?: number) => ufpelApi.runImportAll(s, u) },
-  { key: 'ufrgs', label: 'UFRGS', description: 'Importador UFRGS (PDF)', runSeed: (s?: number, u?: number) => ufrgsApi.runImportAll(s, u) },
-  { key: 'unicamp', label: 'UNICAMP', description: 'Importador UNICAMP (PDF)', runSeed: (s?: number, u?: number) => unicampApi.runImportAll(s, u) },
-  { key: 'ufg', label: 'UFG', description: 'Importador UFG (PDF)', runSeed: (s?: number, u?: number) => ufgApi.runImportAll(s, u) },
-  { key: 'ufjf', label: 'UFJF', description: 'Importador UFJF (PDF)', runSeed: (s?: number, u?: number) => ufjfApi.runImportAll(s, u) },
-  { key: 'ufu', label: 'UFU', description: 'Importador UFU (PDF)', runSeed: (s?: number, u?: number) => ufuApi.runImportAll(s, u) },
-  { key: 'ufpa', label: 'UFPA', description: 'Importador UFPA (PDF)', runSeed: (s?: number, u?: number) => ufpaApi.runImportAll(s, u) },
-  { key: 'utfpr', label: 'UTFPR', description: 'Importador UTFPR (PDF)', runSeed: (s?: number, u?: number) => utfprApi.runImportAll(s, u) },
-  { key: 'unioeste', label: 'UNIOESTE', description: 'Importador UNIOESTE (PDF)', runSeed: (s?: number, u?: number) => unioesteApi.runImportAll(s, u) },
-  { key: 'uel', label: 'UEL', description: 'Importador UEL (PDF)', runSeed: (s?: number, u?: number) => uelApi.runImportAll(s, u) },
-  { key: 'pucminas', label: 'PUCMINAS', description: 'Importador PUCMINAS (PDF)', runSeed: (s?: number, u?: number) => pucminasApi.runImportAll(s, u) },
-  { key: 'ufrn', label: 'UFRN', description: 'Importador UFRN (PDF)', runSeed: (s?: number, u?: number) => ufrnApi.runImportAll(s, u) },
-  { key: 'ufsm', label: 'UFSM', description: 'Importador UFSM (PDF)', runSeed: (s?: number, u?: number) => ufsmApi.runImportAll(s, u) },
-  { key: 'ulbra', label: 'ULBRA', description: 'Importador ULBRA (PDF)', runSeed: (s?: number, u?: number) => ulbraApi.runImportAll(s, u) },
-  { key: 'ufam', label: 'UFAM', description: 'Importador UFAM (PDF)', runSeed: (s?: number, u?: number) => ufamApi.runImportAll(s, u) },
-  { key: 'puccampinas', label: 'PUCCAMPINAS', description: 'Importador PUCCAMPINAS (PDF)', runSeed: (s?: number, u?: number) => puccampinasApi.runImportAll(s, u) },
-  { key: 'unimontes', label: 'UNIMONTES', description: 'Importador UNIMONTES (PDF)', runSeed: (s?: number, u?: number) => unimontesApi.runImportAll(s, u) },
-  { key: 'unicentro', label: 'UNICENTRO', description: 'Importador UNICENTRO (PDF)', runSeed: (s?: number, u?: number) => unicentroApi.runImportAll(s, u) },
-  { key: 'unaerp', label: 'UNAERP', description: 'Importador UNAERP (PDF)', runSeed: (s?: number, u?: number) => unaerpApi.runImportAll(s, u) },
+  { key: 'enem', label: 'ENEM', description: 'Varredura ENEM no site do INEP (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => enemApi.runImportAll(s, u, fr) },
+  { key: 'acafe', label: 'ACAFE', description: 'Vestibular ACAFE — Santa Catarina (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => acafeApi.runSeed(s, u, fr) },
+  { key: 'ufpr', label: 'UFPR', description: 'Coletânea UFPR 2010–2026 (PDF + OCR de gabarito)', runSeed: (s?: number, u?: number, fr?: boolean) => ufprApi.runSeed(s, u, fr) },
+  { key: 'ufsc', label: 'UFSC', description: 'Vestibular UFSC/IFSC/IFC — varredura online (vestibularunificado2025.ufsc.br). Preencha Ano Inicial E Ano Final (ex: 2020–2020) para evitar OOM no plano free.', runSeed: (s?: number, u?: number, fr?: boolean) => ufscApi.runImportAll(s, u, fr) },
+  { key: 'ita', label: 'ITA', description: 'Varredura automática do site do ITA (2019-2026) (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => itaApi.runImportAll(s, u, fr) },
+  { key: 'uerj', label: 'UERJ', description: 'Importador UERJ (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => uerjApi.runImportAll(s, u, fr) },
+  { key: 'ufgd', label: 'UFGD', description: 'Importador UFGD (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufgdApi.runImportAll(s, u, fr) },
+  { key: 'uem', label: 'UEM', description: 'Importador UEM (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => uemApi.runImportAll(s, u, fr) },
+  { key: 'ufms', label: 'UFMS', description: 'Importador UFMS (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufmsApi.runImportAll(s, u, fr) },
+  { key: 'fuvest', label: 'FUVEST', description: 'Importador USP/FUVEST (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => fuvestApi.runImportAll(s, u, fr) },
+  { key: 'pucrio', label: 'PUC-Rio', description: 'Importador PUC-Rio (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => pucrioApi.runImportAll(s, u, fr) },
+  { key: 'udesc', label: 'UDESC', description: 'Importador UDESC (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => udescApi.runImportAll(s, u, fr) },
+  { key: 'unesp', label: 'UNESP', description: 'Importador UNESP (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => unespApi.runSeed(s, u, fr) },
+  { key: 'cebraspe', label: 'UnB/CEBRASPE', description: 'Importador UnB/CEBRASPE (PDF) - Certo/Errado', runSeed: (s?: number, u?: number, fr?: boolean) => cebraspeApi.runSeed(s, u, fr) },
+  { key: 'unifesp', label: 'UNIFESP', description: 'Importador UNIFESP (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => unifespApi.runSeed(s, u, fr) },
+  { key: 'espm', label: 'ESPM', description: 'Importador ESPM (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => espmApi.runImportAll(s, u, fr) },
+  { key: 'fgv', label: 'FGV', description: 'Importador FGV (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => fgvApi.runImportAll(s, u, fr) },
+  { key: 'pucpr', label: 'PUCPR', description: 'Importador PUCPR (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => pucprApi.runImportAll(s, u, fr) },
+  { key: 'pucrs', label: 'PUCRS', description: 'Importador PUCRS (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => pucrsApi.runImportAll(s, u, fr) },
+  { key: 'ufpel', label: 'UFPEL', description: 'Importador UFPEL (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufpelApi.runImportAll(s, u, fr) },
+  { key: 'ufrgs', label: 'UFRGS', description: 'Importador UFRGS (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufrgsApi.runImportAll(s, u, fr) },
+  { key: 'unicamp', label: 'UNICAMP', description: 'Importador UNICAMP (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => unicampApi.runImportAll(s, u, fr) },
+  { key: 'ufg', label: 'UFG', description: 'Importador UFG (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufgApi.runImportAll(s, u, fr) },
+  { key: 'ufjf', label: 'UFJF', description: 'Importador UFJF (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufjfApi.runImportAll(s, u, fr) },
+  { key: 'ufu', label: 'UFU', description: 'Importador UFU (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufuApi.runImportAll(s, u, fr) },
+  { key: 'ufpa', label: 'UFPA', description: 'Importador UFPA (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufpaApi.runImportAll(s, u, fr) },
+  { key: 'utfpr', label: 'UTFPR', description: 'Importador UTFPR (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => utfprApi.runImportAll(s, u, fr) },
+  { key: 'unioeste', label: 'UNIOESTE', description: 'Importador UNIOESTE (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => unioesteApi.runImportAll(s, u, fr) },
+  { key: 'uel', label: 'UEL', description: 'Importador UEL (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => uelApi.runImportAll(s, u, fr) },
+  { key: 'pucminas', label: 'PUCMINAS', description: 'Importador PUCMINAS (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => pucminasApi.runImportAll(s, u, fr) },
+  { key: 'ufrn', label: 'UFRN', description: 'Importador UFRN (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufrnApi.runImportAll(s, u, fr) },
+  { key: 'ufsm', label: 'UFSM', description: 'Importador UFSM (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufsmApi.runImportAll(s, u, fr) },
+  { key: 'ulbra', label: 'ULBRA', description: 'Importador ULBRA (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ulbraApi.runImportAll(s, u, fr) },
+  { key: 'ufam', label: 'UFAM', description: 'Importador UFAM (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => ufamApi.runImportAll(s, u, fr) },
+  { key: 'puccampinas', label: 'PUCCAMPINAS', description: 'Importador PUCCAMPINAS (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => puccampinasApi.runImportAll(s, u, fr) },
+  { key: 'unimontes', label: 'UNIMONTES', description: 'Importador UNIMONTES (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => unimontesApi.runImportAll(s, u, fr) },
+  { key: 'unicentro', label: 'UNICENTRO', description: 'Importador UNICENTRO (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => unicentroApi.runImportAll(s, u, fr) },
+  { key: 'unaerp', label: 'UNAERP', description: 'Importador UNAERP (PDF)', runSeed: (s?: number, u?: number, fr?: boolean) => unaerpApi.runImportAll(s, u, fr) },
 ]
 
 
@@ -67,6 +67,7 @@ function QuestionImportPanel() {
   const [tasks, setTasks] = useState<Record<string, { current: number; total: number; items_done?: number | null; logs: {message: string}[]; status: string }>>({})
   const [sinceYear, setSinceYear] = useState<number | ''>('')
   const [untilYear, setUntilYear] = useState<number | ''>('')
+  const [forceReimport, setForceReimport] = useState(false)
   const [selectedKey, setSelectedKey] = useState<string>(IMPORT_SOURCES[0].key)
   const selected = IMPORT_SOURCES.find(s => s.key === selectedKey) ?? IMPORT_SOURCES[0]
 
@@ -108,7 +109,7 @@ function QuestionImportPanel() {
     try {
       const s = sinceYear !== '' ? sinceYear : undefined
       const u = untilYear !== '' ? untilYear : undefined
-      const r = await src.runSeed(s, u)
+      const r = await src.runSeed(s, u, forceReimport)
       // Alguns clients de API retornam o response inteiro do axios (r.data),
       // outros já retornam o payload desembrulhado (r é o próprio payload) —
       // aceita as duas formas em vez de assumir uma só (já foi bug: cliente
@@ -200,6 +201,16 @@ function QuestionImportPanel() {
           Limita a importação para provas dentro do intervalo especificado (depende de suporte no importador). Deixe em branco para importar tudo.
         </p>
 
+        <label className="mt-3 flex items-center gap-2 text-sm text-[#cbd5e1] cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={forceReimport}
+            onChange={e => setForceReimport(e.target.checked)}
+            className="rounded border-[#475569] bg-[#1e293b] text-blue-600 focus:ring-blue-500 focus:ring-offset-0"
+          />
+          Forçar reimportação (apaga questões existentes antes de importar)
+        </label>
+
         <div className="mt-4 flex gap-2">
           <button
             onClick={() => handleImport(selected)}
@@ -261,6 +272,7 @@ function EnemPdfImportPanel() {
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<EnemPdfImportResult | null>(null)
   const [error, setError] = useState('')
+  const [forceReimport, setForceReimport] = useState(false)
 
   async function handleSubmit() {
     if (!prova && !provaUrl.trim() && !mecPageUrl.trim()) {
@@ -280,7 +292,7 @@ function EnemPdfImportPanel() {
       form.append('year', String(year))
       form.append('day', String(day))
       if (color.trim()) form.append('color', color.trim())
-      const r = await enemApi.importPdf(form)
+      const r = await enemApi.importPdf(form, forceReimport)
       setResult(r.data)
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
@@ -378,6 +390,15 @@ function EnemPdfImportPanel() {
           />
         </label>
       </div>
+      <label className="flex items-center gap-2 mb-3 text-xs text-[#334155] cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={forceReimport}
+          onChange={e => setForceReimport(e.target.checked)}
+          className="rounded border-[#c5c5d3]"
+        />
+        Forçar reimportação (reprocessar questões já existentes)
+      </label>
       <button
         onClick={handleSubmit}
         disabled={submitting}
@@ -407,6 +428,7 @@ function UfscPdfImportPanel() {
   const [year, setYear] = useState(new Date().getFullYear())
   const [phase, setPhase] = useState('1')
   const [color, setColor] = useState('')
+  const [forceReimport, setForceReimport] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<UfscPdfImportResult | null>(null)
   const [error, setError] = useState('')
@@ -426,7 +448,7 @@ function UfscPdfImportPanel() {
       form.append('year', String(year))
       form.append('phase', phase)
       if (color.trim()) form.append('color', color.trim())
-      const r = await ufscApi.importPdf(form)
+      const r = await ufscApi.importPdf(form, forceReimport)
       setResult(r.data)
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
@@ -496,6 +518,15 @@ function UfscPdfImportPanel() {
           />
         </label>
       </div>
+      <label className="flex items-center gap-2 text-sm text-[#334155] mb-3 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={forceReimport}
+          onChange={e => setForceReimport(e.target.checked)}
+          className="rounded border-[#c5c5d3] text-blue-600 focus:ring-blue-500"
+        />
+        Forçar reimportação (apaga questões existentes antes de importar)
+      </label>
       <button
         onClick={handleSubmit}
         disabled={submitting}
@@ -524,6 +555,7 @@ function ItaPdfImportPanel() {
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<ItaPdfImportResult | null>(null)
   const [error, setError] = useState('')
+  const [forceReimport, setForceReimport] = useState(false)
 
   async function handleSubmit() {
     if (!prova) {
@@ -540,7 +572,7 @@ function ItaPdfImportPanel() {
       form.append('year', String(year))
       form.append('phase', phase)
       if (subject.trim()) form.append('subject', subject.trim())
-      const r = await itaApi.importPdf(form)
+      const r = await itaApi.importPdf(form, forceReimport)
       setResult(r.data)
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
@@ -608,6 +640,15 @@ function ItaPdfImportPanel() {
           />
         </label>
       </div>
+      <label className="flex items-center gap-2 text-sm text-[#334155] mb-3 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={forceReimport}
+          onChange={e => setForceReimport(e.target.checked)}
+          className="rounded border-[#c5c5d3] text-blue-600 focus:ring-blue-500"
+        />
+        Forçar reimportação (apaga questões existentes antes de importar)
+      </label>
       <button
         onClick={handleSubmit}
         disabled={submitting}
@@ -633,6 +674,7 @@ function AcafeUrlImportPanel() {
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<AcafeUrlImportResult | null>(null)
   const [error, setError] = useState('')
+  const [forceReimport, setForceReimport] = useState(false)
 
   async function handleSubmit() {
     if (!url.trim()) {
@@ -643,7 +685,7 @@ function AcafeUrlImportPanel() {
     setResult(null)
     setSubmitting(true)
     try {
-      const r = await acafeApi.importUrl({ url: url.trim(), year, period: period || undefined })
+      const r = await acafeApi.importUrl({ url: url.trim(), year, period: period || undefined, force_reimport: forceReimport || undefined })
       setResult(r.data)
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
@@ -698,6 +740,11 @@ function AcafeUrlImportPanel() {
           </select>
         </label>
       </div>
+      <label className="flex items-center gap-2 text-sm text-[#334155] mb-3 cursor-pointer select-none">
+        <input type="checkbox" checked={forceReimport} onChange={e => setForceReimport(e.target.checked)}
+          className="rounded border-[#c5c5d3] text-blue-600 focus:ring-blue-500" />
+        Forçar reimportação (apaga questões existentes antes de importar)
+      </label>
       <button
         onClick={handleSubmit}
         disabled={submitting}
@@ -726,6 +773,7 @@ function PucprUrlImportPanel() {
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<PucprUrlImportResult | null>(null)
   const [error, setError] = useState('')
+  const [forceReimport, setForceReimport] = useState(false)
 
   async function handleSubmit() {
     if (!url.trim()) {
@@ -743,6 +791,7 @@ function PucprUrlImportPanel() {
         course: course || undefined,
         color: color.trim() || undefined,
         gabarito_text: gabaritoText,
+        force_reimport: forceReimport || undefined,
       })
       setResult(r.data)
     } catch (e: unknown) {
@@ -830,7 +879,12 @@ function PucprUrlImportPanel() {
           className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm font-mono"
         />
       </label>
-      <button
+            <label className="flex items-center gap-2 text-sm text-[#334155] mb-3 cursor-pointer select-none">
+        <input type="checkbox" checked={forceReimport} onChange={e => setForceReimport(e.target.checked)}
+          className="rounded border-[#c5c5d3] text-blue-600 focus:ring-blue-500" />
+        Forçar reimportação (apaga questões existentes antes de importar)
+      </label>
+<button
         onClick={handleSubmit}
         disabled={submitting}
         className="px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"

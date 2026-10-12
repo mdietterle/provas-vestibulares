@@ -401,7 +401,7 @@ def import_ufpel_stage(db, year: int, stage: int, prova_url: str, gabarito: dict
             statement=q["statement"],
             options=options,
             images=images,
-            image_base64=q.get("image_base64"),
+            image_base64=q.get("image_base64", force_reimport=force_reimport),
             correct_option=correct,
             metadata=metadata,
         )
@@ -437,7 +437,7 @@ def import_ufpel_edition(db, edition: dict) -> list[dict]:
     return results
 
 
-def import_all_ufpel_exams(since_year: int = 2013, until_year: Optional[int] = None, db=None, **kwargs) -> dict:
+def import_all_ufpel_exams(since_year: int = 2013, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
     """Importa TODAS as provas do PAVE listadas em
     wp.ufpel.edu.br/pave/provas-anteriores/ (acessada via Wayback Machine,
     já que o domínio bloqueia requisições automatizadas — ver docstring do

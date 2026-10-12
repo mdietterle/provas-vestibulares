@@ -69,10 +69,12 @@ async def import_ufsc_pdf_endpoint(
     color: Optional[str] = Form(None),
     prova: UploadFile = File(...),
     gabarito: Optional[UploadFile] = File(None),
+    force_reimport: bool = Form(False),
     _: User = Depends(require_owner),
 ):
     """Owner-only: recebe PDF da prova (+ gabarito opcional, PDF ou HTML) da
-    UFSC/IFSC/IFC, extrai as questões somatórias e grava no banco."""
+    UFSC/IFSC/IFC, extrai as questões somatórias e grava no banco.
+    Se `force_reimport=True`, deleta questões existentes antes de reimportar."""
     if prova.content_type not in ("application/pdf", "application/octet-stream"):
         raise HTTPException(400, "O arquivo da prova deve ser um PDF.")
 
@@ -96,6 +98,7 @@ async def import_ufsc_pdf_endpoint(
                 year=year,
                 phase=phase,
                 color=color or None,
+                force_reimport=force_reimport,
             )
         except Exception as e:
             raise HTTPException(500, f"Erro ao importar PDF: {e}")

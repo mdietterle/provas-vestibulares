@@ -17,8 +17,8 @@ export interface ImportResponse {
 }
 
 export const ufmsApi = {
-  runImportAll: async (since?: number, until?: number): Promise<ImportResponse> => {
-    const params = { since_year: since, until_year: until };
+  runImportAll: async (since?: number, until?: number, forceReimport = false): Promise<ImportResponse> => {
+    const params = { since_year: since, until_year: until, force_reimport: forceReimport };
     const response = await api.post('/ufms/import', null, { params });
     return response.data;
   },

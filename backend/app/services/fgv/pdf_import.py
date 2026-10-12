@@ -478,7 +478,7 @@ def _persist_parsed_questions(
             statement=q["statement"],
             options=options,
             images=images,
-            correct_option=q.get("answer"),
+            correct_option=q.get("answer", force_reimport=force_reimport),
             image_base64=q.get("image_base64"),
             metadata=metadata,
         )
@@ -572,7 +572,7 @@ def fetch_fgv_exam_links(html: Optional[str] = None) -> list[dict]:
     return pairs
 
 
-def import_all_fgv_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, db=None, **kwargs) -> dict:
+def import_all_fgv_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
     from app.database import SessionLocal
     from app.services.import_batch import run_batch_import
 
@@ -609,7 +609,7 @@ def import_all_fgv_exams(since_year: Optional[int] = None, until_year: Optional[
         if not parsed:
             return {"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida."}
 
-        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed)
+        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed, force_reimport=force_reimport)
         return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
     try:
@@ -654,7 +654,7 @@ def import_fgv_pdf(
             gabarito = _parse_gabarito(gabarito_path, subject=subject)
 
         parsed = _parse_exam(prova_path, gabarito, subject=subject)
-        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed)
+        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed, force_reimport=force_reimport)
 
         return {
             "exam_name": exam_name,

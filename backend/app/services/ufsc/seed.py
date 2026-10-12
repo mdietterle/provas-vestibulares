@@ -395,7 +395,7 @@ def _strip_recurring_decorative_images(questions: list[dict]) -> None:
 
 
 def _persist_parsed_questions(
-    db, exam_name: str, year: int, phase: str, color: str, parsed: list[dict]
+    db, exam_name: str, year: int, phase: str, color: str, parsed: list[dict], force_reimport: bool = False
 ) -> tuple[int, int]:
     """Grava as questões parseadas no banco, pulando as que já existem
     (mesma exam_name + number + language). Retorna (added, skipped_existing)."""
@@ -446,10 +446,11 @@ def _persist_parsed_questions(
             statement=q["statement"],
             options=options,
             images=images,
-            image_base64=q.get("image_base64"),
+            image_base64=q.get("image_base64", force_reimport=force_reimport),
             correct_option=None,
             answer=q.get("answer"),
             metadata=metadata,
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1
@@ -510,7 +511,7 @@ def seed_ufsc(db=None, **kwargs) -> dict:
                 files_report.append({"exam": exam_name, "added": 0, "error": str(e)})
                 continue
 
-            added, _skipped = _persist_parsed_questions(db, exam_name, year, phase, color, parsed)
+            added, _skipped = _persist_parsed_questions(db, exam_name, year, phase, color, parsed, force_reimport=force_reimport)
             total_added += added
             files_report.append({"exam": exam_name, "added": added})
             print(f"✅  UFSC seed: {exam_name} → {added} questões importadas.")

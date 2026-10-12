@@ -25,6 +25,7 @@ def import_all_ita(
     background_tasks: BackgroundTasks,
     since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano (inclusive)"),
+    force_reimport: bool = Query(False, description="Se True, deleta questões existentes antes de reimportar"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre a página de provas anteriores do ITA e importa provas em lote,
@@ -37,7 +38,7 @@ def import_all_ita(
 
     task_id = create_task()
     background_tasks.add_task(
-        run_import_with_timeout, import_all_ita_exams, since_year, until_year, task_id, task_id=task_id
+        run_import_with_timeout, import_all_ita_exams, since_year, until_year, task_id, force_reimport=force_reimport, task_id=task_id
     )
     return {"ok": True, "task_id": task_id}
 

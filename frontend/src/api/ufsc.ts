@@ -55,10 +55,14 @@ export const ufscApi = {
   years: () => api.get<number[]>('/ufsc-questions/years'),
   areas: () => api.get<string[]>('/ufsc-questions/areas'),
   importQuestion: (data: UfscImportRequest) => api.post('/ufsc-questions/import', data),
-  runSeed: (since?: number, until?: number) => api.post('/ufsc-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until } }),
-  runImportAll: (since?: number, until?: number) => api.post('/ufsc-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until } }),
-  importPdf: (form: FormData) =>
-    api.post<UfscPdfImportResult>('/ufsc-questions/admin/import-pdf', form, {
+  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/ufsc-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/ufsc-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  importPdf: (form: FormData, forceReimport = false) => {
+    if (forceReimport) {
+      form.append('force_reimport', 'true')
+    }
+    return api.post<UfscPdfImportResult>('/ufsc-questions/admin/import-pdf', form, {
       headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+    })
+  },
 }

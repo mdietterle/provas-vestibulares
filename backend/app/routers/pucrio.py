@@ -24,6 +24,7 @@ def import_all_pucrio(
     background_tasks: BackgroundTasks,
     since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano"),
+    force_reimport: bool = Query(False, description="Se True, deleta questões existentes antes de reimportar"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre puc-rio.br/vestibular/repositorio/ e importa, por
@@ -44,7 +45,7 @@ def import_all_pucrio(
     try:
         from app.services.progress import create_task, run_import_with_timeout
         task_id = create_task()
-        background_tasks.add_task(run_import_with_timeout, import_all_pucrio_exams, since_year=since_year, until_year=until_year, task_id=task_id)
+        background_tasks.add_task(run_import_with_timeout, import_all_pucrio_exams, since_year=since_year, until_year=until_year, force_reimport=force_reimport, task_id=task_id)
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(500, f"Erro ao importar provas: {e}")

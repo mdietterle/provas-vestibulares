@@ -35,5 +35,5 @@ export const ufrgsApi = {
   years: () => api.get<number[]>('/ufrgs-questions/years'),
   areas: () => api.get<string[]>('/ufrgs-questions/areas'),
   importQuestion: (data: UfrgsImportRequest) => api.post('/ufrgs-questions/import', data),
-  runImportAll: (since?: number, until?: number) => api.post('/ufrgs-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/ufrgs-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
 }

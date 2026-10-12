@@ -49,10 +49,14 @@ export const enemApi = {
   years: () => api.get<number[]>('/enem-questions/years'),
   areas: () => api.get<string[]>('/enem-questions/areas'),
   importQuestion: (data: EnemImportRequest) => api.post('/enem-questions/import', data),
-  runSeed: (since?: number, until?: number) => api.post('/enem-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until } }),
-  runImportAll: (since?: number, until?: number) => api.post('/enem-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until } }),
-  importPdf: (form: FormData) =>
-    api.post<EnemPdfImportResult>('/enem-questions/admin/import-pdf', form, {
+  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/enem-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/enem-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  importPdf: (form: FormData, forceReimport = false) => {
+    if (forceReimport) {
+      form.append('force_reimport', 'true')
+    }
+    return api.post<EnemPdfImportResult>('/enem-questions/admin/import-pdf', form, {
       headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+    })
+  },
 }

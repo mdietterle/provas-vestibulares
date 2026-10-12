@@ -131,7 +131,7 @@ def seed_unesp(db, year: int, **kwargs) -> dict:
 
 def import_all_unesp_exams(
     since_year: int = 2015,
-    until_year: Optional[int] = None,
+    until_year: Optional[int] = None, force_reimport: bool = False,
     db=None,
     task_id: Optional[str] = None,
     **kwargs,

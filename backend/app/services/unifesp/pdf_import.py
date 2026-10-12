@@ -34,7 +34,7 @@ def seed_unifesp(db, year: int, **kwargs) -> dict:
     )
 
 
-def import_all_unifesp_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, db=None, task_id: Optional[str] = None, **kwargs) -> dict:
+def import_all_unifesp_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, force_reimport: bool = False, db=None, task_id: Optional[str] = None, **kwargs) -> dict:
     raise NotImplementedError(
         "A prova complementar da UNIFESP (Sistema Misto) é discursiva, sem "
         "alternativas A-E — não há gabarito objetivo pra importar. Ver "

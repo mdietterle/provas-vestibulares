@@ -30,7 +30,7 @@ _: User = Depends(require_owner)):
     try:
         from app.services.progress import create_task, run_import_with_timeout
         task_id = create_task()
-        background_tasks.add_task(run_import_with_timeout, seed_ufpr, task_id=task_id)
+        background_tasks.add_task(run_import_with_timeout, seed_ufpr, force_reimport=force_reimport, task_id=task_id)
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(500, f"Erro no seed: {e}")

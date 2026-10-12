@@ -218,7 +218,7 @@ def fetch_exam_links(html: Optional[str] = None, url: Optional[str] = None) -> l
     return pairs
 
 
-def import_all_ufsc_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, db=None, **kwargs) -> dict:
+def import_all_ufsc_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
     """Importa TODAS as provas listadas em vestibularunificado2025.ufsc.br/provas-anteriores/,
     uma a uma. Cada prova é tentada de forma independente — falha ao baixar,
     SSL de host legado, ou 0 questões reconhecidas (comum em provas muito
@@ -263,7 +263,7 @@ def import_all_ufsc_exams(since_year: Optional[int] = None, until_year: Optional
         if not parsed:
             return {"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida (provável prova antiga escaneada, sem texto extraível)."}
 
-        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, color, parsed)
+        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, color, parsed, force_reimport=force_reimport)
         return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
     try:
@@ -285,6 +285,7 @@ def import_ufsc_pdf(
     year: int,
     phase: str,
     color: Optional[str] = None,
+    force_reimport: bool = False,
     db=None,
 ) -> dict:
     """Importa um caderno de prova UFSC (PDF) + gabarito (PDF ou HTML,
@@ -309,7 +310,7 @@ def import_ufsc_pdf(
             )
 
         parsed = _parse_exam(prova_path, gabarito)
-        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, color, parsed)
+        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, color, parsed, force_reimport=force_reimport)
 
         return {
             "exam_name": exam_name,

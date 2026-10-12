@@ -38,6 +38,7 @@ export interface PucprUrlImportRequest {
   course?: string
   color?: string
   gabarito_text: string
+  force_reimport?: boolean
 }
 
 export interface PucprUrlImportResult {
@@ -57,5 +58,5 @@ export const pucprApi = {
   areas: () => api.get<string[]>('/pucpr-questions/areas'),
   importQuestion: (data: PucprImportRequest) => api.post('/pucpr-questions/import', data),
   importUrl: (data: PucprUrlImportRequest) => api.post<PucprUrlImportResult>('/pucpr-questions/admin/import-url', data),
-  runImportAll: (since?: number, until?: number) => api.post('/pucpr-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/pucpr-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
 }

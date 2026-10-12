@@ -42,6 +42,7 @@ export interface AcafeUrlImportRequest {
   url: string
   year: number
   period?: string
+  force_reimport?: boolean
 }
 
 export interface AcafeUrlImportResult {
@@ -59,6 +60,6 @@ export const acafeApi = {
   periods: () => api.get<string[]>('/acafe-questions/periods'),
   areas: () => api.get<string[]>('/acafe-questions/areas'),
   importQuestion: (data: AcafeImportRequest) => api.post('/acafe-questions/import', data),
-  runSeed: (since?: number, until?: number) => api.post('/acafe-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until } }),
+  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/acafe-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
   importUrl: (data: AcafeUrlImportRequest) => api.post<AcafeUrlImportResult>('/acafe-questions/admin/import-url', data),
 }

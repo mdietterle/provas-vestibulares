@@ -259,7 +259,7 @@ def import_ufpr_year(db, year: int, pdf_url: str) -> dict:
             statement=q["statement"],
             options=options,
             images=images,
-            image_base64=q.get("image_base64"),
+            image_base64=q.get("image_base64", force_reimport=force_reimport),
             correct_option=q.get("correct"),
             metadata=metadata,
         )
@@ -284,7 +284,7 @@ def import_ufpr_year(db, year: int, pdf_url: str) -> dict:
     return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
-def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = None, db=None, **kwargs) -> dict:
+def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
     """Importa TODAS as provas da UFPR publicadas no site do NC-UFPR, em
     regressão de `until_year` (padrão: 2026) até `since_year` (padrão: 2009).
 

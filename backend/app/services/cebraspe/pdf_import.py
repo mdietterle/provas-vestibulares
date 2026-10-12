@@ -48,7 +48,7 @@ def seed_cebraspe(db, year: int, **kwargs) -> dict:
     )
 
 
-def import_all_cebraspe_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, db=None, task_id: Optional[str] = None, **kwargs) -> dict:
+def import_all_cebraspe_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, force_reimport: bool = False, db=None, task_id: Optional[str] = None, **kwargs) -> dict:
     raise NotImplementedError(
         "Importador do Cebraspe/UnB ainda não implementado de verdade — "
         "ver docstring deste módulo."

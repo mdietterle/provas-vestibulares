@@ -233,7 +233,7 @@ def import_upf_edition(db, edition: dict) -> dict:
 
 def import_all_upf_exams(
     since_year: Optional[int] = None,
-    until_year: Optional[int] = None,
+    until_year: Optional[int] = None, force_reimport: bool = False,
     db=None,
     task_id: Optional[str] = None,
     **kwargs,

@@ -226,7 +226,7 @@ def fetch_enem_editions(year: int) -> list[dict]:
     ]
 
 
-def import_all_enem_exams(since_year: int = 2015, until_year: Optional[int] = None, db=None, **kwargs) -> dict:
+def import_all_enem_exams(since_year: int = 2015, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
     """Importa TODAS as edições "regulares, impressas" do ENEM disponíveis em
     gov.br/inep/.../enem/provas-e-gabaritos/{ano}, em regressão de
     `until_year` (padrão: 2025, última edição confirmada) até `since_year`
@@ -762,7 +762,7 @@ def import_enem_pdf(
                 number=q["number"],
                 statement=q["statement"],
                 options=options,
-                image_base64=q.get("image_base64"),
+                image_base64=q.get("image_base64", force_reimport=force_reimport),
                 correct_option=gab_letter,
                 metadata=metadata,
             )

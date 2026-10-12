@@ -495,7 +495,7 @@ def import_udesc_shift(db, year: int, semester: int, shift: str, prova_url: str,
             statement=q["statement"],
             options=options,
             images=images,
-            image_base64=q.get("image_base64"),
+            image_base64=q.get("image_base64", force_reimport=force_reimport),
             correct_option=correct,
             metadata=metadata,
         )
@@ -540,7 +540,7 @@ def import_udesc_edition(db, edition: dict) -> list[dict]:
     return results
 
 
-def import_all_udesc_exams(since_year: int = 2015, until_year: Optional[int] = None, db=None, **kwargs) -> dict:
+def import_all_udesc_exams(since_year: int = 2015, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
     """Importa TODAS as provas da UDESC listadas em
     udesc.br/vestibular/provasanteriores, uma edição (ano.semestre) de cada
     vez. Cada edição tem até 2 turnos (Matutino/Vespertino — provas

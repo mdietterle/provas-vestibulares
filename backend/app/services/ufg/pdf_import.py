@@ -479,7 +479,7 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
             number=q["number"],
             statement=q["statement"],
             options=options,
-            images=images_by_key.get((q["number"], None), []) if "images_by_key" in dir() else None,
+            images=images_by_key.get((q["number"], None, force_reimport=force_reimport), []) if "images_by_key" in dir() else None,
                 image_base64=(images_by_key.get((q["number"], None), [None])[0] if "images_by_key" in dir() and images_by_key.get((q["number"], None)) else None),
             correct_option=correct,
             metadata=metadata,
@@ -575,7 +575,7 @@ async def process_and_import_ufg_from_url(url: str, year: int, db):
 
 def import_all_ufg_exams(
     since_year: Optional[int] = None,
-    until_year: Optional[int] = None,
+    until_year: Optional[int] = None, force_reimport: bool = False,
     db=None,
     task_id: Optional[str] = None,
     **kwargs,

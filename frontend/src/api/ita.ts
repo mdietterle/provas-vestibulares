@@ -53,9 +53,13 @@ export const itaApi = {
   years: () => api.get<number[]>('/ita-questions/years'),
   areas: () => api.get<string[]>('/ita-questions/areas'),
   importQuestion: (data: ItaImportRequest) => api.post('/ita-questions/import', data),
-  runImportAll: (since?: number, until?: number) => api.post('/ita-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until } }),
-  importPdf: (form: FormData) =>
-    api.post<ItaPdfImportResult>('/ita-questions/admin/import-pdf', form, {
+  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/ita-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  importPdf: (form: FormData, forceReimport = false) => {
+    if (forceReimport) {
+      form.append('force_reimport', 'true')
+    }
+    return api.post<ItaPdfImportResult>('/ita-questions/admin/import-pdf', form, {
       headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+    })
+  },
 }

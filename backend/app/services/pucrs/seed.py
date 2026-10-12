@@ -395,7 +395,7 @@ def import_pucrs_edition(db, edition: dict) -> dict:
             statement=q["statement"],
             options=options,
             images=images,
-            image_base64=q.get("image_base64"),
+            image_base64=q.get("image_base64", force_reimport=force_reimport),
             correct_option=correct,
             metadata=metadata,
         )
@@ -408,7 +408,7 @@ def import_pucrs_edition(db, edition: dict) -> dict:
     return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
-def import_all_pucrs_exams(since_year: int = 2015, until_year: Optional[int] = None, db=None, task_id: Optional[str] = None, **kwargs) -> dict:
+def import_all_pucrs_exams(since_year: int = 2015, until_year: Optional[int] = None, force_reimport: bool = False, db=None, task_id: Optional[str] = None, **kwargs) -> dict:
     """Importa TODAS as edições de Medicina da PUCRS com prova+gabarito
     publicados em portal.pucrs.br/.../provas-anteriores/. No momento (2026)
     só existem 2 edições disponíveis (Verão 2022 e Verão 2023) — o

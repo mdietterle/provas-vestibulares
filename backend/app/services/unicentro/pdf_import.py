@@ -490,7 +490,7 @@ def import_unicentro_year(db, year: int, prova_url: str, gabarito_url: str) -> d
     }
 
 
-def import_all_unicentro_exams(since_year: Optional[int] = None, until_year: Optional[int] = None,
+def import_all_unicentro_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, force_reimport: bool = False,
                                 db=None, task_id: Optional[str] = None, **kwargs) -> dict:
     """Importa TODAS as provas da UNICENTRO listadas em
     unicentro.br/vestibular/anteriores/, uma a uma. Cada ano é tentado de
