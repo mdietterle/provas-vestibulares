@@ -448,7 +448,7 @@ _TURNO_LABELS = {"matutino": "Matutino", "vespertino": "Vespertino"}
 _OPCAO_EXAM_LABELS = {"ingles": "Opção Inglês", "espanhol": "Opção Espanhol", "frances": "Opção Francês", "geral": None}
 
 
-def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str]) -> tuple[int, int]:
+def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], force_reimport: bool = False) -> tuple[int, int]:
     added = 0
     skipped_existing = 0
     for q in questions:
@@ -494,7 +494,7 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
     return added, skipped_existing
 
 
-def import_ufg_edition(db, edition: dict) -> dict:
+def import_ufg_edition(db, edition: dict, force_reimport: bool = False) -> dict:
     """Importa UM caderno (processo/turno/tipo) já resolvido por
     `build_editions`, baixando prova + gabarito para um diretório
     temporário. Como o turno matutino tem seções por opção de idioma
@@ -549,7 +549,7 @@ def import_ufg_edition(db, edition: dict) -> dict:
                 results.append({"exam_name": exam_name, "skipped": True, "reason": "Gabarito vazio/não reconhecido para esta seção"})
                 continue
             try:
-                added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito)
+                added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito, force_reimport=force_reimport)
                 results.append({
                     "exam_name": exam_name,
                     "total_parsed": len(questions),
@@ -563,14 +563,14 @@ def import_ufg_edition(db, edition: dict) -> dict:
         return {"exam_name": base_name, "sections": results}
 
 
-async def process_and_import_ufg_from_url(url: str, year: int, db):
+async def process_and_import_ufg_from_url(url: str, year: int, db, force_reimport: bool = False):
     """Compat: importa um único caderno a partir de uma URL de prova,
     tentando achar automaticamente o gabarito via `build_editions`.
     Preferir `import_all_ufg_exams` para lotes."""
     editions = build_editions(since_year=year, until_year=year)
     for e in editions:
         if e["prova_url"] == url:
-            return import_ufg_edition(db, e)
+            return import_ufg_edition(db, e, force_reimport=force_reimport)
     return {"status": "not_found", "reason": "URL não corresponde a nenhum caderno de prova conhecido para este ano"}
 
 
@@ -601,7 +601,7 @@ def import_all_ufg_exams(
         total = len(editions)
         for i, edition in enumerate(editions, start=1):
             try:
-                r = import_ufg_edition(db, edition)
+                r = import_ufg_edition(db, edition, force_reimport=force_reimport)
                 results.append(r)
                 for s in r.get("sections", []):
                     total_added += s.get("total_added", 0)

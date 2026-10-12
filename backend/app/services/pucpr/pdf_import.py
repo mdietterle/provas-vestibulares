@@ -495,7 +495,7 @@ def _ensure_tables(engine) -> None:
         raise RuntimeError(f"Falha ao criar tabelas: {e}")
 
 
-def _import_parsed_exam(db, exam_name: str, year: int, season, course, color, parsed, skipped_numbers, gabarito_text: str) -> dict:
+def _import_parsed_exam(db, exam_name: str, year: int, season, course, color, parsed, skipped_numbers, gabarito_text: str, force_reimport: bool = False) -> dict:
     """Grava no banco as questões já parseadas de uma prova. O gabarito
     detectado por grifo na própria prova tem prioridade; `gabarito_text`
     (colado manualmente) só é usado como reforço para questões sem grifo
@@ -573,6 +573,7 @@ def import_pucpr_exam(
     course: Optional[str],
     color: Optional[str],
     db=None,
+    force_reimport: bool = False,
 ) -> dict:
     from app.database import SessionLocal, engine
 
@@ -602,7 +603,7 @@ def import_pucpr_exam(
         if tmp_file is not None:
             tmp_file.unlink(missing_ok=True)
 
-        return _import_parsed_exam(db, exam_name, year, season, course, color, parsed, skipped_numbers, gabarito_text)
+        return _import_parsed_exam(db, exam_name, year, season, course, color, parsed, skipped_numbers, gabarito_text, force_reimport=force_reimport)
     except Exception:
         db.rollback()
         raise
@@ -720,7 +721,7 @@ def import_all_pucpr_exams(
                 if not parsed:
                     results.append({"exam_name": exam_name, "url": link["url"], "skipped": True, "reason": "Nenhuma questão reconhecida (provável edital fora do formato padrão)."})
                 else:
-                    result = _import_parsed_exam(db, exam_name, link["year"], link["season"], link["course"], link["color"], parsed, skipped_numbers, "")
+                    result = _import_parsed_exam(db, exam_name, link["year"], link["season"], link["course"], link["color"], parsed, skipped_numbers, "", force_reimport=force_reimport)
                     total_added += result["total_added"]
                     results.append({**result, "url": link["url"]})
             except Exception as e:

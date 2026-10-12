@@ -443,7 +443,8 @@ def _parse_exam(
 
 
 def _persist_parsed_questions(
-    db, exam_name: str, year: int, phase: str, parsed: list[dict]
+    db, exam_name: str, year: int, phase: str, parsed: list[dict],
+    force_reimport: bool = False,
 ) -> tuple[int, int]:
     from app.services.import_batch import save_vestibular_question
 
@@ -638,7 +639,7 @@ def import_all_ita_exams(
                     results.append({"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida."})
                     continue
 
-                added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed)
+                added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed, force_reimport=force_reimport)
                 total_added += added
                 results.append({"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing})
                 
@@ -673,6 +674,7 @@ def import_ita_pdf(
     phase: str,
     subject: Optional[str] = None,
     db=None,
+    force_reimport: bool = False,
 ) -> dict:
     from app.database import SessionLocal
 
@@ -694,7 +696,7 @@ def import_ita_pdf(
             gabarito = _parse_gabarito(gabarito_path, subject=subject)
 
         parsed = _parse_exam(prova_path, gabarito, subject=subject)
-        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed)
+        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed, force_reimport=force_reimport)
 
         return {
             "exam_name": exam_name,

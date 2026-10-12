@@ -295,7 +295,8 @@ def import_all_enem_exams(since_year: int = 2015, until_year: Optional[int] = No
                     gabarito_url=edition.get("gabarito_url"),
                     task_id=task_id,
                     items_done_before=total_added,
-                )
+                    force_reimport=force_reimport,
+)
                 results.append({"year": year, "day": day, **r})
                 total_added += r.get("total_added", 0)
                 if task_id:
@@ -660,6 +661,7 @@ def import_enem_pdf(
     mec_page_url: Optional[str] = None,
     task_id: Optional[str] = None,
     items_done_before: int = 0,
+    force_reimport: bool = False,
 ) -> dict:
     """Importa um caderno de prova ENEM via PDF local ou URL pública do MEC,
     opcionalmente com gabarito em PDF, classificando matéria e dificuldade via Groq."""

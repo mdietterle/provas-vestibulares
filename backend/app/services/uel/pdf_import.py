@@ -338,7 +338,7 @@ def parse_exam_pdf(pdf_path: Path) -> list[dict]:
 
 # ── Persistência ─────────────────────────────────────────────────────────────
 
-def _persist_year(db: Session, year: int, questions: list[dict]) -> dict:
+def _persist_year(db: Session, year: int, questions: list[dict], force_reimport: bool = False) -> dict:
     """Grava as questões de um ano via adapter unificado. Idempotente por
     (exam_type, exam_name, number) — delegada ao save_vestibular_question."""
     import gc
@@ -386,7 +386,7 @@ def _persist_year(db: Session, year: int, questions: list[dict]) -> dict:
     return {"year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": skipped_existing}
 
 
-def import_uel_year(year: int, db: Optional[Session] = None) -> dict:
+def import_uel_year(year: int, db: Optional[Session] = None, force_reimport: bool = False) -> dict:
     """Importa um ano: baixa Prova Tipo 1 + Gabarito Tipo 1 (Definitivo),
     parseia e grava. Cross-checa a resposta impressa na prova contra o
     gabarito oficial só para logging — nunca observado divergir nos 8 anos
@@ -427,7 +427,7 @@ def import_uel_year(year: int, db: Optional[Session] = None) -> dict:
         if not questions:
             return {"year": year, "skipped": True, "reason": "Nenhuma questão reconhecida (PDF em formato inesperado)"}
 
-        return _persist_year(db, year, questions)
+        return _persist_year(db, year, questions, force_reimport=force_reimport)
     except Exception:
         db.rollback()
         raise
@@ -467,7 +467,7 @@ def import_all_uel_exams(
                 update_task_progress(task_id, current=i, total=len(years), log=f"Processando Vestibular UEL {year}...")
 
             try:
-                r = import_uel_year(year, db=db)
+                r = import_uel_year(year, db=db, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
                 if task_id:
@@ -495,8 +495,8 @@ def import_all_uel_exams(
 
 
 # Compat: assinatura antiga usada pelo router.
-async def process_and_import_uel_from_url(url: str, year: int, db: Session):
-    return import_uel_year(year, db=db)
+async def process_and_import_uel_from_url(url: str, year: int, db: Session, force_reimport: bool = False):
+    return import_uel_year(year, db=db, force_reimport=force_reimport)
 
 
 async def import_all(db: Optional[Session] = None, task_id: Optional[str] = None, **kwargs) -> dict:

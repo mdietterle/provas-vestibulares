@@ -306,7 +306,7 @@ def parse_exam(text: str, gabarito: dict[int, Optional[str]]) -> list[dict]:
 
 # ── Persistência ─────────────────────────────────────────────────────────
 
-def _persist_edition(db: Session, edition: str, year: int, questions: list[dict], gabarito: dict[int, Optional[str]]) -> dict:
+def _persist_edition(db: Session, edition: str, year: int, questions: list[dict], gabarito: dict[int, Optional[str]], force_reimport: bool = False) -> dict:
     """Grava as questões de uma edição (ex.: "2019-2") via adapter unificado.
     Idempotente por (exam_type, exam_name, number)."""
     import gc
@@ -352,7 +352,7 @@ def _persist_edition(db: Session, edition: str, year: int, questions: list[dict]
     return {"edition": edition, "year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": skipped_existing}
 
 
-def import_ulbra_edition(edition: str, year: int, prova_url: str, gabarito_url: str, db: Optional[Session] = None) -> dict:
+def import_ulbra_edition(edition: str, year: int, prova_url: str, gabarito_url: str, db: Optional[Session] = None, force_reimport: bool = False) -> dict:
     """Importa uma edição: baixa prova completa + gabarito oficial, parseia
     e grava."""
     from app.database import SessionLocal
@@ -382,7 +382,7 @@ def import_ulbra_edition(edition: str, year: int, prova_url: str, gabarito_url: 
         if not questions:
             return {"edition": edition, "year": year, "skipped": True, "reason": "Nenhuma questão reconhecida (prova em formato inesperado)"}
 
-        return _persist_edition(db, edition, year, questions, gabarito)
+        return _persist_edition(db, edition, year, questions, gabarito, force_reimport=force_reimport)
     except Exception:
         db.rollback()
         raise
@@ -422,7 +422,7 @@ def import_all_ulbra_exams(
                 update_task_progress(task_id, current=i, total=len(editions), log=f"Processando Vestibular ULBRA {edition}...")
 
             try:
-                r = import_ulbra_edition(edition, year, prova_url, gab_url, db=db)
+                r = import_ulbra_edition(edition, year, prova_url, gab_url, db=db, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
                 if task_id:

@@ -311,7 +311,7 @@ def parse_prova(prova_pdf: Path) -> list[dict]:
     return questions
 
 
-def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str]) -> tuple[int, int]:
+def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], force_reimport: bool = False) -> tuple[int, int]:
     """Grava as questões de UM caderno (já parseado) no banco, pulando
     edições já importadas (mesmo exam_name) e questões sem gabarito
     conhecido para o número (não encontrado na tabela). Não deduplica por
@@ -371,7 +371,7 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
     return added, skipped_existing
 
 
-def import_ufu_edition(db, year: int, semester: int, cronograma_id: int) -> dict:
+def import_ufu_edition(db, year: int, semester: int, cronograma_id: int, force_reimport: bool = False) -> dict:
     """Importa TODOS os cadernos ("Tipo 1".."Tipo 4") de UMA edição
     (ano/semestre), usando o único PDF de gabarito da edição para todos."""
     import tempfile
@@ -419,7 +419,7 @@ def import_ufu_edition(db, year: int, semester: int, cronograma_id: int) -> dict
                     results.append({"exam_name": exam_name, "skipped": True, "reason": f"Gabarito do Tipo {tipo!r} não encontrado no PDF de gabarito"})
                     continue
 
-                added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito)
+                added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito, force_reimport=force_reimport)
                 results.append({
                     "exam_name": exam_name,
                     "total_parsed": len(questions),
@@ -490,7 +490,7 @@ async def import_all(
         for i, edition in enumerate(editions, start=1):
             label = f"UFU {edition['year']}"
             try:
-                r = import_ufu_edition(db, edition["year"], edition["semester"], edition["cronograma_id"])
+                r = import_ufu_edition(db, edition["year"], edition["semester"], edition["cronograma_id"], force_reimport=force_reimport)
                 results.append(r)
                 total_added += sum(x.get("total_added", 0) for x in r.get("exams", []))
             except Exception as e:

@@ -568,7 +568,7 @@ def parse_prova(prova_pdf: Path) -> list[dict]:
     return questions
 
 
-def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str]) -> tuple[int, int]:
+def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], force_reimport: bool = False) -> tuple[int, int]:
     added = 0
     skipped_existing = 0
     for q in questions:
@@ -622,7 +622,7 @@ _AREA_LABELS = {
 }
 
 
-def import_ufjf_edition(db, edition: dict) -> dict:
+def import_ufjf_edition(db, edition: dict, force_reimport: bool = False) -> dict:
     """Importa UM caderno (ano/dia/módulo/área) já resolvido por
     `build_editions`, baixando prova + gabarito para um diretório
     temporário."""
@@ -651,7 +651,7 @@ def import_ufjf_edition(db, edition: dict) -> dict:
             if not gabarito:
                 return {"exam_name": exam_name, "skipped": True, "reason": "Gabarito vazio/não reconhecido"}
 
-            added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito)
+            added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito, force_reimport=force_reimport)
             return {
                 "exam_name": exam_name,
                 "total_parsed": len(questions),
@@ -663,14 +663,14 @@ def import_ufjf_edition(db, edition: dict) -> dict:
             return {"exam_name": exam_name, "skipped": True, "reason": str(e)}
 
 
-async def process_and_import_ufjf_from_url(url: str, year: int, db):
+async def process_and_import_ufjf_from_url(url: str, year: int, db, force_reimport: bool = False):
     """Compat: importa um único caderno a partir de uma URL de prova,
     tentando achar automaticamente o gabarito do mesmo módulo/dia/ano via
     `build_editions`. Preferir `import_all_ufjf_exams` para lotes."""
     editions = build_editions(since_year=year, until_year=year)
     for e in editions:
         if e["prova_url"] == url:
-            return import_ufjf_edition(db, e)
+            return import_ufjf_edition(db, e, force_reimport=force_reimport)
     return {"status": "not_found", "reason": "URL não corresponde a nenhum caderno de prova conhecido para este ano"}
 
 
@@ -700,7 +700,7 @@ def import_all_ufjf_exams(
         total = len(editions)
         for i, edition in enumerate(editions, start=1):
             try:
-                r = import_ufjf_edition(db, edition)
+                r = import_ufjf_edition(db, edition, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
             except Exception as e:

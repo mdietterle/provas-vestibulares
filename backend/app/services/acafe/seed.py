@@ -645,7 +645,8 @@ def parse_pdf(pdf_path: Path) -> list[dict]:
 
 
 def _persist_parsed_acafe_questions(
-    db: Session, exam_name: str, year: int, period: Optional[str], parsed: list[dict]
+    db: Session, exam_name: str, year: int, period: Optional[str], parsed: list[dict],
+    force_reimport: bool = False,
 ) -> dict:
     """Grava questões ACAFE já parseadas (e, opcionalmente, com o gabarito
     sobrescrito por `_apply_gabarito_override`). Compartilhado pelo seed
@@ -708,12 +709,12 @@ def _persist_parsed_acafe_questions(
     return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
-def _import_pdf_file(db: Session, pdf_path: Path, year: int, period: Optional[str]) -> dict:
+def _import_pdf_file(db: Session, pdf_path: Path, year: int, period: Optional[str], force_reimport: bool = False) -> dict:
     """Importa um único PDF de prova ACAFE já parseável. Compartilhado pelo
     seed local (arquivos em provas/acafe/) e pelo importador por URL."""
     exam_name = f"ACAFE {period or ''} {year}".replace("  ", " ").strip()
     parsed = parse_pdf(pdf_path)
-    return _persist_parsed_acafe_questions(db, exam_name, year, period, parsed)
+    return _persist_parsed_acafe_questions(db, exam_name, year, period, parsed, force_reimport=force_reimport)
 
 
 def seed_acafe(db: Session | None = None, **kwargs) -> dict:
@@ -740,7 +741,7 @@ def seed_acafe(db: Session | None = None, **kwargs) -> dict:
     try:
         for pdf_path in pdf_files:
             year, period = _parse_period_year(pdf_path.stem)
-            r = _import_pdf_file(db, pdf_path, year, period)
+            r = _import_pdf_file(db, pdf_path, year, period, force_reimport=force_reimport)
             if r["skipped_existing"]:
                 results.append({"exam": r["exam_name"], "added": 0, "existing": r["skipped_existing"]})
             else:
@@ -756,7 +757,7 @@ def seed_acafe(db: Session | None = None, **kwargs) -> dict:
             db.close()
 
 
-def import_acafe_from_url(url: str, year: int, period: str | None = None, db: Session | None = None) -> dict:
+def import_acafe_from_url(url: str, year: int, period: str | None = None, db: Session | None = None, force_reimport: bool = False) -> dict:
     """Baixa o PDF oficial de uma prova ACAFE a partir de uma URL pública
     (ex.: storage.acafe.org.br/.../Prova objetiva oficial - comentada.pdf) e
     importa as questões, sem exigir que o arquivo esteja commitado no repo.
@@ -779,7 +780,7 @@ def import_acafe_from_url(url: str, year: int, period: str | None = None, db: Se
         with tempfile.TemporaryDirectory() as tmp_dir:
             pdf_path = Path(tmp_dir) / "prova.pdf"
             download_pdf(url, pdf_path)
-            return _import_pdf_file(db, pdf_path, year, period)
+            return _import_pdf_file(db, pdf_path, year, period, force_reimport=force_reimport)
     except Exception:
         db.rollback()
         raise
@@ -788,7 +789,7 @@ def import_acafe_from_url(url: str, year: int, period: str | None = None, db: Se
             db.close()
 
 
-def import_acafe_edition(db: Session, year: int, period: str, edition: dict) -> dict:
+def import_acafe_edition(db: Session, year: int, period: str, edition: dict, force_reimport: bool = False) -> dict:
     """Baixa e importa uma edição encontrada por `fetch_acafe_editions`
     (prova avulsa ou par prova+gabarito dentro de um .zip). Quando há um
     gabarito oficial separado, ele sobrescreve a resposta que `parse_pdf` já
@@ -839,7 +840,7 @@ def import_acafe_edition(db: Session, year: int, period: str, edition: dict) -> 
             "reason": "Nenhuma questão reconhecida (PDF em formato inesperado, sem os marcadores 'Dados da questão').",
         }
 
-    return _persist_parsed_acafe_questions(db, exam_name, year, period, parsed)
+    return _persist_parsed_acafe_questions(db, exam_name, year, period, parsed, force_reimport=force_reimport)
 
 
 def import_all_acafe_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, db: Session | None = None, task_id: Optional[str] = None, **kwargs) -> dict:
@@ -891,7 +892,7 @@ def import_all_acafe_exams(since_year: Optional[int] = None, until_year: Optiona
 
                 for edition in editions:
                     try:
-                        r = import_acafe_edition(db, year, period, edition)
+                        r = import_acafe_edition(db, year, period, edition, force_reimport=force_reimport)
                         results.append({"year": year, "period": period, **r})
                         total_added += r.get("total_added", 0)
                         if task_id:

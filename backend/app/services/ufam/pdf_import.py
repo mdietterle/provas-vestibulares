@@ -415,7 +415,7 @@ def parse_gabarito(path: Path) -> dict:
         doc.close()
 
 
-def _persist_edition(db, exam_name: str, year: int, stage: int, questions: list[dict], gabarito: dict) -> tuple:
+def _persist_edition(db, exam_name: str, year: int, stage: int, questions: list[dict], gabarito: dict, force_reimport: bool = False) -> tuple:
     """Grava as questões de UMA edição (já parseada), pulando edições já
     importadas (mesmo exam_name) e questões sem gabarito conhecido (número
     ausente, anulada, ou que não corresponda a nenhuma alternativa
@@ -474,7 +474,7 @@ def _persist_edition(db, exam_name: str, year: int, stage: int, questions: list[
     return added, skipped_existing
 
 
-def import_ufam_edition(db, edition: dict) -> dict:
+def import_ufam_edition(db, edition: dict, force_reimport: bool = False) -> dict:
     """Importa UMA edição (ano/etapa): localiza caderno e gabarito na
     página de item do DSpace, baixa ambos e persiste."""
     import tempfile
@@ -517,7 +517,7 @@ def import_ufam_edition(db, edition: dict) -> dict:
             return {"exam_name": exam_name, "year": year, "stage": stage, "skipped": True,
                     "reason": "Nenhuma questão reconhecida no PDF (prova escaneada, sem texto extraível, ou formato de alternativas não reconhecido)"}
 
-        added, skipped_existing = _persist_edition(db, exam_name, year, stage, questions, gabarito)
+        added, skipped_existing = _persist_edition(db, exam_name, year, stage, questions, gabarito, force_reimport=force_reimport)
         return {
             "exam_name": exam_name, "year": year, "stage": stage,
             "gabarito_status": files["gabarito_status"],
@@ -572,7 +572,7 @@ def import_all_ufam_exams(
         total = len(editions)
         for i, edition in enumerate(editions, start=1):
             try:
-                r = import_ufam_edition(db, edition)
+                r = import_ufam_edition(db, edition, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
             except Exception as e:

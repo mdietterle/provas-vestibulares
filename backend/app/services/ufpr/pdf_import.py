@@ -192,7 +192,7 @@ def parse_ufpr_pdf(pdf_path: Path) -> list[dict]:
     return questions
 
 
-def import_ufpr_year(db, year: int, pdf_url: str) -> dict:
+def import_ufpr_year(db, year: int, pdf_url: str, force_reimport: bool = False) -> dict:
     """Importa a prova de um ano a partir de uma URL de PDF já resolvida."""
     import tempfile
 
@@ -326,7 +326,7 @@ def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = No
                 continue
 
             try:
-                r = import_ufpr_year(db, year, pdf_url)
+                r = import_ufpr_year(db, year, pdf_url, force_reimport=force_reimport)
                 results.append({"year": year, **r})
                 total_added += r.get("total_added", 0)
             except Exception as e:

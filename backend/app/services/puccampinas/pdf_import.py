@@ -533,7 +533,7 @@ def parse_gabarito(pdf_path: Path) -> dict[int, str]:
 
 # ── Persistência ────────────────────────────────────────────────────────────
 
-def _persist_segment(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str]) -> dict:
+def _persist_segment(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], force_reimport: bool = False) -> dict:
     """Grava as questões de UMA parte (segmento) já parseada, pulando
     edições já importadas (mesmo exam_name) e questões sem gabarito
     conhecido (não encontrado na tabela de respostas)."""
@@ -597,7 +597,7 @@ def _persist_segment(db, exam_name: str, year: int, questions: list[dict], gabar
 _SEGMENT_LABELS = ("Geral", "Específica")
 
 
-def import_puccampinas_track(db, track: dict) -> dict:
+def import_puccampinas_track(db, track: dict, force_reimport: bool = False) -> dict:
     """Importa UMA trilha (ano + temporada + curso) — baixa o caderno de
     prova e o(s) gabarito(s), parseia e persiste. Segmentos do caderno
     (partes com numeração reiniciada, ex.: Medicina Geral/Específica) são
@@ -649,7 +649,7 @@ def import_puccampinas_track(db, track: dict) -> dict:
                                  "reason": "Gabarito indisponível como texto (imagem escaneada ou "
                                             "padrão de respostas discursivo, sem letra objetiva)."})
                 continue
-            results.append(_persist_segment(db, exam_name, year, questions, gabarito))
+            results.append(_persist_segment(db, exam_name, year, questions, gabarito, force_reimport=force_reimport))
 
     return {"label": label_base, "segments": results}
 
@@ -689,7 +689,7 @@ def import_all_puccampinas_exams(
         total = len(tracks)
         for i, track in enumerate(tracks, start=1):
             try:
-                r = import_puccampinas_track(db, track)
+                r = import_puccampinas_track(db, track, force_reimport=force_reimport)
             except Exception as e:
                 db.rollback()
                 r = {"label": f"{track.get('year')} – {track.get('track')}", "skipped": True, "reason": str(e)}

@@ -439,7 +439,7 @@ def _merge_gabarito(parsed: list[dict], section: dict) -> None:
         q["area"] = area
 
 
-def import_udesc_shift(db, year: int, semester: int, shift: str, prova_url: str, gabarito_map: dict) -> dict:
+def import_udesc_shift(db, year: int, semester: int, shift: str, prova_url: str, gabarito_map: dict, force_reimport: bool = False) -> dict:
     from app.services.import_batch import save_vestibular_question
 
     exam_name = f"UDESC {year}.{semester} – {shift}"
@@ -509,7 +509,7 @@ def import_udesc_shift(db, year: int, semester: int, shift: str, prova_url: str,
     return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
-def import_udesc_edition(db, edition: dict) -> list[dict]:
+def import_udesc_edition(db, edition: dict, force_reimport: bool = False) -> list[dict]:
     """Importa as provas dos turnos disponíveis (Matutino e/ou Vespertino —
     são DIFERENTES, não variantes, então as duas são importadas) de uma
     edição. Cada turno é tentado de forma independente."""
@@ -530,7 +530,7 @@ def import_udesc_edition(db, edition: dict) -> list[dict]:
         if not edition.get(url_key):
             continue
         try:
-            results.append(import_udesc_shift(db, year, semester, shift, edition[url_key], gabarito_map))
+            results.append(import_udesc_shift(db, year, semester, shift, edition[url_key], gabarito_map, force_reimport=force_reimport))
         except Exception as e:
             db.rollback()
             results.append({
@@ -581,7 +581,7 @@ def import_all_udesc_exams(since_year: int = 2015, until_year: Optional[int] = N
     total_added = 0
     try:
         for edition in editions:
-            for r in import_udesc_edition(db, edition):
+            for r in import_udesc_edition(db, edition, force_reimport=force_reimport):
                 results.append({"year": edition["year"], "semester": edition["semester"], **r})
                 total_added += r.get("total_added", 0)
 

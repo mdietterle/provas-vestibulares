@@ -438,7 +438,8 @@ def _parse_exam(
 
 
 def _persist_parsed_questions(
-    db, exam_name: str, year: int, phase: str, parsed: list[dict]
+    db, exam_name: str, year: int, phase: str, parsed: list[dict],
+    force_reimport: bool = False,
 ) -> tuple[int, int]:
     from app.services.import_batch import save_vestibular_question
 
@@ -593,7 +594,7 @@ def import_all_fgv_exams(since_year: Optional[int] = None, until_year: Optional[
             exam_name += f" ({subject})"
         return exam_name
 
-    def _process(link: dict) -> dict:
+    def _process(link: dict, force_reimport: bool = False) -> dict:
         year, phase, subject = link["year"], link["phase"], link["subject"]
         exam_name = _exam_name(link)
 
@@ -634,6 +635,7 @@ def import_fgv_pdf(
     phase: str,
     subject: Optional[str] = None,
     db=None,
+    force_reimport: bool = False,
 ) -> dict:
     from app.database import SessionLocal
 

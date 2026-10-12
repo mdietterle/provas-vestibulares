@@ -258,7 +258,7 @@ def import_all_unicamp_exams(since_year: Optional[int] = None, until_year: Optio
             exam_name += f" ({subject})"
         return exam_name
 
-    def _process(link: dict) -> dict:
+    def _process(link: dict, force_reimport: bool = False) -> dict:
         year, phase, subject = link["year"], link["phase"], link["subject"]
         exam_name = _exam_name(link)
 
@@ -298,6 +298,7 @@ def import_unicamp_pdf(
     phase: str,
     subject: Optional[str] = None,
     db=None,
+    force_reimport: bool = False,
 ) -> dict:
     from app.database import SessionLocal
 

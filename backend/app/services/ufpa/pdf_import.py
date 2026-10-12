@@ -383,7 +383,8 @@ def parse_gabarito(path: Path, n_langs: int = 5) -> tuple[dict[int, str], list[d
 
 
 def _persist_exam(db, exam_name: str, year: int, questions: list[dict],
-                   main_answers: dict[int, str], lang_answers: list[dict[int, str]]) -> tuple:
+    force_reimport: bool = False,
+) -> tuple:
     """Grava as questões de UM ano via adapter unificado, pulando questões
     sem gabarito conhecido (não encontrado, anuladas pela banca — "Anulada"
     — ou letra que não bate com nenhuma alternativa extraída)."""
@@ -442,7 +443,7 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict],
     return added, skipped_existing
 
 
-def import_ufpa_year(db, year: int, urls: dict) -> dict:
+def import_ufpa_year(db, year: int, urls: dict, force_reimport: bool = False) -> dict:
     """Importa o boletim de questões de UM ano do Processo Seletivo UFPA,
     casando-o com seu gabarito oficial."""
     import tempfile
@@ -475,7 +476,7 @@ def import_ufpa_year(db, year: int, urls: dict) -> dict:
             return {"exam_name": exam_name, "year": year, "skipped": True,
                     "reason": f"Falha ao parsear o gabarito: {e}"}
 
-        added, skipped_existing = _persist_exam(db, exam_name, year, questions, main_answers, lang_answers)
+        added, skipped_existing = _persist_exam(db, exam_name, year, questions, main_answers, lang_answers, force_reimport=force_reimport)
         return {
             "exam_name": exam_name, "year": year,
             "total_parsed": len(questions),
@@ -511,7 +512,7 @@ def import_all_ufpa_exams(
         total = len(exams)
         for i, (year, urls) in enumerate(sorted(exams.items()), start=1):
             try:
-                r = import_ufpa_year(db, year, urls)
+                r = import_ufpa_year(db, year, urls, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
             except Exception as e:

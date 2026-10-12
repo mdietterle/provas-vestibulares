@@ -292,7 +292,7 @@ def parse_exam(text: str, gabarito: dict[int, Optional[str]]) -> list[dict]:
 
 # ── Persistência ─────────────────────────────────────────────────────────
 
-def _persist_year(db: Session, year: int, cadernos: list[dict]) -> dict:
+def _persist_year(db: Session, year: int, cadernos: list[dict], force_reimport: bool = False) -> dict:
     """Grava as questões de um ano via adapter unificado, renumerando de
     forma contínua (1..N) entre os cadernos (PS1/PS2/PS3) do mesmo ano,
     já que a numeração original recomeça em 1 em cada um e colidiria."""
@@ -343,7 +343,7 @@ def _persist_year(db: Session, year: int, cadernos: list[dict]) -> dict:
     return {"year": year, "total_parsed": total_parsed, "total_added": added, "skipped_existing": skipped_existing}
 
 
-def import_ufsm_year(year: int, db: Optional[Session] = None) -> dict:
+def import_ufsm_year(year: int, db: Optional[Session] = None, force_reimport: bool = False) -> dict:
     """Importa um ano: baixa prova(s) + gabarito(s) oficiais definitivos dos
     cadernos mapeados em `_EDITIONS`, parseia e grava."""
     from app.database import SessionLocal
@@ -382,7 +382,7 @@ def import_ufsm_year(year: int, db: Optional[Session] = None) -> dict:
         if not cadernos:
             return {"year": year, "skipped": True, "reason": "Nenhum caderno reconhecido (prova/gabarito digitalizados ou em formato inesperado)"}
 
-        return _persist_year(db, year, cadernos)
+        return _persist_year(db, year, cadernos, force_reimport=force_reimport)
     except Exception:
         db.rollback()
         raise
@@ -422,7 +422,7 @@ def import_all_ufsm_exams(
                 update_task_progress(task_id, current=i, total=len(years), log=f"Processando Vestibular UFSM {year}...")
 
             try:
-                r = import_ufsm_year(year, db=db)
+                r = import_ufsm_year(year, db=db, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
                 if task_id:

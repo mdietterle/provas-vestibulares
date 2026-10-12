@@ -323,7 +323,7 @@ def run_migrations_pucrs(conn):
     """))
 
 
-def import_pucrs_edition(db, edition: dict) -> dict:
+def import_pucrs_edition(db, edition: dict, force_reimport: bool = False) -> dict:
     from app.services.import_batch import save_vestibular_question
 
     year, season = edition["year"], edition["season"]
@@ -449,7 +449,7 @@ def import_all_pucrs_exams(since_year: int = 2015, until_year: Optional[int] = N
         for i, edition in enumerate(editions, start=1):
             exam_name = f"PUCRS {edition['season']} {edition['year']} – Medicina"
             try:
-                r = import_pucrs_edition(db, edition)
+                r = import_pucrs_edition(db, edition, force_reimport=force_reimport)
             except Exception as e:
                 db.rollback()
                 r = {"exam_name": exam_name, "skipped": True, "reason": str(e)}

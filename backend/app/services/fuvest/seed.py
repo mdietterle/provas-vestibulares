@@ -363,7 +363,7 @@ def run_migrations_fuvest(conn):
     """))
 
 
-def import_fuvest_year(db, year: int, edition: dict) -> dict:
+def import_fuvest_year(db, year: int, edition: dict, force_reimport: bool = False) -> dict:
     from app.services.import_batch import save_vestibular_question
 
     exam_name = f"FUVEST {year}"
@@ -508,7 +508,7 @@ def import_all_fuvest_exams(since_year: int = 2015, until_year: Optional[int] = 
                 continue
 
             try:
-                r = import_fuvest_year(db, year, edition)
+                r = import_fuvest_year(db, year, edition, force_reimport=force_reimport)
                 results.append({"year": year, **r})
                 total_added += r.get("total_added", 0)
             except Exception as e:

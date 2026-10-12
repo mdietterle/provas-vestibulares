@@ -393,6 +393,7 @@ def import_pucrio_edition(
     tmp_dir: Path,
     since_year: Optional[int] = None,
     until_year: Optional[int] = None,
+    force_reimport: bool = False,
 ) -> dict:
     from app.database import SessionLocal
     from app.services.import_batch import save_vestibular_question
@@ -521,7 +522,7 @@ def import_all_pucrio_exams(since_year: Optional[int] = None, until_year: Option
         tmp_dir = Path(tmp)
         for year_label in years:
             try:
-                result = import_pucrio_edition(year_label, tmp_dir, since_year=since_year, until_year=until_year)
+                result = import_pucrio_edition(year_label, tmp_dir, since_year=since_year, until_year=until_year, force_reimport=force_reimport)
                 if result.get("skipped"):
                     skipped.append(result)
                 else:

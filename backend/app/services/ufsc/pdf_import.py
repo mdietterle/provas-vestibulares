@@ -243,7 +243,7 @@ def import_all_ufsc_exams(since_year: Optional[int] = None, until_year: Optional
             name += f" ({link['color'].capitalize()})"
         return name
 
-    def _process(link: dict) -> dict:
+    def _process(link: dict, force_reimport: bool = False) -> dict:
         year, phase, color = link["year"], link["phase"], link["color"]
         exam_name = _exam_name(link)
 

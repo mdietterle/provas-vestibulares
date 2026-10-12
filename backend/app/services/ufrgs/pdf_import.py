@@ -489,7 +489,8 @@ def import_all_ufrgs_exams(
                     db=db,
                     gabarito_year=year,
                     language=language,
-                )
+                    force_reimport=force_reimport,
+)
                 results.append({"year": year, "day": day, **r})
                 total_added += r.get("total_added", 0)
                 if task_id:
@@ -533,6 +534,7 @@ def import_ufrgs_exam(
     db=None,
     gabarito_year: Optional[int] = None,
     language: str = "Inglês",
+    force_reimport: bool = False,
 ) -> dict:
     """`gabarito_year`: se informado (e `gabarito_text` vazio), busca o
     gabarito automaticamente em vestibular.ufrgs.br/cv{gabarito_year}/gabaritos/

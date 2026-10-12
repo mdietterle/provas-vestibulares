@@ -349,7 +349,7 @@ def run_migrations_ufpel(conn):
     """))
 
 
-def import_ufpel_stage(db, year: int, stage: int, prova_url: str, gabarito: dict[int, Optional[str]]) -> dict:
+def import_ufpel_stage(db, year: int, stage: int, prova_url: str, gabarito: dict[int, Optional[str]], force_reimport: bool = False) -> dict:
     from app.services.import_batch import save_vestibular_question
 
     exam_name = f"UFPel PAVE {year} – Etapa {stage}"
@@ -415,7 +415,7 @@ def import_ufpel_stage(db, year: int, stage: int, prova_url: str, gabarito: dict
     return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
-def import_ufpel_edition(db, edition: dict) -> list[dict]:
+def import_ufpel_edition(db, edition: dict, force_reimport: bool = False) -> list[dict]:
     year = edition["year"]
     results = []
 
@@ -430,7 +430,7 @@ def import_ufpel_edition(db, edition: dict) -> list[dict]:
 
     for stage in sorted(edition["stages"].keys()):
         try:
-            r = import_ufpel_stage(db, year, stage, edition["stages"][stage], gabarito_by_stage.get(stage, {}))
+            r = import_ufpel_stage(db, year, stage, edition["stages"][stage], gabarito_by_stage.get(stage, {}), force_reimport=force_reimport)
         except Exception as e:
             db.rollback()
             r = {"exam_name": f"UFPel PAVE {year} – Etapa {stage}", "skipped": True, "reason": str(e)}
@@ -474,7 +474,7 @@ def import_all_ufpel_exams(since_year: int = 2013, until_year: Optional[int] = N
     total_added = 0
     try:
         for edition in sorted(editions, key=lambda e: e["year"], reverse=True):
-            for r in import_ufpel_edition(db, edition):
+            for r in import_ufpel_edition(db, edition, force_reimport=force_reimport):
                 results.append({"year": edition["year"], **r})
                 total_added += r.get("total_added", 0)
 

@@ -447,7 +447,8 @@ def _parse_exam(
 
 
 def _persist_parsed_questions(
-    db, exam_name: str, year: int, parsed: list[dict]
+    db, exam_name: str, year: int, parsed: list[dict],
+    force_reimport: bool = False,
 ) -> tuple[int, int]:
     added = 0
     skipped_existing = 0
@@ -571,7 +572,7 @@ def import_all_ufgd_exams(since_year: Optional[int] = None, until_year: Optional
             exam_name += f" ({subject})"
         return exam_name
 
-    def _process(link: dict) -> dict:
+    def _process(link: dict, force_reimport: bool = False) -> dict:
         year, subject = link["year"], link["subject"]
         exam_name = _exam_name(link)
 
@@ -610,6 +611,7 @@ def import_ufgd_pdf(
     year: int,
     subject: Optional[str] = None,
     db=None,
+    force_reimport: bool = False,
 ) -> dict:
     from app.database import SessionLocal
 

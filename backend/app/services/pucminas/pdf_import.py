@@ -416,7 +416,7 @@ def build_gabarito_index(gabarito_urls: list[str]) -> dict:
     return index
 
 
-def _persist_booklet(db, exam_name: str, year: int, questions: list[dict], answers: dict) -> tuple:
+def _persist_booklet(db, exam_name: str, year: int, questions: list[dict], answers: dict, force_reimport: bool = False) -> tuple:
     """Grava as questões de UM caderno, pulando cadernos já importados
     (mesmo exam_name), questões sem gabarito conhecido (número ausente,
     anulada — letra "N" — ou que não corresponda a nenhuma alternativa
@@ -489,6 +489,7 @@ def _persist_booklet(db, exam_name: str, year: int, questions: list[dict], answe
 def import_pucminas_booklet(
     db, booklet_url: str, gabarito_index: dict,
     since_year: Optional[int] = None, until_year: Optional[int] = None,
+    force_reimport: bool = False,
 ) -> dict:
     """Importa UM caderno de prova, casando-o com o gabarito da sua edição
     pela chave (ano, semestre, total de questões)."""
@@ -522,7 +523,7 @@ def import_pucminas_booklet(
         if not questions:
             return {"exam_name": exam_name, "year": meta["year"], "skipped": True, "reason": "Nenhuma questão reconhecida no PDF (formato de alternativas não reconhecido — provável edição anterior a 2021)"}
 
-        added, skipped_existing = _persist_booklet(db, exam_name, meta["year"], questions, answers)
+        added, skipped_existing = _persist_booklet(db, exam_name, meta["year"], questions, answers, force_reimport=force_reimport)
         return {
             "exam_name": exam_name, "year": meta["year"],
             "total_parsed": len(questions),
@@ -566,7 +567,7 @@ def import_all_pucminas_exams(
         total = len(booklet_urls)
         for i, url in enumerate(booklet_urls, start=1):
             try:
-                r = import_pucminas_booklet(db, url, gabarito_index, since_year=since_year, until_year=until_year)
+                r = import_pucminas_booklet(db, url, gabarito_index, since_year=since_year, until_year=until_year, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
             except Exception as e:

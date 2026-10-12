@@ -228,6 +228,7 @@ def import_fepese_cargo(
     cargo: str,
     cargo_code: str,
     exam_type: Optional[str] = None,
+    force_reimport: bool = False,
 ) -> dict:
     """Importa a prova de UM cargo de um concurso FEPESE já publicado.
 
@@ -328,6 +329,7 @@ def import_fepese_concurso(
     year: int,
     cargos: list[dict],
     exam_type: Optional[str] = None,
+    force_reimport: bool = False,
 ) -> dict:
     """Importa vários cargos de um mesmo concurso. `cargos` é uma lista de
     `{"cargo": "Motorista Socorrista", "cargo_code": "F1"}` — não há
@@ -340,7 +342,8 @@ def import_fepese_concurso(
             r = import_fepese_cargo(
                 db, concurso_slug, orgao, edital, year,
                 cargo=c["cargo"], cargo_code=c["cargo_code"], exam_type=exam_type,
-            )
+                force_reimport=force_reimport,
+)
             results.append(r)
             total_added += r.get("total_added", 0)
         except Exception as e:
