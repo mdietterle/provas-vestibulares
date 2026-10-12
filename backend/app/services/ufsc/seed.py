@@ -403,13 +403,19 @@ def _persist_parsed_questions(
 
     added = 0
     skipped_existing = 0
+    # UFSC usa formato somatório (potências de 2): 01, 02, 04, 08, 16, 32, 64.
+    # O campo `letter` da tabela é VARCHAR(1), então mapeamos cada valor
+    # numérico para uma letra (A–G) na ordem em que aparecem. O valor
+    # numérico original segue no campo `value` (INTEGER) para bitmask.
+    _SUMMATION_LETTERS = "ABCDEFG"
     for q in parsed:
         options = [
             {
-                "letter": str(opt.get("value", "")),
+                "letter": _SUMMATION_LETTERS[i] if i < len(_SUMMATION_LETTERS) else str(i),
                 "text": opt["text"],
                 "is_correct": opt["is_correct"],
                 "order": i,
+                "value": opt.get("value"),
             }
             for i, opt in enumerate(q["options"])
         ]
