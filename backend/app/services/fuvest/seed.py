@@ -444,6 +444,7 @@ def import_fuvest_year(db, year: int, edition: dict) -> dict:
             image_base64=q.get("image_base64"),
             correct_option=correct,
             metadata=metadata,
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1

@@ -498,6 +498,7 @@ def import_udesc_shift(db, year: int, semester: int, shift: str, prova_url: str,
             image_base64=q.get("image_base64"),
             correct_option=correct,
             metadata=metadata,
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1

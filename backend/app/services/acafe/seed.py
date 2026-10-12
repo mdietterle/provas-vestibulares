@@ -697,6 +697,7 @@ def _persist_parsed_acafe_questions(
             image_base64=q.get("image_base64"),
             correct_option=q.get("correct"),
             metadata=metadata,
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1

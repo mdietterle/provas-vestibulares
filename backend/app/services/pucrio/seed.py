@@ -470,6 +470,7 @@ def import_pucrio_edition(
                 image_base64=q["images"][0] if q.get("images") else None,
                 correct_option=q.get("correct"),
                 metadata=metadata,
+                force_reimport=force_reimport,
             )
             if not created:
                 skipped_existing += 1

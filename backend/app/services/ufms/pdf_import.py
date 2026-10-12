@@ -476,6 +476,7 @@ def _persist_parsed_questions(
             image_base64=q.get("image_base64"),
             correct_option=q.get("answer") if isinstance(q.get("answer"), str) else None,
             metadata=metadata,
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1

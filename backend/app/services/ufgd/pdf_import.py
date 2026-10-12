@@ -486,6 +486,7 @@ def _persist_parsed_questions(
             correct_option=q.get("answer"),
             answer=q.get("answer"),
             metadata=metadata,
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1

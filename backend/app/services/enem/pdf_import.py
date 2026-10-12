@@ -765,6 +765,7 @@ def import_enem_pdf(
                 image_base64=q.get("image_base64"),
                 correct_option=gab_letter,
                 metadata=metadata,
+                force_reimport=force_reimport,
             )
             if not created:
                 skipped_existing += 1
