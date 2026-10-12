@@ -143,3 +143,16 @@ class VestibularQuestionService:
             .order_by(VestibularQuestion.extra_data.op("->>")("language"))
         )
         return [r[0] for r in self.db.execute(stmt).all() if r[0]]
+
+    def get_distinct_exam_names(self, exam_type: str, year: Optional[int] = None) -> List[str]:
+        """Distinct exam_name values for an exam type, optionally filtered by year."""
+        conditions = [VestibularQuestion.exam_type == exam_type]
+        if year is not None:
+            conditions.append(VestibularQuestion.year == year)
+        stmt = (
+            select(VestibularQuestion.exam_name)
+            .where(and_(*conditions, VestibularQuestion.exam_name.isnot(None)))
+            .distinct()
+            .order_by(VestibularQuestion.exam_name)
+        )
+        return [r[0] for r in self.db.execute(stmt).all() if r[0]]

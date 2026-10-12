@@ -26,6 +26,7 @@ def import_all_ita(
     since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano (inclusive)"),
     force_reimport: bool = Query(False, description="Se True, deleta questões existentes antes de reimportar"),
+    exam_name: Optional[str] = Query(None, description="Se informado, importa só essa versão da prova"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre a página de provas anteriores do ITA e importa provas em lote,
@@ -200,3 +201,20 @@ def import_ita_question(
     db.commit()
     db.refresh(question)
     return question
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista exam_name distintos no banco, opcionalmente por ano."""
+    from app.vestibular.models import VestibularQuestion
+    q = db.query(VestibularQuestion.exam_name).filter(
+        VestibularQuestion.exam_type == "ita",
+        VestibularQuestion.exam_name.isnot(None),
+    )
+    if year is not None:
+        q = q.filter(VestibularQuestion.year == year)
+    rows = q.distinct().order_by(VestibularQuestion.exam_name).all()
+    return [r[0] for r in rows if r[0]]

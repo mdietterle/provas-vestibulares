@@ -27,6 +27,7 @@ def import_all_espm(
     since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano"),
     force_reimport: bool = Query(False, description="Se True, deleta questões existentes antes de reimportar"),
+    exam_name: Optional[str] = Query(None, description="Se informado, importa só essa versão da prova"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre a página de provas anteriores do ESPM e importa provas em lote."""
@@ -34,7 +35,7 @@ def import_all_espm(
     try:
         from app.services.progress import create_task, run_import_with_timeout
         task_id = create_task()
-        background_tasks.add_task(run_import_with_timeout, import_all_espm_exams, since_year=since_year, until_year=until_year, force_reimport=force_reimport, task_id=task_id)
+        background_tasks.add_task(run_import_with_timeout, import_all_espm_exams, since_year=since_year, until_year=until_year, force_reimport=force_reimport, exam_name=exam_name, task_id=task_id)
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(500, f"Erro ao importar provas: {e}")
@@ -197,3 +198,20 @@ def import_espm_question(
     db.commit()
     db.refresh(question)
     return question
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista exam_name distintos no banco, opcionalmente por ano."""
+    from app.vestibular.models import VestibularQuestion
+    q = db.query(VestibularQuestion.exam_name).filter(
+        VestibularQuestion.exam_type == "espm",
+        VestibularQuestion.exam_name.isnot(None),
+    )
+    if year is not None:
+        q = q.filter(VestibularQuestion.year == year)
+    rows = q.distinct().order_by(VestibularQuestion.exam_name).all()
+    return [r[0] for r in rows if r[0]]

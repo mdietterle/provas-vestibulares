@@ -226,7 +226,7 @@ def fetch_enem_editions(year: int) -> list[dict]:
     ]
 
 
-def import_all_enem_exams(since_year: int = 2015, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
+def import_all_enem_exams(since_year: int = 2015, until_year: Optional[int] = None, force_reimport: bool = False, exam_name: Optional[str] = None, db=None, **kwargs) -> dict:
     """Importa TODAS as edições "regulares, impressas" do ENEM disponíveis em
     gov.br/inep/.../enem/provas-e-gabaritos/{ano}, em regressão de
     `until_year` (padrão: 2025, última edição confirmada) até `since_year`
@@ -276,7 +276,16 @@ def import_all_enem_exams(since_year: int = 2015, until_year: Optional[int] = No
                 })
                 continue
 
-            pending.extend((year, edition) for edition in editions)
+            for edition in editions:
+                # Build exam_name same way import_enem_pdf does, to allow filtering
+                day = edition.get("day")
+                color = edition.get("color")
+                ed_name = f"ENEM {year} \u2013 Dia {day}"
+                if color:
+                    ed_name += f" ({color})"
+                if exam_name is not None and exam_name != ed_name:
+                    continue
+                pending.append((year, edition))
 
         total_editions = len(pending)
         if task_id:

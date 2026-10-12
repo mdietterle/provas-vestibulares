@@ -44,6 +44,7 @@ def import_all_enem(
     since_year: int = Query(2015, description="Importa a partir desse ano (padrão: 2015 — limite de estabilidade do padrão de nome de arquivo reconhecido)"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano (padrão: 2025)"),
     force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
+    exam_name: Optional[str] = Query(None, description="Se informado, importa só essa versão (ex: 'ENEM 2025 – Dia 1')"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre gov.br/inep/.../enem/provas-e-gabaritos/{ano} de
@@ -57,7 +58,7 @@ def import_all_enem(
     try:
         from app.services.progress import create_task, run_import_with_timeout
         task_id = create_task()
-        background_tasks.add_task(run_import_with_timeout, import_all_enem_exams, force_reimport=force_reimport, since_year=since_year, until_year=until_year, task_id=task_id)
+        background_tasks.add_task(run_import_with_timeout, import_all_enem_exams, force_reimport=force_reimport, since_year=since_year, until_year=until_year, exam_name=exam_name, task_id=task_id)
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(500, f"Erro ao importar provas: {e}")
@@ -238,3 +239,20 @@ def import_enem_question(
     db.commit()
     db.refresh(question)
     return question
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista exam_name distintos do ENEM no banco, opcionalmente por ano."""
+    from app.vestibular.models import VestibularQuestion
+    q = db.query(VestibularQuestion.exam_name).filter(
+        VestibularQuestion.exam_type == "enem",
+        VestibularQuestion.exam_name.isnot(None),
+    )
+    if year is not None:
+        q = q.filter(VestibularQuestion.year == year)
+    rows = q.distinct().order_by(VestibularQuestion.exam_name).all()
+    return [r[0] for r in rows if r[0]]
