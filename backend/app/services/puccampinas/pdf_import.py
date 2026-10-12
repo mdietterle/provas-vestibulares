@@ -582,7 +582,7 @@ def _persist_segment(db, exam_name: str, year: int, questions: list[dict], gabar
             images=image_list,
             correct_option=correct,
             metadata={},
-        , force_reimport=force_reimport)
+            force_reimport=force_reimport,
         if not created:
             skipped_no_answer += 1
             continue
