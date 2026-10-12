@@ -477,6 +477,7 @@ def _persist_booklet(db, exam_name: str, year: int, questions: list[dict], answe
             image_base64=image_base64_first,
             metadata=metadata,
             force_reimport=force_reimport,
+        )
         if not created:
             continue
         added += 1
