@@ -500,7 +500,7 @@ def _persist_parsed_questions(
             statement=q["statement"],
             options=options,
             images=images,
-            correct_option=q.get("answer", force_reimport=force_reimport),
+            correct_option=q.get("answer"),
             image_base64=q.get("image_base64"),
             metadata=metadata,
         )

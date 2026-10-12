@@ -471,7 +471,7 @@ def _persist_parsed_questions(
             year=year,
             number=q["number"],
             statement=q["statement"],
-            options=q.get("options", [], force_reimport=force_reimport),
+            options=q.get("options", []),
             images=images,
             image_base64=q.get("image_base64"),
             correct_option=q.get("answer") if isinstance(q.get("answer"), str) else None,
