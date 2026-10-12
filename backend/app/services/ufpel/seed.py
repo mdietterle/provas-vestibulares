@@ -401,9 +401,7 @@ def import_ufpel_stage(db, year: int, stage: int, prova_url: str, gabarito: dict
             statement=q["statement"],
             options=options,
             images=images,
-            image_base64=q.get("image_base64",
-            force_reimport=force_reimport,
-        ),
+            image_base64=q.get("image_base64"),
             correct_option=correct,
             metadata=metadata,
         )

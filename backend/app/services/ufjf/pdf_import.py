@@ -599,12 +599,11 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
             number=q["number"],
             statement=q["statement"],
             options=options,
-            images=images_by_key.get((q["number"], None,
-                force_reimport=force_reimport,
-), []) if "images_by_key" in dir() else None,
+            images=images_by_key.get((q["number"], None), []) if "images_by_key" in dir() else None,
                 image_base64=(images_by_key.get((q["number"], None), [None])[0] if "images_by_key" in dir() and images_by_key.get((q["number"], None)) else None),
             correct_option=correct,
             metadata=metadata,
+            force_reimport=force_reimport,
         )
         if not created:
             skipped_existing += 1
