@@ -71,6 +71,7 @@ function QuestionImportPanel() {
   const [selectedKey, setSelectedKey] = useState<string>(IMPORT_SOURCES[0].key)
   const [examVersions, setExamVersions] = useState<string[]>([])
   const [selectedExamName, setSelectedExamName] = useState<string>('')
+  const [supportsVersions, setSupportsVersions] = useState(false)
   const selected = IMPORT_SOURCES.find(s => s.key === selectedKey) ?? IMPORT_SOURCES[0]
 
   // Fetch exam versions when university or year selection changes
@@ -88,6 +89,7 @@ function QuestionImportPanel() {
       puccampinas: puccampinasApi, unimontes: unimontesApi, unicentro: unicentroApi, unaerp: unaerpApi,
     }
     const apiObj = apiMap[selectedKey]
+    setSupportsVersions(!!apiObj?.getExamVersions)
     if (apiObj?.getExamVersions) {
       const yearParam = sinceYear !== '' ? Number(sinceYear) : undefined
       apiObj.getExamVersions(yearParam).then(r => {
@@ -228,19 +230,22 @@ function QuestionImportPanel() {
           Limita a importação para provas dentro do intervalo especificado (depende de suporte no importador). Deixe em branco para importar tudo.
         </p>
 
-        {examVersions.length > 0 && (
+        {supportsVersions && (
           <div className="mt-3">
             <label className="block text-xs font-semibold text-[#94a3b8] mb-1">Versão da prova</label>
             <select
               value={selectedExamName}
               onChange={e => setSelectedExamName(e.target.value)}
               className="w-full rounded-lg border border-[#475569] bg-[#1e293b] px-3 py-2 text-sm text-[#e2e8f0] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+              disabled={examVersions.length === 0}
             >
-              <option value="">Todas as versões</option>
+              <option value="">{examVersions.length === 0 ? 'Nenhuma versão disponível para este ano' : 'Todas as versões'}</option>
               {examVersions.map(v => <option key={v} value={v}>{v}</option>)}
             </select>
             <p className="text-xs text-[#9ca3af] mt-1">
-              Selecione uma versão específica para importar apenas essa edição.
+              {examVersions.length === 0
+                ? 'Nenhuma versão encontrada no banco para o ano selecionado. A importação buscará todas as versões disponíveis.'
+                : 'Selecione uma versão específica para importar apenas essa edição.'}
             </p>
           </div>
         )}
