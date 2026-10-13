@@ -1024,52 +1024,6 @@ class ItaImportRequest(BaseModel):
     is_public: bool = False
 
 
-# ── UNICAMP (Universidade Estadual de Campinas) ────────────────────────────────────────
-
-
-class UnicampOptionOut(BaseModel):
-    id: int
-    letter: str
-    text: str
-    is_correct: bool
-    order: int
-
-    model_config = {"from_attributes": True}
-
-
-class UnicampImageOut(BaseModel):
-    id: int
-    image_base64: str
-    order: int
-
-    model_config = {"from_attributes": True}
-
-
-class UnicampQuestionOut(BaseModel):
-    id: int
-    exam_name: str
-    university: str
-    year: int
-    phase: Optional[str]
-    number: int
-    question_type: str
-    area: Optional[str]
-    language: Optional[str]
-    statement: str
-    answer: Optional[str]
-    image_base64: Optional[str]
-    options: List[UnicampOptionOut]
-    images: List[UnicampImageOut]
-    created_at: datetime
-
-    model_config = {"from_attributes": True}
-
-
-class UnicampImportRequest(BaseModel):
-    unicamp_question_id: int
-    subject_id: int
-    difficulty: Optional[str] = None
-    is_public: bool = False
 
 
 # ── FGV ─────────────────────────────────────────────────────────────
@@ -1168,51 +1122,6 @@ class EspmImportRequest(BaseModel):
     is_public: bool = False
 
 
-# ── UERJ ────────────────────────────────────────────────────────────
-
-class UerjQuestionOptionOut(BaseModel):
-    id: int
-    letter: str
-    text: str
-    is_correct: bool
-    order: int
-
-    model_config = {"from_attributes": True}
-
-
-class UerjQuestionImageOut(BaseModel):
-    id: int
-    image_base64: str
-    order: int
-
-    model_config = {"from_attributes": True}
-
-
-class UerjQuestionOut(BaseModel):
-    id: int
-    exam_name: str
-    university: str
-    year: int
-    phase: Optional[str] = None
-    number: int
-    question_type: str
-    area: Optional[str] = None
-    language: Optional[str] = None
-    statement: str
-    answer: Optional[str] = None
-    image_base64: Optional[str] = None
-    created_at: datetime
-    options: List[UerjQuestionOptionOut] = []
-    images: List[UerjQuestionImageOut] = []
-
-    model_config = {"from_attributes": True}
-
-
-class UerjImportRequest(BaseModel):
-    uerj_question_id: int
-    subject_id: int
-    difficulty: Optional[str] = None
-    is_public: bool = False
 
 
 # ── UFGD ────────────────────────────────────────────────────────────
@@ -1516,40 +1425,6 @@ class FgvQuestionSchema(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class UerjQuestionOptionSchema(BaseModel):
-    id: int
-    text: str
-    is_correct: bool
-    order: int
-    
-    model_config = {"from_attributes": True}
-
-class UerjQuestionSchema(BaseModel):
-    id: int
-    year: int
-    number: int
-    statement: str
-    options: list[UerjQuestionOptionSchema]
-    
-    model_config = {"from_attributes": True}
-
-
-class UnicampQuestionOptionSchema(BaseModel):
-    id: int
-    text: str
-    is_correct: bool
-    order: int
-    
-    model_config = {"from_attributes": True}
-
-class UnicampQuestionSchema(BaseModel):
-    id: int
-    year: int
-    number: int
-    statement: str
-    options: list[UnicampQuestionOptionSchema]
-    
-    model_config = {"from_attributes": True}
 
 
 class PucrsQuestionOptionSchema(BaseModel):

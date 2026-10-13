@@ -1145,58 +1145,6 @@ class ItaQuestionImage(Base):
     question: Mapped["ItaQuestion"] = relationship(back_populates="images")
 
 
-# ── UNICAMP (Universidade Estadual de Campinas) ────────────────────────────────────────
-
-
-class UnicampQuestion(Base):
-    __tablename__ = "unicamp_questions"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    exam_name: Mapped[str] = mapped_column(String(200), nullable=False)
-    university: Mapped[str] = mapped_column(String(50), nullable=False, default="UNICAMP")
-    year: Mapped[int] = mapped_column(Integer, nullable=False)
-    phase: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)   # "1" | "2"
-    number: Mapped[int] = mapped_column(Integer, nullable=False)
-    question_type: Mapped[str] = mapped_column(String(20), nullable=False, default="multiple_choice")  # "multiple_choice" | "discursive"
-    area: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)  # e.g. "Matemática", "Física"
-    language: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # e.g. "Inglês"
-    statement: Mapped[str] = mapped_column(Text, nullable=False)
-    answer: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)  # "A"-"D", "*" (anulada)
-    image_base64: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-
-    options: Mapped[List["UnicampQuestionOption"]] = relationship(
-        back_populates="question", cascade="all, delete-orphan", order_by="UnicampQuestionOption.order"
-    )
-    images: Mapped[List["UnicampQuestionImage"]] = relationship(
-        back_populates="question", cascade="all, delete-orphan", order_by="UnicampQuestionImage.order"
-    )
-
-    __table_args__ = (UniqueConstraint("exam_name", "number", "area"),)
-
-
-class UnicampQuestionOption(Base):
-    __tablename__ = "unicamp_question_options"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    question_id: Mapped[int] = mapped_column(ForeignKey("unicamp_questions.id"), nullable=False, index=True)
-    letter: Mapped[str] = mapped_column(String(1), nullable=False)  # A-D
-    text: Mapped[str] = mapped_column(Text, nullable=False)
-    is_correct: Mapped[bool] = mapped_column(Boolean, default=False)
-    order: Mapped[int] = mapped_column(Integer, default=0)
-
-    question: Mapped["UnicampQuestion"] = relationship(back_populates="options")
-
-
-class UnicampQuestionImage(Base):
-    __tablename__ = "unicamp_question_images"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    question_id: Mapped[int] = mapped_column(ForeignKey("unicamp_questions.id"), nullable=False, index=True)
-    image_base64: Mapped[str] = mapped_column(Text, nullable=False)
-    order: Mapped[int] = mapped_column(Integer, default=0)
-
-    question: Mapped["UnicampQuestion"] = relationship(back_populates="images")
 
 
 # ── FGV (Fundação Getulio Vargas) ──────────────────────────────────────────────
@@ -1307,55 +1255,6 @@ class EspmQuestionImage(Base):
     question: Mapped["EspmQuestion"] = relationship(back_populates="images")
 
 
-class UerjQuestion(Base):
-    __tablename__ = "uerj_questions"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    exam_name: Mapped[str] = mapped_column(String(200), nullable=False)
-    university: Mapped[str] = mapped_column(String(50), nullable=False, default="UERJ")
-    year: Mapped[int] = mapped_column(Integer, nullable=False)
-    phase: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
-    number: Mapped[int] = mapped_column(Integer, nullable=False)
-    question_type: Mapped[str] = mapped_column(String(20), nullable=False, default="multiple_choice")
-    area: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    language: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
-    statement: Mapped[str] = mapped_column(Text, nullable=False)
-    answer: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
-    image_base64: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-
-    options: Mapped[List["UerjQuestionOption"]] = relationship(
-        back_populates="question", cascade="all, delete-orphan", order_by="UerjQuestionOption.order"
-    )
-    images: Mapped[List["UerjQuestionImage"]] = relationship(
-        back_populates="question", cascade="all, delete-orphan", order_by="UerjQuestionImage.order"
-    )
-
-    __table_args__ = (UniqueConstraint("exam_name", "number", "area"),)
-
-
-class UerjQuestionOption(Base):
-    __tablename__ = "uerj_question_options"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    question_id: Mapped[int] = mapped_column(ForeignKey("uerj_questions.id"), nullable=False, index=True)
-    letter: Mapped[str] = mapped_column(String(1), nullable=False)
-    text: Mapped[str] = mapped_column(Text, nullable=False)
-    is_correct: Mapped[bool] = mapped_column(Boolean, default=False)
-    order: Mapped[int] = mapped_column(Integer, default=0)
-
-    question: Mapped["UerjQuestion"] = relationship(back_populates="options")
-
-
-class UerjQuestionImage(Base):
-    __tablename__ = "uerj_question_images"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    question_id: Mapped[int] = mapped_column(ForeignKey("uerj_questions.id"), nullable=False, index=True)
-    image_base64: Mapped[str] = mapped_column(Text, nullable=False)
-    order: Mapped[int] = mapped_column(Integer, default=0)
-
-    question: Mapped["UerjQuestion"] = relationship(back_populates="images")
 
 
 # ── UFGD ──────────────────────────────────────────────────────────────────────
