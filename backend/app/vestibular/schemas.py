@@ -18,7 +18,8 @@ class VestibularOptionOut(BaseModel):
 
 class VestibularImageOut(BaseModel):
     id: int
-    image_base64: str
+    image_base64: Optional[str] = None
+    image_url: Optional[str] = None
     order: int = 0
 
     class Config:

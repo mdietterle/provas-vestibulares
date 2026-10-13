@@ -78,7 +78,8 @@ class VestibularQuestionImage(Base):
     question_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("vestibular_questions.id", ondelete="CASCADE"), nullable=False
     )
-    image_base64: Mapped[str] = mapped_column(Text, nullable=False)
+    image_base64: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    image_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     order: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
 
     question: Mapped[VestibularQuestion] = relationship(back_populates="images")

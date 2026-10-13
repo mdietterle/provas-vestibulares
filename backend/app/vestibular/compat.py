@@ -42,7 +42,7 @@ def to_legacy_dict(vq: VestibularQuestion) -> Dict[str, Any]:
     ]
     # Images
     out["images"] = [
-        {"id": i.id, "image_base64": i.image_base64, "order": i.order}
+        {"id": i.id, "image_base64": i.image_base64, "image_url": i.image_url, "order": i.order}
         for i in sorted(vq.images, key=lambda x: x.order)
     ]
     return out
