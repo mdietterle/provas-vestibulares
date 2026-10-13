@@ -73,7 +73,7 @@ function QuestionImportPanel() {
   const [selectedExamName, setSelectedExamName] = useState<string>('')
   const selected = IMPORT_SOURCES.find(s => s.key === selectedKey) ?? IMPORT_SOURCES[0]
 
-  // Fetch exam versions when university selection changes
+  // Fetch exam versions when university or year selection changes
   useEffect(() => {
     setSelectedExamName('')
     setExamVersions([])
@@ -89,35 +89,14 @@ function QuestionImportPanel() {
     }
     const apiObj = apiMap[selectedKey]
     if (apiObj?.getExamVersions) {
-      apiObj.getExamVersions().then(r => {
+      const yearParam = sinceYear !== '' ? Number(sinceYear) : undefined
+      apiObj.getExamVersions(yearParam).then(r => {
         const versions = (r && typeof r === 'object' && 'data' in r) ? (r as any).data : r
         if (Array.isArray(versions)) setExamVersions(versions)
       }).catch(() => {})
     }
-  }, [selectedKey])
+  }, [selectedKey, sinceYear])
 
-  // Fetch exam versions when university selection changes
-  useEffect(() => {
-    setSelectedExamName('')
-    setExamVersions([])
-    const apiMap: Record<string, { getExamVersions?: (year?: number) => Promise<any> }> = {
-      enem: enemApi, acafe: acafeApi, ufpr: ufprApi, ufsc: ufscApi, ita: itaApi,
-      uerj: uerjApi, ufgd: ufgdApi, uem: uemApi, ufms: ufmsApi, fuvest: fuvestApi,
-      pucrio: pucrioApi, udesc: udescApi, unesp: unespApi, cebraspe: cebraspeApi,
-      unifesp: unifespApi, espm: espmApi, fgv: fgvApi, pucpr: pucprApi, pucrs: pucrsApi,
-      ufpel: ufpelApi, ufrgs: ufrgsApi, unicamp: unicampApi, ufg: ufgApi, ufjf: ufjfApi,
-      ufu: ufuApi, ufpa: ufpaApi, utfpr: utfprApi, unioeste: unioesteApi, uel: uelApi,
-      pucminas: pucminasApi, ufrn: ufrnApi, ufsm: ufsmApi, ulbra: ulbraApi, ufam: ufamApi,
-      puccampinas: puccampinasApi, unimontes: unimontesApi, unicentro: unicentroApi, unaerp: unaerpApi,
-    }
-    const apiObj = apiMap[selectedKey]
-    if (apiObj?.getExamVersions) {
-      apiObj.getExamVersions().then(r => {
-        const versions = (r && typeof r === 'object' && 'data' in r) ? (r as any).data : r
-        if (Array.isArray(versions)) setExamVersions(versions)
-      }).catch(() => {})
-    }
-  }, [selectedKey])
 
   async function pollTask(srcKey: string, taskId: string) {
     const interval = setInterval(async () => {
@@ -266,22 +245,6 @@ function QuestionImportPanel() {
           </div>
         )}
 
-        {examVersions.length > 0 && (
-          <div className="mt-3">
-            <label className="block text-xs font-semibold text-[#94a3b8] mb-1">Versão da prova</label>
-            <select
-              value={selectedExamName}
-              onChange={e => setSelectedExamName(e.target.value)}
-              className="w-full rounded-lg border border-[#475569] bg-[#1e293b] px-3 py-2 text-sm text-[#e2e8f0] focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-            >
-              <option value="">Todas as versões</option>
-              {examVersions.map(v => <option key={v} value={v}>{v}</option>)}
-            </select>
-            <p className="text-xs text-[#9ca3af] mt-1">
-              Selecione uma versão específica para importar apenas essa edição.
-            </p>
-          </div>
-        )}
 
         <label className="mt-3 flex items-center gap-2 text-sm text-[#cbd5e1] cursor-pointer select-none">
           <input
