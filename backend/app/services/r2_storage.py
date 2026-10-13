@@ -1,37 +1,30 @@
-"""Cloudflare R2 object storage adapter for question images.
+"""Supabase Storage adapter for question images.
 
-Uploads base64 or raw bytes to R2 bucket, returns public URL.
+Uploads base64 or raw bytes to Supabase Storage bucket, returns public URL.
 Replaces inline base64 storage in database with CDN-backed URLs.
 """
 from __future__ import annotations
 
 import base64
 import hashlib
-import uuid
 from typing import Optional
 
-import boto3
-from botocore.config import Config as BotoConfig
+import requests
 
 from app.core.config import settings
 
 
-def _get_client():
-    """Create S3-compatible client for Cloudflare R2."""
-    if not settings.R2_ACCOUNT_ID or not settings.R2_ACCESS_KEY_ID:
+def _get_headers() -> dict[str, str]:
+    """Build auth headers for Supabase Storage API."""
+    if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_KEY:
         raise RuntimeError(
-            "R2 credentials not configured. Set R2_ACCOUNT_ID, "
-            "R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY in .env"
+            "Supabase Storage not configured. Set SUPABASE_URL and "
+            "SUPABASE_SERVICE_KEY in .env"
         )
-    endpoint = f"https://{settings.R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
-    return boto3.client(
-        "s3",
-        endpoint_url=endpoint,
-        aws_access_key_id=settings.R2_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.R2_SECRET_ACCESS_KEY,
-        region_name="auto",
-        config=BotoConfig(signature_version="s3v4"),
-    )
+    return {
+        "Authorization": f"Bearer {settings.SUPABASE_SERVICE_KEY}",
+        "apikey": settings.SUPABASE_SERVICE_KEY,
+    }
 
 
 def upload_image(
@@ -43,7 +36,7 @@ def upload_image(
     content_type: str = "image/png",
     suffix: str = "",
 ) -> str:
-    """Upload image to R2 and return public URL.
+    """Upload image to Supabase Storage and return public URL.
 
     Args:
         data: Raw bytes or base64-encoded string (with or without data URI prefix).
@@ -72,24 +65,35 @@ def upload_image(
     content_hash = hashlib.sha256(raw).hexdigest()[:8]
     key = f"questions/{exam_type}/{year}/{number}{suffix}_{content_hash}.{ext}"
 
-    client = _get_client()
-    client.put_object(
-        Bucket=settings.R2_BUCKET_NAME,
-        Key=key,
-        Body=raw,
-        ContentType=content_type,
-        CacheControl="public, max-age=31536000, immutable",
-    )
+    bucket = settings.SUPABASE_STORAGE_BUCKET
+    base_url = settings.SUPABASE_URL.rstrip("/")
+    upload_url = f"{base_url}/storage/v1/object/{bucket}/{key}"
 
-    public_url = settings.R2_PUBLIC_URL.rstrip("/")
-    return f"{public_url}/{key}"
+    resp = requests.post(
+        upload_url,
+        headers={
+            **_get_headers(),
+            "Content-Type": content_type,
+            "Cache-Control": "public, max-age=31536000, immutable",
+            "x-upsert": "true",
+        },
+        data=raw,
+        timeout=30,
+    )
+    resp.raise_for_status()
+
+    public_url = f"{base_url}/storage/v1/object/public/{bucket}/{key}"
+    return public_url
 
 
 def delete_image(url: str) -> None:
-    """Delete an image from R2 by its public URL."""
-    prefix = settings.R2_PUBLIC_URL.rstrip("/") + "/"
+    """Delete an image from Supabase Storage by its public URL."""
+    base_url = settings.SUPABASE_URL.rstrip("/")
+    bucket = settings.SUPABASE_STORAGE_BUCKET
+    prefix = f"{base_url}/storage/v1/object/public/{bucket}/"
     if not url.startswith(prefix):
         return  # Not our bucket
     key = url[len(prefix):]
-    client = _get_client()
-    client.delete_object(Bucket=settings.R2_BUCKET_NAME, Key=key)
+    delete_url = f"{base_url}/storage/v1/object/{bucket}/{key}"
+    resp = requests.delete(delete_url, headers=_get_headers(), timeout=10)
+    resp.raise_for_status()

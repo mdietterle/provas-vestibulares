@@ -44,6 +44,10 @@ class Settings(BaseSettings):
     R2_SECRET_ACCESS_KEY: str = ""
     R2_BUCKET_NAME: str = "provas-vestibulares"
     R2_PUBLIC_URL: str = ""
+    # ── Supabase Storage (fallback image storage) ─────────────────────────────
+    SUPABASE_URL: str = ""
+    SUPABASE_SERVICE_KEY: str = ""
+    SUPABASE_STORAGE_BUCKET: str = "question-images"
     # ── Observabilidade ────────────────────────────────────────────────────────
     SENTRY_DSN: str = ""
     LOG_LEVEL: str = "INFO"
