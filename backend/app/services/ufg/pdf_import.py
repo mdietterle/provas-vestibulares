@@ -448,9 +448,10 @@ _TURNO_LABELS = {"matutino": "Matutino", "vespertino": "Vespertino"}
 _OPCAO_EXAM_LABELS = {"ingles": "Opção Inglês", "espanhol": "Opção Espanhol", "frances": "Opção Francês", "geral": None}
 
 
-def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], force_reimport: bool = False) -> tuple[int, int]:
+def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], images_by_key: dict | None = None, force_reimport: bool = False) -> tuple[int, int]:
     added = 0
     skipped_existing = 0
+    images_by_key = images_by_key or {}
     for q in questions:
         correct = gabarito.get(q["number"])
         if not correct:
@@ -471,6 +472,7 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
         metadata = {
             "university": "UFG",
         }
+        q_images = images_by_key.get((q["number"], None), [])
         vq, created = save_vestibular_question(
             db,
             exam_type="ufg",
@@ -479,8 +481,8 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
             number=q["number"],
             statement=q["statement"],
             options=options,
-            images=images_by_key.get((q["number"], None), []) if "images_by_key" in dir() else None,
-                image_base64=(images_by_key.get((q["number"], None), [None])[0] if "images_by_key" in dir() and images_by_key.get((q["number"], None)) else None),
+            images=q_images if len(q_images) > 1 else None,
+            image_base64=q_images[0] if q_images else None,
             correct_option=correct,
             metadata=metadata,
             force_reimport=force_reimport,
@@ -516,6 +518,13 @@ def import_ufg_edition(db, edition: dict, force_reimport: bool = False) -> dict:
 
             prova_sections = parse_prova(prova_path)
             gabarito_sections = parse_gabarito(gabarito_path)
+
+            # Extrai imagens do PDF da prova para associar às questões
+            doc = fitz.open(str(prova_path))
+            try:
+                images_by_key = _assign_images_by_reading_order(doc, 0)
+            finally:
+                doc.close()
         except Exception as e:
             db.rollback()
             return {"exam_name": base_name, "skipped": True, "reason": str(e)}
@@ -549,7 +558,7 @@ def import_ufg_edition(db, edition: dict, force_reimport: bool = False) -> dict:
                 results.append({"exam_name": exam_name, "skipped": True, "reason": "Gabarito vazio/não reconhecido para esta seção"})
                 continue
             try:
-                added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito, force_reimport=force_reimport)
+                added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito, images_by_key=images_by_key, force_reimport=force_reimport)
                 results.append({
                     "exam_name": exam_name,
                     "total_parsed": len(questions),

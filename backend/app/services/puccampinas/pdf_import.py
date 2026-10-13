@@ -569,7 +569,7 @@ def _persist_segment(db, exam_name: str, year: int, questions: list[dict], gabar
         images = q.get("images") or []
         image_list = None
         if images:
-            image_list = [f"data:image/png;base64,{base64.b64encode(img).decode()}" for img in images]
+            image_list = [{"data": base64.b64encode(img).decode()} for img in images]
 
         vq, created = save_vestibular_question(
             db,

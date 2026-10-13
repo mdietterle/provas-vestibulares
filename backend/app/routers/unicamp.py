@@ -13,10 +13,11 @@ from app.models import (
     QuestionOption,
     QuestionType,
     Subject,
-    UnicampQuestion,
     User,
 )
-from app.schemas import QuestionOut, UnicampImportRequest, UnicampQuestionOut
+from app.schemas import QuestionOut, UnicampImportRequest
+from app.vestibular.models import VestibularQuestion
+from app.vestibular.schemas import VestibularQuestionOut
 
 router = APIRouter(prefix="/unicamp-questions", tags=["unicamp"])
 
@@ -81,7 +82,7 @@ async def import_unicamp_pdf_endpoint(
     return {"ok": True, **result}
 
 
-@router.get("", response_model=List[UnicampQuestionOut])
+@router.get("", response_model=List[VestibularQuestionOut])
 def list_unicamp_questions(
     year: Optional[int] = Query(None),
     phase: Optional[str] = Query(None),
@@ -93,19 +94,20 @@ def list_unicamp_questions(
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
-    q = db.query(UnicampQuestion)
+    from sqlalchemy import cast, String
+    q = db.query(VestibularQuestion).filter(VestibularQuestion.exam_type == "unicamp")
     if year:
-        q = q.filter(UnicampQuestion.year == year)
+        q = q.filter(VestibularQuestion.year == year)
     if phase:
-        q = q.filter(UnicampQuestion.phase == phase)
+        q = q.filter(cast(VestibularQuestion.metadata["phase"], String) == phase)
     if area:
-        q = q.filter(UnicampQuestion.area.ilike(f"%{area}%"))
+        q = q.filter(cast(VestibularQuestion.metadata["area"], String).ilike(f"%{area}%"))
     if question_type:
-        q = q.filter(UnicampQuestion.question_type == question_type)
+        q = q.filter(cast(VestibularQuestion.metadata["question_type"], String) == question_type)
     if search:
-        q = q.filter(UnicampQuestion.statement.ilike(f"%{search}%"))
+        q = q.filter(VestibularQuestion.statement.ilike(f"%{search}%"))
     return (
-        q.order_by(UnicampQuestion.year.desc(), UnicampQuestion.phase, UnicampQuestion.number)
+        q.order_by(VestibularQuestion.year.desc(), VestibularQuestion.number)
         .offset(skip)
         .limit(limit)
         .all()
@@ -117,7 +119,13 @@ def list_years(
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
-    rows = db.query(UnicampQuestion.year).distinct().order_by(UnicampQuestion.year.desc()).all()
+    rows = (
+        db.query(VestibularQuestion.year)
+        .filter(VestibularQuestion.exam_type == "unicamp")
+        .distinct()
+        .order_by(VestibularQuestion.year.desc())
+        .all()
+    )
     return [r[0] for r in rows]
 
 
@@ -126,23 +134,29 @@ def list_areas(
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
+    from sqlalchemy import cast, String
+    area_col = cast(VestibularQuestion.metadata["area"], String)
     rows = (
-        db.query(UnicampQuestion.area)
+        db.query(area_col)
+        .filter(VestibularQuestion.exam_type == "unicamp")
         .distinct()
-        .filter(UnicampQuestion.area.isnot(None))
-        .order_by(UnicampQuestion.area)
+        .filter(area_col.isnot(None))
+        .order_by(area_col)
         .all()
     )
-    return [r[0] for r in rows]
+    return [r[0] for r in rows if r[0]]
 
 
-@router.get("/{question_id}", response_model=UnicampQuestionOut)
+@router.get("/{question_id}", response_model=VestibularQuestionOut)
 def get_unicamp_question(
     question_id: int,
     db: Session = Depends(get_db),
     _: User = Depends(get_current_user),
 ):
-    q = db.get(UnicampQuestion, question_id)
+    q = db.query(VestibularQuestion).filter(
+        VestibularQuestion.id == question_id,
+        VestibularQuestion.exam_type == "unicamp",
+    ).first()
     if not q:
         raise HTTPException(404, "Questão não encontrada")
     return q
@@ -163,14 +177,16 @@ def import_unicamp_question(
     if not subject or subject.institution_id != current_user.institution_id:
         raise HTTPException(404, "Matéria não encontrada")
 
-    phase_label = f"Fase {unicamp_q.phase}" if unicamp_q.phase else ""
+    meta = unicamp_q.metadata or {}
+    phase_val = meta.get("phase")
+    phase_label = f"Fase {phase_val}" if phase_val else ""
     statement = f"{unicamp_q.statement}\n\n[UNICAMP {unicamp_q.year} {phase_label}– Q{unicamp_q.number}]".strip()
 
     images = sorted(unicamp_q.images, key=lambda i: i.order)
     image_base64 = images[0].image_base64 if images else unicamp_q.image_base64
 
     q_type = QuestionType.MULTIPLE_CHOICE
-    if unicamp_q.question_type == "discursive":
+    if meta.get("question_type") == "discursive":
         q_type = QuestionType.ESSAY
 
     question = Question(

@@ -1,0 +1,192 @@
+import re, glob, ast, sys
+
+files = glob.glob('backend/app/services/*/pdf_import.py') + glob.glob('backend/app/services/*/seed.py')
+
+# Step 1: Find all functions that reference force_reimport but don't have it as param
+issues = {}  # fpath -> [(func_name, def_line, ref_line)]
+for fpath in sorted(files):
+    content = open(fpath).read()
+    try:
+        tree = ast.parse(content)
+    except SyntaxError:
+        continue
+    file_issues = []
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            params = set()
+            for arg in node.args.args + node.args.posonlyargs + node.args.kwonlyargs:
+                params.add(arg.arg)
+            if node.args.vararg:
+                params.add(node.args.vararg.arg)
+            if node.args.kwarg:
+                params.add(node.args.kwarg.arg)
+            has_kwarg = node.args.kwarg is not None
+            if 'force_reimport' not in params and not has_kwarg:
+                for child in ast.walk(node):
+                    if isinstance(child, ast.Name) and child.id == 'force_reimport':
+                        file_issues.append((node.name, node.lineno, child.lineno))
+                        break
+    if file_issues:
+        issues[fpath] = file_issues
+
+print(f"Files with issues: {len(issues)}")
+total_funcs = sum(len(v) for v in issues.values())
+print(f"Total functions to fix: {total_funcs}")
+
+# Step 2: For each file, add force_reimport param to affected functions
+# and pass it through at call sites
+fixed_files = []
+for fpath, funcs in sorted(issues.items()):
+    with open(fpath) as f:
+        lines = f.readlines()
+
+    func_names_to_fix = set(fn for fn, _, _ in funcs)
+
+    # For each function, find its def line and add force_reimport param
+    # We need to find the closing paren of the function signature and insert before it
+    new_lines = list(lines)
+
+    # Process in reverse order of line numbers to avoid offset issues
+    sorted_funcs = sorted(funcs, key=lambda x: x[1], reverse=True)
+
+    for func_name, def_line, ref_line in sorted_funcs:
+        # def_line is 1-based
+        # Find the line with 'def func_name('
+        def_idx = def_line - 1
+
+        # Find the closing paren of the function signature
+        # Start from def_idx, accumulate parens
+        paren_depth = 0
+        found_open = False
+        close_idx = def_idx
+
+        for i in range(def_idx, min(def_idx + 50, len(new_lines))):
+            line = new_lines[i]
+            for ch in line:
+                if ch == '(':
+                    paren_depth += 1
+                    found_open = True
+                elif ch == ')':
+                    paren_depth -= 1
+                    if found_open and paren_depth == 0:
+                        close_idx = i
+                        # Find position of ) in this line
+                        # We need to insert before the )
+                        # Find the ) position
+                        pos_in_line = line.rfind(')')
+                        # Check what's before the )
+                        before_paren = line[:pos_in_line].rstrip()
+                        after_paren = line[pos_in_line:]
+
+                        # Get indentation of the param lines
+                        # Look at previous non-empty lines for indent
+                        param_indent = '    '  # default
+                        for j in range(i - 1, max(def_idx, i - 10), -1):
+                            stripped = new_lines[j].strip()
+                            if stripped and not stripped.startswith('def ') and not stripped.startswith('#'):
+                                param_indent = ' ' * (len(new_lines[j]) - len(new_lines[j].lstrip()))
+                                break
+
+                        # Check if there are already params (not just empty parens)
+                        has_params = before_paren.strip() and '(' not in before_paren.split('(')[-1].strip() or before_paren.count(',') > 0 or (before_paren.strip() and before_paren.strip() != 'def ' + func_name)
+
+                        # Simpler: check if the line before close has content
+                        if before_paren.endswith(','):
+                            # Last param ends with comma, just add new line
+                            new_param_line = param_indent + 'force_reimport: bool = False,\n'
+                            new_lines[i] = new_lines[i][:pos_in_line] + '\n' + new_param_line + after_paren
+                        else:
+                            # Need to add comma to previous content and new param
+                            # Check if we're on same line as def
+                            if i == def_idx:
+                                # Single line def like: def foo(a, b):
+                                # Insert before )
+                                new_lines[i] = line[:pos_in_line] + ', force_reimport: bool = False' + after_paren
+                            else:
+                                # Multi-line: add comma to end of previous meaningful content
+                                # and new param line
+                                new_param_line = param_indent + 'force_reimport: bool = False,\n'
+                                # Add comma to the line before if needed
+                                prev_content = new_lines[i][:pos_in_line].rstrip()
+                                if prev_content and not prev_content.endswith(','):
+                                    new_lines[i] = prev_content + ',\n' + new_param_line + after_paren
+                                else:
+                                    new_lines[i] = new_lines[i][:pos_in_line] + '\n' + new_param_line + after_paren
+                        break
+            if found_open and paren_depth == 0:
+                break
+
+    # Now fix call sites: where these functions are called, add force_reimport=force_reimport
+    content = ''.join(new_lines)
+
+    for func_name, _, _ in funcs:
+        # Find calls to this function and add force_reimport=force_reimport if missing
+        # Pattern: func_name( ... ) without force_reimport
+        pattern_start = func_name + '('
+        idx = 0
+        new_content = []
+        while True:
+            pos = content.find(pattern_start, idx)
+            if pos == -1:
+                new_content.append(content[idx:])
+                break
+
+            # Check this isn't the def line
+            line_start = content.rfind('\n', 0, pos) + 1
+            line_text = content[line_start:content.find('\n', pos)]
+            if 'def ' + func_name in line_text:
+                new_content.append(content[idx:pos + len(pattern_start)])
+                idx = pos + len(pattern_start)
+                continue
+
+            # Find matching closing paren
+            depth = 0
+            j = pos
+            while j < len(content):
+                if content[j] == '(':
+                    depth += 1
+                elif content[j] == ')':
+                    depth -= 1
+                    if depth == 0:
+                        break
+                j += 1
+
+            call = content[pos:j+1]
+
+            if 'force_reimport' not in call:
+                # Add force_reimport=force_reimport before closing paren
+                close_pos = len(call) - 1
+                before_close = call[:close_pos]
+
+                # Get indentation
+                call_lines = before_close.split('\n')
+                if len(call_lines) > 1:
+                    last_param_line = call_lines[-1]
+                    param_indent = ' ' * (len(last_param_line) - len(last_param_line.lstrip()))
+                    if not param_indent.strip():
+                        param_indent = '    '
+                else:
+                    param_indent = '    '
+
+                # Check if last char before ) is comma or needs comma
+                stripped = before_close.rstrip()
+                if stripped.endswith(','):
+                    new_call = before_close + '\n' + param_indent + 'force_reimport=force_reimport,\n' + ' ' * (len(param_indent) - 4 if len(param_indent) >= 4 else 0) + ')'
+                else:
+                    new_call = stripped + ',\n' + param_indent + 'force_reimport=force_reimport,\n' + ' ' * (len(param_indent) - 4 if len(param_indent) >= 4 else 0) + ')'
+
+                new_content.append(content[idx:pos])
+                new_content.append(new_call)
+                idx = j + 1
+            else:
+                new_content.append(content[idx:j+1])
+                idx = j + 1
+
+        content = ''.join(new_content)
+
+    with open(fpath, 'w') as f:
+        f.write(content)
+    fixed_files.append(fpath)
+    print(f"Fixed: {fpath} ({len(funcs)} functions)")
+
+print(f"\nTotal files fixed: {len(fixed_files)}")

@@ -47,6 +47,7 @@ Diferente de outros importadores deste repo (ex.: UEL), aqui são sempre 4
 alternativas (A-D), não 5.
 """
 
+import base64
 import html as html_lib
 import re
 import tempfile
@@ -57,7 +58,7 @@ import fitz  # PyMuPDF
 import requests
 from sqlalchemy.orm import Session
 
-from app.models import UfrnQuestion, UfrnQuestionOption
+from app.services.pdf_figures import extract_figure_events
 from app.services.progress import complete_task, fail_task, update_task_progress
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -120,26 +121,83 @@ def _clean(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
-def _pdf_full_text(pdf_path: Path) -> str:
-    doc = fitz.open(str(pdf_path))
-    text = "\n".join(page.get_text() for page in doc)
-    doc.close()
-    return text
-
-
 def parse_exam_pdf(pdf_path: Path) -> list[dict]:
     """Parseia o caderno do Dia 2 e retorna
-    [{number, statement, alternatives: [(letra, texto), ...]}]. Sem
-    `correct` aqui — a resposta vem só do gabarito oficial (arquivo
-    separado), que é cruzado em `import_ufrn_year`."""
-    text = _pdf_full_text(pdf_path)
-    boundaries = list(_Q_RE.finditer(text))
+    [{number, statement, alternatives: [(letra, texto), ...], images: [bytes, ...]}].
+    Sem `correct` aqui — a resposta vem só do gabarito oficial (arquivo
+    separado), que é cruzado em `import_ufrn_year`.
 
+    Imagens são extraídas via `extract_figure_events` (raster + vetorial) e
+    associadas à questão seguinte baseada na posição vertical dentro da
+    página."""
+    doc = fitz.open(str(pdf_path))
+
+    # Coleta textos e imagens por página, mantendo ordem vertical
+    all_text_parts: list[tuple[float, str]] = []  # (y, text_line)
+    all_images: list[tuple[float, bytes]] = []     # (y, png_bytes)
+
+    for page in doc:
+        # Texto linha-a-linha com coordenada Y
+        blocks = page.get_text("dict")["blocks"]
+        for block in blocks:
+            if block["type"] != 0:
+                continue
+            for line in block.get("lines", []):
+                line_text = " ".join(span["text"] for span in line.get("spans", [])).strip()
+                if line_text:
+                    y = line["bbox"][1]
+                    all_text_parts.append((y, line_text))
+
+        # Imagens (raster + desenhos vetoriais)
+        for _x, y, png in extract_figure_events(page):
+            all_images.append((y, png))
+
+    doc.close()
+
+    # Ordena tudo por Y global (aproximação: páginas sequenciais têm Y crescente)
+    # Como get_text("dict") retorna Y relativo à página, precisamos adicionar offset
+    # Mas como usamos page-by-page acima, perdemos o offset. Re-fazemos com offset.
+    # Na verdade, o approach acima já perdeu o offset entre páginas. Vamos refazer
+    # de forma correta:
+
+    # Re-abre para coletar com offset correto
+    doc = fitz.open(str(pdf_path))
+    all_text_parts = []
+    all_images = []
+    y_offset = 0.0
+
+    for page in doc:
+        page_height = page.rect.height
+
+        blocks = page.get_text("dict")["blocks"]
+        for block in blocks:
+            if block["type"] != 0:
+                continue
+            for line in block.get("lines", []):
+                line_text = " ".join(span["text"] for span in line.get("spans", [])).strip()
+                if line_text:
+                    y = line["bbox"][1] + y_offset
+                    all_text_parts.append((y, line_text))
+
+        for _x, y, png in extract_figure_events(page):
+            all_images.append((y + y_offset, png))
+
+        y_offset += page_height + 100  # gap entre páginas
+
+    doc.close()
+
+    # Junta texto numa string única com marcadores de posição para mapear
+    # questões → imagens
+    full_text = "\n".join(t for _, t in sorted(all_text_parts, key=lambda p: p[0]))
+    sorted_images = sorted(all_images, key=lambda p: p[0])
+
+    boundaries = list(_Q_RE.finditer(full_text))
     questions: list[dict] = []
+
     for i, m in enumerate(boundaries):
         start = m.end()
-        end = boundaries[i + 1].start() if i + 1 < len(boundaries) else len(text)
-        body = text[start:end]
+        end = boundaries[i + 1].start() if i + 1 < len(boundaries) else len(full_text)
+        body = full_text[start:end]
 
         alt_matches = list(_ALT_RE.finditer(body))
         seen: set[str] = set()
@@ -154,48 +212,97 @@ def parse_exam_pdf(pdf_path: Path) -> list[dict]:
             alternatives.append((letter, _clean(body[a_start:a_end])))
 
         if len(alternatives) != 4 or {L for L, _ in alternatives} != set("ABCD"):
-            continue  # formato inesperado (raro) — pula, não trava o resto
+            continue
 
         statement = _clean(body[: alt_matches[0].start()]) if alt_matches else ""
         if not statement:
             continue
 
+        # Associa imagens cuja posição Y cai entre o início desta questão
+        # e o início da próxima (ou fim do documento)
+        q_y_start = _find_y_for_text_pos(all_text_parts, m.start())
+        q_y_end = _find_y_for_text_pos(all_text_parts, boundaries[i + 1].start()) if i + 1 < len(boundaries) else float("inf")
+
+        q_images = [png for y, png in sorted_images if q_y_start <= y < q_y_end]
+
         questions.append({
             "number": int(m.group(1)),
             "statement": statement,
             "alternatives": alternatives,
+            "images": q_images,
         })
 
     return questions
 
 
+def _find_y_for_text_pos(text_parts: list[tuple[float, str]], char_pos: int) -> float:
+    """Estimativa grosseira da coordenada Y correspondente a uma posição de
+    caractere no texto concatenado. Usa proporção linear sobre o total de
+    caracteres vs faixa de Y."""
+    if not text_parts:
+        return 0.0
+    total_chars = sum(len(t) for _, t in text_parts)
+    if total_chars == 0:
+        return 0.0
+    frac = min(char_pos / total_chars, 1.0)
+    y_min = text_parts[0][0]
+    y_max = text_parts[-1][0]
+    return y_min + frac * (y_max - y_min)
+
+
 # ── Persistência ─────────────────────────────────────────────────────────
 
 def _persist_year(db: Session, year: int, questions: list[dict], gabarito: dict[int, Optional[str]]) -> dict:
-    """Grava as questões de um ano. Idempotente por ano: se já existirem
-    questões daquele ano, não duplica."""
-    already = db.query(UfrnQuestion).filter(UfrnQuestion.year == year).count()
-    if already > 0:
-        return {"year": year, "total_parsed": len(questions), "total_added": 0, "skipped_existing": already}
+    """Grava as questões de um ano usando save_vestibular_question (modelo
+    unificado VestibularQuestion + upload de imagens para Supabase Storage).
+    Idempotente por ano/número."""
+    from app.services.import_batch import save_vestibular_question
 
     added = 0
+    skipped_existing = 0
+
     for q in questions:
         correct = gabarito.get(q["number"])
-        question = UfrnQuestion(year=year, number=q["number"], statement=q["statement"])
-        db.add(question)
-        db.flush()
+        is_annulled = correct is None and q["number"] in gabarito
 
-        for order, (letter, opt_text) in enumerate(q["alternatives"]):
-            db.add(UfrnQuestionOption(
-                question_id=question.id,
-                text=opt_text,
-                is_correct=(letter == correct),
-                order=order,
-            ))
-        added += 1
+        options = [
+            {
+                "letter": letter,
+                "text": opt_text,
+                "is_correct": (letter == correct) if correct else False,
+                "order": idx,
+            }
+            for idx, (letter, opt_text) in enumerate(q["alternatives"])
+        ]
+
+        images = []
+        for img_idx, png_bytes in enumerate(q.get("images", [])):
+            images.append({
+                "image_base64": base64.b64encode(png_bytes).decode(),
+                "order": img_idx,
+            })
+
+        _vq, created = save_vestibular_question(
+            db=db,
+            exam_type="ufrn",
+            exam_name=f"UFRN {year}",
+            year=year,
+            number=q["number"],
+            statement=q["statement"],
+            answer=correct,
+            is_annulled=is_annulled,
+            options=options,
+            images=images if images else None,
+            image_base64=None,
+            metadata={"phase": "dia2"},
+        )
+        if created:
+            added += 1
+        else:
+            skipped_existing += 1
 
     db.commit()
-    return {"year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": 0}
+    return {"year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": skipped_existing}
 
 
 def import_ufrn_year(year: int, db: Optional[Session] = None) -> dict:

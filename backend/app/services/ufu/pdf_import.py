@@ -260,9 +260,12 @@ def parse_gabarito(gabarito_pdf: Path) -> dict[str, dict[int, str]]:
     return result
 
 
-def parse_prova(prova_pdf: Path) -> list[dict]:
+def parse_prova(prova_pdf: Path) -> tuple[list[dict], fitz.Document]:
     """Parseia um caderno de prova (um Tipo específico) e retorna
-    [{number, statement, alternatives: [(letra, texto), ...]}].
+    ([{number, statement, alternatives: [(letra, texto), ...]}], doc).
+
+    O documento fitz é retornado ABERTO para que o chamador possa extrair
+    imagens com _assign_images_by_reading_order antes de fechá-lo.
 
     Questões são marcadas "QUESTÃO NN" (o regex aceita zeros à esquerda
     opcionais e variação de acento em "ÃO"/"AO"). Alternativas são
@@ -271,7 +274,6 @@ def parse_prova(prova_pdf: Path) -> list[dict]:
     meio do enunciado como alternativa espúria."""
     doc = fitz.open(str(prova_pdf))
     full = "\n".join(p.get_text() for p in doc)
-    doc.close()
 
     matches = list(_QSTART_RE.finditer(full))
     questions: list[dict] = []
@@ -308,10 +310,10 @@ def parse_prova(prova_pdf: Path) -> list[dict]:
 
         questions.append({"number": number, "statement": statement, "alternatives": alternatives})
 
-    return questions
+    return questions, doc
 
 
-def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], force_reimport: bool = False) -> tuple[int, int]:
+def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], doc: fitz.Document | None = None, force_reimport: bool = False) -> tuple[int, int]:
     """Grava as questões de UM caderno (já parseado) no banco, pulando
     edições já importadas (mesmo exam_name) e questões sem gabarito
     conhecido para o número (não encontrado na tabela). Não deduplica por
@@ -327,6 +329,14 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
     if already > 0:
         return 0, already
 
+    # Build image mapping from PDF if doc is available
+    image_map: dict[tuple[int, str | None], list[str]] = {}
+    if doc is not None:
+        try:
+            image_map = _assign_images_by_reading_order(doc, 0)
+        except Exception:
+            image_map = {}
+
     added = 0
     skipped_existing = 0
     running_number = 1
@@ -339,6 +349,16 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
 
         options = [{"text": text, "is_correct": (letter == correct)} for letter, text in q["alternatives"]]
         metadata = {"original_number": q["number"]}
+
+        # Collect images for this question by original_number
+        img_list = image_map.get((q["number"], None), [])
+        images_param = None
+        if img_list:
+            images_param = [
+                {"image_base64": data_url, "order": idx}
+                for idx, data_url in enumerate(img_list)
+            ]
+
         vq, created = save_vestibular_question(
             db,
             exam_type="ufu",
@@ -347,9 +367,9 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
             number=running_number,
             statement=q["statement"],
             options=options,
+            images=images_param,
             correct_option=correct,
             metadata=metadata,
-        
             force_reimport=force_reimport,
         )
         if not created:
@@ -409,17 +429,22 @@ def import_ufu_edition(db, year: int, semester: int, cronograma_id: int, force_r
                 prova_path = tmp / f"prova_tipo{tipo}.pdf"
                 download_pdf(url, prova_path)
 
-                questions = parse_prova(prova_path)
+                questions, doc = parse_prova(prova_path)
                 gabarito = gabarito_by_tipo.get(tipo, {})
 
                 if not questions:
+                    doc.close()
                     results.append({"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida no PDF (caderno pode ser imagem escaneada)"})
                     continue
                 if not gabarito:
+                    doc.close()
                     results.append({"exam_name": exam_name, "skipped": True, "reason": f"Gabarito do Tipo {tipo!r} não encontrado no PDF de gabarito"})
                     continue
 
-                added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito, force_reimport=force_reimport)
+                try:
+                    added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito, doc=doc, force_reimport=force_reimport)
+                finally:
+                    doc.close()
                 results.append({
                     "exam_name": exam_name,
                     "total_parsed": len(questions),
@@ -450,7 +475,8 @@ async def process_and_import_ufu_from_url(url: str, year: int, db):
         except Exception as e:
             return {"status": "error", "reason": str(e)}
 
-        questions = parse_prova(prova_path)
+        questions, doc = parse_prova(prova_path)
+        doc.close()
         if not questions:
             return {"status": "skipped", "reason": "Nenhuma questão reconhecida no PDF"}
 

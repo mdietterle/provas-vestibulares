@@ -283,15 +283,25 @@ def _question_boundaries(text: str) -> list[re.Match]:
     return bounds
 
 
-def parse_exam_pdf(pdf_path: Path) -> list[dict]:
+def parse_exam_pdf(pdf_path: Path) -> tuple[list[dict], dict[tuple[int, str | None], list[str]]]:
     """Parseia o caderno de prova e retorna
-    [{number, statement, alternatives: [(letra, texto), ...], correct}].
+    (questions, images_map).
+
+    questions: [{number, statement, alternatives: [(letra, texto), ...], correct}]
+    images_map: {(number, None): [data_url, ...]} — imagens associadas por ordem de leitura.
 
     `correct` vem da própria prova ("Alternativa correta: X", impressa após
     cada questão) — `None` quando a questão foi anulada ("Alternativa
     correta: QUESTÃO ANULADA"). O gabarito oficial (arquivo separado) é
     usado só para cross-check em `import_uel_year`."""
-    text = _pdf_full_text(pdf_path)
+    doc = fitz.open(str(pdf_path))
+    text = "\n".join(page.get_text() for page in doc)
+
+    # Extrai imagens antes de fechar o doc
+    started_page = 0
+    images_map = _assign_images_by_reading_order(doc, started_page)
+    doc.close()
+
     boundaries = _question_boundaries(text)
 
     questions: list[dict] = []
@@ -333,12 +343,12 @@ def parse_exam_pdf(pdf_path: Path) -> list[dict]:
             "correct": correct,
         })
 
-    return questions
+    return questions, images_map
 
 
 # ── Persistência ─────────────────────────────────────────────────────────────
 
-def _persist_year(db: Session, year: int, questions: list[dict], force_reimport: bool = False) -> dict:
+def _persist_year(db: Session, year: int, questions: list[dict], images_map: dict[tuple[int, str | None], list[str]] | None = None, force_reimport: bool = False) -> dict:
     """Grava as questões de um ano via adapter unificado. Idempotente por
     (exam_type, exam_name, number) — delegada ao save_vestibular_question."""
     import gc
@@ -357,6 +367,16 @@ def _persist_year(db: Session, year: int, questions: list[dict], force_reimport:
                 "order": order,
             })
 
+        # Imagens associadas à questão por ordem de leitura — passadas como
+        # data-URLs para save_vestibular_question, que faz upload unificado.
+        q_images = (images_map or {}).get((q["number"], None)) or []
+        images_param = None
+        if q_images:
+            images_param = [
+                {"image_base64": data_url, "order": idx}
+                for idx, data_url in enumerate(q_images)
+            ]
+
         vq, created = save_vestibular_question(
             db,
             exam_type="uel",
@@ -366,8 +386,8 @@ def _persist_year(db: Session, year: int, questions: list[dict], force_reimport:
             statement=q["statement"],
             options=options,
             correct_option=correct,
+            images=images_param,
             metadata={},
-        
             force_reimport=force_reimport,
         )
         if not created:
@@ -413,7 +433,7 @@ def import_uel_year(year: int, db: Optional[Session] = None, force_reimport: boo
 
             prova_path = tmp / "prova.pdf"
             download_pdf(prova_url, prova_path)
-            questions = parse_exam_pdf(prova_path)
+            questions, images_map = parse_exam_pdf(prova_path)
 
             if gabarito_url:
                 gab_path = tmp / "gabarito.pdf"
@@ -427,7 +447,7 @@ def import_uel_year(year: int, db: Optional[Session] = None, force_reimport: boo
         if not questions:
             return {"year": year, "skipped": True, "reason": "Nenhuma questão reconhecida (PDF em formato inesperado)"}
 
-        return _persist_year(db, year, questions, force_reimport=force_reimport)
+        return _persist_year(db, year, questions, images_map=images_map, force_reimport=force_reimport)
     except Exception:
         db.rollback()
         raise
@@ -459,6 +479,7 @@ def import_all_uel_exams(
     if since_year:
         years = [y for y in years if y >= since_year]
 
+    force_reimport = kwargs.get("force_reimport", False)
     results = []
     total_added = 0
     try:

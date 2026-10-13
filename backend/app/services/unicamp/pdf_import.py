@@ -1,5 +1,6 @@
 from app.services.progress import update_task_progress, complete_task, fail_task
 from typing import Optional
+import base64
 import gc
 import fitz
 import re
@@ -10,6 +11,7 @@ from typing import Optional
 from urllib.parse import urljoin
 
 from app.services.ita.pdf_import import download_pdf
+from app.services.pdf_figures import extract_figure_events
 
 _Q_START = re.compile(r"^QUESTÃO\s+(\d+)$", re.IGNORECASE)
 _OPT_START = re.compile(r"^([a-d])\)\s*")
@@ -18,83 +20,150 @@ _OPT_START = re.compile(r"^([a-d])\)\s*")
 def _parse_gabarito(gabarito_path: Path) -> dict[int, str]:
     doc = fitz.open(str(gabarito_path))
     gabarito = {}
-    
+
     text = ""
     for page in doc:
         text += page.get_text("text") + "\n"
-        
+
     lines = [l.strip() for l in text.split('\n') if l.strip()]
-    
+
     for i in range(len(lines) - 1):
         if lines[i].isdigit() and lines[i+1] in ("A", "B", "C", "D", "*"):
             q_num = int(lines[i])
             if q_num not in gabarito:
                 gabarito[q_num] = lines[i+1]
-                    
+
     return gabarito
 
 
 def _parse_exam(pdf_path: Path, gabarito: dict[int, str], subject: Optional[str] = None) -> list[dict]:
     doc = fitz.open(str(pdf_path))
+    all_events = []
+
+    for page_idx, page in enumerate(doc):
+        words = page.get_text("words")
+
+        # Agrupa palavras por y0 aproximado
+        lines_dict = {}
+        for w in words:
+            y_coord = w[1]
+            matched_y = None
+            for y in lines_dict.keys():
+                if abs(y - y_coord) <= 4:
+                    matched_y = y
+                    break
+            if matched_y is None:
+                lines_dict[y_coord] = [w]
+            else:
+                lines_dict[matched_y].append(w)
+
+        # Constrói textos de linhas
+        page_lines = []
+        for y in sorted(lines_dict.keys()):
+            line_words = sorted(lines_dict[y], key=lambda w: w[0])
+            line_text = " ".join(w[4] for w in line_words).strip()
+            page_lines.append((y, line_text))
+
+        # Coleta imagens
+        images_on_page = extract_figure_events(page)
+
+        # Monta os eventos da página
+        page_events = []
+        for y, l_text in page_lines:
+            m_q = _Q_START.match(l_text)
+            if m_q:
+                q_num = int(m_q.group(1))
+                page_events.append((y, "q_start", q_num))
+                continue
+
+            m_opt = _OPT_START.match(l_text)
+            if m_opt:
+                letter = m_opt.group(1).lower()
+                text_val = _OPT_START.sub("", l_text).strip()
+                page_events.append((y, "opt_start", (letter, text_val)))
+                continue
+
+            page_events.append((y, "text", l_text))
+
+        for _x_img, y_img, png in images_on_page:
+            page_events.append((y_img, "image", png))
+
+        # Ordena eventos da página verticalmente e anexa
+        page_events.sort(key=lambda e: e[0])
+        all_events.extend(page_events)
+
+    doc.close()
+
+    # Reconstituição de Questões
     questions = []
-    
     q_num = None
     statement_lines = []
     options = []
     in_opt = False
-    
+    pending_images = []
+
     def flush():
-        nonlocal q_num, statement_lines, options, in_opt
-        if q_num is not None:
-            ans = gabarito.get(q_num)
-            for opt in options:
-                opt["is_correct"] = (ans == opt["letter"].upper()) if ans else False
-                
-            questions.append({
-                "number": q_num,
-                "statement": "\n".join(statement_lines).strip(),
-                "options": [{"letter": o["letter"].upper(), "text": "\n".join(o["lines"]).strip(), "is_correct": o["is_correct"]} for o in options],
-                "question_type": "MULTIPLE_CHOICE",
-                "area": subject or "Geral",
-                "answer": ans
-            })
-            
+        nonlocal q_num, statement_lines, options, in_opt, pending_images
+        if q_num is None:
+            return
+
+        ans = gabarito.get(q_num)
+        for opt in options:
+            opt["is_correct"] = (ans == opt["letter"].upper()) if ans else False
+
+        img_b64 = None
+        extra_images = []
+        if pending_images:
+            img_b64 = base64.b64encode(pending_images[0]).decode()
+            for img in pending_images[1:]:
+                extra_images.append(base64.b64encode(img).decode())
+
+        questions.append({
+            "number": q_num,
+            "statement": "\n".join(statement_lines).strip(),
+            "options": [{"letter": o["letter"].upper(), "text": "\n".join(o["lines"]).strip(), "is_correct": o["is_correct"]} for o in options],
+            "question_type": "MULTIPLE_CHOICE",
+            "area": subject or "Geral",
+            "answer": ans,
+            "image_base64": img_b64,
+            "extra_images": extra_images,
+        })
+
         q_num = None
         statement_lines = []
         options = []
         in_opt = False
+        pending_images = []
 
-    for page in doc:
-        # Ignore pages like front cover
-        lines = page.get_text("text").split('\n')
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-                
-            m_q = _Q_START.match(line)
-            if m_q:
-                flush()
-                q_num = int(m_q.group(1))
-                continue
-                
-            m_opt = _OPT_START.match(line)
-            if m_opt and q_num is not None:
-                letter = m_opt.group(1).lower()
-                text_val = _OPT_START.sub("", line).strip()
+    for _y, etype, val in all_events:
+        if etype == "q_start":
+            flush()
+            q_num = val
+            continue
+
+        elif etype == "opt_start":
+            letter, text_val = val
+            if q_num is not None:
                 options.append({"letter": letter, "lines": [text_val] if text_val else []})
                 in_opt = True
+            continue
+
+        elif etype == "text":
+            text_val = val
+            # ignore footer page numbers
+            if text_val.isdigit() and len(text_val) < 3:
                 continue
-                
             if q_num is not None:
-                # ignore footer page numbers
-                if line.isdigit() and len(line) < 3:
-                    continue
                 if in_opt and options:
-                    options[-1]["lines"].append(line)
+                    options[-1]["lines"].append(text_val)
                 else:
-                    statement_lines.append(line)
-                    
+                    statement_lines.append(text_val)
+            continue
+
+        elif etype == "image":
+            if q_num is not None:
+                pending_images.append(val)
+
     flush()
     return questions
 
@@ -102,44 +171,54 @@ def _parse_exam(pdf_path: Path, gabarito: dict[int, str], subject: Optional[str]
 def _persist_parsed_questions(
     db, exam_name: str, year: int, phase: str, parsed: list[dict]
 ) -> tuple[int, int]:
-    from app.models import UnicampQuestion, UnicampQuestionOption
+    from app.services.import_batch import save_vestibular_question
+    from app.vestibular.models import VestibularQuestion
 
     added = 0
     skipped_existing = 0
     for q in parsed:
         existing = (
-            db.query(UnicampQuestion)
-            .filter_by(exam_name=exam_name, number=q["number"], area=q["area"])
+            db.query(VestibularQuestion)
+            .filter_by(exam_type="unicamp", exam_name=exam_name, number=q["number"])
             .first()
         )
         if existing:
             skipped_existing += 1
             continue
 
-        uq = UnicampQuestion(
+        options = [
+            {
+                "letter": opt["letter"],
+                "text": opt["text"],
+                "is_correct": opt["is_correct"],
+                "order": idx,
+            }
+            for idx, opt in enumerate(q["options"])
+        ]
+
+        images = []
+        if q.get("image_base64"):
+            images.append({"image_base64": q["image_base64"], "order": 0})
+        for idx, img_b64 in enumerate(q.get("extra_images", [])):
+            images.append({"image_base64": img_b64, "order": idx + 1})
+
+        vq, created = save_vestibular_question(
+            db=db,
+            exam_type="unicamp",
             exam_name=exam_name,
-            university="UNICAMP",
             year=year,
-            phase=phase,
             number=q["number"],
-            question_type=q["question_type"],
-            area=q["area"],
             statement=q["statement"],
-            answer=q["answer"]
+            answer=q["answer"],
+            image_base64=None,
+            options=options,
+            images=images,
+            metadata={"area": q["area"], "question_type": q["question_type"], "phase": phase},
         )
-        db.add(uq)
-        db.flush()
-
-        for idx, opt in enumerate(q["options"]):
-            db.add(UnicampQuestionOption(
-                question_id=uq.id,
-                letter=opt["letter"],
-                text=opt["text"],
-                is_correct=opt["is_correct"],
-                order=idx,
-            ))
-
-        added += 1
+        if created:
+            added += 1
+        else:
+            skipped_existing += 1
 
     db.commit()
     return added, skipped_existing

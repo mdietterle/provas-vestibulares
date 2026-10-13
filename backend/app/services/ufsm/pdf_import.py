@@ -303,6 +303,8 @@ def _persist_year(db: Session, year: int, cadernos: list[dict], force_reimport: 
     skipped_existing = 0
     running_number = 0
     for caderno in cadernos:
+        # Build image map for this caderno if doc is available
+        img_map = caderno.get("images", {})
         for q in caderno["questions"]:
             running_number += 1
             correct = caderno["gabarito"].get(q["number"])
@@ -315,6 +317,12 @@ def _persist_year(db: Session, year: int, cadernos: list[dict], force_reimport: 
                     "order": order,
                 })
             metadata = {"caderno": caderno["nome"], "original_number": q["number"]}
+            # Collect images for this question (keyed by original number)
+            q_images = []
+            key = (q["number"], None)
+            if key in img_map:
+                for idx, data_url in enumerate(img_map[key]):
+                    q_images.append({"data": data_url, "order": idx})
             vq, created = save_vestibular_question(
                 db,
                 exam_type="ufsm",
@@ -323,11 +331,11 @@ def _persist_year(db: Session, year: int, cadernos: list[dict], force_reimport: 
                 number=running_number,
                 statement=q["statement"],
                 options=options,
+                images=q_images if q_images else None,
                 correct_option=correct,
                 metadata=metadata,
-            
-            force_reimport=force_reimport,
-        )
+                force_reimport=force_reimport,
+            )
             if not created:
                 skipped_existing += 1
                 continue
@@ -373,7 +381,13 @@ def import_ufsm_year(year: int, db: Optional[Session] = None, force_reimport: bo
                     questions = parse_exam(_sorted_text(prova_path), gabarito)
                     if not questions:
                         continue
-                    cadernos.append({"nome": nome, "questions": questions, "gabarito": gabarito})
+                    # Extract images from prova PDF and attach to caderno
+                    doc = fitz.open(str(prova_path))
+                    try:
+                        images = _assign_images_by_reading_order(doc, 0)
+                    finally:
+                        doc.close()
+                    cadernos.append({"nome": nome, "questions": questions, "gabarito": gabarito, "images": images})
         except requests.RequestException as e:
             return {"year": year, "skipped": True, "reason": f"Falha de rede/download: {e}"}
         except ValueError as e:

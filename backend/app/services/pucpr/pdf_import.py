@@ -220,8 +220,9 @@ def _is_within_highlight(bbox, highlights: list[tuple[float, float]]) -> bool:
 def parse_exam_pdf(path: Path) -> tuple[list[dict], list[int]]:
     """Retorna (questões, números pulados).
 
-    Cada questão: {number, area, language, statement, correct, options: [{letter, text}]}.
+    Cada questão: {number, area, language, statement, correct, options: [{letter, text}], images: [data_url]}.
     `correct` vem do grifo detectado na própria prova (None se não identificado).
+    Imagens são extraídas e associadas por ordem de leitura.
     """
     doc = fitz.open(str(path))
     events: list[tuple[str, object]] = []
@@ -260,6 +261,8 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], list[int]]:
                     continue
                 events.append(("text", text))
 
+    # Extract images associated by reading order
+    q_images = _assign_images_by_reading_order(doc, 0)
     doc.close()
 
     questions: list[dict] = []
@@ -279,6 +282,8 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], list[int]]:
         if stmt and len(options) == 5 and letters == set("ABCDE"):
             highlighted = [o["letter"] for o in options if o.get("highlighted")]
             correct = highlighted[0] if len(highlighted) == 1 else None
+            # Attach images for this question number
+            imgs = q_images.get((q_num, None), [])
             questions.append({
                 "number": q_num,
                 "area": current_area,
@@ -289,6 +294,7 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], list[int]]:
                     {"letter": o["letter"], "text": _clean(" ".join(o["lines"]))}
                     for o in options
                 ],
+                "images": imgs,
             })
         else:
             skipped.append(q_num)
@@ -365,6 +371,8 @@ def parse_exam_pdf_legacy(path: Path) -> tuple[list[dict], list[int]]:
                     text = re.sub(r"^X\s*", "", text)
                 events.append(("line", (text, is_wrong)))
 
+    # Extract images associated by reading order (same as current parser)
+    q_images = _assign_images_by_reading_order(doc, 0)
     doc.close()
 
     questions: list[dict] = []
@@ -388,6 +396,7 @@ def parse_exam_pdf_legacy(path: Path) -> tuple[list[dict], list[int]]:
         if stmt and wrong_count == 4:
             letters = "ABCDE"
             correct_idx = next(i for i, (_, is_wrong) in enumerate(opts) if not is_wrong)
+            imgs = q_images.get((q_num, None), [])
             questions.append({
                 "number": q_num,
                 "area": current_area,
@@ -398,6 +407,7 @@ def parse_exam_pdf_legacy(path: Path) -> tuple[list[dict], list[int]]:
                     {"letter": letters[i], "text": _clean(t)}
                     for i, (t, _) in enumerate(opts)
                 ],
+                "images": imgs,
             })
         else:
             skipped.append(q_num)
@@ -459,42 +469,6 @@ def _parse_exam_pdf_any(path: Path) -> tuple[list[dict], list[int]]:
     return parse_exam_pdf_legacy(path)
 
 
-def _ensure_tables(engine) -> None:
-    from sqlalchemy import text as sql_text
-
-    try:
-        with engine.begin() as conn:
-            conn.execute(sql_text("""
-                CREATE TABLE IF NOT EXISTS pucpr_questions (
-                    id SERIAL PRIMARY KEY,
-                    exam_name VARCHAR(200) NOT NULL,
-                    year INTEGER NOT NULL,
-                    season VARCHAR(20),
-                    course VARCHAR(100),
-                    color VARCHAR(20),
-                    number INTEGER NOT NULL,
-                    area VARCHAR(100),
-                    language VARCHAR(20),
-                    statement TEXT NOT NULL,
-                    image_base64 TEXT,
-                    created_at TIMESTAMP DEFAULT NOW(),
-                    UNIQUE(exam_name, number, language)
-                )
-            """))
-            conn.execute(sql_text("""
-                CREATE TABLE IF NOT EXISTS pucpr_question_options (
-                    id SERIAL PRIMARY KEY,
-                    question_id INTEGER NOT NULL REFERENCES pucpr_questions(id) ON DELETE CASCADE,
-                    letter VARCHAR(1) NOT NULL,
-                    text TEXT NOT NULL,
-                    is_correct BOOLEAN DEFAULT FALSE,
-                    "order" INTEGER DEFAULT 0
-                )
-            """))
-    except Exception as e:
-        raise RuntimeError(f"Falha ao criar tabelas: {e}")
-
-
 def _import_parsed_exam(db, exam_name: str, year: int, season, course, color, parsed, skipped_numbers, gabarito_text: str, force_reimport: bool = False) -> dict:
     """Grava no banco as questões já parseadas de uma prova. O gabarito
     detectado por grifo na própria prova tem prioridade; `gabarito_text`
@@ -524,6 +498,13 @@ def _import_parsed_exam(db, exam_name: str, year: int, season, course, color, pa
             "area": q["area"],
             "language": q["language"],
         }
+        # Build images list for Supabase upload (data URLs from PDF extraction)
+        raw_images = q.get("images") or []
+        images_payload = [
+            {"image_base64": data_url, "order": idx}
+            for idx, data_url in enumerate(raw_images)
+        ] if raw_images else None
+
         vq, created = save_vestibular_question(
             db,
             exam_type="pucpr",
@@ -532,9 +513,9 @@ def _import_parsed_exam(db, exam_name: str, year: int, season, course, color, pa
             number=q["number"],
             statement=q["statement"],
             options=options,
+            images=images_payload,
             correct_option=correct_letter,
             metadata=metadata,
-        
             force_reimport=force_reimport,
         )
         if not created:

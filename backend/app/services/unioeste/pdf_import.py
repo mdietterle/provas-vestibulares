@@ -69,6 +69,8 @@ desistir, e cada ano é importado independentemente (falha num ano não trava
 o lote).
 """
 
+import base64
+import gc
 import re
 import tempfile
 from pathlib import Path
@@ -79,7 +81,7 @@ import fitz  # PyMuPDF
 import requests
 from sqlalchemy.orm import Session
 
-from app.models import UnioesteQuestion, UnioesteQuestionOption
+from app.services.pdf_figures import extract_figure_events
 from app.services.progress import complete_task, fail_task, update_task_progress
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -290,7 +292,8 @@ def _pdf_full_text(pdf_path: Path) -> str:
 
 def parse_exam_pdf(pdf_path: Path) -> list[dict]:
     """Parseia um caderno de prova (Tarde ou Manhã) e retorna a lista de
-    questões [{number, statement, alternatives: [(letra, texto), ...]}].
+    questões [{number, statement, alternatives: [(letra, texto), ...],
+    images: [png_bytes, ...]}].
 
     A numeração de questão no PDF é sempre "NN." com zero à esquerda (ex.:
     "01.", "02."), MAS pelo menos um ano (2021, questão 9) imprime sem o
@@ -304,24 +307,59 @@ def parse_exam_pdf(pdf_path: Path) -> list[dict]:
          próxima questão quando o número bate com o próximo esperado
          (1, 2, 3, ...) — filtra naturalmente qualquer número solto que não
          seja de fato o marcador da próxima questão.
-    """
-    text = _pdf_full_text(pdf_path)
-    m0 = _Q1_RE.search(text)
-    if m0:
-        text = text[m0.start():]
 
-    boundaries = []
+    Imagens são extraídas página a página via `extract_figure_events` (raster
+    + vetorial) e associadas à questão cujo enunciado ocupa a mesma página.
+    """
+    doc = fitz.open(str(pdf_path))
+
+    # Extrai texto completo para localizar boundaries de questão (mesma
+    # lógica anterior, mas agora também precisamos saber em qual página cada
+    # questão começa para vincular as imagens).
+    full_text = ""
+    page_texts: list[str] = []
+    page_offsets: list[int] = []  # offset de caractere onde cada página começa
+    for page in doc:
+        page_text = page.get_text()
+        page_offsets.append(len(full_text))
+        full_text += page_text
+        page_texts.append(page_text)
+
+    m0 = _Q1_RE.search(full_text)
+    if m0:
+        start_offset = m0.start()
+        # Ajusta offsets relativos ao corte
+        page_offsets = [max(0, off - start_offset) for off in page_offsets]
+        full_text = full_text[start_offset:]
+
+    boundaries: list[tuple[int, int]] = []  # (char_offset, question_number)
     expected = 1
-    for cand in _Q_RE.finditer(text):
+    for cand in _Q_RE.finditer(full_text):
         if int(cand.group(1)) == expected:
-            boundaries.append(cand)
+            boundaries.append((cand.end(), int(cand.group(1))))
             expected += 1
 
+    # Coleta imagens por página (lista plana ordenada por y)
+    page_images: list[list[bytes]] = []
+    for page in doc:
+        events = extract_figure_events(page)
+        page_images.append([png for _, _, png in events])
+    doc.close()
+
+    def _page_index_for_offset(char_off: int) -> int:
+        """Retorna o índice da página que contém o caractere `char_off`."""
+        idx = 0
+        for i, off in enumerate(page_offsets):
+            if off <= char_off:
+                idx = i
+            else:
+                break
+        return idx
+
     questions: list[dict] = []
-    for i, m in enumerate(boundaries):
-        start = m.end()
-        end = boundaries[i + 1].start() if i + 1 < len(boundaries) else len(text)
-        body = text[start:end]
+    for i, (q_start, q_num) in enumerate(boundaries):
+        q_end = boundaries[i + 1][0] if i + 1 < len(boundaries) else len(full_text)
+        body = full_text[q_start:q_end]
 
         alt_matches = list(_ALT_RE.finditer(body))
         seen: set[str] = set()
@@ -336,16 +374,24 @@ def parse_exam_pdf(pdf_path: Path) -> list[dict]:
             alternatives.append((letter, _clean(body[a_start:a_end])))
 
         if len(alternatives) != 5 or {L for L, _ in alternatives} != set("ABCDE"):
-            continue  # questão em formato inesperado (raro) — pula, não trava o resto
+            continue
 
         statement = _clean(body[: alt_matches[0].start()] if alt_matches else body)
         if not statement:
             continue
 
+        # Associa imagens da(s) página(s) cobertas pelo enunciado desta questão
+        p_start = _page_index_for_offset(q_start)
+        p_end = _page_index_for_offset(q_end)
+        imgs: list[bytes] = []
+        for pi in range(p_start, min(p_end + 1, len(page_images))):
+            imgs.extend(page_images[pi])
+
         questions.append({
-            "number": int(m.group(1)),
+            "number": q_num,
             "statement": statement,
             "alternatives": alternatives,
+            "images": imgs,
         })
 
     return questions
@@ -353,33 +399,57 @@ def parse_exam_pdf(pdf_path: Path) -> list[dict]:
 
 # ── Persistência ─────────────────────────────────────────────────────────────
 
-def _persist_year(db: Session, year: int, questions: list[dict]) -> dict:
+def _persist_year(db: Session, year: int, questions: list[dict], force_reimport: bool = False) -> dict:
     """Grava as questões de um ano (já com `correct` resolvido pelo
-    gabarito). Idempotente por ano: se já existirem questões daquele ano,
-    não duplica (não há campo de sessão/exame no modelo para distinguir
-    reimportações parciais)."""
-    already = db.query(UnioesteQuestion).filter(UnioesteQuestion.year == year).count()
-    if already > 0:
-        return {"year": year, "total_parsed": len(questions), "total_added": 0, "skipped_existing": already}
+    gabarito) via `save_vestibular_question`, que faz upload automático de
+    imagens para o Supabase Storage e grava URLs em `VestibularQuestionImage`.
+    Idempotente por (exam_type, exam_name, number)."""
+    from app.services.import_batch import save_vestibular_question
 
     added = 0
+    skipped_existing = 0
     for q in questions:
-        question = UnioesteQuestion(year=year, number=q["number"], statement=q["statement"])
-        db.add(question)
-        db.flush()
+        images = []
+        for idx, img_bytes in enumerate(q.get("images", [])):
+            images.append({"image_base64": base64.b64encode(img_bytes).decode(), "order": idx})
 
-        correct = q.get("correct")
-        for order, (letter, opt_text) in enumerate(q["alternatives"]):
-            db.add(UnioesteQuestionOption(
-                question_id=question.id,
-                text=opt_text,
-                is_correct=(letter == correct),
-                order=order,
-            ))
-        added += 1
+        options = [
+            {
+                "letter": letter,
+                "text": opt_text,
+                "is_correct": (letter == q.get("correct")),
+                "order": order,
+            }
+            for order, (letter, opt_text) in enumerate(q["alternatives"])
+        ]
+
+        _, created = save_vestibular_question(
+            db=db,
+            exam_type="unioeste",
+            exam_name=f"UNIOESTE {year}",
+            year=year,
+            number=q["number"],
+            statement=q["statement"],
+            answer=q.get("correct"),
+            options=options,
+            images=images,
+            metadata={"phase": "tarde" if q["number"] <= 72 else "manha"},
+            force_reimport=force_reimport,
+        )
+        if created:
+            added += 1
+        else:
+            skipped_existing += 1
+
+        if added % 10 == 0:
+            db.commit()
+            db.expunge_all()
+            gc.collect()
 
     db.commit()
-    return {"year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": 0}
+    db.expunge_all()
+    gc.collect()
+    return {"year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": skipped_existing}
 
 
 def import_unioeste_year(

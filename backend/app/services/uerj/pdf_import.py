@@ -26,9 +26,6 @@ from app.services.pdf_figures import extract_figure_events
 
 from app.database import SessionLocal
 from app.models import (
-    UerjQuestion,
-    UerjQuestionOption,
-    UerjQuestionImage,
     Exam,
     Subject,
     Institution
@@ -599,60 +596,50 @@ def _parse_exam(
 
 
 def _persist_parsed_questions(
-    db, exam_name: str, year: int, phase: str, parsed: list[dict]
+    db, exam_name: str, year: int, phase: str, parsed: list[dict],
+    force_reimport: bool = False,
 ) -> tuple[int, int]:
-    from app.models import UerjQuestion, UerjQuestionOption, UerjQuestionImage
+    from app.services.import_batch import save_vestibular_question
+    from app.vestibular.models import VestibularQuestion
 
     added = 0
     skipped_existing = 0
     for q in parsed:
-        existing = (
-            db.query(UerjQuestion)
-            .filter_by(exam_name=exam_name, number=q["number"], area=q["area"])
-            .first()
-        )
-        if existing:
-            skipped_existing += 1
-            continue
+        images = []
+        if q.get("image_base64"):
+            images.append({"image_base64": q["image_base64"], "order": 0})
+        for idx, img_b64 in enumerate(q.get("extra_images", [])):
+            images.append({"image_base64": img_b64, "order": idx + 1})
 
-        uq = UerjQuestion(
+        options = [
+            {
+                "letter": opt["letter"],
+                "text": opt["text"],
+                "is_correct": opt["is_correct"],
+                "order": idx,
+            }
+            for idx, opt in enumerate(q["options"])
+        ]
+
+        vq, created = save_vestibular_question(
+            db=db,
+            exam_type="uerj",
             exam_name=exam_name,
-            university="UERJ",
             year=year,
-            phase=phase,
             number=q["number"],
-            question_type=q["question_type"],
-            area=q["area"],
             statement=q["statement"],
             answer=q["answer"],
-            image_base64=q["image_base64"],
+            image_base64=None,
+            options=options,
+            images=images,
+            metadata={"area": q["area"], "question_type": q["question_type"], "phase": phase},
+            force_reimport=force_reimport,
         )
-        db.add(uq)
-        db.flush()
+        if created:
+            added += 1
+        else:
+            skipped_existing += 1
 
-        for idx, opt in enumerate(q["options"]):
-            db.add(UerjQuestionOption(
-                question_id=uq.id,
-                letter=opt["letter"],
-                text=opt["text"],
-                is_correct=opt["is_correct"],
-                order=idx,
-            ))
-
-        for idx, img_b64 in enumerate(q.get("extra_images", [])):
-            db.add(UerjQuestionImage(
-                question_id=uq.id,
-                image_base64=img_b64,
-                order=idx,
-            ))
-
-        added += 1
-
-        # Commita em lotes de 10 em vez de esperar a prova inteira: acumular
-        # todas as questões (com suas imagens em base64) na sessão até um
-        # único commit final é o que empurrava a memória perto do teto de
-        # 512MB do Render free e derrubava o processo (OOM) no meio da
-        # importação — mesma causa raiz já corrigida no ENEM e no ITA.
         if added % 10 == 0:
             db.commit()
             db.expunge_all()

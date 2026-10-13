@@ -203,6 +203,8 @@ def import_enem_question(
     current_user: User = Depends(require_professor),
 ):
     """Copy an ENEM question into the professor's institution question bank."""
+    from app.vestibular.models import VestibularQuestion, VestibularQuestionImage
+
     vq = db.get(VestibularQuestion, payload.vestibular_question_id)
     if not vq or vq.exam_type != "enem":
         raise HTTPException(404, "Questão ENEM não encontrada")
@@ -214,12 +216,21 @@ def import_enem_question(
     # Build statement with ENEM source attribution
     statement = f"{vq.statement}\n\n[ENEM {vq.year} – Q{vq.number}]"
 
+    # Use first image URL from Supabase Storage if available; fall back to legacy base64
+    first_image = (
+        db.query(VestibularQuestionImage)
+        .filter_by(question_id=vq.id)
+        .order_by(VestibularQuestionImage.order)
+        .first()
+    )
+    image_url = first_image.image_url if first_image else None
+
     question = Question(
         statement=statement,
         question_type=QuestionType.MULTIPLE_CHOICE,
         is_public=payload.is_public,
         difficulty=payload.difficulty,
-        image_base64=vq.image_base64,
+        image_base64=image_url or vq.image_base64,
         subject_id=payload.subject_id,
         professor_id=current_user.id,
     )

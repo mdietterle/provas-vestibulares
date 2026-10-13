@@ -255,6 +255,17 @@ def import_fepese_cargo(
         download_pdf(url, pdf_path)
         parsed = parse_fepese_pdf(pdf_path)
 
+        # Extract images and map to question numbers
+        doc = fitz.open(str(pdf_path))
+        started_page = 0
+        for pno in range(doc.page_count):
+            text = doc[pno].get_text()
+            if _QMARK.search(text):
+                started_page = pno
+                break
+        q_images = _assign_images_by_reading_order(doc, started_page)
+        doc.close()
+
     if not parsed:
         return {
             "concurso_slug": concurso_slug,
@@ -289,6 +300,14 @@ def import_fepese_cargo(
             "cargo_code": cargo_code,
             "subject": q["subject"],
         }
+        # Build images list from extracted PDF images for this question
+        q_key = (q["number"], None)
+        raw_imgs = q_images.get(q_key, [])
+        images_payload = [
+            {"image_base64": data_url, "order": idx}
+            for idx, data_url in enumerate(raw_imgs)
+        ] if raw_imgs else None
+
         vq, created = save_vestibular_question(
             db,
             exam_type="concurso_fepese",
@@ -297,9 +316,9 @@ def import_fepese_cargo(
             number=q["number"],
             statement=q["statement"],
             options=options,
+            images=images_payload,
             correct_option=q["correct"],
             metadata=metadata,
-        
             force_reimport=force_reimport,
         )
         if not created:

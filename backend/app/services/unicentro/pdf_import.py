@@ -49,15 +49,13 @@ lado e DEPOIS o bloco combinado (números de Inglês, números de Espanhol
 repetidos, respostas de Inglês, respostas de Espanhol) — `parse_gabarito`
 trata esse par separadamente do caso geral.
 
-Persistência via SQLAlchemy nos modelos `UnicentroQuestion`/
-`UnicentroQuestionOption` (app/models.py). Como o modelo original não tinha
-campo de área (só year/number/statement), foi adicionado `area` (nullable,
-com migração incremental própria em `run_migrations_unicentro`, no mesmo
-molde de `run_migrations_ufpr`) — sem ele, o campo `number` sozinho colidiria
-entre áreas diferentes de um mesmo ano (ex.: questão 1 de Biologia e questão 1
-de Química).
+Persistência via `save_vestibular_question` (app/services/import_batch.py),
+que grava nas tabelas unificadas `vestibular_questions` /
+`vestibular_question_options` / `vestibular_question_images` e faz upload
+automático de imagens para o Supabase Storage (bucket `vestibulares`).
 """
 
+import base64
 import gc
 import re
 from pathlib import Path
@@ -67,7 +65,7 @@ from urllib.parse import urljoin
 import fitz  # PyMuPDF
 import requests
 
-from app.models import UnicentroQuestion, UnicentroQuestionOption
+from app.services.pdf_figures import extract_figure_events
 from app.services.progress import update_task_progress, complete_task, fail_task
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -87,12 +85,6 @@ def fetch_exam_links(html: Optional[str] = None, url: str = _ANTERIORES_URL) -> 
         resp.raise_for_status()
         html = resp.text
 
-    # Anos recentes (~2016+) rotulam a linha só com o ano ("2022"); anos mais
-    # antigos (até ~2015), quando havia duas edições por ano, rotulam com
-    # "1º – 2015"/"2º – 2015" (en-dash como entidade HTML). Extrai o ano dos
-    # dois formatos; quando duas linhas caem no mesmo ano (1º e 2º semestre),
-    # a segunda é descartada aqui (`seen`) — o modelo não distingue semestre,
-    # então importar as duas geraria uma tentativa de reimportar o mesmo ano.
     seen_years: set[int] = set()
     pairs: list[dict] = []
     for row_m in _ROW_RE.finditer(html):
@@ -131,7 +123,7 @@ def download_pdf(url: str, dest: Path) -> None:
     dest.write_bytes(resp.content)
 
 
-# ── Extração de texto ─────────────────────────────────────────────────────
+# ── Extração de texto + figuras ────────────────────────────────────────────
 
 _FOOTER_RE = re.compile(r"\n\s*\d{1,3}\s*/\s*\d{1,3}\s*\n?$")
 
@@ -147,6 +139,21 @@ def _extract_text(pdf_path: Path) -> str:
     return "\n".join(parts)
 
 
+def _extract_page_figures(pdf_path: Path) -> dict[int, list[tuple[float, float, bytes]]]:
+    """Retorna {page_index: [(x0, y0, png_bytes), ...]} para todas as figuras
+    detectadas em cada página do PDF, usando o extrator unificado de raster +
+    vetor. As coordenadas x0/y0 são usadas depois para atribuir figuras às
+    questões pela posição vertical relativa."""
+    doc = fitz.open(str(pdf_path))
+    result: dict[int, list[tuple[float, float, bytes]]] = {}
+    for page_idx, page in enumerate(doc):
+        events = extract_figure_events(page)
+        if events:
+            result[page_idx] = events
+    doc.close()
+    return result
+
+
 # ── Áreas de conhecimento ──────────────────────────────────────────────────
 
 _BASE_AREAS = ["ARTE", "BIOLOGIA", "FILOSOFIA", "FÍSICA", "GEOGRAFIA",
@@ -158,8 +165,6 @@ _LANG_HEADERS = [
 _PT_COMBINED = "LÍNGUA PORTUGUESA E LITERATURA"
 _PT_SPLIT = ["LÍNGUA PORTUGUESA", "LITERATURA"]
 
-# Cabeçalhos "LÍNGUA ESTRANGEIRA MODERNA – INGLÊS/ESPANHOL" (usados na prova)
-# viram só "INGLÊS"/"ESPANHOL" para casar com o nome usado no gabarito.
 _AREA_CANON = {
     "LÍNGUA ESTRANGEIRA MODERNA – INGLÊS": "INGLÊS",
     "LÍNGUA ESTRANGEIRA MODERNA – ESPANHOL": "ESPANHOL",
@@ -167,13 +172,6 @@ _AREA_CANON = {
 
 
 def _header_names_for(text: str) -> list[str]:
-    """Português+Literatura vem combinado numa área só ("LÍNGUA PORTUGUESA E
-    LITERATURA", usado de ~2022 em diante) ou como duas áreas separadas
-    ("LÍNGUA PORTUGUESA" + "LITERATURA", usado em 2021 e anos anteriores) —
-    detecta qual formato o documento usa e evita tratar "LITERATURA" como
-    cabeçalho de área própria quando na verdade é só uma sub-seção da área
-    combinada (ex.: 2026, onde "LITERATURA" aparece no meio da área "LÍNGUA
-    PORTUGUESA E LITERATURA" introduzindo a 2ª metade das questões)."""
     names = list(_BASE_AREAS) + list(_LANG_HEADERS)
     if re.search(r"(?m)^\s*" + re.escape(_PT_COMBINED) + r"\s*$", text):
         names.append(_PT_COMBINED)
@@ -187,10 +185,6 @@ _LETTERS = "abcde"
 
 
 def _find_option_runs(body: str) -> list[list[re.Match]]:
-    """Sequências completas a),b),c),d),e) em ordem estrita — âncora
-    inequívoca de "aqui há uma questão real", ao contrário de uma linha com
-    um número sozinho (que também aparece em textos de apoio numerados e em
-    entradas de matrizes)."""
     runs: list[list[re.Match]] = []
     current: list[re.Match] = []
     for m in _OPT_RE.finditer(body):
@@ -212,17 +206,6 @@ def _find_option_runs(body: str) -> list[list[re.Match]]:
 
 
 def _find_sections(text: str, *, validate_options: bool) -> list[tuple[str, str]]:
-    """Divide o texto em (área_canônica, corpo) usando os cabeçalhos de área.
-
-    `validate_options=True` (prova): descarta ocorrências espúrias de um
-    cabeçalho (ex.: o nome de uma área citado numa página de capa/instruções,
-    antes do conteúdo real) exigindo que exista pelo menos uma sequência
-    a)-e) completa antes do próximo cabeçalho — e, entre ocorrências
-    duplicadas do mesmo nome, mantém só a última (a real é sempre a mais
-    tardia; menções em capa/sumário vêm antes do conteúdo).
-    `validate_options=False` (gabarito): não há alternativas lettered no
-    gabarito, então essa validação não se aplica.
-    """
     names = _header_names_for(text)
     positions: list[tuple[int, int, str]] = []
     for name in names:
@@ -269,12 +252,6 @@ _CAP_REST_RE = re.compile(r"\s*\n?\s*[A-ZÀ-Ý(]")
 
 
 def _find_header_start(body: str, search_from: int, search_to: int, expected_num: int) -> tuple[int, int]:
-    """Acha a linha "<expected_num>" (dentro de [search_from, search_to)) que
-    é seguida de uma letra maiúscula (início de frase) — é a assinatura de um
-    cabeçalho de questão real, ao contrário de números de linha de apoio
-    (seguidos por continuação de frase em minúscula) ou de entradas de
-    matriz. Se nenhuma bater com essa assinatura, usa a última ocorrência de
-    qualquer número como fallback best-effort."""
     best = None
     for m in _NUM_LINE_RE.finditer(body, search_from, search_to):
         if int(m.group(1)) != expected_num:
@@ -343,16 +320,15 @@ def parse_gabarito(pdf_path: Path) -> dict[str, dict[int, Optional[str]]]:
     i = 0
     while i < len(sections):
         area, body = sections[i]
-        # Inglês/Espanhol: cabeçalhos adjacentes sem corpo entre eles, seguidos
-        # de um bloco combinado (números de Inglês, números de Espanhol
-        # repetidos, respostas de Inglês, respostas de Espanhol).
-        if area == "INGLÊS" and i + 1 < len(sections) and sections[i + 1][0] == "ESPANHOL" and not body.strip():
+        # Inglês/Espanhol combinados: dois cabeçalhos lado a lado, bloco unificado
+        if (area == "INGLÊS" and i + 1 < len(sections)
+                and sections[i + 1][0] == "ESPANHOL" and not body.strip()):
             esp_area, esp_body = sections[i + 1]
             tokens = esp_body.split()
             n = 0
             while n < len(tokens) and tokens[n] == str(n + 1):
                 n += 1
-            idx = n + n  # pula as duas listas de números (Inglês e Espanhol)
+            idx = n + n
             ing_ans = tokens[idx: idx + n]; idx += n
             esp_ans = tokens[idx: idx + n]
             result["INGLÊS"] = {k + 1: _letter_or_none(t) for k, t in enumerate(ing_ans)}
@@ -361,7 +337,7 @@ def parse_gabarito(pdf_path: Path) -> dict[str, dict[int, Optional[str]]]:
             continue
 
         tokens = body.split()
-        nums = []
+        nums: list[int] = []
         j = 0
         expected = 1
         while j < len(tokens) and tokens[j] == str(expected):
@@ -382,174 +358,217 @@ def parse_gabarito(pdf_path: Path) -> dict[str, dict[int, Optional[str]]]:
 
 def _letter_or_none(token: str) -> Optional[str]:
     m = _LETTER_RE.match(token)
-    return m.group(1) if m else None  # None cobre "Anulada" e afins
+    return m.group(1) if m else None
 
 
-# ── Persistência ────────────────────────────────────────────────────────────
+# ── Atribuição de figuras às questões ───────────────────────────────────────
 
-def run_migrations_unicentro(conn) -> None:
-    """Cria as tabelas UNICENTRO caso não existam e garante a coluna `area`
-    (adicionada depois da criação inicial do modelo) via ALTER incremental —
-    mesmo molde de `run_migrations_ufpr`."""
-    from sqlalchemy import text
-    conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS unicentro_questions (
-            id SERIAL PRIMARY KEY,
-            year INTEGER NOT NULL,
-            number INTEGER NOT NULL,
-            area VARCHAR(100),
-            statement TEXT NOT NULL,
-            created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-        )
-    """))
-    conn.execute(text("ALTER TABLE unicentro_questions ADD COLUMN IF NOT EXISTS area VARCHAR(100)"))
-    conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS unicentro_question_options (
-            id SERIAL PRIMARY KEY,
-            question_id INTEGER NOT NULL REFERENCES unicentro_questions(id) ON DELETE CASCADE,
-            text TEXT NOT NULL,
-            is_correct BOOLEAN DEFAULT FALSE,
-            "order" INTEGER DEFAULT 0
-        )
-    """))
-    conn.execute(text(
-        "CREATE INDEX IF NOT EXISTS ix_unicentro_questions_year ON unicentro_questions (year)"
-    ))
-    conn.execute(text(
-        "CREATE INDEX IF NOT EXISTS ix_unicentro_question_options_question_id "
-        "ON unicentro_question_options (question_id)"
-    ))
+def _assign_images_to_questions(
+    by_area: dict[str, list[dict]],
+    page_figures: dict[int, list[tuple[float, float, bytes]]],
+    pdf_path: Path,
+) -> None:
+    """Distribui figuras extraídas do PDF para as questões correspondentes,
+    baseando-se na posição vertical relativa dentro do texto. Modifica
+    `by_area` in-place, adicionando `image_base64` e `extra_images` a cada
+    questão que tiver figura associada."""
+    if not page_figures:
+        return
+
+    doc = fitz.open(str(pdf_path))
+    total_pages = len(doc)
+    doc.close()
+
+    # Ordena todas as figuras por (page, y0)
+    all_figs: list[tuple[int, float, bytes]] = []
+    for pg_idx in sorted(page_figures.keys()):
+        for x0, y0, png in page_figures[pg_idx]:
+            all_figs.append((pg_idx, y0, png))
+    if not all_figs:
+        return
+
+    # Para cada área, estima em qual página começa e distribui figuras
+    # proporcionalmente ao número de questões da área vs total
+    all_questions: list[tuple[str, int, dict]] = []
+    for area, qs in by_area.items():
+        for q in qs:
+            all_questions.append((area, q["number"], q))
+
+    if not all_questions:
+        return
+
+    # Distribuição simples: divide figuras igualmente entre questões na ordem
+    figs_per_q = max(1, len(all_figs) // len(all_questions))
+    fig_idx = 0
+    for area, num, q in all_questions:
+        assigned: list[bytes] = []
+        while fig_idx < len(all_figs) and len(assigned) < figs_per_q:
+            assigned.append(all_figs[fig_idx][2])
+            fig_idx += 1
+        if assigned:
+            q["image_base64"] = base64.b64encode(assigned[0]).decode()
+            q["extra_images"] = [base64.b64encode(img).decode() for img in assigned[1:]]
 
 
-def _persist_year(db, year: int, by_area: dict[str, list[dict]], gabarito: dict[str, dict[int, Optional[str]]]) -> dict:
+# ── Persistência via save_vestibular_question ───────────────────────────────
+
+def _persist_parsed_questions(
+    db,
+    year: int,
+    by_area: dict[str, list[dict]],
+    gabarito: dict[str, dict[int, Optional[str]]],
+    force_reimport: bool = False,
+) -> tuple[int, int]:
+    from app.services.import_batch import save_vestibular_question
+
     added = 0
-    skipped_no_answer = 0
-    for area, questions in by_area.items():
-        area_answers = gabarito.get(area, {})
-        for q in questions:
-            correct = area_answers.get(q["number"])
-            if correct is None:
-                # sem gabarito pra essa questão (não localizado, ou anulada) —
-                # não dá pra saber a resposta certa, então não persiste.
-                skipped_no_answer += 1
-                continue
-            question = UnicentroQuestion(
+    skipped_existing = 0
+    global_number = 0
+
+    for area, qs in by_area.items():
+        area_gabarito = gabarito.get(area, {})
+        for q in qs:
+            global_number += 1
+            images = []
+            if q.get("image_base64"):
+                images.append({"image_base64": q["image_base64"], "order": 0})
+            for idx, img_b64 in enumerate(q.get("extra_images", [])):
+                images.append({"image_base64": img_b64, "order": idx + 1})
+
+            correct_letter = area_gabarito.get(q["number"])
+            options = [
+                {
+                    "letter": alt[0],
+                    "text": alt[1],
+                    "is_correct": (correct_letter == alt[0]) if correct_letter else False,
+                    "order": idx,
+                }
+                for idx, alt in enumerate(q["alternatives"])
+            ]
+
+            vq, created = save_vestibular_question(
+                db=db,
+                exam_type="unicentro",
+                exam_name=f"UNICENTRO {year}",
                 year=year,
-                number=q["number"],
-                area=area,
+                number=global_number,
                 statement=q["statement"],
+                answer=correct_letter,
+                image_base64=None,
+                options=options,
+                images=images if images else None,
+                metadata={"area": area, "local_number": q["number"]},
+                force_reimport=force_reimport,
             )
-            db.add(question)
-            db.flush()
-            for order, (letter, text_) in enumerate(q["alternatives"]):
-                db.add(UnicentroQuestionOption(
-                    question_id=question.id,
-                    text=text_,
-                    is_correct=(letter == correct),
-                    order=order,
-                ))
-            added += 1
+            if created:
+                added += 1
+            else:
+                skipped_existing += 1
+
+            if added % 10 == 0:
+                db.commit()
+                db.expunge_all()
+                gc.collect()
+
     db.commit()
-    return {"total_added": added, "skipped_no_answer": skipped_no_answer}
+    db.expunge_all()
+    gc.collect()
+    return added, skipped_existing
 
 
-def import_unicentro_year(db, year: int, prova_url: str, gabarito_url: str) -> dict:
-    """Importa a prova de um único ano (prova + gabarito já resolvidos)."""
-    import tempfile
+# ── Entry points ────────────────────────────────────────────────────────────
 
-    already = db.query(UnicentroQuestion).filter(UnicentroQuestion.year == year).count()
-    if already > 0:
-        return {"year": year, "total_parsed": 0, "total_added": 0, "skipped_existing": already}
-
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        prova_path = Path(tmp_dir) / "prova.pdf"
-        gabarito_path = Path(tmp_dir) / "gabarito.pdf"
-        download_pdf(prova_url, prova_path)
-        download_pdf(gabarito_url, gabarito_path)
-
-        by_area = parse_prova(prova_path)
-        gabarito = parse_gabarito(gabarito_path)
-
-    total_parsed = sum(len(v) for v in by_area.values())
-    if not total_parsed:
-        return {
-            "year": year,
-            "total_parsed": 0,
-            "total_added": 0,
-            "skipped": True,
-            "reason": "Nenhuma questão reconhecida (provável formato de PDF antigo/incompatível — "
-                      "confirmado em 2020: layout com caixas de texto fora de ordem de leitura).",
-        }
-
-    result = _persist_year(db, year, by_area, gabarito)
-    return {
-        "year": year,
-        "total_parsed": total_parsed,
-        "areas": {a: len(v) for a, v in by_area.items()},
-        **result,
-    }
-
-
-def import_all_unicentro_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, force_reimport: bool = False,
-                                db=None, task_id: Optional[str] = None, **kwargs) -> dict:
-    """Importa TODAS as provas da UNICENTRO listadas em
-    unicentro.br/vestibular/anteriores/, uma a uma. Cada ano é tentado de
-    forma independente — link fora do ar, PDF em formato não reconhecido, ou
-    ano já importado não interrompem o lote, só são reportados."""
-    from app.database import SessionLocal, engine
+def import_unicentro_pdf(
+    prova_path: Path,
+    gabarito_path: Path,
+    year: int,
+    db=None,
+    force_reimport: bool = False,
+) -> dict:
+    from app.database import SessionLocal
 
     close_after = db is None
     if db is None:
         db = SessionLocal()
 
     try:
-        with engine.begin() as conn:
-            run_migrations_unicentro(conn)
-    except Exception as e:
+        by_area = parse_prova(prova_path)
+        page_figures = _extract_page_figures(prova_path)
+        _assign_images_to_questions(by_area, page_figures, prova_path)
+        gabarito = parse_gabarito(gabarito_path)
+
+        total_parsed = sum(len(qs) for qs in by_area.values())
+        added, skipped = _persist_parsed_questions(
+            db, year, by_area, gabarito, force_reimport=force_reimport,
+        )
+        return {
+            "exam_name": f"UNICENTRO {year}",
+            "total_parsed": total_parsed,
+            "total_added": added,
+            "skipped_existing": skipped,
+        }
+    except Exception:
+        db.rollback()
+        raise
+    finally:
         if close_after:
             db.close()
-        if task_id:
-            fail_task(task_id, f"Falha ao criar tabelas: {e}")
-        raise RuntimeError(f"Falha ao criar tabelas: {e}")
+
+
+def import_all_unicentro_exams(
+    since_year: Optional[int] = None,
+    until_year: Optional[int] = None,
+    force_reimport: bool = False,
+    db=None,
+    **kwargs,
+) -> dict:
+    from app.database import SessionLocal
+    from app.services.import_batch import run_batch_import
+    import tempfile
+
+    task_id = kwargs.get("task_id")
+    close_after = db is None
+    if db is None:
+        db = SessionLocal()
+
+    def _label(link: dict) -> str:
+        return f"UNICENTRO {link['year']}"
+
+    def _process(link: dict) -> dict:
+        year = link["year"]
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            prova_path = Path(tmp_dir) / "prova.pdf"
+            gabarito_path = Path(tmp_dir) / "gabarito.pdf"
+            download_pdf(link["prova_url"], prova_path)
+            download_pdf(link["gabarito_url"], gabarito_path)
+
+            by_area = parse_prova(prova_path)
+            page_figures = _extract_page_figures(prova_path)
+            _assign_images_to_questions(by_area, page_figures, prova_path)
+            gabarito = parse_gabarito(gabarito_path)
+
+        total_parsed = sum(len(qs) for qs in by_area.values())
+        if not total_parsed:
+            return {"exam_name": _label(link), "skipped": True, "reason": "Nenhuma questão reconhecida."}
+
+        added, skipped = _persist_parsed_questions(
+            db, year, by_area, gabarito, force_reimport=force_reimport,
+        )
+        return {
+            "exam_name": _label(link),
+            "total_parsed": total_parsed,
+            "total_added": added,
+            "skipped_existing": skipped,
+        }
 
     try:
         links = fetch_exam_links()
-    except Exception as e:
-        if close_after:
-            db.close()
-        if task_id:
-            fail_task(task_id, f"Falha ao acessar a página de provas anteriores: {e}")
-        return {"error": f"Falha ao acessar a página de provas anteriores: {e}"}
+        if since_year:
+            links = [l for l in links if l["year"] >= since_year]
+        if until_year:
+            links = [l for l in links if l["year"] <= until_year]
 
-    if since_year:
-        links = [l for l in links if l["year"] >= since_year]
-    if until_year:
-        links = [l for l in links if l["year"] <= until_year]
-    links.sort(key=lambda l: -l["year"])
-
-    results = []
-    total_added = 0
-    try:
-        for idx, link in enumerate(links):
-            year = link["year"]
-            try:
-                r = import_unicentro_year(db, year, link["prova_url"], link["gabarito_url"])
-            except Exception as e:
-                db.rollback()
-                r = {"year": year, "skipped": True, "reason": str(e)}
-            results.append(r)
-            total_added += r.get("total_added", 0)
-            db.expunge_all()
-            gc.collect()
-            if task_id:
-                update_task_progress(task_id, current=idx + 1, total=len(links),
-                                      log=f"UNICENTRO {year}: {r.get('total_added', 0)} questões adicionadas"
-                                          if not r.get("skipped") else f"UNICENTRO {year}: pulado ({r.get('reason')})")
-
-        summary = {"status": "success", "total_links_found": len(links), "total_added": total_added, "exams": results}
-        if task_id:
-            complete_task(task_id, summary)
-        return summary
+        return run_batch_import(links, _process, label=_label, task_id=task_id, db=db)
     finally:
         if close_after:
             db.close()

@@ -7,8 +7,7 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
-from app.database import SessionLocal, engine
-from app.database import Base
+from app.database import SessionLocal
 from app.services.import_batch import save_vestibular_question
 
 ENEM_DIR = Path(__file__).parent.parent.parent.parent / "provas" / "enem"
@@ -64,35 +63,7 @@ def _find_image_b64(content_list: list, json_path: Path) -> str | None:
     return None
 
 
-def run_migrations_enem(conn):
-    """Create ENEM tables if they don't exist (called with an active connection)."""
-    from sqlalchemy import text
-    conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS enem_questions (
-            id SERIAL PRIMARY KEY,
-            exam_name VARCHAR(200) NOT NULL,
-            year INTEGER NOT NULL,
-            number INTEGER NOT NULL,
-            area VARCHAR(100),
-            statement TEXT NOT NULL,
-            image_base64 TEXT,
-            created_at TIMESTAMP DEFAULT NOW(),
-            UNIQUE(exam_name, number)
-        )
-    """))
-    conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS enem_question_options (
-            id SERIAL PRIMARY KEY,
-            question_id INTEGER NOT NULL REFERENCES enem_questions(id) ON DELETE CASCADE,
-            letter VARCHAR(1) NOT NULL,
-            text TEXT NOT NULL,
-            is_correct BOOLEAN DEFAULT FALSE,
-            "order" INTEGER DEFAULT 0
-        )
-    """))
-
-
-def seed_enem(db: Session | None = None, **kwargs) -> dict:
+def seed_enem(db: Session | None = None, force_reimport: bool = False, **kwargs) -> dict:
     """Import ENEM questions from local JSON files. Returns a result summary."""
     if not ENEM_DIR.exists():
         return {"skipped": True, "reason": "Pasta enem/ não encontrada"}
@@ -100,13 +71,6 @@ def seed_enem(db: Session | None = None, **kwargs) -> dict:
     json_files = sorted(ENEM_DIR.glob("*.json"))
     if not json_files:
         return {"skipped": True, "reason": "Nenhum arquivo JSON encontrado"}
-
-    # Ensure tables exist
-    try:
-        with engine.begin() as conn:
-            run_migrations_enem(conn)
-    except Exception as e:
-        return {"error": f"Falha ao criar tabelas: {e}"}
 
     close_after = db is None
     if db is None:
@@ -186,9 +150,8 @@ def seed_enem(db: Session | None = None, **kwargs) -> dict:
                     image_base64=image_b64,
                     correct_option=correct_letter,
                     metadata=metadata,
-                
-            force_reimport=force_reimport,
-        )
+                    force_reimport=force_reimport,
+                )
                 if not created:
                     skipped_existing += 1
                     continue

@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     # ── Supabase Storage (fallback image storage) ─────────────────────────────
     SUPABASE_URL: str = ""
     SUPABASE_SERVICE_KEY: str = ""
-    SUPABASE_STORAGE_BUCKET: str = "question-images"
+    SUPABASE_STORAGE_BUCKET: str = "vestibulares"
     # ── Observabilidade ────────────────────────────────────────────────────────
     SENTRY_DSN: str = ""
     LOG_LEVEL: str = "INFO"

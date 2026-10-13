@@ -36,7 +36,8 @@ import fitz  # PyMuPDF
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal, engine
-from app.models import UfprQuestion, UfprQuestionImage, UfprQuestionOption
+from app.services.import_batch import save_vestibular_question
+from app.services.pdf_figures import extract_figure_events
 
 UFPR_DIR = Path(__file__).parent.parent.parent.parent / "provas" / "ufpr"
 
@@ -125,42 +126,6 @@ def _infer_area(statement: str) -> str:
     return best if best_hits >= 1 else "Geral"
 
 
-def run_migrations_ufpr(conn):
-    """Cria as tabelas UFPR caso não existam (com uma conexão ativa)."""
-    from sqlalchemy import text
-    conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS ufpr_questions (
-            id SERIAL PRIMARY KEY,
-            exam_name VARCHAR(200) NOT NULL,
-            university VARCHAR(50) NOT NULL DEFAULT 'UFPR',
-            year INTEGER NOT NULL,
-            number INTEGER NOT NULL,
-            area VARCHAR(100),
-            language VARCHAR(20),
-            statement TEXT NOT NULL,
-            image_base64 TEXT,
-            created_at TIMESTAMP DEFAULT NOW(),
-            UNIQUE(exam_name, number, language)
-        )
-    """))
-    conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS ufpr_question_options (
-            id SERIAL PRIMARY KEY,
-            question_id INTEGER NOT NULL REFERENCES ufpr_questions(id) ON DELETE CASCADE,
-            letter VARCHAR(1) NOT NULL,
-            text TEXT NOT NULL,
-            is_correct BOOLEAN DEFAULT FALSE,
-            "order" INTEGER DEFAULT 0
-        )
-    """))
-    conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS ufpr_question_images (
-            id SERIAL PRIMARY KEY,
-            question_id INTEGER NOT NULL REFERENCES ufpr_questions(id) ON DELETE CASCADE,
-            image_base64 TEXT NOT NULL,
-            "order" INTEGER DEFAULT 0
-        )
-    """))
 
 
 # ── Gabarito ─────────────────────────────────────────────────────────────────
@@ -361,39 +326,12 @@ def _parse_exam_questions(doc, start: int, end: int) -> list[dict]:
 
 # ── Imagens (associação por ordem de leitura) ────────────────────────────────
 
-def _xref_to_dataurl(doc, xref: int) -> str | None:
-    try:
-        pix = fitz.Pixmap(doc, xref)
-        if pix.n - pix.alpha >= 4:
-            pix = fitz.Pixmap(fitz.csRGB, pix)
-        data = pix.tobytes("png")
-        return "data:image/png;base64," + base64.b64encode(data).decode()
-    except Exception:
-        return None
+def _assign_images(doc, start: int, end: int) -> dict[tuple[int, str | None], list[bytes]]:
+    """Associa imagens à questão por ordem de leitura, dentro de uma prova.
 
-
-def _page_content_images(page) -> list[tuple[float, int]]:
-    """[(y_topo, xref)] das imagens de conteúdo da página (sem fundos/logos)."""
-    pw, ph = page.rect.width, page.rect.height
-    out = []
-    for im in page.get_image_info(xrefs=True):
-        x0, y0, x1, y1 = im["bbox"]
-        w, h = x1 - x0, y1 - y0
-        xref = im.get("xref", 0)
-        if not xref or w <= 8 or h <= 8:
-            continue
-        # descarta fundos de página inteira e o logo do topo-esquerdo
-        if w > pw * 0.9 and h > ph * 0.9:
-            continue
-        if y0 < 40 and x0 < 120 and w < 200:
-            continue
-        out.append((y0, xref))
-    out.sort(key=lambda t: t[0])
-    return out
-
-
-def _assign_images(doc, start: int, end: int) -> dict[tuple[int, str | None], list[str]]:
-    """Associa imagens à questão por ordem de leitura, dentro de uma prova."""
+    Usa extract_figure_events (raster + vetorial) em vez de xref-only para
+    capturar diagramas vetoriais que o método antigo perdia.
+    """
     events: list[tuple[int, float, str, object]] = []
     cur_lang: str | None = None
     for pno in range(start - 1, end):
@@ -407,29 +345,21 @@ def _assign_images(doc, start: int, end: int) -> dict[tuple[int, str | None], li
                 m = _RE_QMARK.match(t)
                 if m:
                     events.append((pno, line["bbox"][1], "Q", (int(m.group(1)), cur_lang)))
-        for y, xref in _page_content_images(page):
-            events.append((pno, y, "IMG", xref))
+        for _x_img, y_img, png_bytes in extract_figure_events(page):
+            events.append((pno, y_img, "IMG", png_bytes))
     events.sort(key=lambda e: (e[0], e[1]))
 
-    images: dict[tuple[int, str | None], list[str]] = {}
-    seen_xref: set[int] = set()
+    images: dict[tuple[int, str | None], list[bytes]] = {}
     cur_key: tuple[int, str | None] | None = None
     last_num = 0
     for _pno, _y, kind, val in events:
         if kind == "Q":
             num, lang = val
-            # Só avança quando o número faz sentido (mesma lógica de ressincronização).
             if num == last_num + 1 or (last_num < num <= 99 and num - last_num <= 4):
                 cur_key = (num, lang)
                 last_num = num
         elif kind == "IMG" and cur_key is not None:
-            xref = val
-            if xref in seen_xref:
-                continue
-            seen_xref.add(xref)
-            data_url = _xref_to_dataurl(doc, xref)
-            if data_url:
-                images.setdefault(cur_key, []).append(data_url)
+            images.setdefault(cur_key, []).append(val)
     return images
 
 
@@ -489,12 +419,6 @@ def seed_ufpr(db: Session | None = None, **kwargs) -> dict:
     if not pdf_files:
         return {"skipped": True, "reason": "Nenhum arquivo PDF encontrado"}
 
-    try:
-        with engine.begin() as conn:
-            run_migrations_ufpr(conn)
-    except Exception as e:
-        return {"error": f"Falha ao criar tabelas: {e}"}
-
     close_after = db is None
     if db is None:
         db = SessionLocal()
@@ -511,12 +435,9 @@ def seed_ufpr(db: Session | None = None, **kwargs) -> dict:
 
             for year in sorted(by_year, reverse=True):
                 exam_name = f"UFPR {year}"
-                already = db.query(UfprQuestion).filter(UfprQuestion.exam_name == exam_name).count()
-                if already > 0:
-                    results.append({"exam": exam_name, "added": 0, "existing": already})
-                    continue
 
                 added = 0
+                skipped_existing = 0
                 seen: set[tuple[int, str | None]] = set()
                 for q in by_year[year]:
                     key = (q["number"], q["language"])
@@ -524,38 +445,53 @@ def seed_ufpr(db: Session | None = None, **kwargs) -> dict:
                         continue
                     seen.add(key)
 
-                    question = UfprQuestion(
+                    options = [
+                        {
+                            "letter": letter,
+                            "text": text,
+                            "is_correct": (letter == q["correct"]),
+                            "order": order,
+                        }
+                        for order, (letter, text) in enumerate(q["alternatives"])
+                    ]
+
+                    images = None
+                    if q.get("images"):
+                        images = [
+                            {"image_base64": data_url, "order": order}
+                            for order, data_url in enumerate(q["images"])
+                        ]
+
+                    metadata = {
+                        "area": q["area"],
+                        "language": q["language"],
+                        "university": "UFPR",
+                    }
+
+                    vq, created = save_vestibular_question(
+                        db,
+                        exam_type="ufpr",
                         exam_name=exam_name,
-                        university="UFPR",
                         year=year,
                         number=q["number"],
-                        area=q["area"],
-                        language=q["language"],
                         statement=q["statement"],
-                        image_base64=q["image_base64"],
+                        options=options,
+                        images=images,
+                        image_base64=None,
+                        correct_option=q.get("correct"),
+                        metadata=metadata,
                     )
-                    db.add(question)
-                    db.flush()
-
-                    for order, (letter, text) in enumerate(q["alternatives"]):
-                        db.add(UfprQuestionOption(
-                            question_id=question.id,
-                            letter=letter,
-                            text=text,
-                            is_correct=(letter == q["correct"]),
-                            order=order,
-                        ))
-                    for order, data_url in enumerate(q["images"]):
-                        db.add(UfprQuestionImage(
-                            question_id=question.id,
-                            image_base64=data_url,
-                            order=order,
-                        ))
+                    if not created:
+                        skipped_existing += 1
+                        continue
                     added += 1
 
                 db.commit()
                 total_added += added
-                results.append({"exam": exam_name, "added": added})
+                if skipped_existing:
+                    results.append({"exam": exam_name, "added": 0, "existing": skipped_existing})
+                else:
+                    results.append({"exam": exam_name, "added": added})
 
         return {"total_added": total_added, "files": results}
     except Exception:

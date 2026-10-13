@@ -415,13 +415,14 @@ def parse_gabarito(path: Path) -> dict:
         doc.close()
 
 
-def _persist_edition(db, exam_name: str, year: int, stage: int, questions: list[dict], gabarito: dict, force_reimport: bool = False) -> tuple:
+def _persist_edition(db, exam_name: str, year: int, stage: int, questions: list[dict], gabarito: dict, images_by_key: dict | None = None, force_reimport: bool = False) -> tuple:
     """Grava as questões de UMA edição (já parseada), pulando edições já
     importadas (mesmo exam_name) e questões sem gabarito conhecido (número
     ausente, anulada, ou que não corresponda a nenhuma alternativa
     extraída)."""
     default_answers = gabarito.get("default", {})
     le_answers = gabarito.get("le", {})
+    images_by_key = images_by_key or {}
 
     added = 0
     skipped_existing = 0
@@ -451,6 +452,7 @@ def _persist_edition(db, exam_name: str, year: int, stage: int, questions: list[
             "subject": q["subject"],
             "university": "UFAM",
         }
+        q_images = images_by_key.get((q["number"], None), [])
         vq, created = save_vestibular_question(
             db,
             exam_type="ufam",
@@ -459,8 +461,8 @@ def _persist_edition(db, exam_name: str, year: int, stage: int, questions: list[
             number=q["number"],
             statement=q["statement"],
             options=options,
-            images=images_by_key.get((q["number"], None), []) if "images_by_key" in dir() else None,
-                image_base64=(images_by_key.get((q["number"], None), [None])[0] if "images_by_key" in dir() and images_by_key.get((q["number"], None)) else None),
+            images=q_images if len(q_images) > 1 else None,
+            image_base64=q_images[0] if q_images else None,
             correct_option=correct,
             metadata=metadata,
             force_reimport=force_reimport,
@@ -509,6 +511,13 @@ def import_ufam_edition(db, edition: dict, force_reimport: bool = False) -> dict
         try:
             questions = parse_prova(prova_path)
             gabarito = parse_gabarito(gabarito_path)
+
+            # Extrai imagens do PDF da prova para associar às questões
+            doc = fitz.open(str(prova_path))
+            try:
+                images_by_key = _assign_images_by_reading_order(doc, 0)
+            finally:
+                doc.close()
         except Exception as e:
             return {"exam_name": exam_name, "year": year, "stage": stage, "skipped": True,
                     "reason": f"Falha ao parsear PDF (provavelmente prova escaneada/sem texto extraível ou formato não reconhecido): {e}"}
@@ -517,7 +526,7 @@ def import_ufam_edition(db, edition: dict, force_reimport: bool = False) -> dict
             return {"exam_name": exam_name, "year": year, "stage": stage, "skipped": True,
                     "reason": "Nenhuma questão reconhecida no PDF (prova escaneada, sem texto extraível, ou formato de alternativas não reconhecido)"}
 
-        added, skipped_existing = _persist_edition(db, exam_name, year, stage, questions, gabarito, force_reimport=force_reimport)
+        added, skipped_existing = _persist_edition(db, exam_name, year, stage, questions, gabarito, images_by_key=images_by_key, force_reimport=force_reimport)
         return {
             "exam_name": exam_name, "year": year, "stage": stage,
             "gabarito_status": files["gabarito_status"],

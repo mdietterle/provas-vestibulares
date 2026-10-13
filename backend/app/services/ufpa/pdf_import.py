@@ -89,6 +89,7 @@ import fitz  # PyMuPDF
 import requests
 
 from app.services.import_batch import save_vestibular_question
+from app.services.r2_storage import upload_image
 from app.services.progress import update_task_progress, complete_task, fail_task
 
 def _xref_to_dataurl(doc, xref: int) -> str | None:
@@ -383,7 +384,9 @@ def parse_gabarito(path: Path, n_langs: int = 5) -> tuple[dict[int, str], list[d
 
 
 def _persist_exam(db, exam_name: str, year: int, questions: list[dict],
+    main_answers: dict[int, str], lang_answers: list[dict[int, str]],
     force_reimport: bool = False,
+    images_by_q: dict[tuple[int, str | None], list[str]] | None = None,
 ) -> tuple:
     """Grava as questões de UM ano via adapter unificado, pulando questões
     sem gabarito conhecido (não encontrado, anuladas pela banca — "Anulada"
@@ -413,6 +416,29 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict],
                 "order": order,
             })
 
+        # Build images list with Supabase Storage upload
+        images = []
+        if images_by_q:
+            # Try language-specific key first, then generic key
+            q_images = images_by_q.get((q["number"], q["subject"]))
+            if not q_images:
+                q_images = images_by_q.get((q["number"], None))
+            if q_images:
+                for idx, data_url in enumerate(q_images):
+                    try:
+                        suffix = f"_{idx}" if idx > 0 else ""
+                        url = upload_image(
+                            data_url,
+                            exam_type="ufpa",
+                            year=year,
+                            number=q["number"],
+                            suffix=suffix,
+                        )
+                        images.append({"image_url": url, "order": idx})
+                    except Exception:
+                        # Fallback: store base64 if upload fails
+                        images.append({"image_base64": data_url, "order": idx})
+
         metadata = {"subject": q["subject"]}
 
         vq, created = save_vestibular_question(
@@ -425,6 +451,7 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict],
             options=options,
             correct_option=correct,
             metadata=metadata,
+            images=images,
             force_reimport=force_reimport,
         )
         if not created:
@@ -476,7 +503,23 @@ def import_ufpa_year(db, year: int, urls: dict, force_reimport: bool = False) ->
             return {"exam_name": exam_name, "year": year, "skipped": True,
                     "reason": f"Falha ao parsear o gabarito: {e}"}
 
-        added, skipped_existing = _persist_exam(db, exam_name, year, questions, main_answers, lang_answers, force_reimport=force_reimport)
+        # Extract images from prova PDF and associate with questions
+        images_by_q: dict[tuple[int, str | None], list[str]] = {}
+        try:
+            doc = fitz.open(str(prova_path))
+            # Find first page with question content (after headers)
+            started_page = 0
+            for pno in range(doc.page_count):
+                text = doc[pno].get_text()
+                if _FIRST_HEADER_RE.search(text):
+                    started_page = pno
+                    break
+            images_by_q = _assign_images_by_reading_order(doc, started_page)
+            doc.close()
+        except Exception:
+            pass  # Non-fatal: continue without images if extraction fails
+
+        added, skipped_existing = _persist_exam(db, exam_name, year, questions, main_answers, lang_answers, force_reimport=force_reimport, images_by_q=images_by_q)
         return {
             "exam_name": exam_name, "year": year,
             "total_parsed": len(questions),

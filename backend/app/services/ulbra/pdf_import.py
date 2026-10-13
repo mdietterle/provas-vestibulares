@@ -306,7 +306,7 @@ def parse_exam(text: str, gabarito: dict[int, Optional[str]]) -> list[dict]:
 
 # ── Persistência ─────────────────────────────────────────────────────────
 
-def _persist_edition(db: Session, edition: str, year: int, questions: list[dict], gabarito: dict[int, Optional[str]], force_reimport: bool = False) -> dict:
+def _persist_edition(db: Session, edition: str, year: int, questions: list[dict], gabarito: dict[int, Optional[str]], images_map: dict[tuple[int, str | None], list[str]] | None = None, force_reimport: bool = False) -> dict:
     """Grava as questões de uma edição (ex.: "2019-2") via adapter unificado.
     Idempotente por (exam_type, exam_name, number)."""
     import gc
@@ -324,6 +324,12 @@ def _persist_edition(db: Session, edition: str, year: int, questions: list[dict]
                 "order": order,
             })
         metadata = {"edition": edition}
+        # Look up images for this question number
+        q_images = None
+        if images_map:
+            data_urls = images_map.get((q["number"], None))
+            if data_urls:
+                q_images = [{"data": du} for du in data_urls]
         vq, created = save_vestibular_question(
             db,
             exam_type="ulbra",
@@ -332,9 +338,9 @@ def _persist_edition(db: Session, edition: str, year: int, questions: list[dict]
             number=q["number"],
             statement=q["statement"],
             options=options,
+            images=q_images,
             correct_option=correct,
             metadata=metadata,
-        
             force_reimport=force_reimport,
         )
         if not created:
@@ -374,6 +380,15 @@ def import_ulbra_edition(edition: str, year: int, prova_url: str, gabarito_url: 
                 if not gabarito:
                     return {"edition": edition, "year": year, "skipped": True, "reason": "Gabarito em formato inesperado (0 pares número/letra reconhecidos)"}
                 questions = parse_exam(_sorted_text(prova_path), gabarito)
+
+                # Extract images from PDF and map to question numbers
+                images_map = None
+                try:
+                    doc = fitz.open(str(prova_path))
+                    images_map = _assign_images_by_reading_order(doc, 0)
+                    doc.close()
+                except Exception:
+                    images_map = None  # Graceful degradation: import without images
         except requests.RequestException as e:
             return {"edition": edition, "year": year, "skipped": True, "reason": f"Falha de rede/download: {e}"}
         except ValueError as e:
@@ -382,7 +397,7 @@ def import_ulbra_edition(edition: str, year: int, prova_url: str, gabarito_url: 
         if not questions:
             return {"edition": edition, "year": year, "skipped": True, "reason": "Nenhuma questão reconhecida (prova em formato inesperado)"}
 
-        return _persist_edition(db, edition, year, questions, gabarito, force_reimport=force_reimport)
+        return _persist_edition(db, edition, year, questions, gabarito, images_map=images_map, force_reimport=force_reimport)
     except Exception:
         db.rollback()
         raise

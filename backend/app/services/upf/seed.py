@@ -39,6 +39,7 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
+from app.services.pdf_figures import extract_figure_events
 from app.services.progress import update_task_progress, complete_task, fail_task
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -160,11 +161,53 @@ def _parse_gabarito(raw_text: str) -> list[dict]:
     return rows
 
 
+def _assign_images_by_reading_order(doc: "fitz.Document") -> dict[int, list[bytes]]:
+    """Associa imagens às questões por ordem de leitura no PDF.
+
+    Usa extract_figure_events (raster + vetorial) para capturar diagramas.
+    Retorna {question_key: [png_bytes, ...]} onde question_key usa a mesma
+    convenção de _parse_exam_booklet (num para 1ª ocorrência, num+1000*(n-1)
+    para ocorrências subsequentes de língua estrangeira).
+    """
+    events: list[tuple[int, float, str, object]] = []
+    seen_numbers: dict[int, int] = {}
+
+    for page_idx, page in enumerate(doc):
+        # Detectar marcadores de questão na camada de texto
+        for block in page.get_text("dict").get("blocks", []):
+            for line in block.get("lines", []):
+                line_text = "".join(sp["text"] for sp in line.get("spans", [])).strip()
+                m = re.match(r'-{3,}\s*Quest(?:ã|a)o\s*(\d+)\s*-{3,}', line_text)
+                if m:
+                    num = int(m.group(1))
+                    seen_numbers[num] = seen_numbers.get(num, 0) + 1
+                    key = num if seen_numbers[num] == 1 else num + 1000 * (seen_numbers[num] - 1)
+                    y_pos = line["bbox"][1]
+                    events.append((page_idx, y_pos, "Q", key))
+
+        # Coletar imagens da página
+        for _x_img, y_img, png_bytes in extract_figure_events(page):
+            events.append((page_idx, y_img, "IMG", png_bytes))
+
+    # Ordenar por página e posição vertical
+    events.sort(key=lambda e: (e[0], e[1]))
+
+    images: dict[int, list[bytes]] = {}
+    cur_key: Optional[int] = None
+    for _page, _y, kind, val in events:
+        if kind == "Q":
+            cur_key = val
+        elif kind == "IMG" and cur_key is not None:
+            images.setdefault(cur_key, []).append(val)
+
+    return images
+
+
 def import_upf_edition(db, edition: dict) -> dict:
     """Importa uma edição (year/season) do vestibular da UPF. Levanta
     exceção se não achar os PDFs necessários; quem chama decide se
     pula/reporta."""
-    from app.models import UpfQuestion, UpfQuestionOption
+    from app.services.import_batch import save_vestibular_question
 
     links = _find_pdf_links(edition["url"])
     prova_url = _pick_link(links, "Tipo A")
@@ -177,6 +220,7 @@ def import_upf_edition(db, edition: dict) -> dict:
 
     parsed_questions = _parse_exam_booklet(prova_text)
     gabarito_rows = _parse_gabarito(gabarito_text)
+    images_by_key = _assign_images_by_reading_order(prova_doc)
 
     # casa cada linha do gabarito (na ordem de leitura) com a ocorrência
     # correspondente da questão de mesmo número no caderno de prova.
@@ -187,7 +231,7 @@ def import_upf_edition(db, edition: dict) -> dict:
     total_skipped = 0
     for row in gabarito_rows:
         num = row["number"]
-        occurrence_counter[num] = occurrence_counter.get(num, 0) + 1
+        occurrence_counter[num] = occurrence_counter[num] = occurrence_counter.get(num, 0) + 1
         occ = occurrence_counter[num]
         key = num if occ == 1 else num + 1000 * (occ - 1)
         q = parsed_questions.get(key)
@@ -195,35 +239,46 @@ def import_upf_edition(db, edition: dict) -> dict:
             total_skipped += 1
             continue
 
-        exists = (
-            db.query(UpfQuestion)
-            .filter(UpfQuestion.exam_name == exam_name, UpfQuestion.number == num, UpfQuestion.area == row["area"])
-            .first()
-        )
-        if exists:
-            continue
+        options = [
+            {
+                "letter": letter.upper(),
+                "text": q["options"][letter],
+                "is_correct": (letter == row["correct_letter"]),
+                "order": order,
+            }
+            for order, letter in enumerate(['a', 'b', 'c', 'd', 'e'])
+        ]
 
-        db_q = UpfQuestion(
+        # Imagens associadas por ordem de leitura
+        imgs_raw = images_by_key.get(key, [])
+        images = None
+        if imgs_raw:
+            images = [
+                {"image_base64": img_data, "order": idx}
+                for idx, img_data in enumerate(imgs_raw)
+            ]
+
+        metadata = {
+            "area": row["area"],
+            "university": "UPF",
+            "season": edition["season"],
+        }
+
+        vq, created = save_vestibular_question(
+            db,
+            exam_type="upf",
             exam_name=exam_name,
             year=edition["year"],
             number=num,
-            area=row["area"],
             statement=q["statement"],
+            options=options,
+            images=images,
+            image_base64=None,
+            correct_option=row["correct_letter"].upper(),
+            metadata=metadata,
         )
-        db.add(db_q)
-        db.flush()
-
-        for order, letter in enumerate(['a', 'b', 'c', 'd', 'e']):
-            db.add(
-                UpfQuestionOption(
-                    question_id=db_q.id,
-                    letter=letter.upper(),
-                    text=q["options"][letter],
-                    is_correct=(letter == row["correct_letter"]),
-                    order=order,
-                )
-            )
-        total_added += 1
+        if created:
+            total_added += 1
 
     db.commit()
     prova_doc.close()

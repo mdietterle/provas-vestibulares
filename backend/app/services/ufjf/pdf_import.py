@@ -568,7 +568,7 @@ def parse_prova(prova_pdf: Path) -> list[dict]:
     return questions
 
 
-def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], force_reimport: bool = False) -> tuple[int, int]:
+def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito: dict[int, str], images_by_key: dict | None = None, force_reimport: bool = False) -> tuple[int, int]:
     added = 0
     skipped_existing = 0
     for q in questions:
@@ -591,6 +591,9 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
         metadata = {
             "university": "UFJF",
         }
+        raw_imgs = images_by_key.get((q["number"], None), []) if images_by_key else []
+        images_payload = [{"image_base64": data_url} for data_url in raw_imgs] if raw_imgs else None
+        first_img = raw_imgs[0] if raw_imgs else None
         vq, created = save_vestibular_question(
             db,
             exam_type="ufjf",
@@ -599,8 +602,8 @@ def _persist_exam(db, exam_name: str, year: int, questions: list[dict], gabarito
             number=q["number"],
             statement=q["statement"],
             options=options,
-            images=images_by_key.get((q["number"], None), []) if "images_by_key" in dir() else None,
-                image_base64=(images_by_key.get((q["number"], None), [None])[0] if "images_by_key" in dir() and images_by_key.get((q["number"], None)) else None),
+            images=images_payload,
+            image_base64=first_img,
             correct_option=correct,
             metadata=metadata,
             force_reimport=force_reimport,
@@ -651,7 +654,12 @@ def import_ufjf_edition(db, edition: dict, force_reimport: bool = False) -> dict
             if not gabarito:
                 return {"exam_name": exam_name, "skipped": True, "reason": "Gabarito vazio/não reconhecido"}
 
-            added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito, force_reimport=force_reimport)
+            # Extract images from prova PDF and assign to questions by reading order
+            doc = fitz.open(str(prova_path))
+            images_by_key = _assign_images_by_reading_order(doc, started_page=0)
+            doc.close()
+
+            added, skipped_existing = _persist_exam(db, exam_name, year, questions, gabarito, images_by_key=images_by_key, force_reimport=force_reimport)
             return {
                 "exam_name": exam_name,
                 "total_parsed": len(questions),
