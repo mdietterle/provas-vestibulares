@@ -17,9 +17,11 @@ export interface ImportResponse {
 }
 
 export const ufmsApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false): Promise<ImportResponse> => {
-    const params = { since_year: since, until_year: until, force_reimport: forceReimport };
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string): Promise<ImportResponse> => {
+    const params = { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName };
     const response = await api.post('/ufms/import', null, { params });
     return response.data;
   },
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufms/admin/exam-versions`, { params: { year } }),
 };

@@ -53,7 +53,7 @@ export const itaApi = {
   years: () => api.get<number[]>('/ita-questions/years'),
   areas: () => api.get<string[]>('/ita-questions/areas'),
   importQuestion: (data: ItaImportRequest) => api.post('/ita-questions/import', data),
-  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/ita-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/ita-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
   importPdf: (form: FormData, forceReimport = false) => {
     if (forceReimport) {
       form.append('force_reimport', 'true')
@@ -62,4 +62,6 @@ export const itaApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
   },
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/ita-questions/admin/exam-versions`, { params: { year } }),
 }

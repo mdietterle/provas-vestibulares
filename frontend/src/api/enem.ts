@@ -49,8 +49,8 @@ export const enemApi = {
   years: () => api.get<number[]>('/enem-questions/years'),
   areas: () => api.get<string[]>('/enem-questions/areas'),
   importQuestion: (data: EnemImportRequest) => api.post('/enem-questions/import', data),
-  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/enem-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
-  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/enem-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runSeed: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/enem-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/enem-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
   importPdf: (form: FormData, forceReimport = false) => {
     if (forceReimport) {
       form.append('force_reimport', 'true')
@@ -59,4 +59,6 @@ export const enemApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
   },
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/enem-questions/admin/exam-versions`, { params: { year } }),
 }

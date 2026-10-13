@@ -60,6 +60,8 @@ export const acafeApi = {
   periods: () => api.get<string[]>('/acafe-questions/periods'),
   areas: () => api.get<string[]>('/acafe-questions/areas'),
   importQuestion: (data: AcafeImportRequest) => api.post('/acafe-questions/import', data),
-  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/acafe-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runSeed: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/acafe-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
   importUrl: (data: AcafeUrlImportRequest) => api.post<AcafeUrlImportResult>('/acafe-questions/admin/import-url', data),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/acafe-questions/admin/exam-versions`, { params: { year } }),
 }

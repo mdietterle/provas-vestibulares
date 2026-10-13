@@ -53,9 +53,11 @@ export const fgvApi = {
   years: () => api.get<number[]>('/fgv-questions/years'),
   areas: () => api.get<string[]>('/fgv-questions/areas'),
   importQuestion: (data: FgvImportRequest) => api.post('/fgv-questions/import', data),
-  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/fgv-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/fgv-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
   importPdf: (form: FormData) =>
     api.post<FgvPdfImportResult>('/fgv-questions/admin/import-pdf', form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/fgv-questions/admin/exam-versions`, { params: { year } }),
 }

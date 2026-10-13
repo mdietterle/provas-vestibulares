@@ -53,9 +53,11 @@ export const espmApi = {
   years: () => api.get<number[]>('/espm-questions/years'),
   areas: () => api.get<string[]>('/espm-questions/areas'),
   importQuestion: (data: EspmImportRequest) => api.post('/espm-questions/import', data),
-  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/espm-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/espm-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
   importPdf: (form: FormData) =>
     api.post<EspmPdfImportResult>('/espm-questions/admin/import-pdf', form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/espm-questions/admin/exam-versions`, { params: { year } }),
 }

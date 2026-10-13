@@ -58,5 +58,7 @@ export const pucprApi = {
   areas: () => api.get<string[]>('/pucpr-questions/areas'),
   importQuestion: (data: PucprImportRequest) => api.post('/pucpr-questions/import', data),
   importUrl: (data: PucprUrlImportRequest) => api.post<PucprUrlImportResult>('/pucpr-questions/admin/import-url', data),
-  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/pucpr-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/pucpr-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/pucpr-questions/admin/exam-versions`, { params: { year } }),
 }

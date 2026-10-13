@@ -525,138 +525,182 @@ export { pucrioApi } from './pucrio'
 export { udescApi } from './udesc'
 
 export const unespApi = {
-  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/unesp/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runSeed: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/unesp/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/unesp/admin/exam-versions`, { params: { year } }),
 };
 
 export const cebraspeApi = {
-  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/cebraspe/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runSeed: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/cebraspe/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/cebraspe/admin/exam-versions`, { params: { year } }),
 };
 
 export const unifespApi = {
-  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/unifesp/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runSeed: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/unifesp/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/unifesp/admin/exam-versions`, { params: { year } }),
 };
 
 export const pucrsApi = {
-  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/pucrs-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/pucrs-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/pucrs-questions/admin/exam-versions`, { params: { year } }),
 };
 
 export const ufpelApi = {
-  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/ufpel-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/ufpel-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufpel-questions/admin/exam-versions`, { params: { year } }),
 };
 
 export const unicampApi = {
-  runImportAll: (since?: number, until?: number, forceReimport = false) => api.post('/unicamp-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runImportAll: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/unicamp-questions/admin/import-all', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/unicamp-questions/admin/exam-versions`, { params: { year } }),
 };
 
 export const ufgApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/ufg/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/ufg/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufg/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const ufjfApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/ufjf/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/ufjf/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufjf/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const ufuApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/ufu/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/ufu/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufu/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const ufpaApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/ufpa/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/ufpa/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufpa/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const utfprApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/utfpr/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/utfpr/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/utfpr/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const unioesteApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/unioeste/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/unioeste/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/unioeste/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const uelApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/uel/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/uel/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/uel/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const pucminasApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/pucminas/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/pucminas/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/pucminas/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const ufrnApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/ufrn/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/ufrn/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufrn/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const ufsmApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/ufsm/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/ufsm/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufsm/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const ulbraApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/ulbra/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/ulbra/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/ulbra/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const ufamApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/ufam/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/ufam/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufam/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const puccampinasApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/puccampinas/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/puccampinas/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/puccampinas/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const unimontesApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/unimontes/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/unimontes/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/unimontes/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const unicentroApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/unicentro/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/unicentro/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/unicentro/admin/exam-versions`, { params: { year } }),
+
 }
 
 export const unaerpApi = {
-  runImportAll: async (since?: number, until?: number, forceReimport = false) => {
-    const response = await api.post('/unaerp/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } })
+  runImportAll: async (since?: number, until?: number, forceReimport = false, examName?: string) => {
+    const response = await api.post('/unaerp/import', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } })
     return response
-  }
+  },
+  getExamVersions: (year?: number) => api.get<string[]>(`/unaerp/admin/exam-versions`, { params: { year } }),
+
 }
 

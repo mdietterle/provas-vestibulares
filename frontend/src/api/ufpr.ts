@@ -43,5 +43,7 @@ export const ufprApi = {
   years: () => api.get<number[]>('/ufpr-questions/years'),
   areas: () => api.get<string[]>('/ufpr-questions/areas'),
   importQuestion: (data: UfprImportRequest) => api.post('/ufpr-questions/import', data),
-  runSeed: (since?: number, until?: number, forceReimport = false) => api.post('/ufpr-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport } }),
+  runSeed: (since?: number, until?: number, forceReimport = false, examName?: string) => api.post('/ufpr-questions/admin/run-seed', undefined, { params: { since_year: since, until_year: until, force_reimport: forceReimport, exam_name: examName } }),
+
+  getExamVersions: (year?: number) => api.get<string[]>(`/ufpr-questions/admin/exam-versions`, { params: { year } }),
 }
