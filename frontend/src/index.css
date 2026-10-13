@@ -291,3 +291,63 @@ html.dark {
     @apply flex flex-col items-center justify-center py-16 text-center;
   }
 }
+
+/* ── Dark mode contrast overrides ───────────────────────────────────────
+   Tailwind utility classes (text-slate-*, bg-white, etc.) use hardcoded
+   hex values that ignore CSS variables. These overrides remap them to
+   the design-token variables defined above so dark mode gets proper
+   contrast without touching 1600+ component lines.
+*/
+
+/* --- Light mode: ensure dark text on light backgrounds --- */
+:root {
+  /* text-slate-300/400 too light on white bg → bump to readable minimum */
+  .text-slate-300 { color: #64748b; }
+  .text-slate-400 { color: #64748b; }
+  .text-gray-300  { color: #64748b; }
+  .text-gray-400  { color: #64748b; }
+}
+
+/* --- Dark mode: remap hardcoded light-mode colors to dark tokens --- */
+html.dark {
+  /* Backgrounds: white/slate-50 → dark surface */
+  .bg-white       { background-color: var(--color-surface); }
+  .bg-slate-50    { background-color: var(--color-surface-low); }
+  .bg-slate-100   { background-color: var(--color-surface-low); }
+  .bg-gray-50     { background-color: var(--color-surface-low); }
+  .bg-gray-100    { background-color: var(--color-surface-low); }
+
+  /* Text: dark slate/gray → light on-surface tokens */
+  .text-slate-500  { color: var(--color-muted); }
+  .text-slate-600  { color: var(--color-on-surface-variant); }
+  .text-slate-700  { color: var(--color-on-surface); }
+  .text-slate-800  { color: var(--color-on-surface); }
+  .text-slate-900  { color: var(--color-on-surface); }
+  .text-gray-500   { color: var(--color-muted); }
+  .text-gray-600   { color: var(--color-on-surface-variant); }
+  .text-gray-700   { color: var(--color-on-surface); }
+  .text-gray-800   { color: var(--color-on-surface); }
+  .text-gray-900   { color: var(--color-on-surface); }
+  .text-neutral-500 { color: var(--color-muted); }
+  .text-neutral-600 { color: var(--color-on-surface-variant); }
+  .text-neutral-700 { color: var(--color-on-surface); }
+  .text-neutral-800 { color: var(--color-on-surface); }
+  .text-zinc-500   { color: var(--color-muted); }
+  .text-zinc-600   { color: var(--color-on-surface-variant); }
+  .text-zinc-700   { color: var(--color-on-surface); }
+  .text-zinc-800   { color: var(--color-on-surface); }
+
+  /* Borders */
+  .border-slate-200 { border-color: var(--color-outline); }
+  .border-slate-300 { border-color: var(--color-outline); }
+  .border-gray-200  { border-color: var(--color-outline); }
+  .border-gray-300  { border-color: var(--color-outline); }
+
+  /* Hover states in dark mode */
+  .hover\:bg-slate-50:hover  { background-color: var(--color-surface-mid); }
+  .hover\:bg-slate-100:hover { background-color: var(--color-surface-mid); }
+  .hover\:bg-gray-50:hover   { background-color: var(--color-surface-mid); }
+  .hover\:bg-gray-100:hover  { background-color: var(--color-surface-mid); }
+  .hover\:text-slate-600:hover { color: var(--color-primary-hover); }
+  .hover\:text-slate-700:hover { color: var(--color-on-surface); }
+}
