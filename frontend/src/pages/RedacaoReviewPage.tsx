@@ -26,7 +26,7 @@ function ScoreInput({
       </div>
 
       {cs.ai_comment && (
-        <p className="text-xs text-[#334155] dark:text-slate-300 bg-[#f5f3ff] dark:bg-[#1e1a3a] border border-[#e9d5ff] dark:border-[#3d3470] rounded px-3 py-2 leading-relaxed">
+        <p className="text-xs text-[#334155] dark:text-slate-300 bg-[#f5f3ff] dark:bg-[#1d1f27] border border-[#e9d5ff] dark:border-[#464554] rounded px-3 py-2 leading-relaxed">
           <span className="font-semibold text-purple-700 dark:text-purple-400">IA: </span>{cs.ai_comment}
         </p>
       )}
@@ -182,7 +182,7 @@ export default function RedacaoReviewPage() {
 
       {/* AI overall feedback */}
       {data.ai_feedback && (
-        <div className="bg-[#f5f3ff] dark:bg-[#1e1a3a] border border-[#e9d5ff] dark:border-[#3d3470] rounded-xl p-4">
+        <div className="bg-[#f5f3ff] dark:bg-[#1d1f27] border border-[#e9d5ff] dark:border-[#464554] rounded-xl p-4">
           <p className="text-xs font-semibold text-purple-700 dark:text-purple-400 mb-1">Feedback geral da IA</p>
           <p className="text-sm text-[#334155] dark:text-slate-300 leading-relaxed">{data.ai_feedback}</p>
         </div>

@@ -58,7 +58,7 @@ export default function ItaPage() {
             </h3>
             <div className="flex flex-wrap gap-2 text-xs">
               {['Engenharia Aeronáutica', 'Engenharia Aeroespacial', 'Engenharia Eletrônica', 'Engenharia Mecânica-Aeronáutica', 'Engenharia Civil-Aeronáutica', 'Engenharia de Computação'].map(c => (
-                <span key={c} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-slate-300 px-2.5 py-1 rounded-md font-semibold text-slate-600 dark:text-slate-400">
+                <span key={c} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#464554] px-2.5 py-1 rounded-md font-semibold text-slate-600 dark:text-slate-400">
                   {c}
                 </span>
               ))}

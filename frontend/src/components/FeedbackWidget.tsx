@@ -69,7 +69,7 @@ export default function FeedbackWidget() {
           rows={4}
           maxLength={5000}
           placeholder="O que aconteceu?"
-          className="w-full text-sm rounded-lg border border-[#E2E8F0] dark:border-slate-300 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-600 resize-none"
+          className="w-full text-sm rounded-lg border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-600 resize-none"
           autoFocus
         />
         <button

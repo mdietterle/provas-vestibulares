@@ -110,7 +110,7 @@ function ReportQuestionButton({ sqId, reported, onReported }: { sqId: number; re
                 onChange={e => setDetails(e.target.value)}
                 placeholder="Descreva o problema que você encontrou..."
                 rows={3}
-                className="w-full text-sm border border-[#c5c5d3] dark:border-slate-300 rounded-lg p-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#f59e0b]"
+                className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg p-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#f59e0b]"
               />
             )}
             <div className="flex justify-end gap-2 pt-1">

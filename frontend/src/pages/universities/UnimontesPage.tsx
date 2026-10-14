@@ -38,7 +38,7 @@ export default function UnimontesPage() {
         </p>
         <div className="flex flex-wrap gap-2 mt-3">
           {NOTA5.map(c => (
-            <span key={c} className="text-xs font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-slate-300 rounded-full px-3 py-1">
+            <span key={c} className="text-xs font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#464554] rounded-full px-3 py-1">
               {c} — nota 5 no ENADE 2023
             </span>
           ))}

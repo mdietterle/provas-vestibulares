@@ -49,22 +49,22 @@ function ImageLightbox({ src, onClose }: { src: string; onClose: () => void }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setScale(s => Math.max(0.5, s - 0.25))}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white text-lg flex items-center justify-center"
+            className="w-8 h-8 rounded-full bg-white dark:bg-[#1d1f27]/10 hover:bg-white dark:bg-[#1d1f27]/20 text-white text-lg flex items-center justify-center"
           >−</button>
           <span className="text-white text-sm w-14 text-center">{Math.round(scale * 100)}%</span>
           <button
             onClick={() => setScale(s => Math.min(8, s + 0.25))}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white text-lg flex items-center justify-center"
+            className="w-8 h-8 rounded-full bg-white dark:bg-[#1d1f27]/10 hover:bg-white dark:bg-[#1d1f27]/20 text-white text-lg flex items-center justify-center"
           >+</button>
           <button
             onClick={reset}
-            className="ml-2 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs"
+            className="ml-2 px-3 py-1 rounded-full bg-white dark:bg-[#1d1f27]/10 hover:bg-white dark:bg-[#1d1f27]/20 text-white text-xs"
           >Resetar</button>
         </div>
         <button
           onClick={onClose}
           aria-label="Fechar"
-          className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl flex items-center justify-center"
+          className="w-8 h-8 rounded-full bg-white dark:bg-[#1d1f27]/10 hover:bg-white dark:bg-[#1d1f27]/20 text-white text-xl flex items-center justify-center"
         >×</button>
       </div>
 
@@ -330,7 +330,7 @@ export default function SubmissionsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/exams')}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] hover:bg-white hover:text-[#0d9488] border border-[#e8eeff] transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8490b0] dark:text-slate-400 hover:bg-white dark:bg-[#1d1f27] hover:text-[#0d9488] border border-[#e8eeff] dark:border-[#464554] transition-colors"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -387,16 +387,16 @@ export default function SubmissionsPage() {
       </div>
 
       {/* Progress summary */}
-      <div className="bg-white rounded-2xl border border-[#e8eeff] p-4 flex items-center gap-6"
+      <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#e8eeff] dark:border-[#464554] p-4 flex items-center gap-6"
         style={{ boxShadow: '0 1px 3px rgba(0,35,111,0.04)' }}>
         <div className="flex-1">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium text-[#1E293B]">
+            <p className="text-sm font-medium text-[#1E293B] dark:text-slate-100">
               Turma {exam.class_.name} · {exam.class_.year}
             </p>
             <p className="text-sm font-bold text-[#0d9488]">{deliveredPct}%</p>
           </div>
-          <div className="h-2 bg-[#edf0fb] rounded-full overflow-hidden">
+          <div className="h-2 bg-[#edf0fb] dark:bg-[#2a2d3a] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
@@ -405,7 +405,7 @@ export default function SubmissionsPage() {
               }}
             />
           </div>
-          <p className="text-xs text-[#8490b0] mt-1.5">
+          <p className="text-xs text-[#8490b0] dark:text-slate-400 mt-1.5">
             {delivered} de {total} aluno{total !== 1 ? 's' : ''} entregou{total !== 1 ? 'ram' : ''}
           </p>
         </div>
@@ -417,8 +417,8 @@ export default function SubmissionsPage() {
             const cfg = STATUS_CONFIG[status]
             return (
               <div key={status}>
-                <p className="text-lg font-bold text-[#1E293B]">{count}</p>
-                <p className="text-[10px] text-[#8490b0] mt-0.5">{cfg.label}</p>
+                <p className="text-lg font-bold text-[#1E293B] dark:text-slate-100">{count}</p>
+                <p className="text-[10px] text-[#8490b0] dark:text-slate-400 mt-0.5">{cfg.label}</p>
               </div>
             )
           })}
@@ -466,15 +466,15 @@ export default function SubmissionsPage() {
                     <svg className="w-10 h-10 text-[#c5d0ea] mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <p className="text-sm font-medium text-[#374060]">Nenhuma submissão encontrada</p>
+                    <p className="text-sm font-medium text-[#374060] dark:text-slate-300">Nenhuma submissão encontrada</p>
                   </div>
                 </td>
               </tr>
             ) : (
               merged.map(({ student, submission: sub }) => (
                 <tr key={student.id} className={`table-row ${sub === null ? 'opacity-60' : ''}`}>
-                  <td className="table-cell font-medium text-[#1E293B]">{student.name}</td>
-                  <td className="table-cell text-[#8490b0]">
+                  <td className="table-cell font-medium text-[#1E293B] dark:text-slate-100">{student.name}</td>
+                  <td className="table-cell text-[#8490b0] dark:text-slate-400">
                     {sub ? new Date(sub.submitted_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
                   </td>
                   <td className="table-cell">
@@ -496,9 +496,9 @@ export default function SubmissionsPage() {
                   </td>
                   <td className="table-cell">
                     {sub?.total_score != null ? (
-                      <span className="font-semibold text-[#1E293B]">
+                      <span className="font-semibold text-[#1E293B] dark:text-slate-100">
                         {sub.total_score}
-                        <span className="text-[#8490b0] font-normal"> / {totalPossible}</span>
+                        <span className="text-[#8490b0] dark:text-slate-400 font-normal"> / {totalPossible}</span>
                       </span>
                     ) : '—'}
                   </td>
@@ -556,14 +556,14 @@ export default function SubmissionsPage() {
         <Modal title={`Respostas — ${detail.student.name}`} onClose={() => setDetail(null)} size="xl">
           <div className="space-y-5">
             {/* Header */}
-            <div className="flex items-center justify-between bg-[#f7f9ff] rounded-xl p-3.5 border border-[#edf0fb]">
+            <div className="flex items-center justify-between bg-[#f7f9ff] dark:bg-[#1d1f27] rounded-xl p-3.5 border border-[#edf0fb] dark:border-[#464554]">
               <span className={`${STATUS_CONFIG[detail.status]?.cls ?? 'badge-neutral'}`}>
                 {STATUS_CONFIG[detail.status]?.label}
               </span>
-              <span className="font-bold text-[#1E293B]">
+              <span className="font-bold text-[#1E293B] dark:text-slate-100">
                 {detail.total_score != null
-                  ? <>{detail.total_score} <span className="text-[#8490b0] font-normal">/ {totalPossible} pts</span></>
-                  : <span className="text-[#8490b0] font-normal">Em correção</span>}
+                  ? <>{detail.total_score} <span className="text-[#8490b0] dark:text-slate-400 font-normal">/ {totalPossible} pts</span></>
+                  : <span className="text-[#8490b0] dark:text-slate-400 font-normal">Em correção</span>}
               </span>
             </div>
 
@@ -573,25 +573,25 @@ export default function SubmissionsPage() {
               const ov = overrides[ans.id] ?? { score: '', feedback: '' }
 
               return (
-                <div key={ans.id} className="border border-[#edf0fb] rounded-xl p-4 space-y-3">
+                <div key={ans.id} className="border border-[#edf0fb] dark:border-[#464554] rounded-xl p-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-semibold text-[#1E293B]">
+                    <span className="text-sm font-semibold text-[#1E293B] dark:text-slate-100">
                       Questão {i + 1}
-                      <span className="text-[#8490b0] font-normal ml-1.5">· {eq.points} pts</span>
+                      <span className="text-[#8490b0] dark:text-slate-400 font-normal ml-1.5">· {eq.points} pts</span>
                     </span>
                     {ans.score != null && (
                       <span className="text-sm font-bold text-[#2845b5]">{ans.score} pts</span>
                     )}
                   </div>
 
-                  <div className="text-sm text-[#374060] rich-statement" dangerouslySetInnerHTML={{ __html: q.statement }} />
+                  <div className="text-sm text-[#374060] dark:text-slate-300 rich-statement" dangerouslySetInnerHTML={{ __html: q.statement }} />
 
                   {q.question_type !== 'essay' ? (
                     <div className="space-y-1">
                       {q.options.sort((a, b) => a.order - b.order).map((opt, j) => (
                         <div key={opt.id} className={`text-xs flex gap-2 px-3 py-2 rounded-lg ${
                           opt.is_correct ? 'bg-emerald-50 text-emerald-800 font-medium' :
-                          ans.selected_option_id === opt.id ? 'bg-red-50 text-red-700' : 'text-[#6b7a9a] bg-[#f7f9ff]'
+                          ans.selected_option_id === opt.id ? 'bg-red-50 text-red-700' : 'text-[#6b7a9a] bg-[#f7f9ff] dark:bg-[#1d1f27]'
                         }`}>
                           <span className="font-medium shrink-0">{LETTERS[j]})</span>
                           <span className="flex-1 rich-statement" dangerouslySetInnerHTML={{ __html: opt.text }} />
@@ -605,7 +605,7 @@ export default function SubmissionsPage() {
                     <>
                       {ans.essay_image_base64 && (
                         <div className="mb-3">
-                          <p className="text-[10px] font-semibold text-[#8490b0] uppercase tracking-wide mb-1.5">
+                          <p className="text-[10px] font-semibold text-[#8490b0] dark:text-slate-400 uppercase tracking-wide mb-1.5">
                             Foto da redação
                             <span className="ml-2 normal-case font-normal text-[#b0bbd8]">— clique para ampliar</span>
                           </p>
@@ -613,15 +613,15 @@ export default function SubmissionsPage() {
                             src={ans.essay_image_base64}
                             alt="Foto da redação do aluno"
                             onClick={() => setLightboxSrc(ans.essay_image_base64!)}
-                            className="w-full max-h-72 object-contain rounded-xl border border-[#edf0fb] bg-gray-50 cursor-zoom-in hover:opacity-90 transition-opacity"
+                            className="w-full max-h-72 object-contain rounded-xl border border-[#edf0fb] dark:border-[#464554] bg-gray-50 dark:bg-[#2a2d38] cursor-zoom-in hover:opacity-90 transition-opacity"
                           />
                         </div>
                       )}
-                      <div className="bg-[#f7f9ff] rounded-xl px-4 py-3 border border-[#edf0fb]">
-                        <p className="text-[10px] font-semibold text-[#8490b0] uppercase tracking-wide mb-1.5">
+                      <div className="bg-[#f7f9ff] dark:bg-[#1d1f27] rounded-xl px-4 py-3 border border-[#edf0fb] dark:border-[#464554]">
+                        <p className="text-[10px] font-semibold text-[#8490b0] dark:text-slate-400 uppercase tracking-wide mb-1.5">
                           {ans.essay_image_base64 ? 'Transcrição da IA' : 'Resposta do aluno'}
                         </p>
-                        <p className="text-sm text-[#374060] leading-relaxed whitespace-pre-wrap">
+                        <p className="text-sm text-[#374060] dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
                           {ans.essay_text || <span className="italic text-[#9da5bc]">Sem resposta</span>}
                         </p>
                       </div>
@@ -631,7 +631,7 @@ export default function SubmissionsPage() {
                           <p className="text-[10px] font-semibold text-[#5a78c0] uppercase tracking-wide mb-1.5">
                             {ans.is_auto_corrected ? 'Feedback da IA' : 'Observação'}
                           </p>
-                          <p className="text-sm text-[#374060]">{ans.ai_feedback}</p>
+                          <p className="text-sm text-[#374060] dark:text-slate-300">{ans.ai_feedback}</p>
                         </div>
                       )}
 

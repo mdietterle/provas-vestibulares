@@ -16,8 +16,8 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
       >
         {icon}
       </div>
-      <h3 className="font-display text-base font-bold text-[#1E293B] mb-2">{title}</h3>
-      <p className="text-sm text-[#6b7a9a] dark:text-slate-300 leading-relaxed">{description}</p>
+      <h3 className="font-display text-base font-bold text-[#1E293B] dark:text-slate-100 mb-2">{title}</h3>
+      <p className="text-sm text-[#6b7a9a] dark:text-slate-400 leading-relaxed">{description}</p>
     </div>
   )
 }
@@ -29,7 +29,7 @@ function AudienceCard({ icon, audience, description, to, cta }: { icon: React.Re
       <div className="relative w-10 h-10 rounded-xl flex items-center justify-center bg-[#e9ddff] dark:bg-slate-800 text-slate-500 dark:text-slate-400">
         {icon}
       </div>
-      <h3 className="relative font-display text-lg font-bold text-[#1E293B]">{audience}</h3>
+      <h3 className="relative font-display text-lg font-bold text-[#1E293B] dark:text-slate-100">{audience}</h3>
       <p className="relative text-sm text-[#6b7a9a] dark:text-slate-300 leading-relaxed flex-1">{description}</p>
       <Link to={to} className="relative inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 dark:text-slate-400 group-hover:gap-2.5 transition-all">
         {cta}
@@ -50,7 +50,7 @@ function StepCard({ number, title, description }: { number: string; title: strin
       >
         {number}
       </div>
-      <h3 className="font-display text-base font-bold text-[#1E293B] mb-1.5">{title}</h3>
+      <h3 className="font-display text-base font-bold text-[#1E293B] dark:text-slate-100 mb-1.5">{title}</h3>
       <p className="text-sm text-[#6b7a9a] dark:text-slate-300 leading-relaxed">{description}</p>
     </div>
   )
@@ -88,11 +88,11 @@ export default function LandingPage() {
             </svg>
             Correção por Inteligência Artificial
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1E293B] mb-6 leading-[1.2] tracking-tight">
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1E293B] dark:text-slate-100 mb-6 leading-[1.2] tracking-tight">
             Provas, redações e simulados{' '}
             <span
               className="bg-clip-text text-transparent"
-              style={{ backgroundImage: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
+              style={{ backgroundImage: 'linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)' }}
             >
               corrigidos por IA
             </span>
@@ -124,7 +124,7 @@ export default function LandingPage() {
       <div className="max-w-5xl mx-auto px-6 pb-20">
         <div className="text-center mb-10">
           <p className="text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400 mb-2">Recursos</p>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B]">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B] dark:text-slate-100">
             O que a plataforma oferece
           </h2>
         </div>
@@ -157,7 +157,7 @@ export default function LandingPage() {
         <div className="rounded-3xl border border-[#E2E8F0] dark:border-[#464554] bg-white dark:bg-[#1d1f27] p-8 sm:p-10">
           <div className="text-center mb-10">
             <p className="text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400 mb-2">Como funciona</p>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B]">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B] dark:text-slate-100">
               Da prova pronta à nota, em três passos
             </h2>
           </div>
@@ -173,7 +173,7 @@ export default function LandingPage() {
       <div className="max-w-5xl mx-auto px-6 pb-20">
         <div className="text-center mb-10">
           <p className="text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400 mb-2">Para quem é</p>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B]">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#1E293B] dark:text-slate-100">
             Feito para cada perfil de usuário
           </h2>
         </div>

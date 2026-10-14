@@ -75,7 +75,7 @@ export default function ForgotPasswordPage() {
                   <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1">E-mail</label>
                   <input
                     type="email"
-                    className="w-full border border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all"
+                    className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="seu@email.com"

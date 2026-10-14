@@ -89,13 +89,13 @@ export default function LoginPage() {
       <section className="max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center">
         {/* Left — copy */}
         <div>
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6" style={{ background: '#e9ddff', color: '#f59e0b' }}>
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6 dark:bg-[#2a2d38]" style={{ background: '#e9ddff', color: '#f59e0b' }}>
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
             Powered by Generative AI
           </span>
-          <h1 className="font-display text-5xl font-bold text-[#1E293B] leading-tight mb-4">
+          <h1 className="font-display text-5xl font-bold text-[#1E293B] dark:text-slate-100 leading-tight mb-4">
             Revolucionando a educação com IA
           </h1>
           <p className="text-lg text-[#334155] dark:text-slate-300 leading-relaxed mb-8">
@@ -114,7 +114,7 @@ export default function LoginPage() {
             {stats.map(s => (
               <div key={s.label}>
                 <p className="font-display text-2xl font-bold text-[#0d9488]">{s.value}</p>
-                <p className="text-xs text-[#64748B] mt-0.5">{s.label}</p>
+                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">{s.label}</p>
               </div>
             ))}
           </div>
@@ -122,16 +122,16 @@ export default function LoginPage() {
 
         {/* Right — login card */}
         <div id="login">
-          <div className="bg-white rounded-2xl p-8" style={{ boxShadow: '0px 24px 60px rgba(0, 35, 111, 0.12)' }}>
-            <h2 className="font-display text-xl font-semibold text-[#1E293B] mb-1">Bem-vindo de volta</h2>
-            <p className="text-sm text-[#64748B] mb-6">À educação do futuro</p>
+          <div className="bg-white dark:bg-[#1d1f27] rounded-2xl p-8" style={{ boxShadow: '0px 24px 60px rgba(0, 35, 111, 0.12)' }}>
+            <h2 className="font-display text-xl font-semibold text-[#1E293B] dark:text-slate-100 mb-1">Bem-vindo de volta</h2>
+            <p className="text-sm text-[#64748B] dark:text-slate-400 mb-6">À educação do futuro</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1">Email institucional</label>
                 <input
                   type="email"
-                  className="w-full border border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#1d1f27] text-[#1E293B] dark:text-slate-100 placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="seu@instituicao.edu.br"
@@ -145,7 +145,7 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="password"
-                  className="w-full border border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
+                  className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#1d1f27] text-[#1E293B] dark:text-slate-100 placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
@@ -166,13 +166,13 @@ export default function LoginPage() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section id="features" className="bg-white py-20">
+      <section id="features" className="bg-white dark:bg-[#1d1f27] py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
             <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4" style={{ background: 'slate-50', color: '#0d9488' }}>
               Funcionalidades
             </span>
-            <h2 className="font-display text-3xl font-bold text-[#1E293B] mb-3">Potencialize sua Produtividade</h2>
+            <h2 className="font-display text-3xl font-bold text-[#1E293B] dark:text-slate-100 mb-3">Potencialize sua Produtividade</h2>
             <p className="text-[#334155] dark:text-slate-300 max-w-xl mx-auto">
               Ferramentas desenhadas para devolver ao professor o tempo que importa: o aluno.
             </p>
@@ -180,10 +180,10 @@ export default function LoginPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map(f => (
               <div key={f.title} className="rounded-xl p-6 border border-[#E2E8F0] bg-[#F4F6F9] dark:bg-[#1d1f27] hover:border-[#b6c4ff] dark:hover:border-[#334155] transition-colors">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ background: f.bg, color: f.color }}>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 dark:bg-[#2a2d38]" style={{ background: f.bg, color: f.color }}>
                   {f.icon}
                 </div>
-                <h3 className="font-display font-semibold text-[#1E293B] mb-2">{f.title}</h3>
+                <h3 className="font-display font-semibold text-[#1E293B] dark:text-slate-100 mb-2">{f.title}</h3>
                 <p className="text-sm text-[#334155] dark:text-slate-300 leading-relaxed">{f.description}</p>
               </div>
             ))}
@@ -198,7 +198,7 @@ export default function LoginPage() {
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6 text-white" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
               ✦ Novo recurso
             </span>
-            <h2 className="font-display text-3xl font-bold text-[#1E293B] mb-4">
+            <h2 className="font-display text-3xl font-bold text-[#1E293B] dark:text-slate-100 mb-4">
               Crie conteúdos em segundos com o <span style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI Tray</span>
             </h2>
             <p className="text-[#334155] dark:text-slate-300 leading-relaxed mb-8">
@@ -207,7 +207,7 @@ export default function LoginPage() {
             <ul className="space-y-3 mb-8">
               {['Planos de aula alinhados com a BNCC', 'Rubricas de avaliação personalizadas', 'Questões geradas por tema ou habilidade', 'Feedback individualizado por aluno'].map(item => (
                 <li key={item} className="flex items-center gap-3 text-sm text-[#334155] dark:text-slate-300">
-                  <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: '#d1fae5', color: '#27c38a' }}>
+                  <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 dark:bg-[#1a3a2a]" style={{ background: '#d1fae5', color: '#27c38a' }}>
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
@@ -220,23 +220,23 @@ export default function LoginPage() {
 
           {/* Mock AI Tray card */}
           <div className="relative">
-            <div className="bg-white rounded-2xl p-6 border border-[#E2E8F0]" style={{ boxShadow: '0px 24px 60px rgba(0, 35, 111, 0.1)' }}>
+            <div className="bg-white dark:bg-[#1d1f27] rounded-2xl p-6 border border-[#E2E8F0]" style={{ boxShadow: '0px 24px 60px rgba(0, 35, 111, 0.1)' }}>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
                   <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <span className="text-sm font-semibold text-[#1E293B]">AI Tray</span>
-                <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: '#e9ddff', color: '#f59e0b' }}>Novo</span>
+                <span className="text-sm font-semibold text-[#1E293B] dark:text-slate-100">AI Tray</span>
+                <span className="ml-auto text-xs px-2 py-0.5 rounded-full font-medium dark:bg-[#2a2d38]" style={{ background: '#e9ddff', color: '#f59e0b' }}>Novo</span>
               </div>
-              <div className="bg-[#F4F6F9] dark:bg-[#464554] rounded-lg p-3 mb-4 text-sm text-[#334155] dark:text-slate-300 border border-[#E2E8F0] dark:border-slate-300">
+              <div className="bg-[#F4F6F9] dark:bg-[#464554] rounded-lg p-3 mb-4 text-sm text-[#334155] dark:text-slate-300 border border-[#E2E8F0] dark:border-[#464554]">
                 "Gere 5 questões de múltipla escolha sobre Revolução Industrial para o 8º ano, nível médio, alinhadas à BNCC EF08HI20."
               </div>
               <div className="space-y-2 mb-4">
                 {['Questão 1: Qual foi o principal fator...', 'Questão 2: A máquina a vapor representou...', 'Questão 3: As condições de trabalho...'].map((q, i) => (
                   <div key={i} className="flex items-start gap-2 text-xs text-[#334155] dark:text-slate-300 bg-white rounded-lg p-2 border border-[#E2E8F0]">
-                    <span className="w-4 h-4 rounded-full bg-slate-50 text-[#0d9488] flex items-center justify-center font-bold shrink-0 text-[10px]">{i + 1}</span>
+                    <span className="w-4 h-4 rounded-full bg-slate-50 dark:bg-[#2a2d38] text-[#0d9488] flex items-center justify-center font-bold shrink-0 text-[10px]">{i + 1}</span>
                     {q}
                   </div>
                 ))}

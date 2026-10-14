@@ -58,7 +58,7 @@ export default function EspmPage() {
 
         <div className="flex flex-wrap gap-2 text-xs">
           {['Publicidade e Propaganda', 'Administração', 'Design', 'Jornalismo', 'Cinema e Audiovisual', 'Ciência de Dados e Negócios', 'Relações Internacionais', 'Direito', 'Ciências Sociais e do Consumo'].map(c => (
-            <span key={c} className="bg-[#F4F6F9] dark:bg-[#10131a] border border-[#cbd5e1] dark:border-slate-300 px-2.5 py-1 rounded-md font-semibold text-slate-600 dark:text-slate-400">
+            <span key={c} className="bg-[#F4F6F9] dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#464554] px-2.5 py-1 rounded-md font-semibold text-slate-600 dark:text-slate-400">
               {c}
             </span>
           ))}

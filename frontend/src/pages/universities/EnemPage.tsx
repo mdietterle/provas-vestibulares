@@ -91,7 +91,7 @@ export default function EnemPage() {
             </p>
             <div className="flex flex-wrap gap-2 text-xs">
               {['UFRJ', 'UFMG', 'UFRGS', 'UNIFESP', 'UnB', 'UFPE', 'UFSC', 'UFPR', 'UFF', 'UFBA', 'UFG', 'UFCE', 'UFPA', 'UFAM', 'USP (via Enem-USP)', 'Unicamp (via Enem-Unicamp)'].map(u => (
-                <span key={u} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-slate-300 px-2.5 py-1 rounded-md font-semibold text-slate-600 dark:text-slate-400">
+                <span key={u} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#464554] px-2.5 py-1 rounded-md font-semibold text-slate-600 dark:text-slate-400">
                   {u}
                 </span>
               ))}

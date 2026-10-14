@@ -17,7 +17,7 @@ type InstitutionOption = { id: number; name: string }
 type SelectedInstitution = InstitutionOption | { id: null; name: string }
 
 const inputClass =
-  'w-full border border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all'
+  'w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white text-[#1E293B] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all'
 const labelClass = 'block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1'
 
 function EyeIcon({ open }: { open: boolean }) {
@@ -380,13 +380,13 @@ export default function StudentAuthPage() {
                         />
                         {searching && <p className="text-xs text-[#64748B] dark:text-slate-300 mt-1">Buscando...</p>}
                         {institutionOptions.length > 0 && (
-                          <div className="mt-1 border border-[#E2E8F0] dark:border-slate-300 rounded-lg overflow-hidden">
+                          <div className="mt-1 border border-[#E2E8F0] dark:border-[#464554] rounded-lg overflow-hidden">
                             {institutionOptions.map((opt) => (
                               <button
                                 key={opt.id}
                                 type="button"
                                 onClick={() => { setSelectedInstitution(opt); setInstitutionOptions([]) }}
-                                className="w-full text-left px-3 py-2.5 text-sm text-[#1E293B] dark:text-[#e1e2ec] hover:bg-[#F4F6F9] dark:hover:bg-[#1e2d4a] border-b border-[#EEF2F7] dark:border-slate-300 last:border-0"
+                                className="w-full text-left px-3 py-2.5 text-sm text-[#1E293B] dark:text-[#e1e2ec] hover:bg-[#F4F6F9] dark:hover:bg-[#1e2d4a] border-b border-[#EEF2F7] dark:border-[#464554] last:border-0"
                               >
                                 {opt.name}
                               </button>

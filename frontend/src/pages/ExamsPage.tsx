@@ -348,7 +348,7 @@ export default function ExamsPage() {
                       </span>
                     )}
                     {exam.professor?.name && user?.role !== 'professor' && (
-                      <span className="text-xs text-gray-400 dark:text-slate-500">
+                      <span className="text-xs text-gray-400 dark:text-slate-400">
                         Prof. {exam.professor.name}
                       </span>
                     )}
@@ -452,7 +452,7 @@ export default function ExamsPage() {
         })}
 
         {filtered.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-400 dark:text-slate-500">
+          <div className="flex flex-col items-center justify-center py-16 text-gray-400 dark:text-slate-400">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="mb-3 opacity-40">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
@@ -747,7 +747,7 @@ export default function ExamsPage() {
                               </div>
                               <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{q.statement}</p>
                             </div>
-                            <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-gray-400 dark:text-slate-500 group-hover:bg-slate-600 group-hover:text-white transition-colors mt-0.5">
+                            <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-gray-400 dark:text-slate-400 group-hover:bg-slate-600 group-hover:text-white transition-colors mt-0.5">
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                               </svg>
@@ -755,7 +755,7 @@ export default function ExamsPage() {
                           </button>
                         ))}
                       {availableQuestions.filter((q) => !form.questions.some((dq) => dq.question_id === q.id)).filter((q) => q.statement.toLowerCase().includes(questionSearch.toLowerCase())).length === 0 && (
-                        <p className="text-sm text-gray-400 dark:text-slate-500 text-center py-4">Nenhuma questão encontrada nesta matéria.</p>
+                        <p className="text-sm text-gray-400 dark:text-slate-400 text-center py-4">Nenhuma questão encontrada nesta matéria.</p>
                       )}
                     </div>
                   </div>

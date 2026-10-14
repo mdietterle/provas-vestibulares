@@ -49,7 +49,7 @@ export default function CebraspePage() {
             </h3>
             <div className="flex flex-wrap gap-2 text-xs">
               {['UnB (Universidade de Brasília)', 'Uncisal (Univ. Estadual de Ciências da Saúde de Alagoas)', 'UFV (Universidade Federal de Viçosa)', 'UESB (Univ. Estadual do Sudoeste da Bahia)', 'UERR (Univ. Estadual de Roraima)', 'UFAC (Univ. Federal do Acre — vestibular de Medicina)'].map(u => (
-                <span key={u} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-slate-300 px-2.5 py-1 rounded-md font-semibold text-slate-600 dark:text-slate-400">
+                <span key={u} className="bg-white dark:bg-[#10131a] border border-[#cbd5e1] dark:border-[#464554] px-2.5 py-1 rounded-md font-semibold text-slate-600 dark:text-slate-400">
                   {u}
                 </span>
               ))}

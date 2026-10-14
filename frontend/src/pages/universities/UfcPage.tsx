@@ -43,7 +43,7 @@ export default function UfcPage() {
         </h3>
         <div className="flex flex-wrap gap-2">
           {CAMPI.map(c => (
-            <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-slate-300 rounded-lg px-3 py-1.5">
+            <span key={c} className="text-sm font-semibold text-slate-600 dark:text-slate-400 border-2 border-dashed border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-1.5">
               {c}
             </span>
           ))}

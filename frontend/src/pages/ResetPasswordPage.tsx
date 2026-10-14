@@ -136,7 +136,7 @@ export default function ResetPasswordPage() {
                     required
                     minLength={6}
                     autoComplete="new-password"
-                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-slate-300 rounded-lg bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#f59e0b] focus:border-transparent"
+                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#f59e0b] focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -149,7 +149,7 @@ export default function ResetPasswordPage() {
                     required
                     minLength={6}
                     autoComplete="new-password"
-                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-slate-300 rounded-lg bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#f59e0b] focus:border-transparent"
+                    className="w-full px-4 py-2.5 text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e1e2ec] placeholder-[#9ca3af] dark:placeholder-[#908fa0] focus:outline-none focus:ring-2 focus:ring-[#f59e0b] focus:border-transparent"
                   />
                 </div>
                 <button
