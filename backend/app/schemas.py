@@ -529,6 +529,13 @@ class UfprImportRequest(BaseModel):
     is_public: bool = False
 
 
+class UnicampImportRequest(BaseModel):
+    vestibular_question_id: int
+    subject_id: int
+    difficulty: Optional[str] = None
+    is_public: bool = False
+
+
 class UfrgsOptionOut(BaseModel):
     id: int
     letter: str
