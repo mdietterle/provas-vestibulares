@@ -204,6 +204,32 @@ def owner_change_user_role(
     )
 
 
+class OwnerUserPasswordReset(BaseModel):
+    new_password: str
+
+
+@router.post("/users/{user_id}/reset-password")
+def owner_reset_user_password(
+    user_id: int,
+    payload: OwnerUserPasswordReset,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner redefine senha de qualquer usuário (exceto outro OWNER).
+    Sem fluxo de e-mail/token — ação direta do proprietário."""
+    user = db.get(User, user_id)
+    if not user or user.role == UserRole.OWNER:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    if user.deleted_at:
+        raise HTTPException(status_code=400, detail="Usuário excluído — não é possível redefinir senha")
+    if len(payload.new_password) < 6:
+        raise HTTPException(status_code=422, detail="A senha deve ter no mínimo 6 caracteres")
+    user.hashed_password = get_password_hash(payload.new_password)
+    user.password_reset_token = None
+    db.commit()
+    return {"ok": True, "message": "Senha redefinida com sucesso"}
+
+
 @router.delete("/users/{user_id}", status_code=204)
 def owner_delete_user(
     user_id: int,

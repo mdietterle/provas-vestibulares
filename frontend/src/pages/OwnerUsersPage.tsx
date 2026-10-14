@@ -16,6 +16,8 @@ export default function OwnerUsersPage() {
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<OwnerUser | null>(null)
+  const [resetTarget, setResetTarget] = useState<OwnerUser | null>(null)
+  const [newPassword, setNewPassword] = useState('')
   const [busyId, setBusyId] = useState<number | null>(null)
 
   useEffect(() => {
@@ -73,6 +75,25 @@ export default function OwnerUsersPage() {
       toast.error(err?.response?.data?.detail || 'Não foi possível excluir o usuário.')
     } finally {
       setDeleteTarget(null)
+    }
+  }
+
+  const handleResetPassword = async () => {
+    if (!resetTarget) return
+    if (newPassword.length < 6) {
+      toast.error('A senha deve ter no mínimo 6 caracteres.')
+      return
+    }
+    setBusyId(resetTarget.id)
+    try {
+      await ownerApi.resetPassword(resetTarget.id, newPassword)
+      toast.success(`Senha de ${resetTarget.name} redefinida com sucesso.`)
+      setResetTarget(null)
+      setNewPassword('')
+    } catch (err: any) {
+      toast.error(err?.response?.data?.detail || 'Não foi possível redefinir a senha.')
+    } finally {
+      setBusyId(null)
     }
   }
 
@@ -180,6 +201,13 @@ export default function OwnerUsersPage() {
                           {u.is_active ? 'Inativar' : 'Reativar'}
                         </button>
                         <button
+                          onClick={() => { setResetTarget(u); setNewPassword('') }}
+                          disabled={busyId === u.id}
+                          className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors disabled:opacity-50"
+                        >
+                          Redefinir senha
+                        </button>
+                        <button
                           onClick={() => setDeleteTarget(u)}
                           className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                         >
@@ -202,6 +230,42 @@ export default function OwnerUsersPage() {
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
         />
+      )}
+
+      {resetTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] shadow-xl p-6 w-full max-w-md mx-4">
+            <h2 className="text-lg font-bold text-[#1E293B] dark:text-[#e1e2ec] mb-1">Redefinir senha</h2>
+            <p className="text-sm text-[#64748B] dark:text-slate-300 mb-4">
+              Definir nova senha para <strong>{resetTarget.name}</strong> ({resetTarget.email}). O usuário poderá logar imediatamente com a nova senha.
+            </p>
+            <label className="block text-xs font-semibold text-[#64748B] dark:text-slate-300 mb-1">Nova senha</label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={e => setNewPassword(e.target.value)}
+              placeholder="Mínimo 6 caracteres"
+              autoFocus
+              className="w-full text-sm border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2 bg-white dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] focus:outline-none focus:border-slate-600 mb-4"
+            />
+            <div className="flex items-center justify-end gap-2">
+              <button
+                onClick={() => { setResetTarget(null); setNewPassword('') }}
+                disabled={busyId === resetTarget.id}
+                className="text-xs font-semibold px-4 py-2 rounded-lg border border-[#c5c5d3] dark:border-[#464554] text-[#64748B] dark:text-slate-300 hover:bg-[#F4F6F9] dark:hover:bg-[#10131a] transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleResetPassword}
+                disabled={busyId === resetTarget.id || !newPassword}
+                className="text-xs font-semibold px-4 py-2 rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors disabled:opacity-50"
+              >
+                {busyId === resetTarget.id ? 'Redefinindo...' : 'Redefinir senha'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

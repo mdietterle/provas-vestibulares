@@ -414,6 +414,8 @@ export const ownerApi = {
     api.patch<OwnerUser>(`/owner/users/${id}/role`, { role }),
   deleteUser: (id: number) =>
     api.delete(`/owner/users/${id}`),
+  resetPassword: (id: number, new_password: string) =>
+    api.post<{ ok: boolean; message: string }>(`/owner/users/${id}/reset-password`, { new_password }),
 }
 
 // ── Questões reportadas por alunos ───────────────────────────────────────────
