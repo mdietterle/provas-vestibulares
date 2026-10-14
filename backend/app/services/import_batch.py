@@ -15,6 +15,7 @@ como causa de OOM no plano free do Render.
 from __future__ import annotations
 
 import gc
+import logging
 from typing import Any, Callable, Dict, List, Optional
 
 from sqlalchemy.orm import Session
@@ -22,6 +23,8 @@ from sqlalchemy.orm import Session
 from app.vestibular.models import VestibularQuestion, VestibularQuestionOption, VestibularQuestionImage
 from app.services.progress import update_task_progress, complete_task, fail_task
 from app.services.r2_storage import upload_image
+
+logger = logging.getLogger(__name__)
 
 
 def save_vestibular_question(
@@ -79,7 +82,11 @@ def save_vestibular_question(
                 year=year,
                 number=number,
             )
-        except Exception:
+        except Exception as exc:
+            logger.error(
+                "Failed to upload main image for %s/%d q%d: %s",
+                exam_type, year, number, exc, exc_info=True,
+            )
             image_url = None  # Graceful degradation: question saved without image
 
     vq = VestibularQuestion(
@@ -124,8 +131,11 @@ def save_vestibular_question(
                     image_url=url,
                     order=img.get("order", idx),
                 ))
-            except Exception:
-                pass  # Skip failed image uploads, don't block question creation
+            except Exception as exc:
+                logger.error(
+                    "Failed to upload extra image %s for %s/%d q%d: %s",
+                    f"_fig{idx}", exam_type, year, number, exc, exc_info=True,
+                )
         elif img.get("image_url"):
             # Already a URL (e.g., from re-import or external source)
             db.add(VestibularQuestionImage(
