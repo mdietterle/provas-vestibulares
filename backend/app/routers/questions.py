@@ -217,18 +217,9 @@ def import_vestibular_to_library(
         if subject_id not in allowed_ids:
             raise HTTPException(403, "Você não leciona esta matéria")
 
-    # Check for duplicate import (same source + same professor)
-    existing = (
-        db.query(Question)
-        .filter_by(
-            professor_id=current_user.id,
-            subject_id=subject_id,
-        )
-        .filter(Question.metadata_.op("->>")("vestibular_question_id") == str(vestibular_question_id))
-        .first()
-    )
-    if existing:
-        raise HTTPException(409, "Questão já foi importada para sua biblioteca")
+    # Duplicate check skipped: Question model has no metadata_ column.
+    # A professor can import the same vestibular question multiple times
+    # into different subjects or re-import after deletion.
 
     # Map vestibular question type to Question.question_type
     q_type = "multiple_choice"  # default; vestibular questions are overwhelmingly MC
@@ -244,25 +235,17 @@ def import_vestibular_to_library(
         subject_id=subject_id,
         professor_id=current_user.id,
         image_base64=vq.image_base64,
-        metadata_={
-            "vestibular_question_id": vq.id,
-            "exam_type": vq.exam_type,
-            "exam_name": vq.exam_name,
-            "year": vq.year,
-            "number": vq.number,
-            "source": "vestibular_import",
-        },
     )
     db.add(question)
     db.flush()
 
     # Copy options
-    for opt in sorted(vq.options, key=lambda o: o.order):
+    for i, opt in enumerate(sorted(vq.options, key=lambda o: o.order)):
         db.add(QuestionOption(
             question_id=question.id,
-            letter=opt.letter or "",
             text=opt.text,
             is_correct=opt.is_correct,
+            order=i,
         ))
 
     db.commit()
