@@ -5,6 +5,7 @@ import { classesApi, examsApi } from '../api'
 import { submissionsApi } from '../api/submissions'
 import { downloadBulkPdf, downloadPdf } from '../api/download'
 import { useAuth } from '../contexts/AuthContext'
+import { resolveImageSrc } from '../utils/image'
 import type { Exam, User } from '../types'
 
 const TYPE_LABELS: Record<string, string> = {
@@ -171,7 +172,7 @@ export default function ExamDetailPage() {
 
               {(q as any).image_base64 && (
                 <img
-                  src={(q as any).image_base64?.startsWith('data:') ? (q as any).image_base64 : `data:image/jpeg;base64,${(q as any).image_base64}`}
+                  src={resolveImageSrc((q as any).image_base64)}
                   alt="Imagem da questão"
                   className="mb-4 rounded-lg border max-h-48 object-contain"
                   style={{ borderColor: '#E2E8F0' }}

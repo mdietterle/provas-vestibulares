@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { enemApi, subjectsApi } from '../api'
 import type { EnemQuestion } from '../api/enem'
 import type { Subject } from '../types'
+import { resolveImageSrc } from '../utils/image'
 
 const LETTERS = 'ABCDE'
 
@@ -179,7 +180,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
         <div className="mt-4 space-y-3">
           {question.image_base64 && (
             <img
-              src={question.image_base64}
+              src={resolveImageSrc(question.image_base64)}
               alt={`Imagem Q${question.number}`}
               className="max-w-full max-h-64 rounded-lg border object-contain"
             />

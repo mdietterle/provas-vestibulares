@@ -1,5 +1,6 @@
 import { Question } from '../../types'
 import { useAuth } from '../../contexts/AuthContext'
+import { resolveImageSrc } from '../../utils/image'
 
 const TYPE_LABELS: Record<string, string> = {
   multiple_choice: 'Múltipla Escolha',
@@ -97,7 +98,7 @@ export default function QuestionCard({ q, isExpanded, onToggleExpand, onEdit, on
           </p>
 
           {q.image_base64 && isExpanded && (
-            <img src={`data:image/jpeg;base64,${q.image_base64}`} alt="Imagem da questão" className="mt-3 rounded-lg max-h-64 object-contain border border-[#E2E8F0]" />
+            <img src={resolveImageSrc(q.image_base64)} alt="Imagem da questão" className="mt-3 rounded-lg max-h-64 object-contain border border-[#E2E8F0]" />
           )}
 
           {!isExpanded && q.options.length > 0 && (

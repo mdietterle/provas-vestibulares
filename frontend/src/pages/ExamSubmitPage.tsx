@@ -6,6 +6,7 @@ import { submissionsApi } from '../api/submissions'
 import { useAuth } from '../contexts/AuthContext'
 import { seededShuffle } from '../utils/shuffle'
 import { extractSource } from '../utils/questionSource'
+import { resolveImageSrc } from '../utils/image'
 import type { Exam } from '../types'
 import AdSlot from '../components/AdSlot'
 
@@ -251,7 +252,7 @@ export default function ExamSubmitPage() {
               <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: statement }} />
               {q.image_base64 && (
                 <img
-                  src={q.image_base64.startsWith('data:') || q.image_base64.startsWith('http') ? q.image_base64 : `data:image/jpeg;base64,${q.image_base64}`}
+                  src={resolveImageSrc(q.image_base64)}
                   alt="Imagem da questão"
                   className="mb-4 rounded-lg border max-h-64 object-contain"
                 />

@@ -5,6 +5,7 @@ import type { GeneratedQuestion, GeneratedQuestionOption, Subject } from '../../
 import Modal from '../../components/Modal'
 import QuotaExceededModal from '../../components/QuotaExceededModal'
 import { useAuth } from '../../contexts/AuthContext'
+import { resolveImageSrc } from '../../utils/image'
 
 const TYPE_LABELS: Record<string, string> = {
   multiple_choice: 'Múltipla Escolha',
@@ -164,7 +165,7 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
               <label className="label">Imagem de referência <span className="font-normal text-gray-400">(opcional)</span></label>
               {aiForm.image_base64 ? (
                 <div className="relative inline-block">
-                  <img src={`data:image/jpeg;base64,${aiForm.image_base64}`} alt="Imagem de contexto" className="rounded-xl border max-h-48 object-contain border-slate-200 dark:border-slate-700" />
+                  <img src={resolveImageSrc(aiForm.image_base64)} alt="Imagem de contexto" className="rounded-xl border max-h-48 object-contain border-slate-200 dark:border-slate-700" />
                   <button type="button" onClick={() => setAiForm(f => ({ ...f, image_base64: '' }))} className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                   </button>

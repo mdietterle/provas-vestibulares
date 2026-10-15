@@ -3,6 +3,7 @@ import toast from 'react-hot-toast'
 import { questionsApi } from '../../api'
 import type { Question, Subject } from '../../types'
 import Modal from '../../components/Modal'
+import { resolveImageSrc } from '../../utils/image'
 
 const SUMMATION_VALUES = [1, 2, 4, 8, 16, 32]
 const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F']
@@ -200,7 +201,7 @@ export default function QuestionFormModal({ editing, subjects, onClose, onSaved 
           {form.image_base64 ? (
             <div className="relative inline-block">
               <img
-                src={`data:image/jpeg;base64,${form.image_base64}`}
+                src={resolveImageSrc(form.image_base64)}
                 alt="Imagem da questão"
                 className="rounded-xl border max-h-48 object-contain border-[#E2E8F0] dark:border-[#464554]"
               />

@@ -4,6 +4,7 @@ import { vestibularApi } from '../api/vestibular'
 import type { VestibularQuestion } from '../api/vestibular'
 import { getExamBankConfig, type ExamBankConfig } from '../config/examBanks'
 import Pagination from '../components/Pagination'
+import { resolveImageSrc } from '../utils/image'
 
 interface Props {
   examType: string
@@ -183,10 +184,10 @@ function QuestionCard({ question: q, config }: { question: VestibularQuestion; c
 
       {/* Image */}
       {q.image_base64 && (
-        <img src={q.image_base64} alt="Enunciado" className="max-h-48 rounded-lg border border-[#E2E8F0]" />
+        <img src={resolveImageSrc(q.image_base64)} alt="Enunciado" className="max-h-48 rounded-lg border border-[#E2E8F0]" />
       )}
       {q.images.length > 0 && q.images.map(img => (
-        <img key={img.id} src={img.image_base64} alt="Questão" className="max-h-48 rounded-lg border border-[#E2E8F0]" />
+        <img key={img.id} src={resolveImageSrc(img.image_base64)} alt="Questão" className="max-h-48 rounded-lg border border-[#E2E8F0]" />
       ))}
 
       {/* Options */}
