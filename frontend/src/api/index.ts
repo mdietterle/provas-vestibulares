@@ -92,6 +92,10 @@ export const questionsApi = {
     api.post<Question>('/questions', data),
   update: (id: number, data: Partial<Question>) => api.put<Question>(`/questions/${id}`, data),
   delete: (id: number) => api.delete(`/questions/${id}`),
+  importFromVestibular: (vestibularQuestionId: number, subjectId: number) =>
+    api.post<Question>('/questions/import-from-vestibular', null, {
+      params: { vestibular_question_id: vestibularQuestionId, subject_id: subjectId },
+    }),
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────

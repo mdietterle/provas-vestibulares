@@ -71,7 +71,8 @@ def get_task_status(task_id: str) -> dict:
     return TASKS.get(task_id)
 
 
-DEFAULT_IMPORT_TIMEOUT_SECONDS = 8 * 60  # 8 minutos — suficiente pra provas difíceis (muitos anos/PDFs grandes)
+DEFAULT_IMPORT_TIMEOUT_SECONDS = 20 * 60  # 20 minutos — margem total para importações em lote (múltiplas provas)
+PER_EXAM_TIMEOUT_SECONDS = 15 * 60  # 15 minutos por prova individual — evita que uma única prova lenta/travada consuma todo o budget da tarefa
 
 
 def _accepts_task_id(func) -> bool:

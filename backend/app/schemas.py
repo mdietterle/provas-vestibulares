@@ -272,12 +272,19 @@ class ExamQuestionIn(BaseModel):
     points: float = 1.0
 
 
+class ExamVestibularQuestionIn(BaseModel):
+    vestibular_question_id: int
+    order: int = 0
+    points: float = 1.0
+
+
 class ExamCreate(BaseModel):
     title: str
     instructions: Optional[str] = None
     subject_id: int
     class_id: int
-    questions: List[ExamQuestionIn]
+    questions: List[ExamQuestionIn] = []
+    vestibular_questions: List[ExamVestibularQuestionIn] = []
 
 
 class ExamCreateRedacao(BaseModel):
@@ -289,10 +296,21 @@ class ExamCreateRedacao(BaseModel):
     criteria: Optional[str] = None  # rubrica/critérios de correção (opcional)
 
 
+class ExamVestibularQuestionOut(BaseModel):
+    id: int
+    vestibular_question_id: int
+    order: int
+    points: float
+    vestibular_question: "VestibularQuestionOut"
+
+    model_config = {"from_attributes": True}
+
+
 class ExamUpdate(BaseModel):
     title: Optional[str] = None
     instructions: Optional[str] = None
     questions: Optional[List[ExamQuestionIn]] = None
+    vestibular_questions: Optional[List[ExamVestibularQuestionIn]] = None
 
 
 class ExamApply(BaseModel):
@@ -320,6 +338,7 @@ class ExamOut(BaseModel):
     subject: SubjectOut
     class_: ClassOut
     exam_questions: List[ExamQuestionOut]
+    exam_vestibular_questions: List[ExamVestibularQuestionOut] = []
     created_at: datetime
 
     model_config = {"from_attributes": True}

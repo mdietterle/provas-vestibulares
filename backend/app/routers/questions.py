@@ -99,6 +99,87 @@ def create_question(
     return question
 
 
+@router.post("/import-from-vestibular", response_model=QuestionOut, status_code=201)
+def import_vestibular_to_library(
+    vestibular_question_id: int = Query(...),
+    subject_id: int = Query(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_professor),
+):
+    """Import a vestibular question into the professor's personal question library.
+
+    Copies statement, options and image from `vestibular_questions` into `questions`,
+    preserving source metadata in `metadata` JSONB field. The new question belongs
+    to the professor and can be used in any exam they create.
+    """
+    from app.vestibular.models import VestibularQuestion, VestibularQuestionOption
+
+    vq = db.get(VestibularQuestion, vestibular_question_id)
+    if not vq:
+        raise HTTPException(404, "Questão de vestibular não encontrada")
+
+    subject = db.get(Subject, subject_id)
+    if not subject or subject.institution_id != current_user.institution_id:
+        raise HTTPException(404, "Matéria não encontrada")
+
+    if current_user.role == UserRole.PROFESSOR:
+        allowed_ids = _get_professor_subject_ids(db, current_user.id)
+        if subject_id not in allowed_ids:
+            raise HTTPException(403, "Você não leciona esta matéria")
+
+    # Check for duplicate import (same source + same professor)
+    existing = (
+        db.query(Question)
+        .filter_by(
+            professor_id=current_user.id,
+            subject_id=subject_id,
+        )
+        .filter(Question.metadata_.op("->>")("vestibular_question_id") == str(vestibular_question_id))
+        .first()
+    )
+    if existing:
+        raise HTTPException(409, "Questão já foi importada para sua biblioteca")
+
+    # Map vestibular question type to Question.question_type
+    q_type = "multiple_choice"  # default; vestibular questions are overwhelmingly MC
+    if vq.correct_option is None and not vq.options:
+        q_type = "essay"
+
+    question = Question(
+        statement=vq.html_statement or vq.statement,
+        question_type=q_type,
+        is_public=False,
+        difficulty=None,
+        criteria=None,
+        subject_id=subject_id,
+        professor_id=current_user.id,
+        image_base64=vq.image_base64,
+        metadata_={
+            "vestibular_question_id": vq.id,
+            "exam_type": vq.exam_type,
+            "exam_name": vq.exam_name,
+            "year": vq.year,
+            "number": vq.number,
+            "source": "vestibular_import",
+        },
+    )
+    db.add(question)
+    db.flush()
+
+    # Copy options
+    for opt in sorted(vq.options, key=lambda o: o.order):
+        db.add(QuestionOption(
+            question_id=question.id,
+            letter=opt.letter or "",
+            text=opt.text,
+            is_correct=opt.is_correct,
+        ))
+
+    db.commit()
+    db.refresh(question)
+    return question
+
+
 @router.get("/{question_id}", response_model=QuestionOut)
 def get_question(
     question_id: int,

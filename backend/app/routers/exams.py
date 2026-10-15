@@ -15,6 +15,7 @@ from app.models import (
     Class,
     Exam,
     ExamQuestion,
+    ExamVestibularQuestion,
     Institution,
     Question,
     QuestionType,
@@ -24,6 +25,7 @@ from app.models import (
     User,
     UserRole,
 )
+from app.vestibular.models import VestibularQuestion
 from app.schemas import ExamApply, ExamCreate, ExamCreateRedacao, ExamListOut, ExamOut, ExamUpdate
 
 router = APIRouter(prefix="/exams", tags=["exams"])
@@ -185,6 +187,17 @@ def create_exam(
             raise HTTPException(403, f"Questão {eq.question_id} é privada de outro professor")
         db.add(ExamQuestion(exam_id=exam.id, question_id=eq.question_id, order=eq.order, points=eq.points))
 
+    for vq_in in payload.vestibular_questions:
+        vq = db.get(VestibularQuestion, vq_in.vestibular_question_id)
+        if not vq:
+            raise HTTPException(404, f"Questão vestibular {vq_in.vestibular_question_id} não encontrada")
+        db.add(ExamVestibularQuestion(
+            exam_id=exam.id,
+            vestibular_question_id=vq_in.vestibular_question_id,
+            order=vq_in.order,
+            points=vq_in.points,
+        ))
+
     db.commit()
     db.refresh(exam)
     return exam
@@ -283,6 +296,21 @@ def update_exam(
                 raise HTTPException(404, f"Questão {eq.question_id} não encontrada")
             db.add(ExamQuestion(exam_id=exam.id, question_id=eq.question_id, order=eq.order, points=eq.points))
 
+    if payload.vestibular_questions is not None:
+        for evq in exam.exam_vestibular_questions:
+            db.delete(evq)
+        db.flush()
+        for vq_in in payload.vestibular_questions:
+            vq = db.get(VestibularQuestion, vq_in.vestibular_question_id)
+            if not vq:
+                raise HTTPException(404, f"Questão vestibular {vq_in.vestibular_question_id} não encontrada")
+            db.add(ExamVestibularQuestion(
+                exam_id=exam.id,
+                vestibular_question_id=vq_in.vestibular_question_id,
+                order=vq_in.order,
+                points=vq_in.points,
+            ))
+
     db.commit()
     db.refresh(exam)
     return exam
@@ -318,6 +346,14 @@ def apply_exam(
 
     for eq in questions:
         db.add(ExamQuestion(exam_id=new_exam.id, question_id=eq.question_id, order=eq.order, points=eq.points))
+
+    for evq in exam.exam_vestibular_questions:
+        db.add(ExamVestibularQuestion(
+            exam_id=new_exam.id,
+            vestibular_question_id=evq.vestibular_question_id,
+            order=evq.order,
+            points=evq.points,
+        ))
 
     db.commit()
     db.refresh(new_exam)
@@ -653,6 +689,59 @@ def _build_exam_pdf(exam: Exam, student: Optional[User], student_id: Optional[in
                     color=_colors.HexColor("#bbbbbb"), spaceAfter=0.55 * cm,
                 ))
             story.append(Spacer(1, 0.2 * cm))
+
+        story.append(Spacer(1, 0.2 * cm))
+
+    # ── Questões de Vestibular ────────────────────────────────────────────────
+    if student_id:
+        vq_seed = student_id * 1_000_003 + exam.id + 999_983
+        vestibular_to_render = seeded_shuffle(list(exam.exam_vestibular_questions), vq_seed)
+    else:
+        vestibular_to_render = list(exam.exam_vestibular_questions)
+
+    for i, evq in enumerate(vestibular_to_render, len(questions_to_render) + 1):
+        vq = evq.vestibular_question
+        pts_label = f"{evq.points:g} pt{'s' if evq.points != 1 else ''}"
+        source = f"{vq.exam_type.upper()} {vq.year}"
+        if vq.exam_name:
+            source += f" — {vq.exam_name}"
+        header = (
+            f"Questão {i} <font size='8' color='#555555'>({pts_label})</font>"
+            f" &nbsp;<font size='7' color='#5b21b6'>[Fonte: {source}]</font>"
+        )
+        story.append(Paragraph(header, q_num_style))
+        stmt = vq.html_statement or vq.statement
+        story.append(Paragraph(_html_to_rl(stmt), q_text_style))
+
+        if vq.image_base64:
+            try:
+                b64_data = vq.image_base64
+                if "," in b64_data:
+                    b64_data = b64_data.split(",", 1)[1]
+                img_bytes = base64.b64decode(b64_data)
+                img_buf = io.BytesIO(img_bytes)
+                from PIL import Image as _PILImage
+                with _PILImage.open(io.BytesIO(img_bytes)) as _pil:
+                    orig_w, orig_h = _pil.size
+                max_w = content_w * 0.7
+                max_h = 6 * cm
+                scale = min(max_w / orig_w, max_h / orig_h, 1.0)
+                img_buf.seek(0)
+                story.append(Spacer(1, 0.1 * cm))
+                story.append(Image(img_buf, width=orig_w * scale, height=orig_h * scale))
+                story.append(Spacer(1, 0.2 * cm))
+            except Exception:
+                pass
+
+        if vq.options:
+            if student_id:
+                opts_to_render = seeded_shuffle(sorted(vq.options, key=lambda o: o.order), vq_seed + evq.id)
+            else:
+                opts_to_render = sorted(vq.options, key=lambda o: o.order)
+            for j, opt in enumerate(opts_to_render):
+                letter = LETTERS[j] if j < len(LETTERS) else str(j + 1)
+                story.append(Paragraph(f"( &nbsp;) &nbsp;<b>{letter})</b> {opt.text}", opt_style))
+            story.append(Spacer(1, 0.3 * cm))
 
         story.append(Spacer(1, 0.2 * cm))
 

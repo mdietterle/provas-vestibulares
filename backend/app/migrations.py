@@ -406,6 +406,17 @@ def run_migrations() -> None:
     )""")
     migrations.append("CREATE INDEX IF NOT EXISTS idx_vqi_question ON vestibular_question_images (question_id, \"order\")")
 
+    # Bridge table: exam ↔ vestibular_questions
+    migrations.append("""CREATE TABLE IF NOT EXISTS exam_vestibular_questions (
+        id SERIAL PRIMARY KEY,
+        exam_id INTEGER NOT NULL REFERENCES exams(id) ON DELETE CASCADE,
+        vestibular_question_id INTEGER NOT NULL REFERENCES vestibular_questions(id) ON DELETE CASCADE,
+        "order" INTEGER NOT NULL DEFAULT 0,
+        points DOUBLE PRECISION NOT NULL DEFAULT 1.0,
+        UNIQUE(exam_id, vestibular_question_id)
+    )""")
+    migrations.append("CREATE INDEX IF NOT EXISTS idx_evq_exam ON exam_vestibular_questions (exam_id, \"order\")")
+
     # SimuladoQuestion polymorphic FK columns (Phase 1 backfill target)
     migrations.append("ALTER TABLE IF EXISTS simulado_questions ADD COLUMN IF NOT EXISTS vestibular_question_id INTEGER REFERENCES vestibular_questions(id)")
     migrations.append("ALTER TABLE IF EXISTS simulado_questions ADD COLUMN IF NOT EXISTS vq_exam_type VARCHAR(30)")

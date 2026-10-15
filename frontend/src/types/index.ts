@@ -71,6 +71,7 @@ export interface Question {
   professor: User
   subject: Subject
   options: QuestionOption[]
+  metadata_?: Record<string, any>
   created_at: string
 }
 

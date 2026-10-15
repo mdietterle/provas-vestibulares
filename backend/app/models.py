@@ -237,6 +237,9 @@ class Exam(Base):
     exam_questions: Mapped[List["ExamQuestion"]] = relationship(
         back_populates="exam", cascade="all, delete-orphan", order_by="ExamQuestion.order"
     )
+    exam_vestibular_questions: Mapped[List["ExamVestibularQuestion"]] = relationship(
+        back_populates="exam", cascade="all, delete-orphan", order_by="ExamVestibularQuestion.order"
+    )
 
 
 class ExamQuestion(Base):
@@ -253,6 +256,25 @@ class ExamQuestion(Base):
     submission_answers: Mapped[List["SubmissionAnswer"]] = relationship(back_populates="exam_question")
 
     __table_args__ = (UniqueConstraint("exam_id", "question_id"),)
+
+
+class ExamVestibularQuestion(Base):
+    """Bridge table linking exams to vestibular_questions without duplicating data."""
+
+    __tablename__ = "exam_vestibular_questions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    exam_id: Mapped[int] = mapped_column(ForeignKey("exams.id", ondelete="CASCADE"), nullable=False)
+    vestibular_question_id: Mapped[int] = mapped_column(
+        ForeignKey("vestibular_questions.id", ondelete="CASCADE"), nullable=False
+    )
+    order: Mapped[int] = mapped_column(Integer, default=0)
+    points: Mapped[float] = mapped_column(default=1.0)
+
+    exam: Mapped["Exam"] = relationship(back_populates="exam_vestibular_questions")
+    vestibular_question: Mapped["VestibularQuestion"] = relationship(lazy="selectin")
+
+    __table_args__ = (UniqueConstraint("exam_id", "vestibular_question_id"),)
 
 
 class SubmissionStatus(str, PyEnum):

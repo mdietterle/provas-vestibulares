@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { classesApi, examsApi, questionsApi, subjectsApi, usersApi } from '../api'
+import { vestibularApi, type VestibularQuestion as VQ } from '../api/vestibular'
 import { downloadPdf } from '../api/download'
 import { useAuth } from '../contexts/AuthContext'
 import type { Class, Exam, Question, Subject, TeachingAssignment } from '../types'
@@ -77,6 +78,17 @@ export default function ExamsPage() {
   const [filterSubject, setFilterSubject] = useState(0)
   const [page, setPage] = useState(1)
 
+  // ── Vestibular question import state ──────────────────────────────────────
+  const [vqExamTypes, setVqExamTypes] = useState<{ value: string; label: string }[]>([])
+  const [vqSelectedType, setVqSelectedType] = useState('')
+  const [vqYears, setVqYears] = useState<number[]>([])
+  const [vqSelectedYear, setVqSelectedYear] = useState<number | ''>('')
+  const [vqSearch, setVqSearch] = useState('')
+  const [vqResults, setVqResults] = useState<VQ[]>([])
+  const [vqLoading, setVqLoading] = useState(false)
+  const [vqImporting, setVqImporting] = useState<number | null>(null)
+  const [questionTab, setQuestionTab] = useState<'library' | 'vestibular'>('library')
+
   const load = () => examsApi.list().then((r) => setExams(r.data))
 
   useEffect(() => {
@@ -89,6 +101,57 @@ export default function ExamsPage() {
   }, [])
 
   useEffect(() => { setPage(1) }, [search, filterSubject])
+
+  // Load vestibular exam types when modal opens
+  useEffect(() => {
+    if (showModal && vqExamTypes.length === 0) {
+      vestibularApi.getExamTypes().then(setVqExamTypes).catch(() => {})
+    }
+  }, [showModal])
+
+  // Load years when exam type changes
+  useEffect(() => {
+    if (vqSelectedType) {
+      setVqResults([])
+      setVqSelectedYear('')
+      vestibularApi.getYears(vqSelectedType).then(setVqYears).catch(() => setVqYears([]))
+    } else {
+      setVqYears([])
+      setVqResults([])
+    }
+  }, [vqSelectedType])
+
+  const handleVqSearch = async () => {
+    if (!vqSelectedType) return
+    setVqLoading(true)
+    try {
+      const params: Record<string, any> = {}
+      if (vqSelectedYear) params.year = Number(vqSelectedYear)
+      if (vqSearch.trim()) params.search = vqSearch.trim()
+      params.size = 20
+      const r = await vestibularApi.listQuestions(vqSelectedType, params)
+      setVqResults(r.items)
+    } catch {
+      setVqResults([])
+    } finally {
+      setVqLoading(false)
+    }
+  }
+
+  const importVestibularQuestion = async (vq: VQ) => {
+    if (!form.subject_id) { toast.error('Selecione uma matéria primeiro'); return }
+    setVqImporting(vq.id)
+    try {
+      const imported = await questionsApi.importFromVestibular(vq.id, form.subject_id)
+      addQuestion(imported.data.id)
+      toast.success('Questão importada e adicionada à prova')
+    } catch (err: any) {
+      const msg = err?.response?.data?.detail || 'Erro ao importar questão'
+      toast.error(msg)
+    } finally {
+      setVqImporting(null)
+    }
+  }
 
   const selectableSubjects = user?.role === 'professor'
     ? subjects.filter(s => myAssignments.some(a => a.subject_id === s.id))
@@ -712,52 +775,174 @@ export default function ExamsPage() {
                 })()}
                 {form.subject_id > 0 && (
                   <div className="rounded-xl border p-4 space-y-3 bg-[#F4F6F9] dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554]">
-                    <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Adicionar Questão ao Banco</label>
-                    <div className="relative">
-                      <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-                      </svg>
-                      <input
-                        className="input pl-9"
-                        placeholder="Buscar questão pelo enunciado..."
-                        value={questionSearch}
-                        onChange={(e) => setQuestionSearch(e.target.value)}
-                      />
+                    {/* Tabs */}
+                    <div className="flex gap-1 bg-gray-200/60 dark:bg-[#2a2d3a] rounded-lg p-1 w-fit">
+                      <button
+                        type="button"
+                        onClick={() => setQuestionTab('library')}
+                        className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${questionTab === 'library' ? 'bg-white dark:bg-[#1d1f27] shadow text-slate-700 dark:text-slate-200' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-300'}`}
+                      >
+                        📚 Minha Biblioteca
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setQuestionTab('vestibular')}
+                        className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${questionTab === 'vestibular' ? 'bg-white dark:bg-[#1d1f27] shadow text-[#7c3aed] dark:text-[#c4a4ff]' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-300'}`}
+                      >
+                        🎓 Vestibulares
+                      </button>
                     </div>
-                    <div className="max-h-56 overflow-y-auto space-y-1.5 pr-1">
-                      {availableQuestions
-                        .filter((q) => !form.questions.some((dq) => dq.question_id === q.id))
-                        .filter((q) => q.statement.toLowerCase().includes(questionSearch.toLowerCase()))
-                        .slice(0, 30)
-                        .map((q) => (
-                          <button
-                            key={q.id}
-                            type="button"
-                            onClick={() => addQuestion(q.id)}
-                            className="w-full flex items-start gap-2 text-left p-2.5 rounded-lg border bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] hover:border-[#c7d2fe] dark:hover:border-[#3f5a94] hover:bg-[#eef2ff] dark:hover:bg-[#1a2947] transition-colors group"
+
+                    {questionTab === 'library' ? (
+                      <>
+                        <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Adicionar Questão da Biblioteca</label>
+                        <div className="relative">
+                          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                          </svg>
+                          <input
+                            className="input pl-9"
+                            placeholder="Buscar questão pelo enunciado..."
+                            value={questionSearch}
+                            onChange={(e) => setQuestionSearch(e.target.value)}
+                          />
+                        </div>
+                        <div className="max-h-56 overflow-y-auto space-y-1.5 pr-1">
+                          {availableQuestions
+                            .filter((q) => !form.questions.some((dq) => dq.question_id === q.id))
+                            .filter((q) => q.statement.toLowerCase().includes(questionSearch.toLowerCase()))
+                            .slice(0, 30)
+                            .map((q) => (
+                              <button
+                                key={q.id}
+                                type="button"
+                                onClick={() => addQuestion(q.id)}
+                                className="w-full flex items-start gap-2 text-left p-2.5 rounded-lg border bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] hover:border-[#c7d2fe] dark:hover:border-[#3f5a94] hover:bg-[#eef2ff] dark:hover:bg-[#1a2947] transition-colors group"
+                              >
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                                    <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-[#eef2ff] dark:bg-[#1f2547] text-slate-600 dark:text-slate-400">
+                                      {QUESTION_TYPE_LABEL[q.question_type] ?? q.question_type}
+                                    </span>
+                                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${q.is_public ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400'}`}>
+                                      {q.is_public ? 'Pública' : 'Privada'}
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{q.statement}</p>
+                                </div>
+                                <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-gray-400 dark:text-slate-400 group-hover:bg-slate-600 group-hover:text-white transition-colors mt-0.5">
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                                  </svg>
+                                </span>
+                              </button>
+                            ))}
+                          {availableQuestions.filter((q) => !form.questions.some((dq) => dq.question_id === q.id)).filter((q) => q.statement.toLowerCase().includes(questionSearch.toLowerCase())).length === 0 && (
+                            <p className="text-sm text-gray-400 dark:text-slate-400 text-center py-4">Nenhuma questão encontrada nesta matéria.</p>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <label className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Importar Questão de Vestibular</label>
+                        {/* Filters row */}
+                        <div className="grid grid-cols-3 gap-2">
+                          <select
+                            className="input text-sm"
+                            value={vqSelectedType}
+                            onChange={(e) => setVqSelectedType(e.target.value)}
                           >
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                                <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-[#eef2ff] dark:bg-[#1f2547] text-slate-600 dark:text-slate-400">
-                                  {QUESTION_TYPE_LABEL[q.question_type] ?? q.question_type}
-                                </span>
-                                <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${q.is_public ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400'}`}>
-                                  {q.is_public ? 'Pública' : 'Privada'}
-                                </span>
-                              </div>
-                              <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{q.statement}</p>
-                            </div>
-                            <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-gray-400 dark:text-slate-400 group-hover:bg-slate-600 group-hover:text-white transition-colors mt-0.5">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-                              </svg>
-                            </span>
+                            <option value="">Selecione o vestibular...</option>
+                            {vqExamTypes.map((t) => (
+                              <option key={t.value} value={t.value}>{t.label}</option>
+                            ))}
+                          </select>
+                          <select
+                            className="input text-sm"
+                            value={vqSelectedYear}
+                            onChange={(e) => setVqSelectedYear(e.target.value ? Number(e.target.value) : '')}
+                            disabled={!vqSelectedType}
+                          >
+                            <option value="">Todos os anos</option>
+                            {vqYears.map((y) => (
+                              <option key={y} value={y}>{y}</option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            onClick={handleVqSearch}
+                            disabled={!vqSelectedType || vqLoading}
+                            className="px-3 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
+                            style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}
+                          >
+                            {vqLoading ? 'Buscando...' : '🔍 Buscar'}
                           </button>
-                        ))}
-                      {availableQuestions.filter((q) => !form.questions.some((dq) => dq.question_id === q.id)).filter((q) => q.statement.toLowerCase().includes(questionSearch.toLowerCase())).length === 0 && (
-                        <p className="text-sm text-gray-400 dark:text-slate-400 text-center py-4">Nenhuma questão encontrada nesta matéria.</p>
-                      )}
-                    </div>
+                        </div>
+                        {/* Search text */}
+                        <div className="relative">
+                          <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                          </svg>
+                          <input
+                            className="input pl-9 text-sm"
+                            placeholder="Filtrar por enunciado..."
+                            value={vqSearch}
+                            onChange={(e) => setVqSearch(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleVqSearch()}
+                          />
+                        </div>
+                        {/* Results */}
+                        <div className="max-h-64 overflow-y-auto space-y-1.5 pr-1">
+                          {vqResults.length === 0 && !vqLoading && vqSelectedType && (
+                            <p className="text-sm text-gray-400 dark:text-slate-400 text-center py-4">Nenhuma questão encontrada. Tente ajustar os filtros.</p>
+                          )}
+                          {!vqSelectedType && (
+                            <p className="text-sm text-gray-400 dark:text-slate-400 text-center py-4">Selecione um vestibular para começar.</p>
+                          )}
+                          {vqResults.map((vq) => {
+                            const alreadyAdded = form.questions.some(
+                              (dq) => draftQuestionDetails.find(d => d.question_id === dq.question_id)?.question?.metadata_?.vestibular_question_id === vq.id
+                            )
+                            const importing = vqImporting === vq.id
+                            return (
+                              <div
+                                key={vq.id}
+                                className="flex items-start gap-2 p-2.5 rounded-lg border bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554]"
+                              >
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                                    <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-[#faf5ff] dark:bg-[#2d1b4e] text-[#7c3aed] dark:text-[#c4a4ff]">
+                                      {vq.exam_type.toUpperCase()} {vq.year}
+                                    </span>
+                                    {vq.exam_name && (
+                                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                                        {vq.exam_name}
+                                      </span>
+                                    )}
+                                    <span className="text-[10px] text-gray-400 dark:text-slate-500">#{vq.number}</span>
+                                  </div>
+                                  <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{vq.statement}</p>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => importVestibularQuestion(vq)}
+                                  disabled={alreadyAdded || importing}
+                                  className={`shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                    alreadyAdded
+                                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 cursor-default'
+                                      : 'text-white hover:opacity-90 disabled:opacity-50'
+                                  }`}
+                                  style={alreadyAdded ? {} : { background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}
+                                  title={alreadyAdded ? 'Já adicionada' : 'Importar e adicionar à prova'}
+                                >
+                                  {importing ? '⏳' : alreadyAdded ? '✓' : '+ Importar'}
+                                </button>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
                 {form.questions.length > 0 && (

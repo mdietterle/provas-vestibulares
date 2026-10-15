@@ -291,36 +291,65 @@ def import_all_enem_exams(since_year: int = 2015, until_year: Optional[int] = No
         if task_id:
             update_task_progress(task_id, current=0, total=max(total_editions, 1), log=f"{total_editions} edições encontradas.")
 
+        from app.services.progress import PER_EXAM_TIMEOUT_SECONDS
+        import threading as _threading
+
         for idx, (year, edition) in enumerate(pending):
             day = edition["day"]
-            try:
-                r = import_enem_pdf(
-                    prova_path=None,
-                    gabarito_path=None,
-                    year=year,
-                    day=day,
-                    db=db,
-                    prova_url=edition["prova_url"],
-                    gabarito_url=edition.get("gabarito_url"),
-                    task_id=task_id,
-                    items_done_before=total_added,
-                    force_reimport=force_reimport,
-)
+            exam_result: dict = {}
+            exam_error: Optional[Exception] = None
+
+            def _run_exam():
+                nonlocal exam_result, exam_error
+                try:
+                    exam_result = import_enem_pdf(
+                        prova_path=None,
+                        gabarito_path=None,
+                        year=year,
+                        day=day,
+                        db=db,
+                        prova_url=edition["prova_url"],
+                        gabarito_url=edition.get("gabarito_url"),
+                        task_id=task_id,
+                        items_done_before=total_added,
+                        force_reimport=force_reimport,
+                    )
+                except Exception as e:
+                    exam_error = e
+
+            t = _threading.Thread(target=_run_exam)
+            t.start()
+            t.join(PER_EXAM_TIMEOUT_SECONDS)
+
+            if t.is_alive():
+                reason = f"Timeout: prova excedeu {PER_EXAM_TIMEOUT_SECONDS // 60} minutos (Groq lento ou PDF pesado). Pulada."
+                results.append({"year": year, "day": day, "skipped": True, "reason": reason})
+                if task_id:
+                    update_task_progress(
+                        task_id, current=idx + 1, total=total_editions,
+                        log=f"⏰ ENEM {year} dia {day}: {reason}",
+                        items_done=total_added,
+                    )
+                # Thread continua em background (best-effort), mas seguimos para próxima prova
+                continue
+
+            if exam_error is not None:
+                db.rollback()
+                results.append({"year": year, "day": day, "skipped": True, "reason": str(exam_error)})
+                if task_id:
+                    update_task_progress(
+                        task_id, current=idx + 1, total=total_editions,
+                        log=f"❌ ENEM {year} dia {day}: {exam_error}",
+                        items_done=total_added,
+                    )
+            else:
+                r = exam_result
                 results.append({"year": year, "day": day, **r})
                 total_added += r.get("total_added", 0)
                 if task_id:
                     update_task_progress(
                         task_id, current=idx + 1, total=total_editions,
                         log=f"✅ ENEM {year} dia {day}: {r.get('total_added', 0)} adicionadas.",
-                        items_done=total_added,
-                    )
-            except Exception as e:
-                db.rollback()
-                results.append({"year": year, "day": day, "skipped": True, "reason": str(e)})
-                if task_id:
-                    update_task_progress(
-                        task_id, current=idx + 1, total=total_editions,
-                        log=f"❌ ENEM {year} dia {day}: {e}",
                         items_done=total_added,
                     )
             finally:
