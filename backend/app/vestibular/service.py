@@ -30,14 +30,14 @@ class VestibularQuestionService:
         if year is not None:
             q = q.where(VestibularQuestion.year == year)
         if area:
-            q = q.where(VestibularQuestion.extra_data.op("->>")("area") == area)
+            q = q.where(VestibularQuestion.metadata_.op("->>")("area") == area)
         if language:
-            q = q.where(VestibularQuestion.extra_data.op("->>")("language") == language)
+            q = q.where(VestibularQuestion.metadata_.op("->>")("language") == language)
         if search:
             q = q.where(
                 or_(
                     VestibularQuestion.statement.ilike(f"%{search}%"),
-                    VestibularQuestion.extra_data.op("->>")("subject").ilike(f"%{search}%"),
+                    VestibularQuestion.metadata_.op("->>")("subject").ilike(f"%{search}%"),
                 )
             )
 
@@ -117,30 +117,30 @@ class VestibularQuestionService:
     def get_distinct_areas(self, exam_type: str) -> List[str]:
         """Distinct areas from JSONB metadata, sorted."""
         stmt = (
-            select(VestibularQuestion.extra_data.op("->>")("area"))
+            select(VestibularQuestion.metadata_.op("->>")("area"))
             .where(
                 and_(
                     VestibularQuestion.exam_type == exam_type,
-                    VestibularQuestion.extra_data.op("->>")("area").isnot(None),
+                    VestibularQuestion.metadata_.op("->>")("area").isnot(None),
                 )
             )
             .distinct()
-            .order_by(VestibularQuestion.extra_data.op("->>")("area"))
+            .order_by(VestibularQuestion.metadata_.op("->>")("area"))
         )
         return [r[0] for r in self.db.execute(stmt).all() if r[0]]
 
     def get_distinct_languages(self, exam_type: str) -> List[str]:
         """Distinct languages from JSONB metadata, sorted."""
         stmt = (
-            select(VestibularQuestion.extra_data.op("->>")("language"))
+            select(VestibularQuestion.metadata_.op("->>")("language"))
             .where(
                 and_(
                     VestibularQuestion.exam_type == exam_type,
-                    VestibularQuestion.extra_data.op("->>")("language").isnot(None),
+                    VestibularQuestion.metadata_.op("->>")("language").isnot(None),
                 )
             )
             .distinct()
-            .order_by(VestibularQuestion.extra_data.op("->>")("language"))
+            .order_by(VestibularQuestion.metadata_.op("->>")("language"))
         )
         return [r[0] for r in self.db.execute(stmt).all() if r[0]]
 
