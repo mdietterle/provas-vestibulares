@@ -38,13 +38,12 @@ class VestibularQuestionOut(BaseModel):
     answer: Optional[str] = None
     is_annulled: bool = False
     correct_option: Optional[str] = None
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    metadata: Dict[str, Any] = Field(default_factory=dict, alias="metadata_")
     created_at: Optional[datetime] = None
     options: List[VestibularOptionOut] = []
     images: List[VestibularImageOut] = []
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True, "populate_by_name": True}
 
 
 class VestibularQuestionListOut(BaseModel):
