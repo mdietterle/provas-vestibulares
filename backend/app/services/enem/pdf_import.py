@@ -352,13 +352,12 @@ def import_all_enem_exams(since_year: int = 2015, until_year: Optional[int] = No
                         log=f"✅ ENEM {year} dia {day}: {r.get('total_added', 0)} adicionadas.",
                         items_done=total_added,
                     )
-            finally:
-                # Each edition can carry dozens of base64-encoded question images;
-                # without releasing them from the session's identity map, a
-                # multi-year run keeps every one of them in memory until the very
-                # end, which is enough to OOM a small instance partway through.
-                db.expunge_all()
-                gc.collect()
+            # Each edition can carry dozens of base64-encoded question images;
+            # without releasing them from the session's identity map, a
+            # multi-year run keeps every one of them in memory until the very
+            # end, which is enough to OOM a small instance partway through.
+            db.expunge_all()
+            gc.collect()
 
         res = {"total_added": total_added, "exams": results}
         if task_id:
