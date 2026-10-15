@@ -38,7 +38,7 @@ class VestibularQuestionOut(BaseModel):
     answer: Optional[str] = None
     is_annulled: bool = False
     correct_option: Optional[str] = None
-    metadata: Dict[str, Any] = Field(default_factory=dict, alias="metadata_")
+    metadata: Dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_", serialization_alias="metadata")
     created_at: Optional[datetime] = None
     options: List[VestibularOptionOut] = []
     images: List[VestibularImageOut] = []
