@@ -202,7 +202,7 @@ def import_vestibular_to_library(
     preserving source metadata in `metadata` JSONB field. The new question belongs
     to the professor and can be used in any exam they create.
     """
-    from app.vestibular.models import VestibularQuestion, VestibularQuestionOption
+    from app.vestibular.models import VestibularQuestion, VestibularQuestionOption, VestibularQuestionImage
 
     vq = db.get(VestibularQuestion, vestibular_question_id)
     if not vq:
@@ -226,6 +226,13 @@ def import_vestibular_to_library(
     if vq.correct_option is None and not vq.options:
         q_type = "essay"
 
+    # Resolve image: use main field, fall back to first image from images table
+    img = vq.image_base64
+    if not img and vq.images:
+        sorted_imgs = sorted(vq.images, key=lambda i: i.order)
+        first_img = sorted_imgs[0]
+        img = first_img.image_base64 or first_img.image_url
+
     question = Question(
         statement=vq.html_statement or vq.statement,
         question_type=q_type,
@@ -234,7 +241,7 @@ def import_vestibular_to_library(
         criteria=None,
         subject_id=subject_id,
         professor_id=current_user.id,
-        image_base64=vq.image_base64,
+        image_base64=img,
     )
     db.add(question)
     db.flush()
