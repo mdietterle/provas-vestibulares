@@ -87,7 +87,16 @@ export default function ExamsPage() {
   const [vqResults, setVqResults] = useState<VQ[]>([])
   const [vqLoading, setVqLoading] = useState(false)
   const [vqImporting, setVqImporting] = useState<number | null>(null)
-  const [questionTab, setQuestionTab] = useState<'library' | 'vestibular'>('library')
+  const [questionTab, setQuestionTab] = useState<'library' | 'vestibular' | 'most-used'>('library')
+  const [mostUsedQuestions, setMostUsedQuestions] = useState<Array<{
+    question_id: number
+    statement_preview: string
+    subject_name: string
+    source_type: 'own' | 'vestibular'
+    source_detail: string | null
+    usage_count: number
+  }>>([])
+  const [mostUsedLoading, setMostUsedLoading] = useState(false)
 
   const load = () => examsApi.list().then((r) => setExams(r.data))
 
@@ -791,6 +800,22 @@ export default function ExamsPage() {
                       >
                         🎓 Vestibulares
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQuestionTab('most-used')
+                          if (mostUsedQuestions.length === 0 && !mostUsedLoading) {
+                            setMostUsedLoading(true)
+                            questionsApi.mostUsed(form.subject_id || undefined, 50)
+                              .then((res) => setMostUsedQuestions(res.data))
+                              .catch(() => toast.error('Erro ao carregar questões mais usadas'))
+                              .finally(() => setMostUsedLoading(false))
+                          }
+                        }}
+                        className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${questionTab === 'most-used' ? 'bg-white dark:bg-[#1d1f27] shadow text-[#0284c7] dark:text-[#38bdf8]' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-300'}`}
+                      >
+                        🔥 Mais Usadas
+                      </button>
                     </div>
 
                     {questionTab === 'library' ? (
@@ -942,6 +967,60 @@ export default function ExamsPage() {
                           })}
                         </div>
                       </>
+                    )}
+                  </div>
+                )}
+                {questionTab === 'most-used' && (
+                  <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+                    {mostUsedLoading ? (
+                      <div className="flex items-center justify-center py-8 text-sm text-gray-500 dark:text-slate-400">Carregando...</div>
+                    ) : mostUsedQuestions.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-8 text-sm text-gray-500 dark:text-slate-400 gap-2">
+                        <span className="text-2xl">📭</span>
+                        <p>Nenhuma questão utilizada em provas ainda.</p>
+                      </div>
+                    ) : (
+                      mostUsedQuestions.map((mq) => {
+                        const alreadyAdded = form.questions.some((q) => q.question_id === mq.question_id)
+                        return (
+                          <div key={mq.question_id} className="flex items-start gap-3 p-3 rounded-xl border bg-white dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] hover:border-[#0284c7] dark:hover:border-[#38bdf8] transition-colors">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 uppercase tracking-wide">
+                                  {mq.subject_name}
+                                </span>
+                                <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${mq.source_type === 'vestibular' ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400' : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'}`}>
+                                  {mq.source_type === 'vestibular' ? `🎓 ${mq.source_detail || 'Vestibular'}` : '✏️ Própria'}
+                                </span>
+                                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400">
+                                  🔥 {mq.usage_count}× usada
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{mq.statement_preview}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (alreadyAdded) return
+                                setForm((f) => ({
+                                  ...f,
+                                  questions: [...f.questions, { question_id: mq.question_id, order: f.questions.length + 1, points: 1 }],
+                                }))
+                              }}
+                              disabled={alreadyAdded}
+                              className={`shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                alreadyAdded
+                                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 cursor-default'
+                                  : 'text-white hover:opacity-90'
+                              }`}
+                              style={alreadyAdded ? {} : { background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)' }}
+                              title={alreadyAdded ? 'Já adicionada' : 'Adicionar à prova'}
+                            >
+                              {alreadyAdded ? '✓' : '+ Adicionar'}
+                            </button>
+                          </div>
+                        )
+                      })
                     )}
                   </div>
                 )}

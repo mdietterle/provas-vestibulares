@@ -2,12 +2,21 @@ import base64
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import or_
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.deps import get_current_user, require_professor
-from app.models import Question, QuestionOption, Subject, TeachingAssignment, User, UserRole
+from app.models import (
+    Exam,
+    ExamQuestion,
+    Question,
+    QuestionOption,
+    Subject,
+    TeachingAssignment,
+    User,
+    UserRole,
+)
 from app.schemas import QuestionCreate, QuestionOut, QuestionUpdate
 from app.services.storage import upload_image
 
@@ -22,6 +31,87 @@ def _get_professor_subject_ids(db: Session, professor_id: int) -> List[int]:
         .all()
     )
     return [r[0] for r in rows]
+
+
+@router.get("/stats/most-used")
+def most_used_questions(
+    subject_id: Optional[int] = Query(None),
+    limit: int = Query(50, ge=1, le=200),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Return questions ordered by usage frequency across exams.
+
+    Each entry includes the question id, statement preview, subject name,
+    source type (own / vestibular), source detail and total times used.
+    Respects institution boundaries and professor visibility rules.
+    """
+    # Base visibility filter (mirrors list_questions logic)
+    if current_user.role == UserRole.ADMIN:
+        visible_q = (
+            db.query(Question.id)
+            .join(Subject)
+            .filter(Subject.institution_id == current_user.institution_id)
+        )
+    else:
+        visible_q = (
+            db.query(Question.id)
+            .join(Subject)
+            .filter(
+                Subject.institution_id == current_user.institution_id,
+                or_(
+                    Question.professor_id == current_user.id,
+                    Question.is_public == True,
+                ),
+            )
+        )
+
+    if subject_id is not None:
+        visible_q = visible_q.filter(Question.subject_id == subject_id)
+
+    visible_ids = visible_q.subquery()
+
+    rows = (
+        db.query(
+            Question.id.label("question_id"),
+            func.count(ExamQuestion.id).label("usage_count"),
+            Question.statement,
+            Subject.name.label("subject_name"),
+            Question.metadata_,
+        )
+        .join(ExamQuestion, ExamQuestion.question_id == Question.id)
+        .join(Subject, Subject.id == Question.subject_id)
+        .filter(Question.id.in_(visible_ids))
+        .group_by(Question.id, Subject.name, Question.metadata_)
+        .order_by(func.count(ExamQuestion.id).desc())
+        .limit(limit)
+        .all()
+    )
+
+    result = []
+    for row in rows:
+        meta = row.metadata_ or {}
+        source_type = "vestibular" if meta.get("source") == "vestibular_import" else "own"
+        source_detail = None
+        if source_type == "vestibular":
+            exam = meta.get("exam_name") or meta.get("exam_type")
+            year = meta.get("year")
+            number = meta.get("number")
+            parts = [str(p) for p in (exam, year, f"#{number}" if number else None) if p]
+            source_detail = " ".join(parts) if parts else "Vestibular"
+
+        result.append(
+            {
+                "question_id": row.question_id,
+                "statement_preview": (row.statement or "")[:200],
+                "subject_name": row.subject_name,
+                "source_type": source_type,
+                "source_detail": source_detail,
+                "usage_count": row.usage_count,
+            }
+        )
+
+    return result
 
 
 @router.get("", response_model=List[QuestionOut])

@@ -96,6 +96,17 @@ export const questionsApi = {
     api.post<Question>('/questions/import-from-vestibular', null, {
       params: { vestibular_question_id: vestibularQuestionId, subject_id: subjectId },
     }),
+  mostUsed: (subjectId?: number, limit = 50) =>
+    api.get<{
+      question_id: number
+      statement_preview: string
+      subject_name: string
+      source_type: 'own' | 'vestibular'
+      source_detail: string | null
+      usage_count: number
+    }[]>('/questions/stats/most-used', {
+      params: { ...(subjectId ? { subject_id: subjectId } : {}), limit },
+    }),
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
