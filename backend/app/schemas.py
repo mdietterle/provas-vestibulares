@@ -4,6 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 
 from app.models import QuestionType, SubmissionStatus, UserRole  # EnemQuestion imported separately
+from app.vestibular.schemas import VestibularQuestionOut  # noqa: F401 — used by ExamVestibularQuestionOut forward ref
 
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
