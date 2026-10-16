@@ -415,6 +415,21 @@ def _is_noise(text: str) -> bool:
     return False
 
 
+def _looks_like_passage(text: str) -> bool:
+    """Detecta se texto é um passage/texto-base compartilhado entre questões.
+    Usa heurística: mínimo 30 chars, ratio letras > 0.5, exclui cabeçalhos."""
+    if len(text) < 30:
+        return False
+    text_clean = text.strip().lower()
+    text_norm = "".join(
+        c for c in unicodedata.normalize("NFKD", text_clean) if not unicodedata.combining(c)
+    )
+    if text_norm.startswith("convencoes") or text_norm.startswith("instrucoes") or text_norm.startswith("notacoes"):
+        return False
+    letters = len(re.findall(r"[A-Za-zÀ-ÿ]", text))
+    return letters / max(len(text), 1) > 0.5
+
+
 def _match_area(text: str) -> Optional[str]:
     norm = _norm(text)
     for pattern, area in _AREA_HEADERS_NORM:
@@ -539,6 +554,8 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str]]:
     q_num: Optional[int] = None
     statement_lines: list[str] = []
     pending_images: list[bytes] = []
+    active_passage_lines: list[str] = []
+    current_passage = ""
 
     def flush():
         nonlocal q_num, statement_lines, pending_images
@@ -565,15 +582,26 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str]]:
             flush()
             current_area = val
             current_lang = None
+            active_passage_lines = []
+            current_passage = ""
         elif etype == "lang":
             flush()
             current_lang = val
+            active_passage_lines = []
+            current_passage = ""
         elif etype == "q_start":
             flush()
+            if active_passage_lines:
+                candidate = "\n".join(active_passage_lines).strip()
+                current_passage = candidate if _looks_like_passage(candidate) else ""
+                active_passage_lines = []
             q_num = val
+            statement_lines = ([current_passage] if current_passage else [])
         elif etype == "text":
             if q_num is not None:
                 statement_lines.append(val)
+            else:
+                active_passage_lines.append(val)
         elif etype == "image":
             if q_num is not None:
                 pending_images.append(val)
