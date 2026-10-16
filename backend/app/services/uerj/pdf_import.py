@@ -23,6 +23,7 @@ import fitz  # PyMuPDF
 import requests
 
 from app.services.pdf_figures import extract_figure_events
+from app.services.pdf_text_utils import join_lines_smart
 
 from app.database import SessionLocal
 from app.models import (
@@ -490,7 +491,7 @@ def _parse_exam(
         nonlocal q_num, statement_lines, options, pending_images
         if q_num is None:
             return
-        stmt = _clean("\n".join(statement_lines))
+        stmt = _clean(join_lines_smart(statement_lines))
         if not stmt:
             q_num, statement_lines, options, pending_images = None, [], [], []
             return

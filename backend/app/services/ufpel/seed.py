@@ -37,6 +37,7 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
+from app.services.pdf_text_utils import join_lines_smart
 from app.services.ufpr.seed import _page_content_images, _xref_to_dataurl
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -240,10 +241,10 @@ def parse_ufpel_pdf(pdf_path: Path) -> list[dict]:
                 if letter in seen:
                     continue
                 seen.add(letter)
-                built.append((letter, re.sub(r"\s+", " ", " ".join(lines)).strip()))
+                built.append((letter, join_lines_smart(lines)))
             order = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4}
             built = sorted([(l, t) for l, t in built if l in order], key=lambda lt: order[lt[0]])
-            statement = re.sub(r"\s+", " ", " ".join(cur["statement_lines"])).strip()
+            statement = join_lines_smart(cur["statement_lines"])
             if statement and set("ABCDE").issubset({l for l, _ in built}):
                 questions.append({
                     "number": cur["number"],

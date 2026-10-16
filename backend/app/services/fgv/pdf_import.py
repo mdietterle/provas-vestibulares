@@ -23,6 +23,7 @@ from urllib.parse import urljoin
 import fitz  # PyMuPDF
 
 from app.services.pdf_figures import extract_figure_events
+from app.services.pdf_text_utils import join_lines_smart
 import requests
 
 _INDEX_URL = "https://vestibular.fgv.br/provas-gabaritos"
@@ -344,7 +345,7 @@ def _parse_exam(
         nonlocal q_num, statement_lines, options, pending_images
         if q_num is None:
             return
-        stmt = _clean("\n".join(statement_lines))
+        stmt = _clean(join_lines_smart(statement_lines))
         if not stmt:
             q_num, statement_lines, options, pending_images = None, [], [], []
             return

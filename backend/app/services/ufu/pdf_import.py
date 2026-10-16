@@ -56,6 +56,7 @@ import fitz  # PyMuPDF
 import requests
 
 from app.services.import_batch import save_vestibular_question
+from app.services.pdf_text_utils import join_lines_smart
 from app.services.progress import update_task_progress, complete_task, fail_task
 
 def _xref_to_dataurl(doc, xref: int) -> str | None:

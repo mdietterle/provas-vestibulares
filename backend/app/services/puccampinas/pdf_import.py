@@ -94,6 +94,7 @@ import requests
 import base64
 
 from app.services.pdf_figures import extract_figure_events, text_content_y_range
+from app.services.pdf_text_utils import join_lines_smart
 from app.services.progress import update_task_progress, complete_task, fail_task
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -317,7 +318,8 @@ def _parse_questions(full: str, image_events: Optional[list[tuple[int, bytes]]] 
         if header is None:
             continue
 
-        statement = re.sub(r"\s+", " ", full[header.end():a_start]).strip()
+        raw_stmt_lines = [l for l in full[header.end():a_start].split("\n") if l.strip()]
+        statement = join_lines_smart(raw_stmt_lines)
         if not statement:
             continue
 
