@@ -393,7 +393,8 @@ SUBJECT_OPTIONS: dict[str, list[str]] = {
 _KNOWN_COLORS = ["Azul", "Amarelo", "Branco", "Rosa", "Cinza", "Verde", "Laranja", "Cinza-Claro"]
 
 _Q_START_NORM = re.compile(r"^QUESTAO(\d{1,3})\b")
-_RANGE_MARK_NORM = re.compile(r"QUESTOESDE\d+A\d+(?:\(OPCAO:?(INGLES|ESPANHOL)\))?")
+_RANGE_MARK_NORM = re.compile(r"QUESTOESDE\d+A\d+\(OPCAO:?(INGLES|ESPANHOL)\)")
+_SHARED_PASSAGE_HEADER_NORM = re.compile(r"TEXTOPARAASQUESTOESDE(\d{1,3})A(\d{1,3})")
 _ENEM_WATERMARK = re.compile(r"(?:ENEM|ENEN)\d{4}")
 
 _NOISE_PATTERNS = [
@@ -593,6 +594,13 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
                     page_events.append((col, y, "q_start", int(m_q.group(1))))
                     continue
 
+                m_shared = _SHARED_PASSAGE_HEADER_NORM.search(norm_line)
+                if m_shared:
+                    start_q = int(m_shared.group(1))
+                    end_q = int(m_shared.group(2))
+                    page_events.append((col, y, "shared_passage_header", (start_q, end_q)))
+                    continue
+
                 if _is_noise(line_text):
                     continue
 
@@ -615,6 +623,10 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
     pending_images: list[bytes] = []
     active_passage_lines: list[str] = []
     current_passage = ""
+    # Passage compartilhado: "Texto para as Questões de X a Y"
+    shared_passage_range: Optional[tuple[int, int]] = None
+    shared_passage_lines: list[str] = []
+    shared_passage_text: str = ""
 
     def flush():
         nonlocal q_num, statement_lines, pending_images
@@ -643,22 +655,44 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
             current_lang = None
             active_passage_lines = []
             current_passage = ""
+            # shared_passage_range persists across area changes (footer headers)
         elif etype == "lang":
             flush()
             current_lang = val
             active_passage_lines = []
             current_passage = ""
+            # shared_passage_range persists across lang changes
+        elif etype == "shared_passage_header":
+            flush()
+            shared_passage_range = val  # (start_q, end_q)
+            shared_passage_lines = []
+            shared_passage_text = ""
         elif etype == "q_start":
             flush()
+            # Finaliza acumulação do passage compartilhado na primeira questão do range
+            if shared_passage_range and shared_passage_lines and val == shared_passage_range[0]:
+                shared_passage_text = "\n".join(shared_passage_lines).strip()
+                shared_passage_lines = []
+            # Fallback: se ainda não finalizou mas estamos no range, finaliza agora
+            elif shared_passage_range and shared_passage_lines and not shared_passage_text and shared_passage_range[0] <= val <= shared_passage_range[1]:
+                shared_passage_text = "\n".join(shared_passage_lines).strip()
+                shared_passage_lines = []
             if active_passage_lines:
                 candidate = "\n".join(active_passage_lines).strip()
                 current_passage = candidate if _looks_like_passage(candidate) else ""
                 active_passage_lines = []
             q_num = val
-            statement_lines = ([current_passage] if current_passage else [])
+            # Injeta passage compartilhado se questão está no range declarado
+            if shared_passage_range and shared_passage_text and shared_passage_range[0] <= val <= shared_passage_range[1]:
+                statement_lines = [shared_passage_text]
+            else:
+                statement_lines = ([current_passage] if current_passage else [])
         elif etype == "text":
             if q_num is not None:
                 statement_lines.append(val)
+            elif shared_passage_range is not None and not shared_passage_text:
+                # Acumulando texto do passage compartilhado antes da primeira questão do range
+                shared_passage_lines.append(val)
             else:
                 active_passage_lines.append(val)
         elif etype == "image":
