@@ -31,6 +31,7 @@ import requests
 
 from app.database import SessionLocal
 from app.services.pdf_figures import extract_figure_events
+from app.services.pdf_text_utils import join_lines_smart
 
 
 # ── URLs conhecidas ───────────────────────────────────────────────────────────
@@ -241,7 +242,7 @@ def _extract_items_from_exam(
         if current_num is None:
             return
 
-        stmt = "\n".join(statement_lines).strip()
+        stmt = join_lines_smart(statement_lines)
         if not stmt:
             current_num, statement_lines, options, pending_images = None, [], [], []
             has_certo_errado = False

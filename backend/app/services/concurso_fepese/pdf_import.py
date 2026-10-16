@@ -54,6 +54,8 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
+from app.services.pdf_text_utils import join_lines_smart
+
 def _xref_to_dataurl(doc, xref: int) -> str | None:
     """Converte imagem embutida (xref) em data-URL base64 PNG."""
     import base64
@@ -191,8 +193,8 @@ def parse_fepese_pdf(pdf_path: Path) -> list[dict]:
         if len(alts) < 4:
             continue  # questão anulada/fora de padrão nesse caderno — pula
 
-        statement = re.sub(r"\xad\n", "", body[: alts[0].start()])
-        statement = re.sub(r"\s+", " ", statement).strip()
+        raw_stmt_lines = [l for l in body[: alts[0].start()].split("\n") if l.strip()]
+        statement = join_lines_smart(raw_stmt_lines)
         if not statement:
             continue
 

@@ -94,6 +94,7 @@ import requests
 from sqlalchemy.orm import Session
 
 from app.services.import_batch import save_vestibular_question
+from app.services.pdf_text_utils import join_lines_smart
 from app.services.progress import complete_task, fail_task, update_task_progress
 
 def _xref_to_dataurl(doc, xref: int) -> str | None:
@@ -281,7 +282,8 @@ def parse_exam(text: str, gabarito: dict[int, Optional[str]]) -> list[dict]:
         if number not in gabarito or number in seen:
             continue  # não bate com o gabarito oficial — descarta (ver docstring)
 
-        statement = _clean(text[header.end():g_start])
+        raw_statement_lines = text[header.end():g_start].split("\n")
+        statement = join_lines_smart([l for l in raw_statement_lines if l.strip()])
         if not statement:
             continue
 

@@ -52,6 +52,7 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
+from app.services.pdf_text_utils import join_lines_smart
 from app.services.progress import update_task_progress, complete_task, fail_task
 from app.models import UnaerpQuestion, UnaerpQuestionOption
 
@@ -245,7 +246,8 @@ def parse_prova(prova_pdf: Path) -> list[dict]:
         if len(opts) < 2:
             continue
 
-        statement = re.sub(r"\s+", " ", body[:opts[0].start()]).strip()
+        raw_stmt_lines = body[:opts[0].start()].split("\n")
+        statement = join_lines_smart([l for l in raw_stmt_lines if l.strip()])
         if not statement:
             continue
 

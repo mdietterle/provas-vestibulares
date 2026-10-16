@@ -178,8 +178,15 @@ function QuestionCard({ question: q, config }: { question: VestibularQuestion; c
       </div>
 
       {/* Statement */}
-      <div className="text-sm text-[#1E293B] dark:text-slate-200 leading-relaxed whitespace-pre-line">
-        {q.html_statement ? <div dangerouslySetInnerHTML={{ __html: q.html_statement }} /> : q.statement}
+      <div className="text-sm text-[#1E293B] dark:text-slate-200 leading-relaxed">
+        {q.html_statement ? (
+          <div
+            className="[&>p]:mb-2 [&>p:last-child]:mb-0 [&_b]:font-bold [&_i]:italic"
+            dangerouslySetInnerHTML={{ __html: q.html_statement }}
+          />
+        ) : (
+          <div className="whitespace-pre-line">{q.statement}</div>
+        )}
       </div>
 
       {/* Image */}

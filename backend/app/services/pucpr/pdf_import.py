@@ -54,6 +54,8 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
+from app.services.pdf_text_utils import extract_line_html, join_lines_smart, join_html_smart
+
 def _xref_to_dataurl(doc, xref: int) -> str | None:
     """Converte imagem embutida (xref) em data-URL base64 PNG."""
     import base64
@@ -259,7 +261,8 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], list[int]]:
                     continue
                 if _is_noise(text):
                     continue
-                events.append(("text", text))
+                line_html = extract_line_html(spans)
+                events.append(("text", (text, line_html)))
 
     # Extract images associated by reading order
     q_images = _assign_images_by_reading_order(doc, 0)
@@ -271,13 +274,15 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], list[int]]:
     current_lang: Optional[str] = None
     q_num: Optional[int] = None
     statement_lines: list[str] = []
+    statement_html_lines: list[str] = []
     options: list[dict] = []
 
     def flush():
-        nonlocal q_num, statement_lines, options
+        nonlocal q_num, statement_lines, statement_html_lines, options
         if q_num is None:
             return
-        stmt = _clean("\n".join(statement_lines))
+        stmt = join_lines_smart(statement_lines)
+        html_stmt = join_html_smart(statement_html_lines) if statement_html_lines else None
         letters = {o["letter"] for o in options}
         if stmt and len(options) == 5 and letters == set("ABCDE"):
             highlighted = [o["letter"] for o in options if o.get("highlighted")]
@@ -289,6 +294,7 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], list[int]]:
                 "area": current_area,
                 "language": current_lang,
                 "statement": stmt,
+                "html_statement": html_stmt,
                 "correct": correct,
                 "options": [
                     {"letter": o["letter"], "text": _clean(" ".join(o["lines"]))}
@@ -298,7 +304,7 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], list[int]]:
             })
         else:
             skipped.append(q_num)
-        q_num, statement_lines, options = None, [], []
+        q_num, statement_lines, statement_html_lines, options = None, [], [], []
 
     for etype, val in events:
         if etype == "area":
@@ -312,18 +318,21 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], list[int]]:
             flush()
             q_num, rest = val
             statement_lines = [rest]
+            statement_html_lines = [rest]
             options = []
         elif etype == "opt_start":
             letter, rest, is_hl = val
             if q_num is not None:
                 options.append({"letter": letter, "lines": [rest] if rest else [], "highlighted": is_hl})
         elif etype == "text":
+            plain_val, html_val = val
             if q_num is None:
                 continue
             elif options:
-                options[-1]["lines"].append(val)
+                options[-1]["lines"].append(plain_val)
             else:
-                statement_lines.append(val)
+                statement_lines.append(plain_val)
+                statement_html_lines.append(html_val)
 
     flush()
     return questions, skipped
@@ -512,6 +521,7 @@ def _import_parsed_exam(db, exam_name: str, year: int, season, course, color, pa
             year=year,
             number=q["number"],
             statement=q["statement"],
+            html_statement=q.get("html_statement"),
             options=options,
             images=images_payload,
             correct_option=correct_letter,

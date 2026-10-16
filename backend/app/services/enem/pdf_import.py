@@ -573,6 +573,25 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
                 x, y = line["bbox"][0], line["bbox"][1]
                 col = 0 if x < mid_x else 1
 
+                # Build HTML with formatting preserved (bold/italic from spans)
+                html_parts = []
+                for s in line["spans"]:
+                    txt = s["text"]
+                    if not txt:
+                        continue
+                    flags = s.get("flags", 0)
+                    is_bold = bool(flags & 2**4)   # bit 4 = bold
+                    is_italic = bool(flags & 2**1)  # bit 1 = italic
+                    if is_bold and is_italic:
+                        html_parts.append(f"<b><i>{txt}</i></b>")
+                    elif is_bold:
+                        html_parts.append(f"<b>{txt}</b>")
+                    elif is_italic:
+                        html_parts.append(f"<i>{txt}</i>")
+                    else:
+                        html_parts.append(txt)
+                line_html = "".join(html_parts).strip()
+
                 area = _match_area(line_text)
                 if area:
                     page_events.append((col, y, "area", area))
@@ -604,7 +623,7 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
                 if _is_noise(line_text):
                     continue
 
-                page_events.append((col, y, "text", line_text))
+                page_events.append((col, y, "text", (line_text, line_html)))
 
         page_events.sort(key=lambda e: (e[0], e[1]))
         for col, y, etype, val in page_events:
@@ -620,20 +639,30 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
     current_lang: Optional[str] = None
     q_num: Optional[int] = None
     statement_lines: list[str] = []
+    statement_html_lines: list[str] = []
     pending_images: list[bytes] = []
     active_passage_lines: list[str] = []
+    active_passage_html_lines: list[str] = []
     current_passage = ""
+    current_passage_html = ""
     # Passage compartilhado: "Texto para as Questões de X a Y"
     shared_passage_range: Optional[tuple[int, int]] = None
     shared_passage_lines: list[str] = []
+    shared_passage_html_lines: list[str] = []
     shared_passage_text: str = ""
+    shared_passage_html: str = ""
+
+    from app.services.pdf_text_utils import join_lines_smart as _join_lines_smart, join_html_smart as _join_html_smart
 
     def flush():
-        nonlocal q_num, statement_lines, pending_images
+        nonlocal q_num, statement_lines, statement_html_lines, pending_images
         if q_num is None:
-            statement_lines, pending_images = [], []
+            statement_lines, statement_html_lines, pending_images = [], [], []
             return
         stmt, opts = _split_options(statement_lines)
+        html_stmt = _join_html_smart(statement_html_lines) if statement_html_lines else None
+        if html_stmt:
+            stmt = _join_lines_smart(statement_lines)
         img_b64 = None
         if pending_images:
             img_b64 = f"data:image/png;base64,{base64.b64encode(pending_images[0]).decode()}"
@@ -642,11 +671,12 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
             "area": current_area,
             "language": current_lang,
             "statement": stmt,
+            "html_statement": html_stmt,
             "options": opts,
             "image_base64": img_b64,
             "parse_error": not stmt or len(opts) != 5,
         })
-        q_num, statement_lines, pending_images = None, [], []
+        q_num, statement_lines, statement_html_lines, pending_images = None, [], [], []
 
     for _page_idx, _y, etype, val in events:
         if etype == "area":
@@ -666,35 +696,48 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
             flush()
             shared_passage_range = val  # (start_q, end_q)
             shared_passage_lines = []
+            shared_passage_html_lines = []
             shared_passage_text = ""
+            shared_passage_html = ""
         elif etype == "q_start":
             flush()
             # Finaliza acumulação do passage compartilhado na primeira questão do range
             if shared_passage_range and shared_passage_lines and val == shared_passage_range[0]:
-                shared_passage_text = "\n".join(shared_passage_lines).strip()
+                shared_passage_text = _join_lines_smart(shared_passage_lines)
+                shared_passage_html = _join_html_smart(shared_passage_html_lines)
                 shared_passage_lines = []
+                shared_passage_html_lines = []
             # Fallback: se ainda não finalizou mas estamos no range, finaliza agora
             elif shared_passage_range and shared_passage_lines and not shared_passage_text and shared_passage_range[0] <= val <= shared_passage_range[1]:
-                shared_passage_text = "\n".join(shared_passage_lines).strip()
+                shared_passage_text = _join_lines_smart(shared_passage_lines)
+                shared_passage_html = _join_html_smart(shared_passage_html_lines)
                 shared_passage_lines = []
+                shared_passage_html_lines = []
             if active_passage_lines:
-                candidate = "\n".join(active_passage_lines).strip()
+                candidate = _join_lines_smart(active_passage_lines)
                 current_passage = candidate if _looks_like_passage(candidate) else ""
+                current_passage_html = _join_html_smart(active_passage_html_lines) if current_passage else ""
                 active_passage_lines = []
+                active_passage_html_lines = []
             q_num = val
             # Injeta passage compartilhado se questão está no range declarado
             if shared_passage_range and shared_passage_text and shared_passage_range[0] <= val <= shared_passage_range[1]:
                 statement_lines = [shared_passage_text]
+                statement_html_lines = [shared_passage_html] if shared_passage_html else []
             else:
                 statement_lines = ([current_passage] if current_passage else [])
+                statement_html_lines = ([current_passage_html] if current_passage_html else [])
         elif etype == "text":
+            plain_val, html_val = val
             if q_num is not None:
-                statement_lines.append(val)
+                statement_lines.append(plain_val)
+                statement_html_lines.append(html_val)
             elif shared_passage_range is not None and not shared_passage_text:
-                # Acumulando texto do passage compartilhado antes da primeira questão do range
-                shared_passage_lines.append(val)
+                shared_passage_lines.append(plain_val)
+                shared_passage_html_lines.append(html_val)
             else:
-                active_passage_lines.append(val)
+                active_passage_lines.append(plain_val)
+                active_passage_html_lines.append(html_val)
         elif etype == "image":
             if q_num is not None:
                 pending_images.append(val)
@@ -921,6 +964,7 @@ def import_enem_pdf(
                 year=year,
                 number=q["number"],
                 statement=q["statement"],
+                html_statement=q.get("html_statement"),
                 options=options,
                 image_base64=q.get("image_base64"),
                 correct_option=gab_letter,

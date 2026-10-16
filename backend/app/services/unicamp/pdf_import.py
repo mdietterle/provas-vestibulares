@@ -12,6 +12,7 @@ from urllib.parse import urljoin
 
 from app.services.ita.pdf_import import download_pdf
 from app.services.pdf_figures import extract_figure_events
+from app.services.pdf_text_utils import join_lines_smart
 
 _Q_START = re.compile(r"^QUESTÃO\s+(\d+)$", re.IGNORECASE)
 _OPT_START = re.compile(r"^([a-d])\)\s*")
@@ -120,7 +121,7 @@ def _parse_exam(pdf_path: Path, gabarito: dict[int, str], subject: Optional[str]
 
         questions.append({
             "number": q_num,
-            "statement": "\n".join(statement_lines).strip(),
+            "statement": join_lines_smart(statement_lines),
             "options": [{"letter": o["letter"].upper(), "text": "\n".join(o["lines"]).strip(), "is_correct": o["is_correct"]} for o in options],
             "question_type": "MULTIPLE_CHOICE",
             "area": subject or "Geral",

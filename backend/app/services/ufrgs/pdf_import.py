@@ -21,6 +21,8 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
+from app.services.pdf_text_utils import extract_line_html, join_lines_smart, join_html_smart
+
 def _xref_to_dataurl(doc, xref: int) -> str | None:
     """Converte imagem embutida (xref) em data-URL base64 PNG."""
     import base64
@@ -152,6 +154,7 @@ def parse_exam_pdf(path: Path) -> list[dict]:
                 if not line_text:
                     continue
                 y = line["bbox"][1]
+                line_html = extract_line_html(line["spans"])
 
                 area = _match_area(line_text)
                 if area:
@@ -171,7 +174,7 @@ def parse_exam_pdf(path: Path) -> list[dict]:
                 if _is_noise(line_text):
                     continue
 
-                events.append((y, "text", line_text))
+                events.append((y, "text", (line_text, line_html)))
 
     doc.close()
 
@@ -179,42 +182,56 @@ def parse_exam_pdf(path: Path) -> list[dict]:
     current_area = "Geral"
     q_num: Optional[int] = None
     statement_lines: list[str] = []
+    statement_html_lines: list[str] = []
     options: list[dict] = []
     active_passage_lines: list[str] = []
+    active_passage_html_lines: list[str] = []
     current_passage = ""
+    current_passage_html = ""
 
     def flush():
-        nonlocal q_num, statement_lines, options
+        nonlocal q_num, statement_lines, statement_html_lines, options
         if q_num is None:
             return
-        stmt = _clean("\n".join(statement_lines))
+        stmt = join_lines_smart(statement_lines)
+        html_stmt = join_html_smart(statement_html_lines) if statement_html_lines else None
         if stmt and len(options) == 5:
             questions.append({
                 "number": q_num,
                 "area": current_area,
                 "statement": stmt,
+                "html_statement": html_stmt,
                 "options": [
                     {"letter": o["letter"], "text": _clean(" ".join(o["lines"]))}
                     for o in options
                 ],
             })
-        q_num, statement_lines, options = None, [], []
+        q_num, statement_lines, statement_html_lines, options = None, [], [], []
 
     for _y, etype, val in events:
         if etype == "area":
             flush()
             current_area = val
             current_passage = ""
+            current_passage_html = ""
             active_passage_lines = []
+            active_passage_html_lines = []
 
         elif etype == "q_start":
             flush()
             if active_passage_lines:
-                candidate = _clean("\n".join(active_passage_lines))
-                current_passage = candidate if _looks_like_passage(candidate) else ""
+                candidate = join_lines_smart(active_passage_lines)
+                if _looks_like_passage(candidate):
+                    current_passage = candidate
+                    current_passage_html = join_html_smart(active_passage_html_lines) if active_passage_html_lines else ""
+                else:
+                    current_passage = ""
+                    current_passage_html = ""
                 active_passage_lines = []
+                active_passage_html_lines = []
             q_num, rest = val
             statement_lines = ([current_passage] if current_passage else []) + [rest]
+            statement_html_lines = ([current_passage_html] if current_passage_html else [])
             options = []
 
         elif etype == "opt_start":
@@ -223,12 +240,15 @@ def parse_exam_pdf(path: Path) -> list[dict]:
                 options.append({"letter": letter, "lines": [rest] if rest else []})
 
         elif etype == "text":
+            plain_val, html_val = val
             if q_num is None:
-                active_passage_lines.append(val)
+                active_passage_lines.append(plain_val)
+                active_passage_html_lines.append(html_val)
             elif options:
-                options[-1]["lines"].append(val)
+                options[-1]["lines"].append(plain_val)
             else:
-                statement_lines.append(val)
+                statement_lines.append(plain_val)
+                statement_html_lines.append(html_val)
 
     flush()
     return questions
@@ -603,12 +623,13 @@ def import_ufrgs_exam(
                 year=year,
                 number=q["number"],
                 statement=q["statement"],
+                html_statement=q.get("html_statement"),
                 options=options,
                 images=images_by_key.get((q["number"], None), []) if "images_by_key" in dir() else None,
                 image_base64=(images_by_key.get((q["number"], None), [None])[0] if "images_by_key" in dir() and images_by_key.get((q["number"], None)) else None),
                 correct_option=correct_letter,
                 metadata=metadata,
-            force_reimport=force_reimport,
+                force_reimport=force_reimport,
             )
             if not created:
                 skipped_existing += 1

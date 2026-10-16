@@ -29,6 +29,7 @@ import fitz  # PyMuPDF
 import requests
 
 from app.services.pdf_figures import extract_figure_events
+from app.services.pdf_text_utils import join_lines_smart
 from app.services.progress import update_task_progress, complete_task, fail_task
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -81,7 +82,8 @@ def _parse_exam_booklet(raw_text: str) -> dict[int, dict]:
         if not found:
             continue
         start, opts = found
-        statement = body[:start].strip()
+        raw_stmt_lines = body[:start].split("\n")
+        statement = join_lines_smart([l for l in raw_stmt_lines if l.strip()])
         options = {letter: opt_text.strip() for letter, opt_text in opts}
         questions[int(num_str)] = {"statement": statement, "options": options}
     return questions
