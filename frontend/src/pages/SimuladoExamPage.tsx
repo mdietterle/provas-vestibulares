@@ -215,19 +215,19 @@ function QuestionCard({
         </div>
       ) : (
         <>
-          <div
-            className="text-sm text-[#1E293B] dark:text-[#e2e8f0] leading-relaxed prose prose-sm dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: sq.statement }}
-          />
-
           {sq.images && sq.images.map((img, i) => (
             <img
               key={i}
               src={img}
               alt={`Imagem da questão ${i + 1}`}
-              className="max-w-full rounded-lg border border-[#E2E8F0] dark:border-[#464554] mt-2"
+              className="max-w-full rounded-lg border border-[#E2E8F0] dark:border-[#464554] mb-3"
             />
           ))}
+
+          <div
+            className="text-sm text-[#1E293B] dark:text-[#e2e8f0] leading-relaxed prose prose-sm dark:prose-invert max-w-none"
+            dangerouslySetInnerHTML={{ __html: sq.statement }}
+          />
 
           {sq.options.length === 0 && (
             <div className="rounded-xl p-4 bg-slate-50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800/40">

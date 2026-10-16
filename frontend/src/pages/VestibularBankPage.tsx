@@ -177,6 +177,14 @@ function QuestionCard({ question: q, config }: { question: VestibularQuestion; c
         <span className="text-xs text-[#9ca3af] shrink-0">{q.year}</span>
       </div>
 
+      {/* Image */}
+      {q.image_base64 && (
+        <img src={resolveImageSrc(q.image_base64)} alt="Enunciado" className="max-h-48 rounded-lg border border-[#E2E8F0] mb-3" />
+      )}
+      {q.images.length > 0 && q.images.map(img => (
+        <img key={img.id} src={resolveImageSrc(img.image_base64)} alt="Questão" className="max-h-48 rounded-lg border border-[#E2E8F0] mb-3" />
+      ))}
+
       {/* Statement */}
       <div className="text-sm text-[#1E293B] dark:text-slate-200 leading-relaxed">
         {q.html_statement ? (
@@ -188,14 +196,6 @@ function QuestionCard({ question: q, config }: { question: VestibularQuestion; c
           <div className="whitespace-pre-line">{q.statement}</div>
         )}
       </div>
-
-      {/* Image */}
-      {q.image_base64 && (
-        <img src={resolveImageSrc(q.image_base64)} alt="Enunciado" className="max-h-48 rounded-lg border border-[#E2E8F0]" />
-      )}
-      {q.images.length > 0 && q.images.map(img => (
-        <img key={img.id} src={resolveImageSrc(img.image_base64)} alt="Questão" className="max-h-48 rounded-lg border border-[#E2E8F0]" />
-      ))}
 
       {/* Options */}
       <div className="space-y-1.5 pt-1">

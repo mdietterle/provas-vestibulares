@@ -182,7 +182,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
             <img
               src={resolveImageSrc(question.image_base64)}
               alt={`Imagem Q${question.number}`}
-              className="max-w-full max-h-64 rounded-lg border object-contain"
+              className="max-w-full max-h-64 rounded-lg border object-contain mb-3"
             />
           )}
           <div className="space-y-2">

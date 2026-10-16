@@ -93,13 +93,13 @@ export default function QuestionCard({ q, isExpanded, onToggleExpand, onEdit, on
             )}
           </div>
 
+          {q.image_base64 && isExpanded && (
+            <img src={resolveImageSrc(q.image_base64)} alt="Imagem da questão" className="mb-3 rounded-lg max-h-64 object-contain border border-[#E2E8F0]" />
+          )}
+
           <p className={`text-sm text-gray-800 dark:text-gray-200 leading-relaxed ${isExpanded ? '' : 'line-clamp-2'}`}>
             {q.statement}
           </p>
-
-          {q.image_base64 && isExpanded && (
-            <img src={resolveImageSrc(q.image_base64)} alt="Imagem da questão" className="mt-3 rounded-lg max-h-64 object-contain border border-[#E2E8F0]" />
-          )}
 
           {!isExpanded && q.options.length > 0 && (
             <div className="mt-2 flex gap-2 flex-wrap">

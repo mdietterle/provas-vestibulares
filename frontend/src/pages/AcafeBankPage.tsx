@@ -196,7 +196,7 @@ function QuestionCard({ question, onImport, expanded, onToggle }: QuestionCardPr
               ? [...question.images].sort((a, b) => a.order - b.order).map(i => i.image_base64)
               : (question.image_base64 ? [question.image_base64] : [])
             return imgs.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-3">
                 {imgs.map((src, i) => (
                   <img
                     key={i}
