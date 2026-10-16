@@ -249,7 +249,6 @@ export default function ExamSubmitPage() {
                   <span className="badge bg-green-100 text-green-700 text-xs shrink-0">Respondida</span>
                 )}
               </div>
-              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: statement }} />
               {q.image_base64 && (
                 <img
                   src={resolveImageSrc(q.image_base64)}
@@ -257,6 +256,7 @@ export default function ExamSubmitPage() {
                   className="mb-4 rounded-lg border max-h-64 object-contain"
                 />
               )}
+              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: statement }} />
 
               {q.question_type === 'summation' ? (
                 <div className="space-y-2">

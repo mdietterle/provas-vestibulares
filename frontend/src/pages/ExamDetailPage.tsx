@@ -168,8 +168,6 @@ export default function ExamDetailPage() {
                 <span className="text-sm text-gray-500 shrink-0">{eq.points} pts</span>
               </div>
 
-              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: q.statement }} />
-
               {(q as any).image_base64 && (
                 <img
                   src={resolveImageSrc((q as any).image_base64)}
@@ -178,6 +176,8 @@ export default function ExamDetailPage() {
                   style={{ borderColor: '#E2E8F0' }}
                 />
               )}
+
+              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: q.statement }} />
 
               {q.options.length > 0 && (
                 <div className="space-y-2">

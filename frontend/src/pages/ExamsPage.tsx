@@ -1203,16 +1203,16 @@ export default function ExamsPage() {
               )}
             </div>
 
+            {vqPreview.image_base64 && (
+              <img src={resolveImageSrc(vqPreview.image_base64)} alt="Enunciado" className="max-h-64 rounded-lg border border-[#E2E8F0] object-contain mb-3" />
+            )}
+            {vqPreview.images && vqPreview.images.length > 0 && vqPreview.images.map(img => (
+              <img key={img.id} src={resolveImageSrc(img.image_base64)} alt="Questão" className="max-h-64 rounded-lg border border-[#E2E8F0] object-contain mb-3" />
+            ))}
+
             <div className="text-sm text-[#1E293B] dark:text-slate-200 leading-relaxed whitespace-pre-line">
               {vqPreview.html_statement ? <div dangerouslySetInnerHTML={{ __html: vqPreview.html_statement }} /> : vqPreview.statement}
             </div>
-
-            {vqPreview.image_base64 && (
-              <img src={resolveImageSrc(vqPreview.image_base64)} alt="Enunciado" className="max-h-64 rounded-lg border border-[#E2E8F0] object-contain" />
-            )}
-            {vqPreview.images && vqPreview.images.length > 0 && vqPreview.images.map(img => (
-              <img key={img.id} src={resolveImageSrc(img.image_base64)} alt="Questão" className="max-h-64 rounded-lg border border-[#E2E8F0] object-contain" />
-            ))}
 
             {vqPreview.options && vqPreview.options.length > 0 && (
               <div className="space-y-1.5 pt-2">
