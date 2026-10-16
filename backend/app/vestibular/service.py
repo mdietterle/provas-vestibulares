@@ -20,6 +20,7 @@ class VestibularQuestionService:
         year: Optional[int] = None,
         area: Optional[str] = None,
         language: Optional[str] = None,
+        subject: Optional[str] = None,
         search: Optional[str] = None,
         page: int = 1,
         size: int = 20,
@@ -33,6 +34,8 @@ class VestibularQuestionService:
             q = q.where(VestibularQuestion.metadata_.op("->>")("area") == area)
         if language:
             q = q.where(VestibularQuestion.metadata_.op("->>")("language") == language)
+        if subject:
+            q = q.where(VestibularQuestion.metadata_.op("->>")("subject") == subject)
         if search:
             q = q.where(
                 or_(

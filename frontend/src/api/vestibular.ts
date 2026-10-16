@@ -53,7 +53,7 @@ export const vestibularApi = {
 
   listQuestions: async (
     examType: string,
-    params?: { year?: number; area?: string; language?: string; search?: string; page?: number; size?: number }
+    params?: { year?: number; area?: string; language?: string; subject?: string; search?: string; page?: number; size?: number }
   ): Promise<VestibularQuestionList> => {
     const res = await api.get(`/v2/vestibular-questions/${examType}`, { params })
     return res.data

@@ -139,6 +139,30 @@ export default function ExamsPage() {
       const params: Record<string, any> = {}
       if (vqSelectedYear) params.year = Number(vqSelectedYear)
       if (vqSearch.trim()) params.search = vqSearch.trim()
+      // Map selected subject to vestibular subject filter
+      if (form.subject_id) {
+        const selectedSubject = subjects.find(s => s.id === form.subject_id)
+        if (selectedSubject) {
+          // Map common subject names to ENEM metadata subject values
+          const subjectMapping: Record<string, string> = {
+            'Física': 'Física',
+            'Química': 'Química',
+            'Biologia': 'Biologia',
+            'Matemática': 'Matemática',
+            'Língua Portuguesa': 'Língua Portuguesa',
+            'História': 'História',
+            'Geografia': 'Geografia',
+            'Filosofia': 'Filosofia',
+            'Sociologia': 'Sociologia',
+            'Língua Inglesa': 'Língua Estrangeira',
+            'Espanhol': 'Língua Estrangeira',
+            'Arte': 'Artes',
+            'Educação Física': 'Educação Física',
+          }
+          const mappedSubject = subjectMapping[selectedSubject.name] || selectedSubject.name
+          params.subject = mappedSubject
+        }
+      }
       params.size = 20
       const r = await vestibularApi.listQuestions(vqSelectedType, params)
       setVqResults(r.items)
