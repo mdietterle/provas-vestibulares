@@ -9,6 +9,7 @@ import type { Class, Exam, Question, Subject, TeachingAssignment } from '../type
 import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { exportExams } from '../utils/pdf'
+import { resolveImageSrc } from '../utils/image'
 import Pagination from '../components/Pagination'
 
 interface ExamQuestionDraft { question_id: number; order: number; points: number }
@@ -87,6 +88,7 @@ export default function ExamsPage() {
   const [vqResults, setVqResults] = useState<VQ[]>([])
   const [vqLoading, setVqLoading] = useState(false)
   const [vqImporting, setVqImporting] = useState<number | null>(null)
+  const [vqPreview, setVqPreview] = useState<VQ | null>(null)
   const [questionTab, setQuestionTab] = useState<'library' | 'vestibular' | 'most-used'>('library')
   const [mostUsedQuestions, setMostUsedQuestions] = useState<Array<{
     question_id: number
@@ -948,20 +950,30 @@ export default function ExamsPage() {
                                   </div>
                                   <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{vq.statement}</p>
                                 </div>
-                                <button
-                                  type="button"
-                                  onClick={() => importVestibularQuestion(vq)}
-                                  disabled={alreadyAdded || importing}
-                                  className={`shrink-0 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                                    alreadyAdded
-                                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 cursor-default'
-                                      : 'text-white hover:opacity-90 disabled:opacity-50'
-                                  }`}
-                                  style={alreadyAdded ? {} : { background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}
-                                  title={alreadyAdded ? 'Já adicionada' : 'Importar e adicionar à prova'}
-                                >
-                                  {importing ? '⏳' : alreadyAdded ? '✓' : '+ Importar'}
-                                </button>
+                                <div className="shrink-0 flex items-center gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => setVqPreview(vq)}
+                                    className="px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-[#E2E8F0] dark:border-[#464554] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                    title="Visualizar questão antes de importar"
+                                  >
+                                    👁 Visualizar
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => importVestibularQuestion(vq)}
+                                    disabled={alreadyAdded || importing}
+                                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                      alreadyAdded
+                                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 cursor-default'
+                                        : 'text-white hover:opacity-90 disabled:opacity-50'
+                                    }`}
+                                    style={alreadyAdded ? {} : { background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}
+                                    title={alreadyAdded ? 'Já adicionada' : 'Importar e adicionar à prova'}
+                                  >
+                                    {importing ? '⏳' : alreadyAdded ? '✓' : '+ Importar'}
+                                  </button>
+                                </div>
                               </div>
                             )
                           })}
@@ -1144,6 +1156,76 @@ export default function ExamsPage() {
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(null)}
         />
+      )}
+
+      {/* Vestibular question preview modal */}
+      {vqPreview && (
+        <Modal title="Visualizar Questão" onClose={() => setVqPreview(null)}>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded bg-[#faf5ff] dark:bg-[#2d1b4e] text-[#7c3aed] dark:text-[#c4a4ff]">
+                {vqPreview.exam_type.toUpperCase()} {vqPreview.year}
+              </span>
+              {vqPreview.exam_name && (
+                <span className="text-xs font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                  {vqPreview.exam_name}
+                </span>
+              )}
+              <span className="text-xs text-gray-400 dark:text-slate-500">#{vqPreview.number}</span>
+              {vqPreview.metadata?.area && (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                  {vqPreview.metadata.area}
+                </span>
+              )}
+            </div>
+
+            <div className="text-sm text-[#1E293B] dark:text-slate-200 leading-relaxed whitespace-pre-line">
+              {vqPreview.html_statement ? <div dangerouslySetInnerHTML={{ __html: vqPreview.html_statement }} /> : vqPreview.statement}
+            </div>
+
+            {vqPreview.image_base64 && (
+              <img src={resolveImageSrc(vqPreview.image_base64)} alt="Enunciado" className="max-h-64 rounded-lg border border-[#E2E8F0] object-contain" />
+            )}
+            {vqPreview.images && vqPreview.images.length > 0 && vqPreview.images.map(img => (
+              <img key={img.id} src={resolveImageSrc(img.image_base64)} alt="Questão" className="max-h-64 rounded-lg border border-[#E2E8F0] object-contain" />
+            ))}
+
+            {vqPreview.options && vqPreview.options.length > 0 && (
+              <div className="space-y-1.5 pt-2">
+                {[...vqPreview.options].sort((a, b) => a.order - b.order).map(opt => (
+                  <div
+                    key={opt.id}
+                    className={`flex items-start gap-2 text-sm rounded-lg px-3 py-2 ${
+                      opt.is_correct
+                        ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+                        : 'bg-gray-50 dark:bg-slate-800 border border-transparent'
+                    }`}
+                  >
+                    {opt.letter && (
+                      <span className={`shrink-0 w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${
+                        opt.is_correct ? 'bg-green-600 text-white' : 'bg-white dark:bg-[#334155] text-[#64748B]'
+                      }`}>
+                        {opt.letter}
+                      </span>
+                    )}
+                    <span className={opt.is_correct ? 'text-green-800 dark:text-green-300 font-medium' : 'text-[#334155] dark:text-slate-300'}>
+                      {opt.text}
+                    </span>
+                    {opt.is_correct && (
+                      <svg className="ml-auto text-green-500 shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-3 justify-end pt-2 border-t border-[#E2E8F0] dark:border-[#464554]">
+              <button type="button" onClick={() => setVqPreview(null)} className="btn-secondary">Fechar</button>
+            </div>
+          </div>
+        </Modal>
       )}
     </div>
   )
