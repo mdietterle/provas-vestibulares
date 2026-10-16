@@ -471,11 +471,67 @@ def _split_options(lines: list[str]) -> tuple[str, list[str]]:
     return statement, options
 
 
-def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str]]:
-    """Parseia o PDF da prova e retorna (questões, cor_detectada).
+_INSTRUCTIONS_START_RE = re.compile(r"LEIA\s+ATENTAMENTE\s+AS\s+INSTRU", re.I)
+_INSTRUCTIONS_END_MARKERS = [
+    re.compile(r"\n\s*PROVA\s+DE\s+(LINGUAGENS|CIENCIAS|MATEMATICA)", re.I),
+    re.compile(r"\n\s*Quest[oõ]es?\s+de\s+\d+\s+a\s+\d+\s*$", re.I | re.M),
+    re.compile(r"\n\s*QUEST[AÃ]O\s+\d{1,3}\b", re.I),
+]
+
+
+def _extract_instructions_text(path: Path) -> str:
+    """Extrai o texto completo das instruções da prova (bloco 'LEIA ATENTAMENTE...').
+    Retorna string vazia se o PDF não contém instruções (ex.: alguns cadernos de 2020)."""
+    if fitz is None:
+        return ""
+    doc = fitz.open(str(path))
+    full_text = ""
+    # Instruções sempre estão nas primeiras 3 páginas
+    for i in range(min(3, doc.page_count)):
+        full_text += doc[i].get_text() + "\n"
+    doc.close()
+
+    m_start = _INSTRUCTIONS_START_RE.search(full_text)
+    if not m_start:
+        return ""
+
+    start_pos = m_start.start()
+    # Busca primeiro marcador de fim após início das instruções
+    end_pos = len(full_text)
+    for marker in _INSTRUCTIONS_END_MARKERS:
+        m_end = marker.search(full_text, start_pos)
+        if m_end and m_end.start() < end_pos:
+            end_pos = m_end.start()
+
+    instructions = full_text[start_pos:end_pos].strip()
+    # Remove cauda pós-instruções: cores de caderno, "1º DIA", títulos de área
+    instructions = re.sub(
+        r"\n\s*(?:CADERNO|AZUL|AMARELO|ROSA|VERDE|BRANCO|PRETO|LARANJA|ROXO|"
+        r"1[ºo]\s*DIA|LINGUAGENS,\s*CÓDIGOS).*",
+        "", instructions, flags=re.I | re.DOTALL,
+    ).strip()
+    # Limpa ruído: marcas d'água repetidas, caracteres espúrios de rodapé/cabeçalho
+    lines = []
+    for line in instructions.split("\n"):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if _is_noise(stripped):
+            continue
+        # Pula linhas que são apenas números de página ou códigos de caderno
+        if re.match(r"^\d{1,3}$", stripped):
+            continue
+        if re.match(r"^\*\w+\*$", stripped):
+            continue
+        lines.append(stripped)
+    return "\n".join(lines)
+
+
+def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
+    """Parseia o PDF da prova e retorna (questões, cor_detectada, instruções).
     questões: lista de dicts {number, area, language, statement, options: [5 textos] ou [],
-    image_base64, parse_error}. Detecta a cor do caderno na mesma leitura (evita abrir o
-    PDF de novo só pra isso)."""
+    image_base64, parse_error}. Detecta a cor do caderno e extrai instruções completas
+    na mesma leitura."""
     if fitz is None:
         raise RuntimeError("PyMuPDF não está disponível para ler o PDF do ENEM.")
     doc = fitz.open(str(path))
@@ -548,6 +604,9 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str]]:
 
     doc.close()
 
+    # Extrai instruções completas separadamente
+    instructions = _extract_instructions_text(path)
+
     questions: list[dict] = []
     current_area = "Geral"
     current_lang: Optional[str] = None
@@ -607,7 +666,7 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str]]:
                 pending_images.append(val)
 
     flush()
-    return questions, detected_color
+    return questions, detected_color, instructions
 
 
 def _parse_gabarito_pdf(path: Path) -> dict[tuple[int, Optional[str]], str]:
@@ -767,7 +826,7 @@ def import_enem_pdf(
                 created_paths.append(gabarito_path)
 
         gabarito = _parse_gabarito_pdf(gabarito_path) if gabarito_path else {}
-        parsed, detected_color = parse_exam_pdf(prova_path)
+        parsed, detected_color, instructions_text = parse_exam_pdf(prova_path)
         color = color or detected_color
         # A cor entra no exam_name porque cadernos de cores diferentes têm as
         # mesmas questões em ordem embaralhada distinta — sem isso, o "número 1"
@@ -833,6 +892,7 @@ def import_enem_pdf(
                 correct_option=gab_letter,
                 metadata=metadata,
                 force_reimport=force_reimport,
+                instructions=instructions_text if q["number"] == 1 else None,
             )
             if not created:
                 skipped_existing += 1

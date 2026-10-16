@@ -44,6 +44,7 @@ def save_vestibular_question(
     correct_option: Optional[str] = None,
     metadata: Optional[Dict[str, Any]] = None,
     force_reimport: bool = False,
+    instructions: Optional[str] = None,
 ) -> tuple[Optional[VestibularQuestion], bool]:
     """Unified output adapter for all vestibular importers.
 
@@ -89,6 +90,10 @@ def save_vestibular_question(
             )
             image_url = None  # Graceful degradation: question saved without image
 
+    merged_metadata = dict(metadata or {})
+    if instructions:
+        merged_metadata["instructions"] = instructions
+
     vq = VestibularQuestion(
         exam_type=exam_type,
         exam_name=exam_name,
@@ -99,7 +104,7 @@ def save_vestibular_question(
         answer=answer,
         is_annulled=is_annulled,
         correct_option=correct_option,
-        metadata_=metadata or {},
+        metadata_=merged_metadata,
     )
     db.add(vq)
     db.flush()
