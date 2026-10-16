@@ -157,7 +157,8 @@ def import_acafe_question(
     # Carrega a primeira imagem da questão (o banco do professor tem um único
     # campo de imagem). Cai no image_base64 legado se a relação estiver vazia.
     images = sorted(acafe_q.images, key=lambda i: i.order)
-    image_base64 = images[0].image_base64 if images else acafe_q.image_base64
+    first_img = images[0] if images else None
+    image_base64 = (first_img.image_url or first_img.image_base64) if first_img else acafe_q.image_base64
 
     question = Question(
         statement=statement,

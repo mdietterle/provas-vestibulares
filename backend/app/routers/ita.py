@@ -170,7 +170,8 @@ def import_ita_question(
     statement = f"{ita_q.statement}\n\n[ITA {ita_q.year} {phase_label}– Q{ita_q.number}]".strip()
 
     images = sorted(ita_q.images, key=lambda i: i.order)
-    image_base64 = images[0].image_base64 if images else ita_q.image_base64
+    first_img = images[0] if images else None
+    image_base64 = (first_img.image_url or first_img.image_base64) if first_img else ita_q.image_base64
 
     q_type = QuestionType.MULTIPLE_CHOICE
     if ita_q.question_type == "discursive":

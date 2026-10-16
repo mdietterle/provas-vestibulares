@@ -182,7 +182,9 @@ def _serialize_sq(sq: SimuladoQuestion, include_result: bool = False) -> Dict[st
         # inválida pro navegador (ícone de imagem quebrada) mesmo com o PNG
         # certo no banco. Normaliza aqui pra cobrir dado antigo já salvo sem
         # o prefixo, sem depender de reimportar tudo de novo.
-        return raw if raw.startswith("data:") else f"data:image/png;base64,{raw}"
+        if raw.startswith("data:") or raw.startswith("http://") or raw.startswith("https://"):
+            return raw
+        return f"data:image/png;base64,{raw}"
 
     images = []
     main_img = getattr(q, "image_base64", None)
@@ -190,8 +192,9 @@ def _serialize_sq(sq: SimuladoQuestion, include_result: bool = False) -> Dict[st
         images.append(_as_data_uri(main_img))
 
     for img in getattr(q, "images", []):
-        if hasattr(img, "image_base64") and img.image_base64:
-            images.append(_as_data_uri(img.image_base64))
+        img_val = getattr(img, "image_url", None) or getattr(img, "image_base64", None)
+        if img_val:
+            images.append(_as_data_uri(img_val))
 
     result: Dict[str, Any] = {
         "id": sq.id,

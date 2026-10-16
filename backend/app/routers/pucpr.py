@@ -166,12 +166,16 @@ def import_pucpr_question(
 
     statement = f"{pucpr_q.statement}\n\n[{pucpr_q.exam_name} – Q{pucpr_q.number}]"
 
+    images = sorted(pucpr_q.images, key=lambda i: i.order)
+    first_img = images[0] if images else None
+    image_base64 = (first_img.image_url or first_img.image_base64) if first_img else pucpr_q.image_base64
+
     question = Question(
         statement=statement,
         question_type=QuestionType.MULTIPLE_CHOICE,
         is_public=payload.is_public,
         difficulty=payload.difficulty,
-        image_base64=pucpr_q.image_base64,
+        image_base64=image_base64,
         subject_id=payload.subject_id,
         professor_id=current_user.id,
     )

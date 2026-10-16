@@ -226,12 +226,14 @@ def import_vestibular_to_library(
     if vq.correct_option is None and not vq.options:
         q_type = "essay"
 
-    # Resolve image: use main field, fall back to first image from images table
-    img = vq.image_base64
-    if not img and vq.images:
+    # Resolve image: prefer image_url from images table, fall back to legacy fields
+    img = None
+    if vq.images:
         sorted_imgs = sorted(vq.images, key=lambda i: i.order)
         first_img = sorted_imgs[0]
-        img = first_img.image_base64 or first_img.image_url
+        img = first_img.image_url or first_img.image_base64
+    if not img:
+        img = vq.image_base64
 
     question = Question(
         statement=vq.html_statement or vq.statement,

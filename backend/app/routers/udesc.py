@@ -139,7 +139,8 @@ def import_udesc_question(
     statement = f"{udesc_q.statement}\n\n[UDESC {udesc_q.year}.{udesc_q.semester} – {udesc_q.shift} – Q{udesc_q.number}]"
 
     images = sorted(udesc_q.images, key=lambda i: i.order)
-    image_base64 = images[0].image_base64 if images else udesc_q.image_base64
+    first_img = images[0] if images else None
+    image_base64 = (first_img.image_url or first_img.image_base64) if first_img else udesc_q.image_base64
 
     question = Question(
         statement=statement,

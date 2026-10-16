@@ -4,6 +4,7 @@ import zipfile
 from html.parser import HTMLParser
 from typing import List, Optional
 
+import requests
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy import func
@@ -653,10 +654,16 @@ def _build_exam_pdf(exam: Exam, student: Optional[User], student_id: Optional[in
 
         if q.image_base64:
             try:
-                b64_data = q.image_base64
-                if "," in b64_data:
-                    b64_data = b64_data.split(",", 1)[1]
-                img_bytes = base64.b64decode(b64_data)
+                img_data = q.image_base64
+                if img_data.startswith('http://') or img_data.startswith('https://'):
+                    resp = requests.get(img_data, timeout=10)
+                    resp.raise_for_status()
+                    img_bytes = resp.content
+                else:
+                    b64_data = img_data
+                    if "," in b64_data:
+                        b64_data = b64_data.split(",", 1)[1]
+                    img_bytes = base64.b64decode(b64_data)
                 img_buf = io.BytesIO(img_bytes)
                 from PIL import Image as _PILImage
                 with _PILImage.open(io.BytesIO(img_bytes)) as _pil:
@@ -715,10 +722,16 @@ def _build_exam_pdf(exam: Exam, student: Optional[User], student_id: Optional[in
 
         if vq.image_base64:
             try:
-                b64_data = vq.image_base64
-                if "," in b64_data:
-                    b64_data = b64_data.split(",", 1)[1]
-                img_bytes = base64.b64decode(b64_data)
+                img_data = vq.image_base64
+                if img_data.startswith('http://') or img_data.startswith('https://'):
+                    resp = requests.get(img_data, timeout=10)
+                    resp.raise_for_status()
+                    img_bytes = resp.content
+                else:
+                    b64_data = img_data
+                    if "," in b64_data:
+                        b64_data = b64_data.split(",", 1)[1]
+                    img_bytes = base64.b64decode(b64_data)
                 img_buf = io.BytesIO(img_bytes)
                 from PIL import Image as _PILImage
                 with _PILImage.open(io.BytesIO(img_bytes)) as _pil:

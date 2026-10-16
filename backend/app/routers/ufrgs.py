@@ -127,13 +127,16 @@ def import_ufrgs_question(
         raise HTTPException(404, "Matéria não encontrada")
 
     statement = f"{ufrgs_q.statement}\n\n[UFRGS {ufrgs_q.year} – Dia {ufrgs_q.day} – Q{ufrgs_q.number}]"
+    images = sorted(ufrgs_q.images, key=lambda i: i.order)
+    first_img = images[0] if images else None
+    image_base64 = (first_img.image_url or first_img.image_base64) if first_img else ufrgs_q.image_base64
 
     question = Question(
         statement=statement,
         question_type=QuestionType.MULTIPLE_CHOICE,
         is_public=payload.is_public,
         difficulty=payload.difficulty,
-        image_base64=ufrgs_q.image_base64,
+        image_base64=image_base64,
         subject_id=payload.subject_id,
         professor_id=current_user.id,
     )

@@ -131,7 +131,8 @@ def import_pucrs_question(
     statement = f"{pucrs_q.statement}\n\n[PUCRS {pucrs_q.season} {pucrs_q.year} – Q{pucrs_q.number}]"
 
     images = sorted(pucrs_q.images, key=lambda i: i.order)
-    image_base64 = images[0].image_base64 if images else pucrs_q.image_base64
+    first_img = images[0] if images else None
+    image_base64 = (first_img.image_url or first_img.image_base64) if first_img else pucrs_q.image_base64
 
     question = Question(
         statement=statement,

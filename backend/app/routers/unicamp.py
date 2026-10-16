@@ -183,7 +183,8 @@ def import_unicamp_question(
     statement = f"{unicamp_q.statement}\n\n[UNICAMP {unicamp_q.year} {phase_label}– Q{unicamp_q.number}]".strip()
 
     images = sorted(unicamp_q.images, key=lambda i: i.order)
-    image_base64 = images[0].image_base64 if images else unicamp_q.image_base64
+    first_img = images[0] if images else None
+    image_base64 = (first_img.image_url or first_img.image_base64) if first_img else unicamp_q.image_base64
 
     q_type = QuestionType.MULTIPLE_CHOICE
     if meta.get("question_type") == "discursive":
