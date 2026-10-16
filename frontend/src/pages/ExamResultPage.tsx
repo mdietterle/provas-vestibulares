@@ -153,6 +153,12 @@ export default function ExamResultPage() {
                 )}
               </div>
 
+              {(q as any).image_base64 && (
+                <img src={resolveImageSrc((q as any).image_base64)} alt="Imagem da questão" className="mb-3 rounded-lg border border-[#E2E8F0] max-h-64 object-contain" />
+              )}
+              {(q as any).images && (q as any).images.length > 0 && (q as any).images.map((img: any) => (
+                <img key={img.id} src={resolveImageSrc(img.image_base64)} alt="Questão" className="mb-3 rounded-lg border border-[#E2E8F0] max-h-64 object-contain" />
+              ))}
               <div className="text-gray-800 text-sm mb-3 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: statement }} />
 
               {q.question_type !== 'essay' ? (
