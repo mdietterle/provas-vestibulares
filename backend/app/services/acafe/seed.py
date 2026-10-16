@@ -38,6 +38,7 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal, engine
 from app.services.progress import update_task_progress, complete_task, fail_task
 from app.services.import_batch import save_vestibular_question
+from app.services.pdf_text_utils import join_lines_smart
 
 ACAFE_DIR = Path(__file__).parent.parent.parent.parent / "provas" / "acafe"
 
