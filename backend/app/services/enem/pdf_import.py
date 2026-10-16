@@ -664,8 +664,11 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
         if html_stmt:
             stmt = _join_lines_smart(statement_lines)
         img_b64 = None
+        extra_images = []
         if pending_images:
             img_b64 = f"data:image/png;base64,{base64.b64encode(pending_images[0]).decode()}"
+            for img in pending_images[1:]:
+                extra_images.append({"image_base64": f"data:image/png;base64,{base64.b64encode(img).decode()}"})
         questions.append({
             "number": q_num,
             "area": current_area,
@@ -674,6 +677,7 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
             "html_statement": html_stmt,
             "options": opts,
             "image_base64": img_b64,
+            "extra_images": extra_images,
             "parse_error": not stmt or len(opts) != 5,
         })
         q_num, statement_lines, statement_html_lines, pending_images = None, [], [], []
@@ -957,6 +961,8 @@ def import_enem_pdf(
                 "difficulty": difficulty,
             }
 
+            extra = q.get("extra_images")
+            images = [{"image_base64": img["image_base64"], "order": idx + 1} for idx, img in enumerate(extra)] if extra else None
             vq, created = save_vestibular_question(
                 db,
                 exam_type="enem",
@@ -967,6 +973,7 @@ def import_enem_pdf(
                 html_statement=q.get("html_statement"),
                 options=options,
                 image_base64=q.get("image_base64"),
+                images=images,
                 correct_option=gab_letter,
                 metadata=metadata,
                 force_reimport=force_reimport,
