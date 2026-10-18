@@ -28,8 +28,8 @@ function CircleProgress({ pct, size = 80, stroke = 7, color = '#f59e0b', label }
           strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-bold text-[#1E293B]" style={{ fontSize: size * 0.22 }}>{pct}%</span>
-        {label && <span className="text-[#64748B]" style={{ fontSize: size * 0.12 }}>{label}</span>}
+        <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]" style={{ fontSize: size * 0.22 }}>{pct}%</span>
+        {label && <span className="text-[#64748B] dark:text-slate-400" style={{ fontSize: size * 0.12 }}>{label}</span>}
       </div>
     </div>
   )
@@ -37,13 +37,13 @@ function CircleProgress({ pct, size = 80, stroke = 7, color = '#f59e0b', label }
 
 function ActionTile({ to, icon, label, sub }: { to: string; icon: React.ReactNode; label: string; sub: string }) {
   return (
-    <Link to={to} className="flex items-center gap-4 bg-white rounded-2xl border border-[#E2E8F0] p-4 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-all group" style={{ boxShadow: '0 2px 12px rgba(0,35,111,0.04)' }}>
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#EFF6FF] text-[#0d9488]">
+    <Link to={to} className="flex items-center gap-4 bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-4 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-all group" style={{ boxShadow: '0 2px 12px rgba(0,35,111,0.04)' }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#EFF6FF] dark:bg-slate-800 text-[#0d9488]">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-[#1E293B]">{label}</p>
-        <p className="text-xs text-[#64748B] mt-0.5">{sub}</p>
+        <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC]">{label}</p>
+        <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">{sub}</p>
       </div>
       <svg className="w-4 h-4 text-[#c5c5d3] group-hover:text-[#f59e0b] transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
     </Link>
@@ -79,7 +79,7 @@ function SubjectBar({ subject, count, max }: { subject: string; count: number; m
   const pct = max > 0 ? Math.round((count / max) * 100) : 0
   return (
     <div className="flex items-center gap-3">
-      <span className="text-xs text-[#334155] w-28 truncate shrink-0">{subject}</span>
+      <span className="text-xs text-[#334155] dark:text-slate-300 w-28 truncate shrink-0">{subject}</span>
       <div className="flex-1 h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
         <div
           className="h-full rounded-full transition-all"
@@ -141,8 +141,8 @@ function AdminDashboard() {
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-[#1E293B]">Olá, {user?.name?.split(' ')[0]}! 👋</h1>
-          <p className="text-sm text-[#64748B] mt-0.5 capitalize">{today}</p>
+          <h1 className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC]">Olá, {user?.name?.split(' ')[0]}! 👋</h1>
+          <p className="text-sm text-[#64748B] dark:text-slate-400 mt-0.5 capitalize">{today}</p>
         </div>
         <div className="flex gap-3 flex-wrap">
           <button
@@ -198,20 +198,20 @@ function AdminDashboard() {
         return (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Taxa de correção */}
-            <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 flex items-center gap-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+            <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5 flex items-center gap-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
               <CircleProgress pct={correctionRate} size={72} stroke={7} color="#f59e0b" />
               <div>
-                <p className="text-xs text-[#64748B] font-medium mb-0.5">Taxa de Correção</p>
-                <p className="text-sm font-semibold text-[#1E293B]">
+                <p className="text-xs text-[#64748B] dark:text-slate-400 font-medium mb-0.5">Taxa de Correção</p>
+                <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC]">
                   {subs.done + subs.released} de {subs.total} corrigidas
                 </p>
-                <p className="text-xs text-[#64748B] mt-0.5">{subs.pending} aguardando</p>
+                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">{subs.pending} aguardando</p>
               </div>
             </div>
 
             {/* Saúde da escola */}
             <div
-              className="bg-white rounded-2xl border border-[#E2E8F0] p-5 flex items-center gap-5"
+              className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5 flex items-center gap-5"
               style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}
               title="Média entre taxa de aprovação e taxa de entrega de cada turma (peso igual para as duas), depois calculada a média entre as turmas com dados."
             >
@@ -219,7 +219,7 @@ function AdminDashboard() {
                 {healthScore != null ? `${healthScore}` : '—'}
               </div>
               <div>
-                <p className="text-xs text-[#64748B] font-medium mb-0.5">Saúde da Escola</p>
+                <p className="text-xs text-[#64748B] dark:text-slate-400 font-medium mb-0.5">Saúde da Escola</p>
                 <p className={`text-sm font-semibold ${TONE_TEXT[healthTone]}`}>{healthLabel}</p>
                 <p className="text-xs text-[#64748B] mt-0.5">
                   {classesWithData.length > 0 ? `${classesWithData.length} turmas com dados` : 'sem turmas com dados'}

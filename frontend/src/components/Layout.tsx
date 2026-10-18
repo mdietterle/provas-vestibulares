@@ -469,11 +469,11 @@ function SidebarGroup({
         className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 ${
           isChildActive
             ? 'bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]'
-            : 'text-[#7a94d0] hover:bg-white/[0.07] hover:text-white'
+            : 'text-[#94a3b8] hover:bg-white/[0.07] hover:text-white'
         }`}
       >
         {group.icon}
-        <span className="flex-1 text-left text-[13px]">{group.label}</span>
+        <span className="flex-1 text-left text-[13px] text-[#cbd5e1]">{group.label}</span>
         <svg
           className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
