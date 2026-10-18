@@ -302,6 +302,7 @@ export default function SubjectsPage() {
 
       {confirmDelete && (
         <ConfirmDialog
+          open={true}
           message={`Excluir a matéria "${confirmDelete.name}"? Esta ação não pode ser desfeita.`}
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(null)}

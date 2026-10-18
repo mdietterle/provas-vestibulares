@@ -548,6 +548,7 @@ export default function ClassesPage() {
 
       {confirmDelete && (
         <ConfirmDialog
+          open={true}
           message={`Excluir turma "${confirmDelete.name}"?`}
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(null)}

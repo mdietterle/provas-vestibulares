@@ -178,6 +178,7 @@ function ReviewModal({
 
       {confirmDelete && (
         <ConfirmDialog
+          open={true}
           message="Excluir esta questão em definitivo? Não pode ser desfeito — ela some do banco e de qualquer simulado futuro."
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(false)}

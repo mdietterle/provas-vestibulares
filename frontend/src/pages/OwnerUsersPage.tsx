@@ -226,6 +226,7 @@ export default function OwnerUsersPage() {
 
       {deleteTarget && (
         <ConfirmDialog
+          open={true}
           message={`Tem certeza que deseja excluir "${deleteTarget.name}" (${deleteTarget.email})? Essa ação bloqueia o login e remove o usuário de todas as listagens da escola "${deleteTarget.institution_name}".`}
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}

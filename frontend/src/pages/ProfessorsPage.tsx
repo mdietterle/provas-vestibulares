@@ -554,6 +554,7 @@ export default function ProfessorsPage() {
 
       {confirmDelete && (
         <ConfirmDialog
+          open={true}
           message={`Excluir permanentemente o professor "${confirmDelete.name}"? O registro será ocultado de todas as listagens e o login será bloqueado. Esta ação não pode ser desfeita.`}
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(null)}

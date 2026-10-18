@@ -252,6 +252,7 @@ export default function QuestionsPage() {
 
       {confirmDelete && (
         <ConfirmDialog
+          open={true}
           message="Excluir esta questão permanentemente?"
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(null)}
