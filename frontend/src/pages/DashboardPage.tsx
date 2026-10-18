@@ -221,7 +221,7 @@ function AdminDashboard() {
               <div>
                 <p className="text-xs text-[#64748B] dark:text-slate-400 font-medium mb-0.5">Saúde da Escola</p>
                 <p className={`text-sm font-semibold ${TONE_TEXT[healthTone]}`}>{healthLabel}</p>
-                <p className="text-xs text-[#64748B] mt-0.5">
+                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
                   {classesWithData.length > 0 ? `${classesWithData.length} turmas com dados` : 'sem turmas com dados'}
                 </p>
               </div>
@@ -282,7 +282,7 @@ function AdminDashboard() {
               ))}
             </div>
             {/* Range toggle */}
-            <div className="flex gap-1 p-1 rounded-xl bg-gray-100">
+            <div className="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-[#1a2947]">
               {([6, 12] as const).map(r => (
                 <button
                   key={r}
@@ -304,7 +304,7 @@ function AdminDashboard() {
       {/* Submission pipeline + Subject chart */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Submission pipeline */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+        <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Pipeline de Correções</SectionTitle>
             <Link to="/corrections" className="text-xs font-semibold text-[#f59e0b] hover:underline">Ver todas →</Link>
@@ -332,22 +332,22 @@ function AdminDashboard() {
                 {subs.done > 0       && <div style={{ width: `${(subs.done / subs.total) * 100}%`, background: '#3b82f6' }} />}
                 {subs.released > 0   && <div style={{ width: `${(subs.released / subs.total) * 100}%`, background: '#22c55e' }} />}
               </div>
-              <p className="text-xs text-[#64748B] mt-1.5">{subs.total} {subs.total !== 1 ? 'submissões' : 'submissão'} no total</p>
+              <p className="text-xs text-[#64748B] dark:text-slate-400 mt-1.5">{subs.total} {subs.total !== 1 ? 'submissões' : 'submissão'} no total</p>
             </div>
           )}
           {subs.total === 0 && (
-            <p className="text-xs text-[#9ca3af] text-center py-2">Nenhuma submissão ainda</p>
+            <p className="text-xs text-[#9ca3af] dark:text-slate-500 text-center py-2">Nenhuma submissão ainda</p>
           )}
         </div>
 
         {/* Exams per subject chart */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+        <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Provas por Matéria</SectionTitle>
             <Link to="/exams" className="text-xs font-semibold text-[#f59e0b] hover:underline">Ver provas →</Link>
           </div>
           {(stats?.exams_by_subject ?? []).length === 0 ? (
-            <p className="text-xs text-[#9ca3af] text-center py-6">Nenhuma prova cadastrada</p>
+            <p className="text-xs text-[#9ca3af] dark:text-slate-500 text-center py-6">Nenhuma prova cadastrada</p>
           ) : (
             <div className="space-y-2.5">
               {(stats?.exams_by_subject ?? []).map(row => (
@@ -364,13 +364,13 @@ function AdminDashboard() {
       {/* Activity feed + Quick actions */}
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent activity */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+        <div className="lg:col-span-2 bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Atividade Recente</SectionTitle>
             <Link to="/corrections" className="text-xs font-semibold text-[#f59e0b] hover:underline">Ver correções →</Link>
           </div>
           {(stats?.recent_activity ?? []).length === 0 ? (
-            <div className="rounded-xl border border-dashed border-[#c5c5d3] p-6 text-center text-sm text-[#64748B]">
+            <div className="rounded-xl border border-dashed border-[#c5c5d3] dark:border-[#464554] p-6 text-center text-sm text-[#64748B] dark:text-slate-400">
               Nenhuma submissão recente.
             </div>
           ) : (
@@ -381,25 +381,25 @@ function AdminDashboard() {
                   ? new Date(act.submitted_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
                   : '—'
                 return (
-                  <div key={act.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-[#E2E8F0] hover:bg-[#F4F6F9] transition-colors">
+                  <div key={act.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#464554] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-colors">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-[#eef2ff] text-[#0d9488] dark:bg-[#1e2547] dark:text-[#a5b4fc]">
                       {act.student_name.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#1E293B] truncate">{act.student_name}</p>
-                      <p className="text-xs text-[#64748B] truncate">{act.exam_title} · {act.subject_name}</p>
+                      <p className="text-sm font-medium text-[#1E293B] dark:text-[#F8FAFC] truncate">{act.student_name}</p>
+                      <p className="text-xs text-[#64748B] dark:text-slate-400 truncate">{act.exam_title} · {act.subject_name}</p>
                     </div>
                     <div className="text-right shrink-0">
                       <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${TONE_BADGE[cfg.tone]}`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${TONE_DOT[cfg.tone]}`} />
                         {cfg.label}
                       </span>
-                      <p className="text-xs text-[#9ca3af] mt-0.5">{date}</p>
+                      <p className="text-xs text-[#9ca3af] dark:text-slate-500 mt-0.5">{date}</p>
                     </div>
                     {act.total_score != null && (
                       <div className="text-right shrink-0 w-12">
-                        <span className="text-sm font-bold text-[#0d9488]">{act.total_score}</span>
-                        <span className="text-xs text-[#9ca3af]"> pts</span>
+                        <span className="text-sm font-bold text-[#0d9488] dark:text-[#2dd4bf]">{act.total_score}</span>
+                        <span className="text-xs text-[#9ca3af] dark:text-slate-500"> pts</span>
                       </div>
                     )}
                   </div>
@@ -412,7 +412,7 @@ function AdminDashboard() {
         {/* Right column: difficulty + quick access */}
         <div className="space-y-6">
           {/* Difficulty breakdown */}
-          <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+          <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
             <SectionTitle>Questões por Dificuldade</SectionTitle>
             <div className="space-y-2">
               {[
@@ -425,7 +425,7 @@ function AdminDashboard() {
                   <div className={`flex-1 h-2 rounded-full overflow-hidden ${TONE_BG[d.tone]}`}>
                     <div className={`h-full rounded-full ${d.fill}`} style={{ width: `${diffPct(d.key)}%` }} />
                   </div>
-                  <span className="text-xs text-[#64748B] w-8 text-right shrink-0">
+                  <span className="text-xs text-[#64748B] dark:text-slate-400 w-8 text-right shrink-0">
                     {stats?.questions_by_difficulty?.[d.key] ?? 0}
                   </span>
                 </div>
@@ -444,9 +444,9 @@ function AdminDashboard() {
                 { to: '/exams',      label: 'Ver todas as Provas' },
                 { to: '/corrections', label: 'Painel de Correções' },
               ].map(item => (
-                <Link key={item.to} to={item.to} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-white border border-[#E2E8F0] text-sm text-[#1E293B] hover:bg-[#EFF6FF] hover:border-[#b6c4ff] transition-colors">
+                <Link key={item.to} to={item.to} className="flex items-center justify-between px-4 py-2.5 rounded-lg bg-white dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] text-sm text-[#1E293B] dark:text-[#F8FAFC] hover:bg-[#EFF6FF] dark:hover:bg-[#1a2947] hover:border-[#b6c4ff] dark:hover:border-[#464554] transition-colors">
                   {item.label}
-                  <svg className="w-4 h-4 text-[#64748B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  <svg className="w-4 h-4 text-[#64748B] dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </Link>
               ))}
             </div>
@@ -480,7 +480,7 @@ function ProfessorDashboard() {
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-[#1E293B]">Olá, Prof. {user?.name?.split(' ')[0]}! 👋</h1>
+          <h1 className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC]">Olá, Prof. {user?.name?.split(' ')[0]}! 👋</h1>
           <p className="text-sm mt-0.5 flex items-center gap-1.5 text-[#f59e0b] dark:text-[#b794f6]">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             {aiProgress > 0
@@ -523,13 +523,13 @@ function ProfessorDashboard() {
       {/* IA progress + provas */}
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Correções IA — arco + barras por turma */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+        <div className="lg:col-span-2 bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
               <span className="w-7 h-7 rounded-lg flex items-center justify-center text-white" style={{ background: 'linear-gradient(135deg,#0d9488,#f59e0b)' }}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
               </span>
-              <span className="text-sm font-semibold text-[#1E293B]">Correções IA — Esta Semana</span>
+              <span className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC]">Correções IA — Esta Semana</span>
             </div>
             <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${TONE_BADGE.green}`}>Ao vivo</span>
           </div>
@@ -537,11 +537,11 @@ function ProfessorDashboard() {
           <div className="flex items-center gap-6 mb-5">
             <CircleProgress pct={aiProgress} size={88} stroke={8} color="#f59e0b" label="corrigido" />
             <div className="flex-1 space-y-1 text-sm">
-              <p className="text-[#334155]">
-                <span className="font-bold text-[#1E293B]">{aiProgress}%</span> das submissões desta semana já foram processadas pela IA.
+              <p className="text-[#334155] dark:text-slate-300">
+                <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{aiProgress}%</span> das submissões desta semana já foram processadas pela IA.
               </p>
               {data?.correction_by_class && data.correction_by_class.length > 0 && (
-                <p className="text-xs text-[#64748B]">
+                <p className="text-xs text-[#64748B] dark:text-slate-400">
                   {data.correction_by_class.reduce((s, t) => s + t.corrigidos, 0)} de {data.correction_by_class.reduce((s, t) => s + t.total, 0)} alunos corrigidos em {data.correction_by_class.length} turma{data.correction_by_class.length !== 1 ? 's' : ''}.
                 </p>
               )}
@@ -550,7 +550,7 @@ function ProfessorDashboard() {
 
           {/* Barras por turma */}
           {(data?.correction_by_class ?? []).length === 0 ? (
-            <div className="rounded-xl border border-dashed border-[#E2E8F0] p-4 text-center text-xs text-[#9ca3af]">
+            <div className="rounded-xl border border-dashed border-[#E2E8F0] dark:border-[#464554] p-4 text-center text-xs text-[#9ca3af] dark:text-slate-500">
               Nenhuma submissão registrada esta semana.
             </div>
           ) : (
@@ -558,10 +558,10 @@ function ProfessorDashboard() {
               {(data?.correction_by_class ?? []).map(t => (
                 <div key={t.turma}>
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-medium text-[#334155]">{t.turma}</span>
-                    <span className="text-[#64748B]">{t.corrigidos}/{t.total} alunos · <strong className={t.pct >= 80 ? TONE_TEXT.green : t.pct >= 50 ? TONE_TEXT.teal : TONE_TEXT.amber}>{t.pct}%</strong></span>
+                    <span className="font-medium text-[#334155] dark:text-slate-300">{t.turma}</span>
+                    <span className="text-[#64748B] dark:text-slate-400">{t.corrigidos}/{t.total} alunos · <strong className={t.pct >= 80 ? TONE_TEXT.green : t.pct >= 50 ? TONE_TEXT.teal : TONE_TEXT.amber}>{t.pct}%</strong></span>
                   </div>
-                  <div className="h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
+                  <div className="h-2 bg-[#E2E8F0] dark:bg-[#2d3748] rounded-full overflow-hidden">
                     <div className="h-full rounded-full transition-all" style={{ width: `${t.pct}%`, background: t.pct >= 80 ? '#22c55e' : t.pct >= 50 ? '#f59e0b' : '#f59e0b' }} />
                   </div>
                 </div>
@@ -571,26 +571,26 @@ function ProfessorDashboard() {
         </div>
 
         {/* Provas recentes */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+        <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-center justify-between mb-4">
             <SectionTitle>Provas Recentes</SectionTitle>
             <Link to="/exams" className="text-xs font-semibold text-[#f59e0b] hover:underline">Ver todas →</Link>
           </div>
           <div className="space-y-2">
             {exams.length === 0 && (
-              <div className="rounded-xl border border-dashed border-[#c5c5d3] p-5 text-center text-sm text-[#64748B]">
+              <div className="rounded-xl border border-dashed border-[#c5c5d3] dark:border-[#464554] p-5 text-center text-sm text-[#64748B] dark:text-slate-400">
                 Nenhuma prova criada ainda.{' '}
                 <Link to="/exams" className="text-[#f59e0b] font-medium hover:underline">Criar →</Link>
               </div>
             )}
             {exams.map(exam => (
-              <Link key={exam.id} to={`/exams/${exam.id}`} className="flex items-center gap-3 rounded-xl border border-[#E2E8F0] px-3 py-2.5 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 text-[#0d9488]">
+              <Link key={exam.id} to={`/exams/${exam.id}`} className="flex items-center gap-3 rounded-xl border border-[#E2E8F0] dark:border-[#464554] px-3 py-2.5 hover:border-[#b6c4ff] dark:hover:border-[#464554] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-colors">
+                <div className="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 text-[#0d9488]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#1E293B] truncate">{exam.title}</p>
-                  <p className="text-xs text-[#64748B] truncate">{exam.subject?.name} · {exam.class_?.name}</p>
+                  <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC] truncate">{exam.title}</p>
+                  <p className="text-xs text-[#64748B] dark:text-slate-400 truncate">{exam.subject?.name} · {exam.class_?.name}</p>
                 </div>
                 <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${TONE_BADGE.teal}`}>
                   {exam.exam_questions?.length ?? exam.question_count ?? 0}q
