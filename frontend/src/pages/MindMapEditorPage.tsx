@@ -2,19 +2,33 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { mindmapsApi, type MindMapData, type MindMapNode } from '../api/mindmaps'
 
-const COLORS = [
-  '#f97316', // orange
-  '#ec4899', // pink
-  '#8b5cf6', // purple
-  '#3b82f6', // blue
-  '#10b981', // green
-  '#eab308', // yellow
-  '#ef4444', // red
-  '#06b6d4', // cyan
-]
+const BRANCH_COLORS = {
+  top: '#f97316',    // orange
+  right: '#3b82f6',  // blue
+  bottom: '#10b981', // green
+  left: '#ec4899',   // pink
+}
 
 function generateId() {
   return Math.random().toString(36).substr(2, 9)
+}
+
+function getBranchColor(angle: number): string {
+  const deg = ((angle * 180 / Math.PI) + 360) % 360
+  if (deg >= 315 || deg < 45) return BRANCH_COLORS.right
+  if (deg >= 45 && deg < 135) return BRANCH_COLORS.bottom
+  if (deg >= 135 && deg < 225) return BRANCH_COLORS.left
+  return BRANCH_COLORS.top
+}
+
+function bezierPath(x1: number, y1: number, x2: number, y2: number): string {
+  const dx = x2 - x1
+  const dy = y2 - y1
+  const cx1 = x1 + dx * 0.5
+  const cy1 = y1
+  const cx2 = x2 - dx * 0.5
+  const cy2 = y2
+  return `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`
 }
 
 export default function MindMapEditorPage() {
@@ -24,7 +38,7 @@ export default function MindMapEditorPage() {
 
   const [title, setTitle] = useState('Novo Mapa Mental')
   const [nodes, setNodes] = useState<MindMapNode[]>([
-    { id: 'root', text: 'Ideia Central', x: 400, y: 300, color: '#f97316' }
+    { id: 'root', text: 'Ideia Central', x: 500, y: 400, color: '#f97316' }
   ])
   const [connections, setConnections] = useState<Array<{ from: string; to: string }>>([])
   const [selectedNode, setSelectedNode] = useState<string | null>(null)
@@ -68,13 +82,15 @@ export default function MindMapEditorPage() {
   const addNode = useCallback((parentId?: string) => {
     const parent = parentId ? nodes.find(n => n.id === parentId) : nodes[0]
     const angle = Math.random() * Math.PI * 2
-    const distance = 150 + Math.random() * 100
+    const distance = 180 + Math.random() * 80
     const newNode: MindMapNode = {
       id: generateId(),
       text: 'Novo nó',
-      x: (parent?.x ?? 400) + Math.cos(angle) * distance,
-      y: (parent?.y ?? 300) + Math.sin(angle) * distance,
-      color: COLORS[nodes.length % COLORS.length],
+      x: (parent?.x ?? 500) + Math.cos(angle) * distance,
+      y: (parent?.y ?? 400) + Math.sin(angle) * distance,
+      color: parentId
+        ? nodes.find(n => n.id === parentId)?.color
+        : getBranchColor(angle),
       parent_id: parentId,
     }
     setNodes([...nodes, newNode])
@@ -99,7 +115,6 @@ export default function MindMapEditorPage() {
     e.stopPropagation()
     const node = nodes.find(n => n.id === nodeId)
     if (!node || !canvasRef.current) return
-
     const rect = canvasRef.current.getBoundingClientRect()
     dragOffset.current = {
       x: e.clientX - rect.left - node.x,
@@ -188,28 +203,27 @@ export default function MindMapEditorPage() {
       {/* Canvas */}
       <div
         ref={canvasRef}
-        className="flex-1 relative bg-white dark:bg-[#1d1f27] rounded-xl border border-[#E2E8F0] dark:border-[#464554] overflow-hidden"
+        className="flex-1 relative bg-gradient-to-br from-slate-50 to-slate-100 dark:from-[#1d1f27] dark:to-[#16181f] rounded-xl border border-[#E2E8F0] dark:border-[#464554] overflow-hidden"
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onClick={() => setSelectedNode(null)}
       >
-        {/* SVG for connections */}
+        {/* SVG for bezier connections */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none">
           {connections.map((conn, i) => {
             const fromNode = nodes.find(n => n.id === conn.from)
             const toNode = nodes.find(n => n.id === conn.to)
             if (!fromNode || !toNode) return null
             return (
-              <line
+              <path
                 key={i}
-                x1={fromNode.x}
-                y1={fromNode.y}
-                x2={toNode.x}
-                y2={toNode.y}
+                d={bezierPath(fromNode.x, fromNode.y, toNode.x, toNode.y)}
                 stroke={fromNode.color || '#94a3b8'}
                 strokeWidth="3"
+                fill="none"
                 strokeLinecap="round"
+                opacity="0.7"
               />
             )
           })}
@@ -225,11 +239,12 @@ export default function MindMapEditorPage() {
             onMouseUp={() => handleConnectEnd(node.id)}
           >
             <div
-              className={`relative px-4 py-2 rounded-xl shadow-lg cursor-move transition-all ${
-                selectedNode === node.id ? 'ring-2 ring-offset-2' : ''
+              className={`relative px-5 py-3 rounded-2xl shadow-xl cursor-move transition-all ${
+                selectedNode === node.id ? 'ring-4 ring-offset-2 scale-105' : 'hover:scale-105'
               }`}
               style={{
                 backgroundColor: node.color || '#f97316',
+                boxShadow: `0 8px 24px ${node.color || '#f97316'}40`,
                 ringColor: node.color || '#f97316',
               }}
             >
@@ -238,19 +253,19 @@ export default function MindMapEditorPage() {
                   type="text"
                   value={node.text}
                   onChange={(e) => updateNodeText(node.id, e.target.value)}
-                  className="bg-transparent text-white font-semibold text-sm focus:outline-none min-w-[100px]"
+                  className="bg-transparent text-white font-bold text-base focus:outline-none min-w-[120px] text-center"
                   autoFocus
                   onClick={(e) => e.stopPropagation()}
                 />
               ) : (
-                <span className="text-white font-semibold text-sm whitespace-nowrap">
+                <span className="text-white font-bold text-base whitespace-nowrap drop-shadow-md">
                   {node.text}
                 </span>
               )}
 
               {/* Connection handle */}
               <div
-                className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 opacity-0 group-hover:opacity-100 cursor-crosshair transition-opacity"
+                className="absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white border-3 opacity-0 group-hover:opacity-100 cursor-crosshair transition-opacity shadow-lg"
                 style={{ borderColor: node.color || '#f97316' }}
                 onMouseDown={(e) => handleConnectStart(e, node.id)}
                 onClick={(e) => e.stopPropagation()}
@@ -258,22 +273,22 @@ export default function MindMapEditorPage() {
 
               {/* Action buttons */}
               {selectedNode === node.id && node.id !== 'root' && (
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex gap-1">
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex gap-2">
                   <button
                     onClick={(e) => { e.stopPropagation(); addNode(node.id) }}
-                    className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600"
+                    className="w-7 h-7 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 shadow-lg"
                     title="Adicionar filho"
                   >
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
                   </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); deleteNode(node.id) }}
-                    className="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600"
+                    className="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg"
                     title="Excluir"
                   >
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -286,7 +301,7 @@ export default function MindMapEditorPage() {
         {/* Empty state hint */}
         {nodes.length === 1 && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <p className="text-sm text-[#64748B] dark:text-slate-400">
+            <p className="text-sm text-[#64748B] dark:text-slate-400 bg-white/80 dark:bg-slate-800/80 px-4 py-2 rounded-lg">
               Clique em "+ Nó" para adicionar ou arraste os nós para organizar
             </p>
           </div>
@@ -294,10 +309,12 @@ export default function MindMapEditorPage() {
       </div>
 
       {/* Instructions */}
-      <div className="mt-4 text-xs text-[#64748B] dark:text-slate-400 space-y-1">
-        <p>• Arraste os nós para reposicionar</p>
-        <p>• Clique no círculo branco à direita de um nó para conectar a outro</p>
-        <p>• Clique em um nó para editar o texto ou adicionar filhos</p>
+      <div className="mt-4 text-xs text-[#64748B] dark:text-slate-400 space-y-1 bg-white dark:bg-[#1d1f27] p-3 rounded-lg border border-[#E2E8F0] dark:border-[#464554]">
+        <p className="font-semibold mb-2">Como usar:</p>
+        <p>• Arraste os nós para reposicionar no canvas</p>
+        <p>• Passe o mouse sobre um nó e clique no círculo branco à direita para conectar a outro</p>
+        <p>• Clique em um nó para editar o texto, adicionar filhos ou excluir</p>
+        <p>• Cores automáticas por direção: laranja (topo), azul (direita), verde (baixo), rosa (esquerda)</p>
       </div>
     </div>
   )
