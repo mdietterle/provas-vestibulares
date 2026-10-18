@@ -9,6 +9,12 @@ const BRANCH_COLORS = {
   left: '#ec4899',   // pink
 }
 
+const COLOR_PALETTE = [
+  '#f97316', '#ec4899', '#8b5cf6', '#3b82f6',
+  '#10b981', '#eab308', '#ef4444', '#06b6d4',
+  '#6366f1', '#14b8a6', '#f59e0b', '#84cc16',
+]
+
 function generateId() {
   return Math.random().toString(36).substr(2, 9)
 }
@@ -19,6 +25,22 @@ function getBranchColor(angle: number): string {
   if (deg >= 45 && deg < 135) return BRANCH_COLORS.bottom
   if (deg >= 135 && deg < 225) return BRANCH_COLORS.left
   return BRANCH_COLORS.top
+}
+
+function getAllDescendants(nodeId: string, connections: Array<{ from: string; to: string }>): string[] {
+  const result: string[] = []
+  const queue = [nodeId]
+  while (queue.length > 0) {
+    const current = queue.shift()!
+    const children = connections.filter(c => c.from === current).map(c => c.to)
+    for (const child of children) {
+      if (!result.includes(child)) {
+        result.push(child)
+        queue.push(child)
+      }
+    }
+  }
+  return result
 }
 
 function bezierPath(x1: number, y1: number, x2: number, y2: number): string {
@@ -110,6 +132,12 @@ export default function MindMapEditorPage() {
   const updateNodeText = useCallback((nodeId: string, text: string) => {
     setNodes(nodes.map(n => n.id === nodeId ? { ...n, text } : n))
   }, [nodes])
+
+  const changeNodeColor = useCallback((nodeId: string, color: string) => {
+    const descendants = getAllDescendants(nodeId, connections)
+    const idsToUpdate = new Set([nodeId, ...descendants])
+    setNodes(nodes.map(n => idsToUpdate.has(n.id) ? { ...n, color } : n))
+  }, [nodes, connections])
 
   const handleMouseDown = (e: React.MouseEvent, nodeId: string) => {
     e.stopPropagation()
@@ -272,7 +300,7 @@ export default function MindMapEditorPage() {
               />
 
               {/* Action buttons */}
-              {selectedNode === node.id && node.id !== 'root' && (
+              {selectedNode === node.id && (
                 <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex gap-2">
                   <button
                     onClick={(e) => { e.stopPropagation(); addNode(node.id) }}
@@ -283,15 +311,35 @@ export default function MindMapEditorPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
                   </button>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); deleteNode(node.id) }}
-                    className="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg"
-                    title="Excluir"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+                  {node.id !== 'root' && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); deleteNode(node.id) }}
+                      className="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg"
+                      title="Excluir"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              )}
+              {/* Color picker */}
+              {selectedNode === node.id && (
+                <div
+                  className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex gap-1.5 bg-white dark:bg-[#1d1f27] p-2 rounded-xl shadow-xl border border-[#E2E8F0] dark:border-[#464554]"
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  {COLOR_PALETTE.map(color => (
+                    <button
+                      key={color}
+                      onClick={(e) => { e.stopPropagation(); changeNodeColor(node.id, color) }}
+                      className={`w-5 h-5 rounded-full transition-transform hover:scale-125 ${node.color === color ? 'ring-2 ring-offset-1 ring-gray-400 scale-110' : ''}`}
+                      style={{ backgroundColor: color }}
+                      title={color}
+                    />
+                  ))}
                 </div>
               )}
             </div>
