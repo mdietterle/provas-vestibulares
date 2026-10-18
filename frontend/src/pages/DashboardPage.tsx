@@ -228,16 +228,16 @@ function AdminDashboard() {
             </div>
 
             {/* Pendências críticas */}
-            <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 flex items-center gap-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+            <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5 flex items-center gap-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
               <div className={`w-[72px] h-[72px] rounded-full flex items-center justify-center shrink-0 font-bold text-2xl ${highAlerts > 0 ? TONE_BADGE.red : TONE_BADGE.green}`}>
                 {highAlerts > 0 ? highAlerts : '✓'}
               </div>
               <div>
-                <p className="text-xs text-[#64748B] font-medium mb-0.5">Pendências Críticas</p>
+                <p className="text-xs text-[#64748B] dark:text-slate-400 font-medium mb-0.5">Pendências Críticas</p>
                 <p className={`text-sm font-semibold ${highAlerts > 0 ? TONE_TEXT.red : TONE_TEXT.green}`}>
                   {highAlerts > 0 ? `${highAlerts} alerta${highAlerts !== 1 ? 's' : ''} crítico${highAlerts !== 1 ? 's' : ''}` : 'Tudo em dia'}
                 </p>
-                <p className="text-xs text-[#64748B] mt-0.5">
+                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
                   {((Array.isArray(monitoring?.alerts) ? monitoring!.alerts.length : 0)) > 0 ? `${monitoring!.alerts.length} alertas no total` : 'nenhum alerta'}
                 </p>
               </div>
@@ -247,7 +247,7 @@ function AdminDashboard() {
       })()}
 
       {/* Growth chart */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+      <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
         <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -258,16 +258,16 @@ function AdminDashboard() {
                 </span>
               )}
             </div>
-            <p className="text-2xl font-bold font-display text-[#1E293B] -mt-2">
+            <p className="text-2xl font-bold font-display text-[#1E293B] dark:text-[#F8FAFC] -mt-2">
               {chartTotal}
-              <span className="text-sm font-normal text-[#64748B] ml-2">
+              <span className="text-sm font-normal text-[#64748B] dark:text-slate-400 ml-2">
                 {chartMode === 'users' ? 'novos usuários' : 'novas provas'} nos últimos {chartRange} meses
               </span>
             </p>
           </div>
           <div className="flex gap-2 flex-wrap">
             {/* Mode toggle */}
-            <div className="flex gap-1 p-1 rounded-xl bg-gray-100">
+            <div className="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-[#1a2947]">
               {([['users', 'Usuários'], ['exams', 'Provas']] as const).map(([val, lbl]) => (
                 <button
                   key={val}
@@ -661,8 +661,8 @@ function StudentDashboard() {
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-[#1E293B]">Olá, {user?.name?.split(' ')[0]}! 👋</h1>
-          <p className="text-sm text-[#64748B] mt-0.5">
+          <h1 className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC]">Olá, {user?.name?.split(' ')[0]}! 👋</h1>
+          <p className="text-sm text-[#64748B] dark:text-slate-400 mt-0.5">
             Você tem <span className="font-semibold text-[#0d9488]">{totalAssessments} avaliações</span> disponíveis
             ({allExams.length} {allExams.length === 1 ? 'prova' : 'provas'}, {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}).
           </p>
@@ -680,16 +680,16 @@ function StudentDashboard() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Média geral */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+        <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-start justify-between mb-2">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${TONE_BADGE.green}`}>
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
             </div>
           </div>
-          <p className="font-display text-2xl font-bold text-[#1E293B]">{avgGradeStr}</p>
-          <p className="text-sm text-[#334155] mt-0.5">Média Geral</p>
+          <p className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC]">{avgGradeStr}</p>
+          <p className="text-sm text-[#334155] dark:text-slate-300 mt-0.5">Média Geral</p>
           {data?.avg_grade != null && (
-            <div className="mt-2 h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
+            <div className="mt-2 h-1.5 bg-[#E2E8F0] dark:bg-[#464554] rounded-full overflow-hidden">
               <div className={`h-full rounded-full ${data.avg_grade >= 7 ? 'bg-green-500' : data.avg_grade >= 5 ? 'bg-slate-500' : 'bg-red-500'}`} style={{ width: `${(data.avg_grade / 10) * 100}%` }} />
             </div>
           )}
@@ -706,19 +706,19 @@ function StudentDashboard() {
         </div>
 
         {/* Ranking */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+        <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <div className="flex items-start justify-between mb-2">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${TONE_BADGE.teal}`}>
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
             </div>
           </div>
-          <p className="font-display text-2xl font-bold text-[#1E293B]">{rankStr}</p>
-          <p className="text-sm text-[#334155] mt-0.5">Ranking</p>
-          <p className="text-xs text-[#64748B] mt-1">{rankSub}</p>
+          <p className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC]">{rankStr}</p>
+          <p className="text-sm text-[#334155] dark:text-slate-300 mt-0.5">Ranking</p>
+          <p className="text-xs text-[#64748B] dark:text-slate-400 mt-1">{rankSub}</p>
         </div>
 
         {/* Taxa de conclusão */}
-        <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5 flex items-center gap-4" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+        <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5 flex items-center gap-4" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <CircleProgress
             pct={data?.completion_rate ?? 0}
             size={60}
@@ -726,27 +726,27 @@ function StudentDashboard() {
             color={data?.completion_rate == null ? '#9ca3af' : data.completion_rate >= 75 ? '#22c55e' : data.completion_rate >= 50 ? '#f59e0b' : '#ef4444'}
           />
           <div>
-            <p className="font-display text-lg font-bold text-[#1E293B]">{completionStr}</p>
-            <p className="text-sm text-[#334155]">Conclusão</p>
-            <p className="text-xs text-[#64748B]">das avaliações</p>
+            <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#F8FAFC]">{completionStr}</p>
+            <p className="text-sm text-[#334155] dark:text-slate-300">Conclusão</p>
+            <p className="text-xs text-[#64748B] dark:text-slate-400">das avaliações</p>
           </div>
         </div>
       </div>
 
       {/* Avaliações disponíveis — provas tradicionais (por matéria) + simulados */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+      <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
         <div className="flex flex-col sm:flex-row sm:items-center gap-5">
           <div className="flex items-center gap-4 shrink-0">
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${TONE_BADGE.navy}`}>
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             </div>
             <div>
-              <p className="font-display text-2xl font-bold text-[#1E293B]">{totalAssessments}</p>
-              <p className="text-sm text-[#334155]">Avaliações Disponíveis</p>
+              <p className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC]">{totalAssessments}</p>
+              <p className="text-sm text-[#334155] dark:text-slate-300">Avaliações Disponíveis</p>
             </div>
           </div>
 
-          <div className="flex-1 flex flex-wrap items-center gap-2 sm:pl-5 sm:border-l border-[#E2E8F0]">
+          <div className="flex-1 flex flex-wrap items-center gap-2 sm:pl-5 sm:border-l border-[#E2E8F0] dark:border-[#464554]">
             <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${TONE_BADGE.blue}`}>
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
               {allExams.length} {allExams.length === 1 ? 'prova tradicional' : 'provas tradicionais'}
@@ -759,8 +759,8 @@ function StudentDashboard() {
         </div>
 
         {subjectBreakdown.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-[#E2E8F0]">
-            <p className="text-xs font-semibold text-[#64748B] uppercase tracking-wide mb-2">Provas tradicionais por matéria</p>
+          <div className="mt-4 pt-4 border-t border-[#E2E8F0] dark:border-[#464554]">
+            <p className="text-xs font-semibold text-[#64748B] dark:text-slate-400 uppercase tracking-wide mb-2">Provas tradicionais por matéria</p>
             <div className="flex flex-wrap gap-2">
               {subjectBreakdown.map(([subject, count]) => (
                 <span key={subject} className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg bg-[#F4F6F9] dark:bg-[#10131a] text-[#334155] dark:text-[#cbd5e1] border border-[#E2E8F0] dark:border-[#464554]">
@@ -774,7 +774,7 @@ function StudentDashboard() {
       </div>
 
       {/* Gráfico de notas por mês */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
+      <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
         <div className="flex items-center justify-between mb-4">
           <SectionTitle>Evolução das Notas</SectionTitle>
           <div className="flex items-center gap-3">
@@ -783,7 +783,7 @@ function StudentDashboard() {
                 {data.growth_pct >= 0 ? '+' : ''}{data.growth_pct}% vs início
               </span>
             )}
-            <div className="flex items-center gap-3 text-xs text-[#64748B]">
+            <div className="flex items-center gap-3 text-xs text-[#64748B] dark:text-slate-400">
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#0d9488] inline-block"/>Prova formal</span>
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#0d9488] opacity-55 inline-block" style={{ backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 2px, transparent 2px, transparent 4px)' }}/>Simulado</span>
               <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded bg-[#27c38a] inline-block"/>Meta 7,0</span>
@@ -792,9 +792,9 @@ function StudentDashboard() {
         </div>
 
         {gradeEvolution.length === 0 ? (
-          <div className="h-36 flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-[#E2E8F0]">
-            <svg className="w-8 h-8 text-[#c5c5d3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            <p className="text-sm text-[#64748B]">Suas notas aparecerão aqui após a correção das provas.</p>
+          <div className="h-36 flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-[#E2E8F0] dark:border-[#464554]">
+            <svg className="w-8 h-8 text-[#c5c5d3] dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <p className="text-sm text-[#64748B] dark:text-slate-400">Suas notas aparecerão aqui após a correção das provas.</p>
           </div>
         ) : (
           <>
@@ -862,9 +862,9 @@ function StudentDashboard() {
                 </div>
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-4 text-xs text-[#64748B]">
-              <span>Média: <strong className="text-[#1E293B]">{avgGradeStr}</strong></span>
-              <span className="ml-auto">Taxa de conclusão: <strong className="text-[#1E293B]">{completionStr}</strong></span>
+            <div className="mt-3 flex items-center gap-4 text-xs text-[#64748B] dark:text-slate-400">
+              <span>Média: <strong className="text-[#1E293B] dark:text-[#F8FAFC]">{avgGradeStr}</strong></span>
+              <span className="ml-auto">Taxa de conclusão: <strong className="text-[#1E293B] dark:text-[#F8FAFC]">{completionStr}</strong></span>
             </div>
           </>
         )}
@@ -879,18 +879,18 @@ function StudentDashboard() {
           </div>
           <div className="space-y-2">
             {exams.length === 0 && (
-              <div className="rounded-xl border border-dashed border-[#c5c5d3] p-6 text-center text-sm text-[#64748B]">
+              <div className="rounded-xl border border-dashed border-[#c5c5d3] dark:border-[#464554] p-6 text-center text-sm text-[#64748B] dark:text-slate-400">
                 Nenhuma prova disponível no momento.
               </div>
             )}
             {exams.map(exam => (
-              <Link key={exam.id} to={`/exams/${exam.id}/submit`} className="flex items-center gap-4 bg-white rounded-xl border border-[#E2E8F0] px-4 py-3 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] transition-colors group">
-                <div className="w-9 h-9 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 text-[#0d9488]">
+              <Link key={exam.id} to={`/exams/${exam.id}/submit`} className="flex items-center gap-4 bg-white dark:bg-[#1d1f27] rounded-xl border border-[#E2E8F0] dark:border-[#464554] px-4 py-3 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-colors group">
+                <div className="w-9 h-9 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 text-[#0d9488]">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#1E293B] truncate">{exam.title}</p>
-                  <p className="text-xs text-[#64748B]">{exam.subject?.name} · {exam.class_?.name}</p>
+                  <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC] truncate">{exam.title}</p>
+                  <p className="text-xs text-[#64748B] dark:text-slate-400">{exam.subject?.name} · {exam.class_?.name}</p>
                 </div>
                 <span className="text-xs font-semibold text-white px-2.5 py-1 rounded-lg shrink-0" style={{ background: 'linear-gradient(135deg,#0d9488,#f59e0b)' }}>
                   Realizar →
@@ -911,7 +911,7 @@ function StudentDashboard() {
               color={data?.avg_grade == null ? '#9ca3af' : data.avg_grade >= 7 ? '#22c55e' : data.avg_grade >= 5 ? '#f59e0b' : '#ef4444'}
               label="nota"
             />
-            <p className="text-xs text-[#64748B] mt-2 text-center">
+            <p className="text-xs text-[#64748B] dark:text-slate-400 mt-2 text-center">
               {data?.avg_grade == null
                 ? 'Complete algumas provas para ver seu desempenho.'
                 : data.avg_grade >= 8
@@ -922,21 +922,21 @@ function StudentDashboard() {
             </p>
           </div>
           <div className="space-y-3 text-sm">
-            <div className="flex items-center justify-between py-2 border-b border-[#f5f5f5]">
-              <span className="text-[#64748B]">Média geral</span>
-              <span className="font-bold text-[#1E293B]">{avgGradeStr}</span>
+            <div className="flex items-center justify-between py-2 border-b border-[#f5f5f5] dark:border-[#464554]">
+              <span className="text-[#64748B] dark:text-slate-400">Média geral</span>
+              <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{avgGradeStr}</span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[#f5f5f5]">
-              <span className="text-[#64748B]">Posição no ranking</span>
-              <span className="font-bold text-[#1E293B]">{rankStr}</span>
+            <div className="flex items-center justify-between py-2 border-b border-[#f5f5f5] dark:border-[#464554]">
+              <span className="text-[#64748B] dark:text-slate-400">Posição no ranking</span>
+              <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{rankStr}</span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-[#f5f5f5]">
-              <span className="text-[#64748B]">Total de alunos</span>
-              <span className="font-bold text-[#1E293B]">{data?.total_ranked ?? '—'}</span>
+            <div className="flex items-center justify-between py-2 border-b border-[#f5f5f5] dark:border-[#464554]">
+              <span className="text-[#64748B] dark:text-slate-400">Total de alunos</span>
+              <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{data?.total_ranked ?? '—'}</span>
             </div>
             <div className="flex items-center justify-between py-2">
-              <span className="text-[#64748B]">Provas concluídas</span>
-              <span className="font-bold text-[#1E293B]">{completionStr}</span>
+              <span className="text-[#64748B] dark:text-slate-400">Provas concluídas</span>
+              <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{completionStr}</span>
             </div>
           </div>
         </div>
