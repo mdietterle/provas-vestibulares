@@ -103,16 +103,20 @@ export default function MindMapEditorPage() {
 
   const addNode = useCallback((parentId?: string) => {
     const parent = parentId ? nodes.find(n => n.id === parentId) : nodes[0]
-    const angle = Math.random() * Math.PI * 2
+    // Distribute children evenly around parent
+    const existingChildren = connections.filter(c => c.from === (parentId || 'root')).length
+    const angle = (existingChildren * Math.PI * 2) / 6 + Math.random() * 0.5
     const distance = 180 + Math.random() * 80
+    const newX = (parent?.x ?? 500) + Math.cos(angle) * distance
+    const newY = (parent?.y ?? 400) + Math.sin(angle) * distance
     const newNode: MindMapNode = {
       id: generateId(),
       text: 'Novo nó',
-      x: (parent?.x ?? 500) + Math.cos(angle) * distance,
-      y: (parent?.y ?? 400) + Math.sin(angle) * distance,
+      x: newX,
+      y: newY,
       color: parentId
         ? nodes.find(n => n.id === parentId)?.color
-        : getBranchColor(angle),
+        : getBranchColor(Math.atan2(newY - (parent?.y ?? 400), newX - (parent?.x ?? 500))),
       parent_id: parentId,
     }
     setNodes([...nodes, newNode])
