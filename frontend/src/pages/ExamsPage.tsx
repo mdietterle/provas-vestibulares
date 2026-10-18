@@ -1176,6 +1176,7 @@ export default function ExamsPage() {
 
       {confirmDelete && (
         <ConfirmDialog
+          open={true}
           message={`Excluir a prova "${confirmDelete.title}"?`}
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(null)}

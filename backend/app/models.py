@@ -1995,5 +1995,21 @@ class ConcursoFepeseQuestionOption(Base):
     question: Mapped["ConcursoFepeseQuestion"] = relationship(back_populates="options")
 
 
+# ── Mind Maps (student study tool) ────────────────────────────────────────────
+
+
+class MindMap(Base):
+    __tablename__ = "mind_maps"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    data: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    student: Mapped["User"] = relationship()
+
+
 
 

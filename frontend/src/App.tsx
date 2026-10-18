@@ -52,6 +52,8 @@ const RedacaoPage = lazy(() => import('./pages/RedacaoPage'))
 const RedacaoReviewPage = lazy(() => import('./pages/RedacaoReviewPage'))
 const InvitationPage = lazy(() => import('./pages/InvitationPage'))
 const StudentAuthPage = lazy(() => import('./pages/StudentAuthPage'))
+const MindMapsListPage = lazy(() => import('./pages/MindMapsListPage'))
+const MindMapEditorPage = lazy(() => import('./pages/MindMapEditorPage'))
 const LandingPage = lazy(() => import('./pages/LandingPage'))
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'))
@@ -127,6 +129,9 @@ function AppRoutes() {
           <Route path="redacoes/professor" element={<RedacaoListPage />} />
           <Route path="redacoes/:id" element={<RedacaoPage />} />
           <Route path="redacoes/:id/review" element={<RedacaoReviewPage />} />
+          <Route path="mindmaps" element={<MindMapsListPage />} />
+          <Route path="mindmaps/novo" element={<MindMapEditorPage />} />
+          <Route path="mindmaps/:id" element={<MindMapEditorPage />} />
         </Route>
         <Route path="/billing" element={<OwnerRoute><Layout /></OwnerRoute>}>
           <Route index element={<OwnerPage />} />

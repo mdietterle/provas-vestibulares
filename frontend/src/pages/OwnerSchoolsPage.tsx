@@ -248,6 +248,7 @@ export default function OwnerSchoolsPage() {
 
       {deleteTarget && (
         <ConfirmDialog
+          open={true}
           message={`Tem certeza que deseja excluir "${deleteTarget.name}"? Só é possível excluir escolas sem nenhum usuário cadastrado — se ela tiver usuários, remova-os primeiro ou apenas inative a escola.`}
           onConfirm={handleDeleteSchool}
           onCancel={() => setDeleteTarget(null)}
