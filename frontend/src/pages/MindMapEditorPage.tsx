@@ -3,10 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { mindmapsApi, type MindMapData, type MindMapNode } from '../api/mindmaps'
 
 const BRANCH_COLORS = {
-  top: '#f97316',    // orange
-  right: '#3b82f6',  // blue
-  bottom: '#10b981', // green
-  left: '#ec4899',   // pink
+  top: '#f97316',
+  right: '#3b82f6',
+  bottom: '#10b981',
+  left: '#ec4899',
 }
 
 const COLOR_PALETTE = [
@@ -14,6 +14,9 @@ const COLOR_PALETTE = [
   '#10b981', '#eab308', '#ef4444', '#06b6d4',
   '#6366f1', '#14b8a6', '#f59e0b', '#84cc16',
 ]
+
+const MIN_ZOOM = 0.2
+const MAX_ZOOM = 3
 
 function generateId() {
   return Math.random().toString(36).substr(2, 9)
@@ -74,6 +77,13 @@ export default function MindMapEditorPage() {
   const [pendingParentId, setPendingParentId] = useState<string | undefined>(undefined)
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
+
+  // Pan & zoom state
+  const [zoom, setZoom] = useState(1)
+  const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [isPanning, setIsPanning] = useState(false)
+  const panStart = useRef({ x: 0, y: 0 })
+  const panOrigin = useRef({ x: 0, y: 0 })
 
   const canvasRef = useRef<HTMLDivElement>(null)
   const dragOffset = useRef({ x: 0, y: 0 })
@@ -157,30 +167,77 @@ export default function MindMapEditorPage() {
     setNodes(nodes.map(n => idsToUpdate.has(n.id) ? { ...n, color } : n))
   }, [nodes, connections])
 
+  // Convert screen coordinates to canvas coordinates accounting for pan/zoom
+  const screenToCanvas = useCallback((screenX: number, screenY: number) => {
+    if (!canvasRef.current) return { x: screenX, y: screenY }
+    const rect = canvasRef.current.getBoundingClientRect()
+    return {
+      x: (screenX - rect.left - pan.x) / zoom,
+      y: (screenY - rect.top - pan.y) / zoom,
+    }
+  }, [pan, zoom])
+
   const handleMouseDown = (e: React.MouseEvent, nodeId: string) => {
     e.stopPropagation()
     const node = nodes.find(n => n.id === nodeId)
-    if (!node || !canvasRef.current) return
-    const rect = canvasRef.current.getBoundingClientRect()
+    if (!node) return
+    const canvasPos = screenToCanvas(e.clientX, e.clientY)
     dragOffset.current = {
-      x: e.clientX - rect.left - node.x,
-      y: e.clientY - rect.top - node.y,
+      x: canvasPos.x - node.x,
+      y: canvasPos.y - node.y,
     }
     setDraggingNode(nodeId)
     setSelectedNode(nodeId)
   }
 
+  const handleCanvasMouseDown = (e: React.MouseEvent) => {
+    // Only pan if clicking on empty canvas area (not on a node)
+    if ((e.target as HTMLElement).closest('[data-node]')) return
+    setIsPanning(true)
+    panStart.current = { x: e.clientX, y: e.clientY }
+    panOrigin.current = { x: pan.x, y: pan.y }
+    setSelectedNode(null)
+  }
+
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!draggingNode || !canvasRef.current) return
-    const rect = canvasRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left - dragOffset.current.x
-    const y = e.clientY - rect.top - dragOffset.current.y
-    setNodes(nodes.map(n => n.id === draggingNode ? { ...n, x, y } : n))
-  }, [draggingNode, nodes])
+    if (draggingNode) {
+      const canvasPos = screenToCanvas(e.clientX, e.clientY)
+      const x = canvasPos.x - dragOffset.current.x
+      const y = canvasPos.y - dragOffset.current.y
+      setNodes(nodes.map(n => n.id === draggingNode ? { ...n, x, y } : n))
+    } else if (isPanning) {
+      const dx = e.clientX - panStart.current.x
+      const dy = e.clientY - panStart.current.y
+      setPan({
+        x: panOrigin.current.x + dx,
+        y: panOrigin.current.y + dy,
+      })
+    }
+  }, [draggingNode, isPanning, nodes, screenToCanvas])
 
   const handleMouseUp = useCallback(() => {
     setDraggingNode(null)
+    setIsPanning(false)
   }, [])
+
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault()
+    if (!canvasRef.current) return
+    const rect = canvasRef.current.getBoundingClientRect()
+    const mouseX = e.clientX - rect.left
+    const mouseY = e.clientY - rect.top
+
+    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1
+    const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * zoomFactor))
+    const scale = newZoom / zoom
+
+    // Zoom toward mouse position
+    const newPanX = mouseX - scale * (mouseX - pan.x)
+    const newPanY = mouseY - scale * (mouseY - pan.y)
+
+    setZoom(newZoom)
+    setPan({ x: newPanX, y: newPanY })
+  }, [zoom, pan])
 
   const handleConnectStart = (e: React.MouseEvent, nodeId: string) => {
     e.stopPropagation()
@@ -198,6 +255,19 @@ export default function MindMapEditorPage() {
       }
     }
     setConnectingFrom(null)
+  }
+
+  const resetView = () => {
+    setZoom(1)
+    setPan({ x: 0, y: 0 })
+  }
+
+  const zoomIn = () => {
+    setZoom(z => Math.min(MAX_ZOOM, z * 1.2))
+  }
+
+  const zoomOut = () => {
+    setZoom(z => Math.max(MIN_ZOOM, z / 1.2))
   }
 
   if (loading) {
@@ -249,214 +319,253 @@ export default function MindMapEditorPage() {
       {/* Canvas */}
       <div
         ref={canvasRef}
-        className="flex-1 relative bg-gradient-to-br from-slate-50 to-slate-100 dark:from-[#1d1f27] dark:to-[#16181f] rounded-xl border border-[#E2E8F0] dark:border-[#464554] overflow-hidden"
+        className={`flex-1 relative bg-gradient-to-br from-slate-50 to-slate-100 dark:from-[#1d1f27] dark:to-[#16181f] rounded-xl border border-[#E2E8F0] dark:border-[#464554] overflow-hidden ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
+        onMouseDown={handleCanvasMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        onClick={() => setSelectedNode(null)}
+        onWheel={handleWheel}
       >
-        {/* SVG for bezier connections with dynamic thickness */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
-          {connections.map((conn, i) => {
-            const fromNode = nodes.find(n => n.id === conn.from)
-            const toNode = nodes.find(n => n.id === conn.to)
-            if (!fromNode || !toNode) return null
-            const childCount = getChildCount(conn.to, connections)
-            const strokeWidth = Math.min(3 + childCount * 1.5, 12)
-            return (
-              <path
-                key={i}
-                d={bezierPath(fromNode.x, fromNode.y, toNode.x, toNode.y)}
-                stroke={fromNode.color || '#94a3b8'}
-                strokeWidth={strokeWidth}
-                fill="none"
-                strokeLinecap="round"
-                opacity="0.7"
-              />
-            )
-          })}
-        </svg>
+        {/* Zoom controls */}
+        <div className="absolute top-3 right-3 z-30 flex flex-col gap-1.5">
+          <button
+            onClick={zoomIn}
+            className="w-8 h-8 rounded-lg bg-white dark:bg-[#2a2d38] border border-[#E2E8F0] dark:border-[#464554] shadow-md flex items-center justify-center hover:bg-[#EFF6FF] dark:hover:bg-slate-700 transition-colors text-[#334155] dark:text-slate-300 font-bold text-lg"
+            title="Zoom in"
+          >
+            +
+          </button>
+          <button
+            onClick={resetView}
+            className="w-8 h-8 rounded-lg bg-white dark:bg-[#2a2d38] border border-[#E2E8F0] dark:border-[#464554] shadow-md flex items-center justify-center hover:bg-[#EFF6FF] dark:hover:bg-slate-700 transition-colors text-[10px] font-bold text-[#334155] dark:text-slate-300"
+            title="Resetar vista"
+          >
+            {Math.round(zoom * 100)}%
+          </button>
+          <button
+            onClick={zoomOut}
+            className="w-8 h-8 rounded-lg bg-white dark:bg-[#2a2d38] border border-[#E2E8F0] dark:border-[#464554] shadow-md flex items-center justify-center hover:bg-[#EFF6FF] dark:hover:bg-slate-700 transition-colors text-[#334155] dark:text-slate-300 font-bold text-lg"
+            title="Zoom out"
+          >
+            −
+          </button>
+        </div>
 
-        {/* Nodes */}
-        {nodes.map(node => {
-          const isText = node.type === 'text'
-          return (
-            <div
-              key={node.id}
-              className={`absolute group ${selectedNode === node.id ? 'z-20' : 'z-10'}`}
-              style={{ left: node.x, top: node.y, transform: 'translate(-50%, -50%)' }}
-              onMouseDown={(e) => handleMouseDown(e, node.id)}
-              onMouseUp={() => handleConnectEnd(node.id)}
-            >
-              {isText ? (
-                /* Text-only node */
-                <div
-                  className={`relative px-3 py-1.5 cursor-move transition-all ${
-                    selectedNode === node.id ? 'scale-105' : 'hover:scale-105'
-                  }`}
-                >
-                  {selectedNode === node.id ? (
-                    <input
-                      type="text"
-                      value={node.text}
-                      onChange={(e) => updateNodeText(node.id, e.target.value)}
-                      className="bg-transparent font-semibold text-sm focus:outline-none min-w-[80px] text-center border-b-2 pb-0.5"
-                      style={{ color: node.color || '#f97316', borderColor: node.color || '#f97316' }}
-                      autoFocus
+        {/* Transformable layer */}
+        <div
+          style={{
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+            transformOrigin: '0 0',
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          {/* SVG for bezier connections with dynamic thickness */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ overflow: 'visible' }}>
+            {connections.map((conn, i) => {
+              const fromNode = nodes.find(n => n.id === conn.from)
+              const toNode = nodes.find(n => n.id === conn.to)
+              if (!fromNode || !toNode) return null
+              const childCount = getChildCount(conn.from, connections)
+              const strokeWidth = Math.min(3 + childCount * 1.5, 12)
+              return (
+                <path
+                  key={i}
+                  d={bezierPath(fromNode.x, fromNode.y, toNode.x, toNode.y)}
+                  stroke={fromNode.color || '#94a3b8'}
+                  strokeWidth={strokeWidth}
+                  fill="none"
+                  strokeLinecap="round"
+                  opacity="0.7"
+                />
+              )
+            })}
+          </svg>
+
+          {/* Nodes */}
+          {nodes.map(node => {
+            const isText = node.type === 'text'
+            return (
+              <div
+                key={node.id}
+                data-node="true"
+                className={`absolute group ${selectedNode === node.id ? 'z-20' : 'z-10'}`}
+                style={{ left: node.x, top: node.y, transform: 'translate(-50%, -50%)' }}
+                onMouseDown={(e) => handleMouseDown(e, node.id)}
+                onMouseUp={() => handleConnectEnd(node.id)}
+              >
+                {isText ? (
+                  /* Text-only node */
+                  <div
+                    className={`relative px-3 py-1.5 cursor-move transition-all ${
+                      selectedNode === node.id ? 'scale-105' : 'hover:scale-105'
+                    }`}
+                  >
+                    {selectedNode === node.id ? (
+                      <input
+                        type="text"
+                        value={node.text}
+                        onChange={(e) => updateNodeText(node.id, e.target.value)}
+                        className="bg-transparent font-semibold text-sm focus:outline-none min-w-[80px] text-center border-b-2 pb-0.5"
+                        style={{ color: node.color || '#f97316', borderColor: node.color || '#f97316' }}
+                        autoFocus
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    ) : (
+                      <span
+                        className="font-semibold text-sm whitespace-nowrap"
+                        style={{ color: node.color || '#f97316' }}
+                      >
+                        {node.text}
+                      </span>
+                    )}
+
+                    {/* Connection handle */}
+                    <div
+                      className="absolute -right-3 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 opacity-0 group-hover:opacity-100 cursor-crosshair transition-opacity shadow"
+                      style={{ borderColor: node.color || '#f97316' }}
+                      onMouseDown={(e) => handleConnectStart(e, node.id)}
                       onClick={(e) => e.stopPropagation()}
                     />
-                  ) : (
-                    <span
-                      className="font-semibold text-sm whitespace-nowrap"
-                      style={{ color: node.color || '#f97316' }}
-                    >
-                      {node.text}
-                    </span>
-                  )}
 
-                  {/* Connection handle */}
-                  <div
-                    className="absolute -right-3 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 opacity-0 group-hover:opacity-100 cursor-crosshair transition-opacity shadow"
-                    style={{ borderColor: node.color || '#f97316' }}
-                    onMouseDown={(e) => handleConnectStart(e, node.id)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-
-                  {/* Action buttons for text node */}
-                  {selectedNode === node.id && (
-                    <div className="absolute -top-9 left-1/2 -translate-x-1/2 flex gap-1.5">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); requestAddNode(node.id) }}
-                        className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 shadow-lg"
-                        title="Adicionar filho"
-                      >
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-                      </button>
-                      {node.id !== 'root' && (
+                    {/* Action buttons for text node */}
+                    {selectedNode === node.id && (
+                      <div className="absolute -top-9 left-1/2 -translate-x-1/2 flex gap-1.5">
                         <button
-                          onClick={(e) => { e.stopPropagation(); deleteNode(node.id) }}
-                          className="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg"
-                          title="Excluir"
+                          onClick={(e) => { e.stopPropagation(); requestAddNode(node.id) }}
+                          className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 shadow-lg"
+                          title="Adicionar filho"
                         >
                           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                           </svg>
                         </button>
-                      )}
-                    </div>
-                  )}
+                        {node.id !== 'root' && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); deleteNode(node.id) }}
+                            className="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg"
+                            title="Excluir"
+                          >
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    )}
 
-                  {/* Color picker for text node */}
-                  {selectedNode === node.id && (
+                    {/* Color picker for text node */}
+                    {selectedNode === node.id && (
+                      <div
+                        className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex gap-1 bg-white dark:bg-[#1d1f27] p-1.5 rounded-lg shadow-xl border border-[#E2E8F0] dark:border-[#464554]"
+                        onClick={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
+                      >
+                        {COLOR_PALETTE.map(color => (
+                          <button
+                            key={color}
+                            onClick={(e) => { e.stopPropagation(); changeNodeColor(node.id, color) }}
+                            className={`w-4 h-4 rounded-full transition-transform hover:scale-125 ${node.color === color ? 'ring-2 ring-offset-1 ring-gray-400 scale-110' : ''}`}
+                            style={{ backgroundColor: color }}
+                            title={color}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Box node */
+                  <div
+                    className={`relative px-5 py-3 rounded-2xl shadow-xl cursor-move transition-all ${
+                      selectedNode === node.id ? 'ring-4 ring-offset-2 scale-105' : 'hover:scale-105'
+                    }`}
+                    style={{
+                      backgroundColor: node.color || '#f97316',
+                      boxShadow: `0 8px 24px ${node.color || '#f97316'}40`,
+                      ringColor: node.color || '#f97316',
+                    }}
+                  >
+                    {selectedNode === node.id ? (
+                      <input
+                        type="text"
+                        value={node.text}
+                        onChange={(e) => updateNodeText(node.id, e.target.value)}
+                        className="bg-transparent text-white font-bold text-base focus:outline-none min-w-[120px] text-center"
+                        autoFocus
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    ) : (
+                      <span className="text-white font-bold text-base whitespace-nowrap drop-shadow-md">
+                        {node.text}
+                      </span>
+                    )}
+
+                    {/* Connection handle */}
                     <div
-                      className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex gap-1 bg-white dark:bg-[#1d1f27] p-1.5 rounded-lg shadow-xl border border-[#E2E8F0] dark:border-[#464554]"
-                      onClick={(e) => e.stopPropagation()}
-                      onMouseDown={(e) => e.stopPropagation()}
-                    >
-                      {COLOR_PALETTE.map(color => (
-                        <button
-                          key={color}
-                          onClick={(e) => { e.stopPropagation(); changeNodeColor(node.id, color) }}
-                          className={`w-4 h-4 rounded-full transition-transform hover:scale-125 ${node.color === color ? 'ring-2 ring-offset-1 ring-gray-400 scale-110' : ''}`}
-                          style={{ backgroundColor: color }}
-                          title={color}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                /* Box node */
-                <div
-                  className={`relative px-5 py-3 rounded-2xl shadow-xl cursor-move transition-all ${
-                    selectedNode === node.id ? 'ring-4 ring-offset-2 scale-105' : 'hover:scale-105'
-                  }`}
-                  style={{
-                    backgroundColor: node.color || '#f97316',
-                    boxShadow: `0 8px 24px ${node.color || '#f97316'}40`,
-                    ringColor: node.color || '#f97316',
-                  }}
-                >
-                  {selectedNode === node.id ? (
-                    <input
-                      type="text"
-                      value={node.text}
-                      onChange={(e) => updateNodeText(node.id, e.target.value)}
-                      className="bg-transparent text-white font-bold text-base focus:outline-none min-w-[120px] text-center"
-                      autoFocus
+                      className="absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white border-3 opacity-0 group-hover:opacity-100 cursor-crosshair transition-opacity shadow-lg"
+                      style={{ borderColor: node.color || '#f97316' }}
+                      onMouseDown={(e) => handleConnectStart(e, node.id)}
                       onClick={(e) => e.stopPropagation()}
                     />
-                  ) : (
-                    <span className="text-white font-bold text-base whitespace-nowrap drop-shadow-md">
-                      {node.text}
-                    </span>
-                  )}
 
-                  {/* Connection handle */}
-                  <div
-                    className="absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white border-3 opacity-0 group-hover:opacity-100 cursor-crosshair transition-opacity shadow-lg"
-                    style={{ borderColor: node.color || '#f97316' }}
-                    onMouseDown={(e) => handleConnectStart(e, node.id)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-
-                  {/* Action buttons for box node */}
-                  {selectedNode === node.id && (
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex gap-2">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); requestAddNode(node.id) }}
-                        className="w-7 h-7 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 shadow-lg"
-                        title="Adicionar filho"
-                      >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-                      </button>
-                      {node.id !== 'root' && (
+                    {/* Action buttons for box node */}
+                    {selectedNode === node.id && (
+                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex gap-2">
                         <button
-                          onClick={(e) => { e.stopPropagation(); deleteNode(node.id) }}
-                          className="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg"
-                          title="Excluir"
+                          onClick={(e) => { e.stopPropagation(); requestAddNode(node.id) }}
+                          className="w-7 h-7 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 shadow-lg"
+                          title="Adicionar filho"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                           </svg>
                         </button>
-                      )}
-                    </div>
-                  )}
+                        {node.id !== 'root' && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); deleteNode(node.id) }}
+                            className="w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg"
+                            title="Excluir"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    )}
 
-                  {/* Color picker for box node */}
-                  {selectedNode === node.id && (
-                    <div
-                      className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex gap-1.5 bg-white dark:bg-[#1d1f27] p-2 rounded-xl shadow-xl border border-[#E2E8F0] dark:border-[#464554]"
-                      onClick={(e) => e.stopPropagation()}
-                      onMouseDown={(e) => e.stopPropagation()}
-                    >
-                      {COLOR_PALETTE.map(color => (
-                        <button
-                          key={color}
-                          onClick={(e) => { e.stopPropagation(); changeNodeColor(node.id, color) }}
-                          className={`w-5 h-5 rounded-full transition-transform hover:scale-125 ${node.color === color ? 'ring-2 ring-offset-1 ring-gray-400 scale-110' : ''}`}
-                          style={{ backgroundColor: color }}
-                          title={color}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )
-        })}
+                    {/* Color picker for box node */}
+                    {selectedNode === node.id && (
+                      <div
+                        className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex gap-1.5 bg-white dark:bg-[#1d1f27] p-2 rounded-xl shadow-xl border border-[#E2E8F0] dark:border-[#464554]"
+                        onClick={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
+                      >
+                        {COLOR_PALETTE.map(color => (
+                          <button
+                            key={color}
+                            onClick={(e) => { e.stopPropagation(); changeNodeColor(node.id, color) }}
+                            className={`w-5 h-5 rounded-full transition-transform hover:scale-125 ${node.color === color ? 'ring-2 ring-offset-1 ring-gray-400 scale-110' : ''}`}
+                            style={{ backgroundColor: color }}
+                            title={color}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
 
         {/* Empty state hint */}
         {nodes.length === 1 && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <p className="text-sm text-[#64748B] dark:text-slate-400 bg-white/80 dark:bg-slate-800/80 px-4 py-2 rounded-lg">
-              Clique em "+ Nó" para adicionar ou arraste os nós para organizar
+              Clique em "+ Nó" para adicionar • Arraste o fundo para mover • Scroll para zoom
             </p>
           </div>
         )}
@@ -504,7 +613,9 @@ export default function MindMapEditorPage() {
       <div className="mt-4 text-xs text-[#64748B] dark:text-slate-400 space-y-1 bg-white dark:bg-[#1d1f27] p-3 rounded-lg border border-[#E2E8F0] dark:border-[#464554]">
         <p className="font-semibold mb-2">Como usar:</p>
         <p>• Arraste os nós para reposicionar no canvas</p>
-        <p>• Passe o mouse sobre um nó e clique no círculo à direita para conectar a outro</p>
+        <p>• Arraste o fundo vazio para mover o mapa (pan)</p>
+        <p>• Use scroll do mouse ou botões +/− para zoom</p>
+        <p>• Passe o mouse sobre um nó e clique no círculo à direita para conectar</p>
         <p>• Clique em um nó para editar texto, cor, adicionar filhos ou excluir</p>
         <p>• Ao adicionar nó, escolha entre Caixa (fundo colorido) ou Texto (apenas texto)</p>
         <p>• Linhas ficam mais grossas conforme o nó tem mais filhos</p>
