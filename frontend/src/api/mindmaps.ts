@@ -7,6 +7,7 @@ export type MindMapNode = {
   y: number
   color?: string
   parent_id?: string
+  type?: 'box' | 'text'
 }
 
 export type MindMapData = {
