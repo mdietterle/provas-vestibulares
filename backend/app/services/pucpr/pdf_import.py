@@ -676,6 +676,7 @@ def import_all_pucpr_exams(
     sempre esperando um status que nunca muda."""
     from app.database import SessionLocal, engine
 
+    force_reimport = kwargs.get("force_reimport", False)
     _ensure_tables(engine)
 
     close_after = db is None

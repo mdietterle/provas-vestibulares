@@ -720,6 +720,7 @@ def _import_pdf_file(db: Session, pdf_path: Path, year: int, period: Optional[st
 
 def seed_acafe(db: Session | None = None, **kwargs) -> dict:
     """Importa as questões dos PDFs ACAFE locais. Retorna um resumo."""
+    force_reimport = kwargs.get("force_reimport", False)
     if not ACAFE_DIR.exists():
         return {"skipped": True, "reason": "Pasta acafe/ não encontrada"}
 
@@ -855,6 +856,7 @@ def import_all_acafe_exams(since_year: Optional[int] = None, until_year: Optiona
     de rede, ou PDF num formato não reconhecido não interrompem o lote; são
     só reportados como pulados. Use `since_year`/`until_year` para dividir o
     lote em partes menores."""
+    force_reimport = kwargs.get("force_reimport", False)
     close_after = db is None
     if db is None:
         db = SessionLocal()

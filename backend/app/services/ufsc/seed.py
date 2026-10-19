@@ -463,6 +463,7 @@ def _persist_parsed_questions(
 
 def seed_ufsc(db=None, **kwargs) -> dict:
     """Varre backend/provas/ufsc/ e importa todas as provas encontradas."""
+    force_reimport = kwargs.get("force_reimport", False)
     from app.database import SessionLocal
 
     if db is None:

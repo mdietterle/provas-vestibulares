@@ -318,19 +318,26 @@ def parse_exam_pdf(pdf_path: Path) -> list[dict]:
 
 # ── Persistência ─────────────────────────────────────────────────────────────
 
-def _persist_edition(db: Session, year: int, exam_name: str, questions: list[dict]) -> dict:
+def _persist_edition(db: Session, year: int, exam_name: str, questions: list[dict], force_reimport: bool = False) -> dict:
     """Grava as questões de uma edição. Idempotente por (year, exam_name):
     se já existirem questões daquela edição, não duplica."""
-    already = (
-        db.query(UtfprQuestion)
-        .filter(UtfprQuestion.year == year, UtfprQuestion.exam_name == exam_name)
-        .count()
-    )
-    if already > 0:
-        return {
-            "year": year, "exam_name": exam_name,
-            "total_parsed": len(questions), "total_added": 0, "skipped_existing": already,
-        }
+    if force_reimport:
+        db.query(UtfprQuestion).filter(
+            UtfprQuestion.year == year, UtfprQuestion.exam_name == exam_name
+        ).delete(synchronize_session=False)
+        db.flush()
+        already = 0
+    else:
+        already = (
+            db.query(UtfprQuestion)
+            .filter(UtfprQuestion.year == year, UtfprQuestion.exam_name == exam_name)
+            .count()
+        )
+        if already > 0:
+            return {
+                "year": year, "exam_name": exam_name,
+                "total_parsed": len(questions), "total_added": 0, "skipped_existing": already,
+            }
 
     added = 0
     for q in questions:
@@ -353,6 +360,8 @@ def _persist_edition(db: Session, year: int, exam_name: str, questions: list[dic
 
 
 def import_utfpr_edition(
+    slug: str, year: int, db: Optional[Session] = None, force_reimport: bool = False
+) -> dict:
     slug: str,
     year: int,
     db: Optional[Session] = None,
@@ -391,7 +400,7 @@ def import_utfpr_edition(
         for q in questions:
             q["correct"] = gabarito.get(q["number"])
 
-        return _persist_edition(db, year, exam_name, questions)
+        return _persist_edition(db, year, exam_name, questions, force_reimport=force_reimport)
     except Exception:
         db.rollback()
         raise
@@ -412,6 +421,7 @@ def import_all_utfpr_exams(
     cobertos). Cada edição é tentada de forma independente. Use
     `since_year`/`until_year` pra restringir o intervalo (por ano civil)."""
     from app.database import SessionLocal
+    force_reimport = kwargs.get("force_reimport", False)
 
     close_after = db is None
     if db is None:
@@ -439,7 +449,7 @@ def import_all_utfpr_exams(
                 update_task_progress(task_id, current=i, total=len(slugs), log=f"Processando edição {slug}...")
 
             try:
-                r = import_utfpr_edition(slug, year, db=db)
+                r = import_utfpr_edition(slug, year, db=db, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
                 if task_id:

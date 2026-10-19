@@ -420,6 +420,7 @@ def import_all_ulbra_exams(
     falha de rede, PDF fora do padrão esperado, ou link não encontrado não
     travam o lote, só são reportados como pulados."""
     from app.database import SessionLocal
+    force_reimport = kwargs.get("force_reimport", False)
 
     close_after = db is None
     if db is None:

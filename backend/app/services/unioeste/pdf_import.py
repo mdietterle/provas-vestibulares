@@ -457,6 +457,7 @@ def import_unioeste_year(
     cadernos_url: str,
     gabarito_url: Optional[str],
     db: Optional[Session] = None,
+    force_reimport: bool = False,
 ) -> dict:
     """Importa a edição 'Padrão' de um ano: baixa Tarde + Manhã-Espanhol (ver
     docstring do módulo sobre a escolha do idioma) e o Gabarito Definitivo, e
@@ -536,6 +537,7 @@ def import_all_unioeste_exams(
     o lote, só são reportados como pulados. Use `since_year`/`until_year` pra
     restringir o intervalo."""
     from app.database import SessionLocal
+    force_reimport = kwargs.get("force_reimport", False)
 
     close_after = db is None
     if db is None:
@@ -569,7 +571,7 @@ def import_all_unioeste_exams(
                 continue
 
             try:
-                r = import_unioeste_year(year, cadernos_url, gabarito_url, db=db)
+                r = import_unioeste_year(year, cadernos_url, gabarito_url, db=db, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
                 if task_id:

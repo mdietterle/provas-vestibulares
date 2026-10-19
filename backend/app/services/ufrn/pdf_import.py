@@ -252,11 +252,19 @@ def _find_y_for_text_pos(text_parts: list[tuple[float, str]], char_pos: int) -> 
 
 # ── Persistência ─────────────────────────────────────────────────────────
 
-def _persist_year(db: Session, year: int, questions: list[dict], gabarito: dict[int, Optional[str]]) -> dict:
+def _persist_year(db: Session, year: int, questions: list[dict], gabarito: dict[int, Optional[str]], force_reimport: bool = False) -> dict:
     """Grava as questões de um ano usando save_vestibular_question (modelo
     unificado VestibularQuestion + upload de imagens para Supabase Storage).
     Idempotente por ano/número."""
     from app.services.import_batch import save_vestibular_question
+
+    if force_reimport:
+        from app.models import VestibularQuestion
+        db.query(VestibularQuestion).filter(
+            VestibularQuestion.exam_type == "ufrn",
+            VestibularQuestion.year == year,
+        ).delete(synchronize_session=False)
+        db.flush()
 
     added = 0
     skipped_existing = 0
@@ -305,7 +313,7 @@ def _persist_year(db: Session, year: int, questions: list[dict], gabarito: dict[
     return {"year": year, "total_parsed": len(questions), "total_added": added, "skipped_existing": skipped_existing}
 
 
-def import_ufrn_year(year: int, db: Optional[Session] = None) -> dict:
+def import_ufrn_year(year: int, db: Optional[Session] = None, force_reimport: bool = False) -> dict:
     """Importa um ano: baixa a prova do Dia 2 + gabarito oficial definitivo,
     parseia e grava."""
     from app.database import SessionLocal
@@ -337,7 +345,7 @@ def import_ufrn_year(year: int, db: Optional[Session] = None) -> dict:
         if not gabarito:
             return {"year": year, "skipped": True, "reason": "Gabarito não reconhecido (HTML em formato inesperado)"}
 
-        return _persist_year(db, year, questions, gabarito)
+        return _persist_year(db, year, questions, gabarito, force_reimport=force_reimport)
     except Exception:
         db.rollback()
         raise
@@ -359,6 +367,7 @@ def import_all_ufrn_exams(
     padrão esperado, ou link não encontrado não travam o lote, só são
     reportados como pulados."""
     from app.database import SessionLocal
+    force_reimport = kwargs.get("force_reimport", False)
 
     close_after = db is None
     if db is None:
@@ -378,7 +387,7 @@ def import_all_ufrn_exams(
                 update_task_progress(task_id, current=i, total=len(years), log=f"Processando Vestibular UFRN {year}...")
 
             try:
-                r = import_ufrn_year(year, db=db)
+                r = import_ufrn_year(year, db=db, force_reimport=force_reimport)
                 results.append(r)
                 total_added += r.get("total_added", 0)
                 if task_id:
