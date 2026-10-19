@@ -43,3 +43,20 @@ async def start_import(
     task_id = create_task()
     background_tasks.add_task(run_import_with_timeout, _run_import_all, task_id, since_year, until_year, task_id=task_id)
     return {"ok": True, "task_id": task_id}
+
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista exam_name distintos da UFU no banco, opcionalmente por ano."""
+    from app.models import UfuQuestion
+    q = db.query(UfuQuestion.exam_name).filter(
+        UfuQuestion.exam_name.isnot(None),
+    )
+    if year is not None:
+        q = q.filter(UfuQuestion.year == year)
+    rows = q.distinct().order_by(UfuQuestion.exam_name).all()
+    return [r[0] for r in rows if r[0]]

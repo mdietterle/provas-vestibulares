@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 
@@ -28,3 +28,21 @@ def run_ufms_import(
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista exam_name distintos da UFMS no banco, opcionalmente por ano."""
+    from app.vestibular.models import VestibularQuestion
+    q = db.query(VestibularQuestion.exam_name).filter(
+        VestibularQuestion.exam_type == "ufms",
+        VestibularQuestion.exam_name.isnot(None),
+    )
+    if year is not None:
+        q = q.filter(VestibularQuestion.year == year)
+    rows = q.distinct().order_by(VestibularQuestion.exam_name).all()
+    return [r[0] for r in rows if r[0]]

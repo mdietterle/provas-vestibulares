@@ -35,3 +35,18 @@ def start_import(
         run_import_with_timeout, import_all_unicentro_exams, since_year=since_year, until_year=until_year, task_id=task_id
     )
     return {"ok": True, "task_id": task_id}
+
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista anos distintos da UNICENTRO no banco."""
+    from app.models import UnicentroQuestion
+    q = db.query(UnicentroQuestion.year)
+    if year is not None:
+        q = q.filter(UnicentroQuestion.year == year)
+    rows = q.distinct().order_by(UnicentroQuestion.year.desc()).all()
+    return [str(r[0]) for r in rows if r[0]]

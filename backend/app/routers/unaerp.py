@@ -33,3 +33,20 @@ async def start_import(
     task_id = create_task()
     background_tasks.add_task(run_import_with_timeout, import_all_unaerp_exams, since_year=since_year, until_year=until_year, task_id=task_id)
     return {"ok": True, "task_id": task_id}
+
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista exam_name distintos da UNAERP no banco, opcionalmente por ano."""
+    from app.models import UnaerpQuestion
+    q = db.query(UnaerpQuestion.exam_name).filter(
+        UnaerpQuestion.exam_name.isnot(None),
+    )
+    if year is not None:
+        q = q.filter(UnaerpQuestion.year == year)
+    rows = q.distinct().order_by(UnaerpQuestion.exam_name).all()
+    return [r[0] for r in rows if r[0]]

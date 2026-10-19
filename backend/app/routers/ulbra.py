@@ -50,12 +50,12 @@ def get_question(question_id: int, db: Session = Depends(get_db)):
     return question
 
 
-async def _run_import_all(task_id: str, since_year: Optional[int] = None, until_year: Optional[int] = None):
+async def _run_import_all(task_id: str, since_year: Optional[int] = None, until_year: Optional[int] = None, force_reimport: bool = False):
     """Roda em background com sua própria sessão de DB — a sessão do
     request já está fechada quando isso executa."""
     db = SessionLocal()
     try:
-        await import_all(db=db, task_id=task_id, since_year=since_year, until_year=until_year)
+        await import_all(db=db, task_id=task_id, since_year=since_year, until_year=until_year, force_reimport=force_reimport)
     finally:
         db.close()
 
@@ -65,6 +65,7 @@ async def start_import(
     background_tasks: BackgroundTasks,
     since_year: Optional[int] = None,
     until_year: Optional[int] = None,
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
     current_user: User = Depends(get_current_user),
 ):
     """Owner-only: importa da ULBRA/Canoas (2016-2019 — ver `_EDITIONS` em
@@ -77,5 +78,20 @@ async def start_import(
         raise HTTPException(status_code=403, detail="Not authorized")
     from app.services.progress import create_task, run_import_with_timeout
     task_id = create_task()
-    background_tasks.add_task(run_import_with_timeout, _run_import_all, task_id, since_year, until_year, task_id=task_id)
+    background_tasks.add_task(run_import_with_timeout, _run_import_all, task_id, since_year, until_year, force_reimport=force_reimport, task_id=task_id)
     return {"ok": True, "task_id": task_id}
+
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista edições distintas da ULBRA no banco, opcionalmente por ano."""
+    from app.models import UlbraQuestion
+    q = db.query(UlbraQuestion.edition)
+    if year is not None:
+        q = q.filter(UlbraQuestion.year == year)
+    rows = q.distinct().order_by(UlbraQuestion.edition).all()
+    return [r[0] for r in rows if r[0]]

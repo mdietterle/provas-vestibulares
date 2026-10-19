@@ -75,6 +75,7 @@ def import_all_pucpr(
             import_all_pucpr_exams,
             since_year=since_year,
             until_year=until_year,
+            force_reimport=force_reimport,
             task_id=task_id,
         )
         return {"ok": True, "task_id": task_id}

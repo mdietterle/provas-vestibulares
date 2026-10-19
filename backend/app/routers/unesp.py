@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import BackgroundTasks, APIRouter, Depends
 
 from app.database import SessionLocal
@@ -45,3 +46,22 @@ def import_unesp(
         run_import_with_timeout, _import_all_unesp, since_year, until_year, task_id, task_id=task_id
     )
     return {"ok": True, "task_id": task_id}
+
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista exam_name distintos da UNESP no banco, opcionalmente por ano."""
+    from app.vestibular.models import VestibularQuestion
+
+    q = db.query(VestibularQuestion.exam_name).filter(
+        VestibularQuestion.exam_type == "unesp",
+        VestibularQuestion.exam_name.isnot(None),
+    )
+    if year is not None:
+        q = q.filter(VestibularQuestion.year == year)
+    rows = q.distinct().order_by(VestibularQuestion.exam_name).all()
+    return [r[0] for r in rows if r[0]]

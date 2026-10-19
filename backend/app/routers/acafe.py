@@ -42,6 +42,7 @@ def run_acafe_seed(
     background_tasks: BackgroundTasks,
     since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano (padrão: 2014)"),
     until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano (padrão: 2026)"),
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
     _: User = Depends(require_owner),
 ):
     """Owner-only: varre storage.acafe.org.br (vestibular de Medicina ACAFE)
@@ -55,6 +56,20 @@ def run_acafe_seed(
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(500, f"Erro no seed: {e}")
+
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista versões de prova disponíveis para um dado ano."""
+    q = db.query(AcafeQuestion.period).distinct()
+    if year is not None:
+        q = q.filter(AcafeQuestion.year == year)
+    rows = q.order_by(AcafeQuestion.period).all()
+    return [r[0] for r in rows if r[0]]
 
 
 @router.get("", response_model=List[AcafeQuestionOut])

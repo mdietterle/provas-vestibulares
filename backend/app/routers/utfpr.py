@@ -18,6 +18,7 @@ async def start_import(
     background_tasks: BackgroundTasks,
     since_year: Optional[int] = None,
     until_year: Optional[int] = None,
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
     current_user: User = Depends(get_current_user),
 ):
     """Owner-only: varre .../vestibular/edicoes/ da UTFPR (2023/2 em diante)
@@ -31,6 +32,23 @@ async def start_import(
     from app.services.utfpr.pdf_import import import_all_utfpr_exams
     task_id = create_task()
     background_tasks.add_task(
-        run_import_with_timeout, import_all_utfpr_exams, since_year=since_year, until_year=until_year, task_id=task_id
+        run_import_with_timeout, import_all_utfpr_exams, since_year=since_year, until_year=until_year, force_reimport=force_reimport, task_id=task_id
     )
     return {"ok": True, "task_id": task_id}
+
+
+@router.get("/admin/exam-versions", response_model=List[str])
+def list_exam_versions(
+    year: Optional[int] = Query(None, description="Filtra por ano"),
+    db: Session = Depends(get_db),
+    _: User = Depends(require_owner),
+):
+    """Owner-only: lista exam_name distintos da UTFPR no banco, opcionalmente por ano."""
+    from app.models import UtfprQuestion
+    q = db.query(UtfprQuestion.exam_name).filter(
+        UtfprQuestion.exam_name.isnot(None),
+    )
+    if year is not None:
+        q = q.filter(UtfprQuestion.year == year)
+    rows = q.distinct().order_by(UtfprQuestion.exam_name).all()
+    return [r[0] for r in rows if r[0]]
