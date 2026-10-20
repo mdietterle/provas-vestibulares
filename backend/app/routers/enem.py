@@ -26,13 +26,18 @@ router = APIRouter(prefix="/enem-questions", tags=["enem"])
 @router.post("/admin/run-seed", status_code=200)
 def run_enem_seed(
     background_tasks: BackgroundTasks,
-_: User = Depends(require_owner)):
+    since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano"),
+    until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano"),
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
+    exam_name: Optional[str] = Query(None, description="Se informado, importa só essa versão da prova"),
+    _: User = Depends(require_owner),
+):
     """Owner-only: cria as tabelas ENEM e importa questões dos JSONs locais."""
     from app.services.enem.seed import seed_enem
     try:
         from app.services.progress import create_task, run_import_with_timeout
         task_id = create_task()
-        background_tasks.add_task(run_import_with_timeout, seed_enem, force_reimport=force_reimport, task_id=task_id)
+        background_tasks.add_task(run_import_with_timeout, seed_enem, force_reimport=force_reimport, exam_name=exam_name, since_year=since_year, until_year=until_year, task_id=task_id)
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(500, f"Erro no seed: {e}")

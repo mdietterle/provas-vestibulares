@@ -25,13 +25,18 @@ router = APIRouter(prefix="/ufsc-questions", tags=["ufsc"])
 @router.post("/admin/run-seed", status_code=200)
 def run_ufsc_seed(
     background_tasks: BackgroundTasks,
-_: User = Depends(require_owner)):
+    since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano"),
+    until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano"),
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
+    exam_name: Optional[str] = Query(None, description="Se informado, importa só essa versão da prova"),
+    _: User = Depends(require_owner),
+):
     """Owner-only: cria as tabelas UFSC e importa as questões dos PDFs locais."""
     from app.services.ufsc.seed import seed_ufsc
     try:
         from app.services.progress import create_task, run_import_with_timeout
         task_id = create_task()
-        background_tasks.add_task(run_import_with_timeout, seed_ufsc, exam_name=exam_name, task_id=task_id)
+        background_tasks.add_task(run_import_with_timeout, seed_ufsc, force_reimport=force_reimport, exam_name=exam_name, since_year=since_year, until_year=until_year, task_id=task_id)
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(500, f"Erro no seed: {e}")
