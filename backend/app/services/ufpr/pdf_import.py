@@ -3,28 +3,20 @@ from __future__ import annotations
 from app.services.progress import update_task_progress, complete_task, fail_task
 from typing import Optional
 import gc
-"""Importa questões da UFPR direto do site oficial do Núcleo de Concursos
-(NC-UFPR), um PDF por ano — em vez de depender só da coletânea local
-(`ufpr/seed.py`), que cobre uma faixa fixa de anos e precisa ser atualizada
-manualmente.
+"""Importa questões da UFPR a partir dos PDFs disponibilizados pelo Brasil
+Escola (vestibular.brasilescola.uol.com.br), que espelha as provas oficiais
+do NC-UFPR com o gabarito já marcado no texto ("*" ou "►" antes da alternativa
+correta). Isso dispensa OCR e evita a fragilidade das URLs diretas do NC-UFPR,
+que mudaram de padrão várias vezes e frequentemente retornam HTML de erro com
+status 200.
 
-Diferente da coletânea (cujo gabarito vem de uma página ESCANEADA, lida por
-OCR célula a célula), o PDF oficial de cada ano já traz a resposta certa
-marcada diretamente no texto por um símbolo antes da letra da alternativa —
-"*" nos anos mais antigos (ex.: 2011: "*e) ..."), "►" nos mais recentes (ex.:
-2016 em diante: "►d) ..."). Isso dispensa OCR inteiramente para estas provas.
+Fonte: https://vestibular.brasilescola.uol.com.br/downloads/universidade-federal-parana.htm
+Cada link "/baixar/<id>" redireciona para o PDF real. O mapeamento ano→id é
+extraído dessa página e mantido em `_BRASIL_ESCOLA_IDS`.
 
-O site do NC-UFPR passou por pelo menos 3 padrões de URL diferentes ao longo
-dos anos (servidor estático antigo até ~2017, portal novo com pastas cujo
-nome de arquivo varia, padrão atual "provas/Geral.pdf" desde ~2022) e, pelo
-menos duas vezes (2016 e PS2019), removeu o link da página ao vivo mesmo com
-o arquivo continuando acessível no caminho previsível. Por isso, em vez de
-tentar raspar uma página-índice por ano (frágil e inconsistente entre eras),
-`fetch_ufpr_pdf_url` tenta uma lista de candidatos conhecidos, em ordem, e
-usa o primeiro que responder com um PDF de verdade.
-
-2021 teve uma aplicação fora do padrão (pasta com ~8 PDFs separados por
-idioma/curso, sem um único "Geral") e não é coberto por este scraper.
+Parsing: reaproveita `_parse_exam_questions`/`_assign_images` da coletânea
+local (`seed.py`) e usa `_extract_alternatives_marked` para ler a resposta
+do marcador no texto.
 """
 
 
@@ -47,61 +39,65 @@ from app.services.ufpr.seed import (
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
 
-# Anos com aplicação fora do padrão "um PDF geral por ano" (ver docstring do
-# módulo) — não tentamos adivinhar candidatos pra eles.
-_UNSUPPORTED_YEARS = {2021}
+# Mapeamento ano → ID de download no Brasil Escola, extraído da página de
+# downloads da UFPR. IDs são estáveis; o link "/baixar/<id>" redireciona 302
+# para o PDF real (hospedado no CDN do UOL).
+_BRASIL_ESCOLA_IDS: dict[int, int] = {
+    2026: 47768,
+    2025: 47682,
+    2024: 47612,
+    2023: 47571,
+    2022: 47472,  # Fase Única — só Língua Estrangeira
+    2021: 47371,  # Aplicação fora do padrão mas PDF único disponível aqui
+    2020: 47371,  # Mesma entrada 2021/2022 no site; pulado via lógica abaixo
+    2019: 46354,
+    2018: 43676,
+    2017: 40551,
+    2016: 36581,
+    2015: 32993,  # 1ª fase
+    2014: 24785,  # 1ª fase
+    2013: 20831,  # 1ª fase
+    2012: 17004,  # 1ª fase
+    2011: 12950,  # 1ª fase
+    2010: 8860,   # 1ª fase
+    2009: 3865,   # 1ª fase
+}
 
-
-def _candidate_urls(year: int) -> list[str]:
-    """Lista de URLs conhecidas onde o PDF da prova de um ano pode estar,
-    cobrindo as ~3 eras de estrutura do site do NC-UFPR. Ordem = prioridade."""
-    urls: list[str] = []
-
-    # Era atual (~2022+): servicos.nc.ufpr.br, pasta "provas/Geral.pdf" — tenta
-    # primeiro o caminho direto (existe e está correto em todos os anos
-    # testados, 2022-2026); só cai pras subpastas provisorio/definitivo
-    # (usadas a partir de 2025) se o direto não existir. IMPORTANTE: não
-    # inverter essa ordem — em 2022 "provas/provisorio/Geral.pdf" é um PDF
-    # de ~9.6MB com conteúdo errado/incompleto (só Língua Estrangeira),
-    # bem diferente do "Geral.pdf" direto (~600KB, todas as matérias).
-    for ps in (f"ps{year}", f"PS{year}"):
-        urls.append(f"https://servicos.nc.ufpr.br/documentos/{ps}/provas/Geral.pdf")
-        urls.append(f"https://servicos.nc.ufpr.br/documentos/{ps}/provas/definitivo/Geral.pdf")
-        urls.append(f"https://servicos.nc.ufpr.br/documentos/{ps}/provas/provisorio/Geral.pdf")
-
-    # Era intermediária (~2018-2020): mesmo domínio novo, pasta antiga "provas1fase".
-    for ps in (f"PS{year}", f"ps{year}"):
-        for fname in (f"ps{year}_conhecimentos_gerais.pdf", f"PS{year}_conhecimentos_gerais.pdf"):
-            urls.append(f"https://servicos.nc.ufpr.br/documentos/{ps}/provas1fase/{fname}")
-
-    # Era antiga (até ~2017): site estático www.nc.ufpr.br. O nome da pasta e
-    # do arquivo variou ano a ano (ex.: 2011 usa "prova1fase" no singular).
-    for folder in ("provas1fase", "prova1fase", "provas_1fase"):
-        for fname in (
-            f"PS{year}_conhecimentos_gerais.pdf",
-            f"ps{year}_conhecimentos_gerais.pdf",
-            f"ps{year}_1fase.pdf",
-            f"PS{year}gabarito_geral.pdf",
-        ):
-            urls.append(f"https://www.nc.ufpr.br/concursos_institucionais/ufpr/ps{year}/{folder}/{fname}")
-
-    return urls
+# 2020 compartilha o mesmo ID 47371 com 2021 no Brasil Escola (entrada
+# "Prova e Gabarito UFPR 2021/2022"). Não há entrada separada pra 2020.
+# Removemos 2020 do mapa pra evitar importar o PDF errado sob o ano errado.
+_BRASIL_ESCOLA_IDS.pop(2020, None)
 
 
 def fetch_ufpr_pdf_url(year: int) -> Optional[str]:
-    """Tenta, em ordem, os candidatos de `_candidate_urls` e retorna o
-    primeiro que responder com um PDF de verdade (checa os magic bytes —
-    o site retorna HTML de erro com status 200 pra links removidos, então
-    o status HTTP sozinho não é suficiente pra decidir)."""
-    if year in _UNSUPPORTED_YEARS:
+    """Resolve a URL do PDF da prova UFPR de um dado ano via Brasil Escola.
+
+    Faz HEAD request no link "/baixar/<id>" seguindo redirects; retorna a
+    URL final se apontar para um PDF (Content-Type ou extensão .pdf)."""
+    be_id = _BRASIL_ESCOLA_IDS.get(year)
+    if be_id is None:
         return None
-    for url in _candidate_urls(year):
-        try:
-            resp = requests.get(url, timeout=30, headers=_HEADERS)
-        except requests.RequestException:
-            continue
-        if resp.status_code == 200 and resp.content[:4] == b"%PDF":
-            return url
+    url = f"https://vestibular.brasilescola.uol.com.br/baixar/{be_id}"
+    try:
+        resp = requests.head(url, timeout=30, headers=_HEADERS, allow_redirects=True)
+    except requests.RequestException:
+        return None
+    if resp.status_code != 200:
+        return None
+    final_url = resp.url
+    ct = resp.headers.get("Content-Type", "").lower()
+    if "pdf" in ct or final_url.lower().endswith(".pdf"):
+        return final_url
+    # Fallback: tenta GET com stream pra checar magic bytes se HEAD não
+    # revelou Content-Type útil (alguns CDNs não mandam no HEAD).
+    try:
+        resp = requests.get(url, timeout=30, headers=_HEADERS, stream=True, allow_redirects=True)
+        head_bytes = resp.raw.read(4)
+        resp.close()
+        if head_bytes == b"%PDF":
+            return resp.url
+    except requests.RequestException:
+        pass
     return None
 
 
@@ -286,13 +282,9 @@ def import_ufpr_year(db, year: int, pdf_url: str, force_reimport: bool = False) 
 
 
 def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
-    """Importa TODAS as provas da UFPR publicadas no site do NC-UFPR, em
-    regressão de `until_year` (padrão: 2026) até `since_year` (padrão: 2009).
-
-    Cada ano é tentado de forma independente — URL não encontrada entre os
-    candidatos conhecidos (`fetch_ufpr_pdf_url`), PDF num formato não
-    reconhecido, ou 2021 (aplicação fora do padrão, não suportada) não
-    interrompem o lote, só são reportados como pulados."""
+    """Importa provas da UFPR via Brasil Escola, de `until_year` (padrão: 2026)
+    até `since_year` (padrão: 2009). Cada ano é tentado independentemente;
+    falhas individuais não interrompem o lote."""
     from app.database import SessionLocal
 
     close_after = db is None
@@ -316,10 +308,6 @@ def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = No
     total_added = 0
     try:
         for year in range(year_to, year_from - 1, -1):
-            if year in _UNSUPPORTED_YEARS:
-                results.append({"year": year, "skipped": True, "reason": "Aplicação fora do padrão (não suportada)"})
-                continue
-
             pdf_url = fetch_ufpr_pdf_url(year)
             if not pdf_url:
                 results.append({"year": year, "skipped": True, "reason": "URL não encontrada entre os candidatos conhecidos"})
