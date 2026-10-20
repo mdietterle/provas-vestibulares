@@ -1,6 +1,8 @@
 from typing import Optional, List
 
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
+from sqlalchemy.orm import Session
+from app.database import get_db
 
 from app.deps import require_owner
 from app.models import User

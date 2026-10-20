@@ -1,5 +1,5 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.database import get_db, SessionLocal
@@ -7,6 +7,7 @@ from app.models import UfamQuestion, UfamQuestionOption, User
 from app.schemas import UfamQuestionSchema
 from app.services.ufam.pdf_import import import_all_ufam_exams
 from app.routers.auth import get_current_user
+from app.deps import require_owner
 
 router = APIRouter(prefix="/ufam", tags=["UFAM"])
 

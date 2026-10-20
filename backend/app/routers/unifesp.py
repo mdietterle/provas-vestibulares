@@ -1,7 +1,8 @@
-from typing import List
-from fastapi import BackgroundTasks, APIRouter, Depends
+from typing import List, Optional
+from fastapi import BackgroundTasks, APIRouter, Depends, Query
+from sqlalchemy.orm import Session
 
-from app.database import SessionLocal
+from app.database import SessionLocal, get_db
 from app.deps import require_owner
 from app.models import User
 from app.services.unifesp.pdf_import import seed_unifesp

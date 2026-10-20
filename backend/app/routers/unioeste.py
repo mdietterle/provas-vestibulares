@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.database import get_db
 from app.models import UnioesteQuestion, User
 from app.schemas import UnioesteQuestionSchema
 from app.routers.auth import get_current_user
+from app.deps import require_owner
 
 router = APIRouter(prefix="/unioeste", tags=["UNIOESTE"])
 

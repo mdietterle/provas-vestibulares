@@ -1,3 +1,4 @@
+from app.deps import require_owner
 from typing import List, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query

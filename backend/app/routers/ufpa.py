@@ -1,5 +1,5 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.database import get_db, SessionLocal
@@ -7,6 +7,7 @@ from app.models import UfpaQuestion, UfpaQuestionOption, User
 from app.schemas import UfpaQuestionSchema
 from app.services.ufpa.pdf_import import import_all_ufpa_exams
 from app.routers.auth import get_current_user
+from app.deps import require_owner
 
 router = APIRouter(prefix="/ufpa", tags=["UFPA"])
 

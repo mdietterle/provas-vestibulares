@@ -1,3 +1,4 @@
+from app.deps import require_owner
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
 from sqlalchemy.orm import Session
