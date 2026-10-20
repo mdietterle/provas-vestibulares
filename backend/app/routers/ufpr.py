@@ -24,7 +24,12 @@ router = APIRouter(prefix="/ufpr-questions", tags=["ufpr"])
 @router.post("/admin/run-seed", status_code=200)
 def run_ufpr_seed(
     background_tasks: BackgroundTasks,
-_: User = Depends(require_owner)):
+    since_year: Optional[int] = Query(None, description="Se informado, importa só a partir desse ano"),
+    until_year: Optional[int] = Query(None, description="Se informado, importa só até esse ano"),
+    force_reimport: bool = Query(False, description="Se true, reimporta questões já existentes"),
+    exam_name: Optional[str] = Query(None, description="Se informado, importa só essa versão da prova"),
+    _: User = Depends(require_owner),
+):
     """Owner-only: cria as tabelas UFPR e importa as questões da coletânea local."""
     from app.services.ufpr.seed import seed_ufpr
     try:
