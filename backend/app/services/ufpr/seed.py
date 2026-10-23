@@ -410,7 +410,14 @@ def parse_pdf(pdf_path: Path) -> list[dict]:
     return all_questions
 
 
-def seed_ufpr(db: Session | None = None, **kwargs) -> dict:
+def seed_ufpr(
+    db: Session | None = None,
+    since_year: int | None = None,
+    until_year: int | None = None,
+    force_reimport: bool = False,
+    exam_name: str | None = None,
+    **kwargs,
+) -> dict:
     """Importa as questões das coletâneas UFPR locais. Retorna um resumo."""
     if not UFPR_DIR.exists():
         return {"skipped": True, "reason": "Pasta ufpr/ não encontrada"}
@@ -434,6 +441,12 @@ def seed_ufpr(db: Session | None = None, **kwargs) -> dict:
                 by_year.setdefault(q["year"], []).append(q)
 
             for year in sorted(by_year, reverse=True):
+                if since_year is not None and year < since_year:
+                    continue
+                if until_year is not None and year > until_year:
+                    continue
+                if exam_name is not None and f"UFPR {year}" != exam_name:
+                    continue
                 exam_name = f"UFPR {year}"
 
                 added = 0

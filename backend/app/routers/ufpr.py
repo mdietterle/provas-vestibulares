@@ -35,7 +35,15 @@ def run_ufpr_seed(
     try:
         from app.services.progress import create_task, run_import_with_timeout
         task_id = create_task()
-        background_tasks.add_task(run_import_with_timeout, seed_ufpr, force_reimport=force_reimport, exam_name=exam_name, task_id=task_id)
+        background_tasks.add_task(
+            run_import_with_timeout,
+            seed_ufpr,
+            since_year=since_year,
+            until_year=until_year,
+            force_reimport=force_reimport,
+            exam_name=exam_name,
+            task_id=task_id,
+        )
         return {"ok": True, "task_id": task_id}
     except Exception as e:
         raise HTTPException(500, f"Erro no seed: {e}")
@@ -69,7 +77,12 @@ def import_all_ufpr(
         from app.services.progress import create_task, run_import_with_timeout
         task_id = create_task()
         background_tasks.add_task(
-            run_import_with_timeout, import_all_ufpr_exams, since_year=since_year or 2009, until_year=until_year, task_id=task_id
+            run_import_with_timeout,
+            import_all_ufpr_exams,
+            since_year=since_year or 2009,
+            until_year=until_year,
+            force_reimport=force_reimport,
+            task_id=task_id,
         )
         return {"ok": True, "task_id": task_id}
     except Exception as e:
