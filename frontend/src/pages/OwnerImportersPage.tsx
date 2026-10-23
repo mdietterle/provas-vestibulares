@@ -1,4 +1,3 @@
-import type { EnemPdfImportResult, UfscPdfImportResult, ItaPdfImportResult, AcafeUrlImportResult, PucprUrlImportResult } from '../api'
 import { MiniBar } from './OwnerPage'
 import { useState, useEffect } from 'react'
 import {
@@ -9,6 +8,7 @@ import {
   puccampinasApi, unimontesApi, unicentroApi, unaerpApi,
   ownerApi
 } from '../api'
+import { uploadPdfApi, type UploadPdfResult } from '../api/uploadPdf'
 
 type ImportSource = {
   key: string
@@ -310,177 +310,20 @@ function QuestionImportPanel() {
   )
 }
 
-function EnemPdfImportPanel() {
-  const [prova, setProva] = useState<File | null>(null)
-  const [gabarito, setGabarito] = useState<File | null>(null)
-  const [provaUrl, setProvaUrl] = useState('')
-  const [gabaritoUrl, setGabaritoUrl] = useState('')
-  const [mecPageUrl, setMecPageUrl] = useState('https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos')
-  const [year, setYear] = useState(new Date().getFullYear() - 1)
-  const [day, setDay] = useState(1)
-  const [color, setColor] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [result, setResult] = useState<EnemPdfImportResult | null>(null)
-  const [error, setError] = useState('')
-  const [forceReimport, setForceReimport] = useState(false)
+const PDF_UPLOAD_VESTIBULARES = [
+  { key: 'enem', label: 'ENEM' },
+  { key: 'ufsc', label: 'UFSC' },
+  { key: 'ita', label: 'ITA' },
+]
 
-  async function handleSubmit() {
-    if (!prova && !provaUrl.trim() && !mecPageUrl.trim()) {
-      setError('Selecione o PDF da prova ou informe a URL da prova / página do MEC.')
-      return
-    }
-    setError('')
-    setResult(null)
-    setSubmitting(true)
-    try {
-      const form = new FormData()
-      if (prova) form.append('prova', prova)
-      if (gabarito) form.append('gabarito', gabarito)
-      if (provaUrl.trim()) form.append('prova_url', provaUrl.trim())
-      if (gabaritoUrl.trim()) form.append('gabarito_url', gabaritoUrl.trim())
-      if (mecPageUrl.trim()) form.append('mec_page_url', mecPageUrl.trim())
-      form.append('year', String(year))
-      form.append('day', String(day))
-      if (color.trim()) form.append('color', color.trim())
-      const r = await enemApi.importPdf(form, forceReimport)
-      setResult(r.data)
-    } catch (e: unknown) {
-      const err = e as { response?: { data?: { detail?: string } } }
-      setError(err.response?.data?.detail ?? 'Erro ao importar PDF.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <div className="bg-white rounded-xl border border-[#E2E8F0] p-5">
-      <div className="mb-4">
-        <h2 className="text-base font-bold text-[#1E293B]">Importar prova ENEM (PDF ou URL do MEC)</h2>
-        <p className="text-sm text-[#64748B]">
-          Você pode enviar o PDF da prova ou informar a URL da prova ou a página oficial do MEC. A extração das questões usa reconhecimento de layout e uma IA (Groq) classifica matéria e dificuldade de cada questão.
-        </p>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
-        <label className="text-xs font-semibold text-[#334155] sm:col-span-2">
-          PDF da prova (opcional)
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={e => setProva(e.target.files?.[0] ?? null)}
-            className="mt-1 block w-full text-xs"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155] sm:col-span-2">
-          PDF do gabarito (opcional)
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={e => setGabarito(e.target.files?.[0] ?? null)}
-            className="mt-1 block w-full text-xs"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155] sm:col-span-2">
-          URL da prova (opcional)
-          <input
-            type="url"
-            value={provaUrl}
-            onChange={e => setProvaUrl(e.target.value)}
-            placeholder="https://.../prova.pdf"
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155] sm:col-span-2">
-          URL do gabarito (opcional)
-          <input
-            type="url"
-            value={gabaritoUrl}
-            onChange={e => setGabaritoUrl(e.target.value)}
-            placeholder="https://.../gabarito.pdf"
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155] sm:col-span-4">
-          Página do MEC (opcional)
-          <input
-            type="url"
-            value={mecPageUrl}
-            onChange={e => setMecPageUrl(e.target.value)}
-            placeholder="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos"
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Ano
-          <input
-            type="number"
-            value={year}
-            onChange={e => setYear(Number(e.target.value))}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Dia
-          <select
-            value={day}
-            onChange={e => setDay(Number(e.target.value))}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          >
-            <option value={1}>1º dia (Linguagens + Humanas)</option>
-            <option value={2}>2º dia (Natureza + Matemática)</option>
-          </select>
-        </label>
-        <label className="text-xs font-semibold text-[#334155] sm:col-span-2">
-          Cor do caderno (opcional — detectada automaticamente se possível)
-          <input
-            type="text"
-            value={color}
-            onChange={e => setColor(e.target.value)}
-            placeholder="Ex.: Azul"
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-      </div>
-      <label className="flex items-center gap-2 mb-3 text-xs text-[#334155] cursor-pointer select-none">
-        <input
-          type="checkbox"
-          checked={forceReimport}
-          onChange={e => setForceReimport(e.target.checked)}
-          className="rounded border-[#c5c5d3]"
-        />
-        Forçar reimportação (reprocessar questões já existentes)
-      </label>
-      <button
-        onClick={handleSubmit}
-        disabled={submitting}
-        className="px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
-      >
-        {submitting ? 'Importando… isso pode levar alguns minutos' : 'Importar PDF'}
-      </button>
-      {error && <p className="mt-3 text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
-      {result && (
-        <div className="mt-3 text-sm text-[#1E293B] bg-[#EFF6FF] rounded-lg p-3">
-          <p className="font-semibold">{result.exam_name}{result.color ? ` (${result.color})` : ''}</p>
-          <p>{result.total_added} questões importadas · {result.skipped_existing} já existiam · {result.total_parsed} lidas do PDF.</p>
-          {result.parse_errors.length > 0 && (
-            <p className="text-slate-700 dark:text-slate-400 mt-1">
-              Não foi possível extrair as alternativas das questões: {result.parse_errors.join(', ')}. Revise manualmente.
-            </p>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
-function UfscPdfImportPanel() {
+function GenericPdfUploadPanel() {
+  const [examType, setExamType] = useState(PDF_UPLOAD_VESTIBULARES[0].key)
   const [prova, setProva] = useState<File | null>(null)
   const [gabarito, setGabarito] = useState<File | null>(null)
   const [year, setYear] = useState(new Date().getFullYear())
-  const [phase, setPhase] = useState('1')
-  const [color, setColor] = useState('')
   const [forceReimport, setForceReimport] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [result, setResult] = useState<UfscPdfImportResult | null>(null)
+  const [result, setResult] = useState<UploadPdfResult | null>(null)
   const [error, setError] = useState('')
 
   async function handleSubmit() {
@@ -493,12 +336,12 @@ function UfscPdfImportPanel() {
     setSubmitting(true)
     try {
       const form = new FormData()
+      form.append('exam_type', examType)
       form.append('prova', prova)
       if (gabarito) form.append('gabarito', gabarito)
       form.append('year', String(year))
-      form.append('phase', phase)
-      if (color.trim()) form.append('color', color.trim())
-      const r = await ufscApi.importPdf(form, forceReimport)
+      if (forceReimport) form.append('force_reimport', 'true')
+      const r = await uploadPdfApi.upload(form)
       setResult(r.data)
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
@@ -511,13 +354,33 @@ function UfscPdfImportPanel() {
   return (
     <div className="bg-white rounded-xl border border-[#E2E8F0] p-5">
       <div className="mb-4">
-        <h2 className="text-base font-bold text-[#1E293B]">Importar prova UFSC/IFSC/IFC (PDF)</h2>
+        <h2 className="text-base font-bold text-[#1E293B]">Importar prova via PDF</h2>
         <p className="text-sm text-[#64748B]">
-          Envie o PDF da prova (formato somatório) e, opcionalmente, o gabarito (PDF ou HTML).
-          O gabarito em HTML é usado no formato de provas antigas e ainda não foi validado contra um arquivo real.
+          Envie o PDF da prova e, opcionalmente, o gabarito. Selecione o vestibular e o ano correspondente.
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+        <label className="text-xs font-semibold text-[#334155]">
+          Vestibular
+          <select
+            value={examType}
+            onChange={e => setExamType(e.target.value)}
+            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
+          >
+            {PDF_UPLOAD_VESTIBULARES.map(v => (
+              <option key={v.key} value={v.key}>{v.label}</option>
+            ))}
+          </select>
+        </label>
+        <label className="text-xs font-semibold text-[#334155]">
+          Ano
+          <input
+            type="number"
+            value={year}
+            onChange={e => setYear(Number(e.target.value))}
+            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
+          />
+        </label>
         <label className="text-xs font-semibold text-[#334155]">
           PDF da prova
           <input
@@ -528,7 +391,7 @@ function UfscPdfImportPanel() {
           />
         </label>
         <label className="text-xs font-semibold text-[#334155]">
-          Gabarito (PDF ou HTML, opcional)
+          Gabarito (opcional)
           <input
             type="file"
             accept="application/pdf,.html,.htm"
@@ -536,37 +399,6 @@ function UfscPdfImportPanel() {
             className="mt-1 block w-full text-xs"
           />
         </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Ano
-          <input
-            type="number"
-            value={year}
-            onChange={e => setYear(Number(e.target.value))}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Fase
-          <select
-            value={phase}
-            onChange={e => setPhase(e.target.value)}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          >
-            <option value="1">Prova 1</option>
-            <option value="2">Prova 2</option>
-            <option value="3">Prova 3</option>
-          </select>
-        </label>
-        <label className="text-xs font-semibold text-[#334155] sm:col-span-2">
-          Cor do caderno (opcional)
-          <input
-            type="text"
-            value={color}
-            onChange={e => setColor(e.target.value)}
-            placeholder="Ex.: Amarela"
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
       </div>
       <label className="flex items-center gap-2 text-sm text-[#334155] mb-3 cursor-pointer select-none">
         <input
@@ -587,372 +419,13 @@ function UfscPdfImportPanel() {
       {error && <p className="mt-3 text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
       {result && (
         <div className="mt-3 text-sm text-[#1E293B] bg-[#EFF6FF] rounded-lg p-3">
-          <p className="font-semibold">{result.exam_name}</p>
-          <p>{result.total_added} questões importadas · {result.skipped_existing} já existiam · {result.total_parsed} lidas do PDF.</p>
-        </div>
-      )}
-    </div>
-  )
-}
-
-
-function ItaPdfImportPanel() {
-  const [prova, setProva] = useState<File | null>(null)
-  const [gabarito, setGabarito] = useState<File | null>(null)
-  const [year, setYear] = useState(new Date().getFullYear())
-  const [phase, setPhase] = useState('1')
-  const [subject, setSubject] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [result, setResult] = useState<ItaPdfImportResult | null>(null)
-  const [error, setError] = useState('')
-  const [forceReimport, setForceReimport] = useState(false)
-
-  async function handleSubmit() {
-    if (!prova) {
-      setError('Selecione o PDF da prova.')
-      return
-    }
-    setError('')
-    setResult(null)
-    setSubmitting(true)
-    try {
-      const form = new FormData()
-      form.append('prova', prova)
-      if (gabarito) form.append('gabarito', gabarito)
-      form.append('year', String(year))
-      form.append('phase', phase)
-      if (subject.trim()) form.append('subject', subject.trim())
-      const r = await itaApi.importPdf(form, forceReimport)
-      setResult(r.data)
-    } catch (e: unknown) {
-      const err = e as { response?: { data?: { detail?: string } } }
-      setError(err.response?.data?.detail ?? 'Erro ao importar PDF.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <div className="bg-white rounded-xl border border-[#E2E8F0] p-5">
-      <div className="mb-4">
-        <h2 className="text-base font-bold text-[#1E293B]">Importar prova ITA (PDF)</h2>
-        <p className="text-sm text-[#64748B]">
-          Envie o PDF da prova do ITA (1ª ou 2ª Fase) e, opcionalmente, o PDF de gabarito oficial para extração.
-        </p>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 mb-4">
-        <label className="text-xs font-semibold text-[#334155]">
-          PDF da prova
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={e => setProva(e.target.files?.[0] ?? null)}
-            className="mt-1 block w-full text-xs"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          PDF do Gabarito (opcional)
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={e => setGabarito(e.target.files?.[0] ?? null)}
-            className="mt-1 block w-full text-xs"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Ano
-          <input
-            type="number"
-            value={year}
-            onChange={e => setYear(Number(e.target.value))}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Fase
-          <select
-            value={phase}
-            onChange={e => setPhase(e.target.value)}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          >
-            <option value="1">1ª Fase</option>
-            <option value="2">2ª Fase</option>
-          </select>
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Matéria específica (opcional)
-          <input
-            type="text"
-            value={subject}
-            onChange={e => setSubject(e.target.value)}
-            placeholder="Ex.: Física"
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-      </div>
-      <label className="flex items-center gap-2 text-sm text-[#334155] mb-3 cursor-pointer select-none">
-        <input
-          type="checkbox"
-          checked={forceReimport}
-          onChange={e => setForceReimport(e.target.checked)}
-          className="rounded border-[#c5c5d3] text-blue-600 focus:ring-blue-500"
-        />
-        Forçar reimportação (apaga questões existentes antes de importar)
-      </label>
-      <button
-        onClick={handleSubmit}
-        disabled={submitting}
-        className="px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
-      >
-        {submitting ? 'Importando… isso pode levar alguns minutos' : 'Importar PDF'}
-      </button>
-      {error && <p className="mt-3 text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
-      {result && (
-        <div className="mt-3 text-sm text-[#1E293B] bg-[#EFF6FF] rounded-lg p-3">
-          <p className="font-semibold">{result.exam_name}</p>
-          <p>{result.total_added} questões importadas · {result.skipped_existing} já existiam · {result.total_parsed} lidas do PDF.</p>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function AcafeUrlImportPanel() {
-  const [url, setUrl] = useState('')
-  const [year, setYear] = useState(new Date().getFullYear())
-  const [period, setPeriod] = useState('Verão')
-  const [submitting, setSubmitting] = useState(false)
-  const [result, setResult] = useState<AcafeUrlImportResult | null>(null)
-  const [error, setError] = useState('')
-  const [forceReimport, setForceReimport] = useState(false)
-
-  async function handleSubmit() {
-    if (!url.trim()) {
-      setError('Informe a URL do PDF da prova.')
-      return
-    }
-    setError('')
-    setResult(null)
-    setSubmitting(true)
-    try {
-      const r = await acafeApi.importUrl({ url: url.trim(), year, period: period || undefined, force_reimport: forceReimport || undefined })
-      setResult(r.data)
-    } catch (e: unknown) {
-      const err = e as { response?: { data?: { detail?: string } } }
-      setError(err.response?.data?.detail ?? 'Erro ao importar PDF.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <div className="bg-white rounded-xl border border-[#E2E8F0] p-5">
-      <div className="mb-4">
-        <h2 className="text-base font-bold text-[#1E293B]">Importar prova ACAFE por URL</h2>
-        <p className="text-sm text-[#64748B]">
-          Cole a URL do PDF oficial "objetiva comentada" publicado em{' '}
-          <a href="https://vestibular.acafe.org.br/provas-anteriores/" target="_blank" rel="noreferrer" className="text-slate-500 dark:text-slate-400 hover:underline">
-            vestibular.acafe.org.br
-          </a>
-          {' '}(ex.: storage.acafe.org.br/concurso/vestibular/.../02 - prova/....pdf). O gabarito já vem embutido no PDF —
-          não é preciso colar respostas à parte.
-        </p>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
-        <label className="text-xs font-semibold text-[#334155] sm:col-span-2 lg:col-span-2">
-          URL do PDF da prova
-          <input
-            type="url"
-            value={url}
-            onChange={e => setUrl(e.target.value)}
-            placeholder="https://storage.acafe.org.br/.../Prova objetiva oficial - comentada.pdf"
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Ano
-          <input
-            type="number"
-            value={year}
-            onChange={e => setYear(Number(e.target.value))}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Período
-          <select
-            value={period}
-            onChange={e => setPeriod(e.target.value)}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          >
-            <option value="Verão">Verão</option>
-            <option value="Inverno">Inverno</option>
-          </select>
-        </label>
-      </div>
-      <label className="flex items-center gap-2 text-sm text-[#334155] mb-3 cursor-pointer select-none">
-        <input type="checkbox" checked={forceReimport} onChange={e => setForceReimport(e.target.checked)}
-          className="rounded border-[#c5c5d3] text-blue-600 focus:ring-blue-500" />
-        Forçar reimportação (apaga questões existentes antes de importar)
-      </label>
-      <button
-        onClick={handleSubmit}
-        disabled={submitting}
-        className="px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
-      >
-        {submitting ? 'Importando… isso pode levar alguns minutos' : 'Importar PDF'}
-      </button>
-      {error && <p className="mt-3 text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
-      {result && (
-        <div className="mt-3 text-sm text-[#1E293B] bg-[#EFF6FF] rounded-lg p-3">
-          <p className="font-semibold">{result.exam_name}</p>
-          <p>{result.total_added} questões importadas · {result.skipped_existing} já existiam · {result.total_parsed} lidas do PDF.</p>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function PucprUrlImportPanel() {
-  const [url, setUrl] = useState('')
-  const [year, setYear] = useState(new Date().getFullYear())
-  const [season, setSeason] = useState('Verão')
-  const [course, setCourse] = useState('Demais Cursos')
-  const [color, setColor] = useState('')
-  const [gabaritoText, setGabaritoText] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [result, setResult] = useState<PucprUrlImportResult | null>(null)
-  const [error, setError] = useState('')
-  const [forceReimport, setForceReimport] = useState(false)
-
-  async function handleSubmit() {
-    if (!url.trim()) {
-      setError('Informe a URL do PDF da prova.')
-      return
-    }
-    setError('')
-    setResult(null)
-    setSubmitting(true)
-    try {
-      const r = await pucprApi.importUrl({
-        url: url.trim(),
-        year,
-        season: season || undefined,
-        course: course || undefined,
-        color: color.trim() || undefined,
-        gabarito_text: gabaritoText,
-        force_reimport: forceReimport || undefined,
-      })
-      setResult(r.data)
-    } catch (e: unknown) {
-      const err = e as { response?: { data?: { detail?: string } } }
-      setError(err.response?.data?.detail ?? 'Erro ao importar PDF.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <div className="bg-white rounded-xl border border-[#E2E8F0] p-5">
-      <div className="mb-4">
-        <h2 className="text-base font-bold text-[#1E293B]">Importar prova PUCPR por URL</h2>
-        <p className="text-sm text-[#64748B]">
-          Cole a URL de um dos PDFs identificados como "Gabarito" em{' '}
-          <a href="https://www.pucpr.br/vestibular/editais/" target="_blank" rel="noreferrer" className="text-slate-500 dark:text-slate-400 hover:underline">
-            pucpr.br/vestibular/editais
-          </a>
-          {' '}(ex.: static.pucpr.br/.../gabarito-vestibular-....pdf). Atenção: esses PDFs são o caderno de prova
-          completo, sem a resposta correta embutida — cole abaixo o texto do gabarito oficial (publicado
-          separadamente) para que as respostas corretas sejam marcadas.
-        </p>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-3">
-        <label className="text-xs font-semibold text-[#334155] sm:col-span-2 lg:col-span-4">
-          URL do PDF da prova
-          <input
-            type="url"
-            value={url}
-            onChange={e => setUrl(e.target.value)}
-            placeholder="https://static.pucpr.br/.../gabarito-vestibular-....pdf"
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Ano
-          <input
-            type="number"
-            value={year}
-            onChange={e => setYear(Number(e.target.value))}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Período
-          <select
-            value={season}
-            onChange={e => setSeason(e.target.value)}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          >
-            <option value="Verão">Verão</option>
-            <option value="Inverno">Inverno</option>
-          </select>
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Curso
-          <select
-            value={course}
-            onChange={e => setCourse(e.target.value)}
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          >
-            <option value="Demais Cursos">Demais Cursos</option>
-            <option value="Medicina">Medicina</option>
-          </select>
-        </label>
-        <label className="text-xs font-semibold text-[#334155]">
-          Cor da prova (opcional)
-          <input
-            type="text"
-            value={color}
-            onChange={e => setColor(e.target.value)}
-            placeholder="Ex.: Amarela"
-            className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm"
-          />
-        </label>
-      </div>
-      <label className="text-xs font-semibold text-[#334155] block mb-4">
-        Gabarito oficial (cole o texto — ex.: "01-B 02-D 03-C..." ou uma lista número/letra)
-        <textarea
-          value={gabaritoText}
-          onChange={e => setGabaritoText(e.target.value)}
-          rows={4}
-          placeholder="01 B&#10;02 D&#10;03 C&#10;..."
-          className="mt-1 w-full border border-[#c5c5d3] rounded-lg px-2 py-1.5 text-sm font-mono"
-        />
-      </label>
-            <label className="flex items-center gap-2 text-sm text-[#334155] mb-3 cursor-pointer select-none">
-        <input type="checkbox" checked={forceReimport} onChange={e => setForceReimport(e.target.checked)}
-          className="rounded border-[#c5c5d3] text-blue-600 focus:ring-blue-500" />
-        Forçar reimportação (apaga questões existentes antes de importar)
-      </label>
-<button
-        onClick={handleSubmit}
-        disabled={submitting}
-        className="px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
-      >
-        {submitting ? 'Importando… isso pode levar alguns minutos' : 'Importar PDF'}
-      </button>
-      {error && <p className="mt-3 text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
-      {result && (
-        <div className="mt-3 text-sm text-[#1E293B] bg-[#EFF6FF] rounded-lg p-3">
-          <p className="font-semibold">{result.exam_name}</p>
+          <p className="font-semibold">{result.exam_name ?? result.exam_type}</p>
           <p>
-            {result.total_added} questões importadas · {result.skipped_existing} já existiam ·{' '}
-            {result.total_parsed} lidas do PDF · {result.gabarito_entries} respostas no gabarito colado.
+            {result.total_added ?? 0} questões importadas · {result.skipped_existing ?? 0} já existiam · {result.total_parsed ?? 0} lidas do PDF.
           </p>
-          {result.skipped_unparsed.length > 0 && (
+          {(result.parse_errors?.length ?? 0) > 0 && (
             <p className="text-slate-700 dark:text-slate-400 mt-1">
-              Não foi possível extrair as alternativas de algumas questões (comum em questões de Matemática/Física
-              com fórmulas): {result.skipped_unparsed.join(', ')}. Revise manualmente.
+              Não foi possível extrair as alternativas das questões: {result.parse_errors!.join(', ')}. Revise manualmente.
             </p>
           )}
         </div>
@@ -971,11 +444,7 @@ export default function OwnerImportersPage() {
           <p className="text-sm text-[#64748B] mt-1">Gerencie a carga de questões e provas no banco de dados.</p>
         </div>
         <QuestionImportPanel />
-        <EnemPdfImportPanel />
-        <UfscPdfImportPanel />
-        <ItaPdfImportPanel />
-        <AcafeUrlImportPanel />
-        <PucprUrlImportPanel />
+        <GenericPdfUploadPanel />
       </div>
     </div>
   )
