@@ -410,6 +410,12 @@ def parse_pdf(pdf_path: Path) -> list[dict]:
     return all_questions
 
 
+def run_migrations_ufpr(conn):
+    """Garante que as tabelas UFPR existam (ORM create_all via engine)."""
+    from app.database import Base, engine
+    Base.metadata.create_all(bind=engine)
+
+
 def seed_ufpr(
     db: Session | None = None,
     since_year: int | None = None,
