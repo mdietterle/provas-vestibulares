@@ -281,7 +281,7 @@ def import_ufpr_year(db, year: int, pdf_url: str, force_reimport: bool = False) 
     return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
 
-def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
+def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = None, force_reimport: bool = False, db=None, task_id: str | None = None, **kwargs) -> dict:
     """Importa provas da UFPR via Brasil Escola, de `until_year` (padrão: 2026)
     até `since_year` (padrão: 2009). Cada ano é tentado independentemente;
     falhas individuais não interrompem o lote."""
@@ -299,29 +299,61 @@ def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = No
     except Exception as e:
         if close_after:
             db.close()
+        if task_id:
+            fail_task(task_id, f"Falha ao criar tabelas: {e}")
         raise RuntimeError(f"Falha ao criar tabelas: {e}")
 
     year_to = until_year or 2026
     year_from = since_year
+    years = list(range(year_to, year_from - 1, -1))
+
+    if task_id:
+        update_task_progress(task_id, current=0, total=len(years), log=f"Varredura UFPR {year_from}-{year_to}: {len(years)} ano(s) na fila.")
 
     results = []
     total_added = 0
+    done = 0
     try:
-        for year in range(year_to, year_from - 1, -1):
+        for year in years:
+            if task_id:
+                update_task_progress(task_id, current=done, log=f"Buscando PDF UFPR {year}...")
             pdf_url = fetch_ufpr_pdf_url(year)
             if not pdf_url:
                 results.append({"year": year, "skipped": True, "reason": "URL não encontrada entre os candidatos conhecidos"})
+                if task_id:
+                    update_task_progress(task_id, current=done + 1, log=f"UFPR {year}: URL não encontrada, pulando.")
+                done += 1
                 continue
 
             try:
+                if task_id:
+                    update_task_progress(task_id, current=done, log=f"UFPR {year}: baixando e parseando PDF...")
                 r = import_ufpr_year(db, year, pdf_url, force_reimport=force_reimport)
                 results.append({"year": year, **r})
-                total_added += r.get("total_added", 0)
+                added = r.get("total_added", 0)
+                total_added += added
+                if task_id:
+                    update_task_progress(
+                        task_id,
+                        current=done + 1,
+                        items_done=total_added,
+                        log=f"UFPR {year}: {added} questão(ões) nova(s), {r.get('skipped_existing', 0)} já existente(s).",
+                    )
             except Exception as e:
                 db.rollback()
                 results.append({"year": year, "skipped": True, "reason": str(e)})
+                if task_id:
+                    update_task_progress(task_id, current=done + 1, log=f"UFPR {year}: erro — {e}")
+            done += 1
 
-        return {"total_added": total_added, "exams": results}
+        res = {"total_added": total_added, "exams": results}
+        if task_id:
+            complete_task(task_id, res)
+        return res
+    except Exception as e:
+        if task_id:
+            fail_task(task_id, str(e))
+        raise
     finally:
         if close_after:
             db.close()
