@@ -34,6 +34,21 @@ _PDF_IMPORTERS = {
         "func": "import_ita_pdf",
         "extra_forms": ["phase", "subject"],
     },
+    "fgv": {
+        "module": "app.services.fgv.pdf_import",
+        "func": "import_fgv_pdf",
+        "extra_forms": [],
+    },
+    "unicamp": {
+        "module": "app.services.unicamp.pdf_import",
+        "func": "import_unicamp_pdf",
+        "extra_forms": [],
+    },
+    "espm": {
+        "module": "app.services.espm.pdf_import",
+        "func": "import_espm_pdf",
+        "extra_forms": [],
+    },
 }
 
 
