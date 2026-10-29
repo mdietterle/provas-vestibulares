@@ -50,7 +50,11 @@ vi.mock('../api', () => ({
   unimontesApi: { runImportAll: vi.fn().mockResolvedValue({}) },
   unicentroApi: { runImportAll: vi.fn().mockResolvedValue({}) },
   unaerpApi: { runImportAll: vi.fn().mockResolvedValue({}) },
-  ownerApi: { listExamVersions: vi.fn().mockResolvedValue({ data: [] }) },
+  ownerApi: {
+    listExamVersions: vi.fn().mockResolvedValue({ data: [] }),
+    batchImport: vi.fn().mockResolvedValue({ data: { task_id: 'test-task-123' } }),
+    getTask: vi.fn().mockResolvedValue({ data: { status: 'completed', current: 1, total: 1, logs: [], result: { success_count: 1, total_vestibulares: 1, total_added: 10, errors: [] } } }),
+  },
 }))
 vi.mock('../api/uploadPdf', () => ({
   uploadPdfApi: { upload: vi.fn().mockResolvedValue({ data: {} }) },
