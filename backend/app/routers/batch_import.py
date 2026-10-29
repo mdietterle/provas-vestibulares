@@ -36,64 +36,25 @@ _BATCH_VESTIBULARES = [
 
 
 def _get_importer_func(vestibular: str):
-    """Retorna (func, module_name) para o importador do vestibular dado.
-    Tenta primeiro o padrão `app.services.{vestibular}.pdf_import.import_{vestibular}_all`,
-    depois fallbacks conhecidos para routers que expõem /import ou /admin/import-all."""
+    """Retorna função de importação para o vestibular dado.
+    Padrão real nos serviços: `import_all_{vestibular}_exams` em
+    `app.services.{vestibular}.pdf_import`. Alguns módulos também expõem
+    `import_all` como alias genérico."""
     import importlib
 
-    # Padrão 1: serviço com import_all (ENEM, UFPR, UFSC, ITA, ESPM, FGV, PUCPR, UNICAMP)
+    # Padrão principal: import_all_{vest}_exams no service module
     try:
         mod = importlib.import_module(f"app.services.{vestibular}.pdf_import")
-        func = getattr(mod, f"import_{vestibular}_all", None)
+        # Tenta nome específico primeiro
+        func = getattr(mod, f"import_all_{vestibular}_exams", None)
+        if func:
+            return func
+        # Fallback: alias genérico import_all
+        func = getattr(mod, "import_all", None)
         if func:
             return func
     except (ImportError, AttributeError):
         pass
-
-    # Padrão 2: router com seed/import (CEBRASPE, UNESP, UNIFESP, UFG, UFJF, etc.)
-    router_modules = {
-        "acafe": ("app.routers.acafe", "run_seed"),
-        "cebraspe": ("app.routers.cebraspe", "run_import"),
-        "unesp": ("app.routers.unesp", "run_seed"),
-        "unifesp": ("app.routers.unifesp", "run_seed"),
-        "ufg": ("app.routers.ufg", "run_import"),
-        "ufjf": ("app.routers.ufjf", "run_import"),
-        "ufu": ("app.routers.ufu", "run_import"),
-        "ufpa": ("app.routers.ufpa", "run_import"),
-        "utfpr": ("app.routers.utfpr", "run_import"),
-        "unioeste": ("app.routers.unioeste", "run_import"),
-        "uel": ("app.routers.uel", "run_import"),
-        "pucminas": ("app.routers.pucminas", "run_import"),
-        "ufrn": ("app.routers.ufrn", "run_import"),
-        "ufsm": ("app.routers.ufsm", "run_import"),
-        "ulbra": ("app.routers.ulbra", "run_import"),
-        "ufam": ("app.routers.ufam", "run_import"),
-        "puccampinas": ("app.routers.puccampinas", "run_import"),
-        "unimontes": ("app.routers.unimontes", "run_import"),
-        "unicentro": ("app.routers.unicentro", "run_import"),
-        "unaerp": ("app.routers.unaerp", "run_import"),
-        "uerj": ("app.routers.uerj", "run_import_all"),
-        "ufgd": ("app.routers.ufgd", "run_import_all"),
-        "uem": ("app.routers.uem", "run_import_all"),
-        "ufms": ("app.routers.ufms", "run_import_all"),
-        "fuvest": ("app.routers.fuvest", "run_import_all"),
-        "pucrio": ("app.routers.pucrio", "run_import_all"),
-        "udesc": ("app.routers.udesc", "run_import_all"),
-        "pucrs": ("app.routers.pucrs", "run_import_all"),
-        "ufpel": ("app.routers.ufpel", "run_import_all"),
-        "ufrgs": ("app.routers.ufrgs", "run_import_all"),
-        "pucpr": ("app.routers.pucpr", "run_import_all"),
-    }
-
-    if vestibular in router_modules:
-        mod_name, func_name = router_modules[vestibular]
-        try:
-            mod = importlib.import_module(mod_name)
-            func = getattr(mod, func_name, None)
-            if func:
-                return func
-        except (ImportError, AttributeError):
-            pass
 
     return None
 
