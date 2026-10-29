@@ -431,6 +431,8 @@ export const ownerApi = {
     api.delete(`/owner/users/${id}`),
   resetPassword: (id: number, new_password: string) =>
     api.post<{ ok: boolean; message: string }>(`/owner/users/${id}/reset-password`, { new_password }),
+  batchImport: (year: number, vestibulares: string[], forceReimport = false) =>
+    api.post<{ task_id: string }>('/batch-import', { year, vestibulares, force_reimport: forceReimport }),
 }
 
 // ── Questões reportadas por alunos ───────────────────────────────────────────

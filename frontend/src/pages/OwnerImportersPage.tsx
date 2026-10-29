@@ -470,6 +470,164 @@ function GenericPdfUploadPanel() {
 }
 
 
+function BatchImportPanel() {
+  const [year, setYear] = useState(new Date().getFullYear())
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [forceReimport, setForceReimport] = useState(false)
+  const [running, setRunning] = useState(false)
+  const [task, setTask] = useState<{ current: number; total: number; items_done?: number | null; logs: { message: string }[]; status: string; result?: any; error?: string } | null>(null)
+
+  function toggle(key: string) {
+    setSelected(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
+
+  function selectAll() {
+    if (selected.size === PDF_UPLOAD_VESTIBULARES.length) {
+      setSelected(new Set())
+    } else {
+      setSelected(new Set(PDF_UPLOAD_VESTIBULARES.map(v => v.key)))
+    }
+  }
+
+  async function handleBatchImport() {
+    if (selected.size === 0) return
+    setRunning(true)
+    setTask(null)
+    try {
+      const r = await ownerApi.batchImport(year, Array.from(selected), forceReimport)
+      const payload = (r && typeof r === 'object' && 'data' in r) ? (r as any).data : r
+      const taskId = payload?.task_id
+      if (!taskId) {
+        setRunning(false)
+        return
+      }
+      const interval = setInterval(async () => {
+        try {
+          const res = await ownerApi.getTask(taskId)
+          setTask(res.data)
+          if (res.data.status === 'completed' || res.data.status === 'error') {
+            clearInterval(interval)
+            setRunning(false)
+          }
+        } catch {
+          clearInterval(interval)
+          setRunning(false)
+        }
+      }, 1000)
+    } catch {
+      setRunning(false)
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-xl border border-[#E2E8F0] p-5">
+      <div className="mb-4">
+        <h2 className="text-base font-bold text-[#1E293B]">Importação em Lote</h2>
+        <p className="text-sm text-[#64748B]">
+          Selecione um ano e marque os vestibulares para importar em sequência. Erros individuais não interrompem o lote.
+        </p>
+      </div>
+
+      <div className="flex items-center gap-3 mb-4">
+        <div>
+          <label className="block text-[10px] uppercase font-bold text-[#64748B] mb-1 tracking-wider">Ano</label>
+          <input
+            type="number"
+            value={year}
+            onChange={e => setYear(Number(e.target.value))}
+            className="w-28 border border-[#E2E8F0] rounded-md px-3 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+        <label className="flex items-center gap-2 text-sm text-[#334155] cursor-pointer select-none mt-5">
+          <input
+            type="checkbox"
+            checked={forceReimport}
+            onChange={e => setForceReimport(e.target.checked)}
+            className="rounded border-[#c5c5d3] text-blue-600 focus:ring-blue-500"
+          />
+          Forçar reimportação
+        </label>
+      </div>
+
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-xs font-semibold text-[#334155]">Vestibulares ({selected.size}/{PDF_UPLOAD_VESTIBULARES.length})</span>
+        <button
+          onClick={selectAll}
+          disabled={running}
+          className="text-xs text-blue-600 hover:text-blue-800 font-medium disabled:opacity-50"
+        >
+          {selected.size === PDF_UPLOAD_VESTIBULARES.length ? 'Desmarcar todos' : 'Selecionar todos'}
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-4 max-h-60 overflow-y-auto p-1">
+        {PDF_UPLOAD_VESTIBULARES.map(v => (
+          <label
+            key={v.key}
+            className={`flex items-center gap-2 px-2 py-1.5 rounded-md border text-xs cursor-pointer select-none transition-colors ${
+              selected.has(v.key)
+                ? 'border-blue-500 bg-blue-50 text-blue-800'
+                : 'border-[#E2E8F0] text-[#475569] hover:border-blue-300'
+            } ${running ? 'opacity-50 pointer-events-none' : ''}`}
+          >
+            <input
+              type="checkbox"
+              checked={selected.has(v.key)}
+              onChange={() => toggle(v.key)}
+              className="rounded border-[#c5c5d3] text-blue-600 focus:ring-blue-500 focus:ring-offset-0"
+            />
+            {v.label}
+          </label>
+        ))}
+      </div>
+
+      <button
+        onClick={handleBatchImport}
+        disabled={running || selected.size === 0}
+        className="px-4 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
+      >
+        {running ? 'Importando…' : `Importar ${selected.size} vestibular(es)`}
+      </button>
+
+      {task && (
+        <div className="mt-4">
+          {task.status === 'running' && (
+            <>
+              <MiniBar value={task.current} max={task.total} color="bg-emerald-500" />
+              {task.items_done != null && (
+                <p className="mt-1 text-xs font-semibold text-[#1E293B]">
+                  {task.items_done} questões importadas
+                </p>
+              )}
+            </>
+          )}
+          <div className="mt-2 text-xs text-[#64748B] max-h-48 overflow-y-auto space-y-1 font-mono">
+            {[...task.logs].reverse().map((l, idx) => (
+              <p key={idx} className={`${l.message.startsWith('❌') ? 'text-red-600' : l.message.startsWith('✅') ? 'text-green-700' : ''}`}>
+                {l.message}
+              </p>
+            ))}
+          </div>
+          {task.status === 'completed' && task.result && (
+            <p className="mt-2 text-sm font-medium text-green-700">
+              ✅ {task.result.success_count}/{task.result.total_vestibulares} OK · {task.result.total_added} questões · {task.result.errors?.length ?? 0} erros
+            </p>
+          )}
+          {task.status === 'error' && (
+            <p className="mt-2 text-sm font-medium text-red-600">❌ {task.error}</p>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+
 export default function OwnerImportersPage() {
   return (
     <div className="min-h-screen bg-[#F4F6F9] pt-24 pb-12 px-4 sm:px-6 lg:px-8">
@@ -478,6 +636,7 @@ export default function OwnerImportersPage() {
           <h1 className="text-2xl font-bold text-[#1E293B]">Importadores e Banco</h1>
           <p className="text-sm text-[#64748B] mt-1">Gerencie a carga de questões e provas no banco de dados.</p>
         </div>
+        <BatchImportPanel />
         <QuestionImportPanel />
         <GenericPdfUploadPanel />
       </div>
