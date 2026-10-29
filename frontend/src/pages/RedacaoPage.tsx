@@ -179,7 +179,7 @@ function RedacaoDetail({ id }: { id: number }) {
       )}
 
       {/* Per-criterion breakdown */}
-      {data.criteria_scores.length > 0 && (
+      {(data.criteria_scores?.length ?? 0) > 0 && (
         <div>
           <h2 className="text-base font-semibold text-[#1E293B] mb-3">Detalhamento por critério</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

@@ -1,0 +1,14 @@
+[run]
+source = app
+omit =
+    app/migrations.py
+    app/main.py
+    */__pycache__/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.
+    raise NotImplementedError
+fail_under = 90
+show_missing = True

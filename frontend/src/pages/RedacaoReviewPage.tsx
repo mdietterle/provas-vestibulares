@@ -84,7 +84,7 @@ export default function RedacaoReviewPage() {
         setData(r.data)
         const initScores: Record<number, string> = {}
         const initNotes: Record<number, string> = {}
-        r.data.criteria_scores.forEach((cs: CriterionScore) => {
+        r.data.criteria_scores?.forEach((cs: CriterionScore) => {
           initScores[cs.id] = (cs.final_score ?? cs.ai_score ?? 0).toString()
           initNotes[cs.id] = cs.professor_note ?? ''
         })
@@ -109,14 +109,14 @@ export default function RedacaoReviewPage() {
 
   const handleSave = async () => {
     if (!data) return
-    const criteria = data.criteria_scores.map(cs => {
+    const criteria = data.criteria_scores?.map(cs => {
       const v = parseFloat(scores[cs.id] ?? '0')
       return {
         criterion_score_id: cs.id,
         final_score: isNaN(v) ? (cs.ai_score ?? 0) : Math.min(Math.max(v, 0), cs.max_points),
         professor_note: notes[cs.id] || undefined,
       }
-    })
+    }) ?? []
     setSaving(true)
     try {
       await redacoesApi.review(data.id, { criteria, professor_comment: professorComment || undefined })
@@ -142,10 +142,10 @@ export default function RedacaoReviewPage() {
 
   if (!data) return null
 
-  const currentTotal = data.criteria_scores.reduce((sum, cs) => {
+  const currentTotal = data.criteria_scores?.reduce((sum, cs) => {
     const v = parseFloat(scores[cs.id] ?? '0')
     return sum + (isNaN(v) ? (cs.ai_score ?? 0) : Math.min(Math.max(v, 0), cs.max_points))
-  }, 0)
+  }, 0) ?? 0
 
   return (
     <div className="space-y-6">
@@ -162,14 +162,14 @@ export default function RedacaoReviewPage() {
         <div className="flex-1">
           <h1 className="text-xl font-bold text-[#1E293B] line-clamp-1">{data.theme}</h1>
           <p className="text-xs text-[#64748B] mt-0.5">
-            Aluno: <span className="font-semibold">{data.student.name}</span> ·{' '}
+            Aluno: <span className="font-semibold">{data.student?.name ?? 'Desconhecido'}</span> ·{' '}
             {new Date(data.created_at).toLocaleDateString('pt-BR')}
           </p>
         </div>
         <div className="text-right">
           <p className="text-xs text-[#64748B]">Total atual</p>
           <p className="text-xl font-bold text-[#0d9488]">
-            {currentTotal.toFixed(1)} <span className="text-sm font-normal text-[#64748B]">/ {data.max_score.toFixed(1)}</span>
+            {currentTotal.toFixed(1)} <span className="text-sm font-normal text-[#64748B]">/ {data.max_score?.toFixed(1) ?? '0.0'}</span>
           </p>
         </div>
       </div>
@@ -192,7 +192,7 @@ export default function RedacaoReviewPage() {
       <div>
         <h2 className="text-base font-semibold text-[#1E293B] mb-3">Critérios — ajuste as notas se necessário</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {data.criteria_scores.map(cs => (
+          {data.criteria_scores?.map(cs => (
             <ScoreInput
               key={cs.id}
               cs={cs}

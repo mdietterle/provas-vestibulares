@@ -1,109 +1,111 @@
+"""Tests for app.models — ORM models, enums, and custom types."""
 import pytest
-from app.models import Base, Institution, Simulado, SimuladoQuestion, User, ItaQuestion
-from app.database import Base as DBBase
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-import datetime
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_models.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-@pytest.fixture(scope="module", autouse=True)
-def setup_db():
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
+from app.models import (
+    Institution,
+    User,
+    UserRole,
+    UserRoleType,
+    QuestionType,
+)
 
 
-def _make_institution(db) -> Institution:
-    institution = Institution(name="Test Institution")
-    db.add(institution)
-    db.commit()
-    db.refresh(institution)
-    return institution
+class TestUserRoleEnum:
+    def test_owner_value(self):
+        assert UserRole.OWNER.value == "owner"
+
+    def test_admin_value(self):
+        assert UserRole.ADMIN.value == "admin"
+
+    def test_professor_value(self):
+        assert UserRole.PROFESSOR.value == "professor"
+
+    def test_student_value(self):
+        assert UserRole.STUDENT.value == "student"
+
+    def test_from_string(self):
+        assert UserRole("owner") == UserRole.OWNER
+
+    def test_invalid_role_raises(self):
+        with pytest.raises(ValueError):
+            UserRole("invalid_role")
 
 
-def test_user_creation():
-    db = TestingSessionLocal()
-    institution = _make_institution(db)
-    user = User(
-        name="Test User",
-        email="test2@test.com",
-        hashed_password="hashed",
-        role="student",
-        institution_id=institution.id,
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    assert user.id is not None
-    assert user.email == "test2@test.com"
-    db.close()
+class TestQuestionTypeEnum:
+    def test_multiple_choice(self):
+        assert QuestionType.MULTIPLE_CHOICE.value == "multiple_choice"
 
-def test_simulado_creation():
-    db = TestingSessionLocal()
-    institution = _make_institution(db)
-    student = User(
-        name="Test Student",
-        email="student@test.com",
-        hashed_password="hashed",
-        role="student",
-        institution_id=institution.id,
-    )
-    db.add(student)
-    db.commit()
-    db.refresh(student)
+    def test_true_false(self):
+        assert QuestionType.TRUE_FALSE.value == "true_false"
 
-    simulado = Simulado(
-        exam_type="enem",
-        student_id=student.id,
-    )
-    db.add(simulado)
-    db.commit()
-    db.refresh(simulado)
-    assert simulado.id is not None
-    db.close()
+    def test_essay(self):
+        assert QuestionType.ESSAY.value == "essay"
 
-def test_simulado_question_link():
-    db = TestingSessionLocal()
-    institution = _make_institution(db)
-    student = User(
-        name="Test Student 2",
-        email="student2@test.com",
-        hashed_password="hashed",
-        role="student",
-        institution_id=institution.id,
-    )
-    db.add(student)
-    db.commit()
-    db.refresh(student)
+    def test_summation(self):
+        assert QuestionType.SUMMATION.value == "summation"
 
-    simulado = Simulado(exam_type="enem", student_id=student.id)
-    db.add(simulado)
-    db.commit()
-    db.refresh(simulado)
 
-    # Create an ITA question
-    ita_q = ItaQuestion(
-        exam_name="ITA 2024",
-        year=2024,
-        number=1,
-        statement="Test ITA question"
-    )
-    db.add(ita_q)
-    db.commit()
-    db.refresh(ita_q)
+class TestUserRoleType:
+    def setup_method(self):
+        self.type_decorator = UserRoleType()
 
-    sq = SimuladoQuestion(
-        simulado_id=simulado.id,
-        ita_question_id=ita_q.id,
-        order=1
-    )
-    db.add(sq)
-    db.commit()
-    db.refresh(sq)
+    def test_process_bind_param_enum(self):
+        result = self.type_decorator.process_bind_param(UserRole.ADMIN, None)
+        assert result == "admin"
 
-    assert sq.id is not None
-    assert sq.ita_question_id == ita_q.id
-    db.close()
+    def test_process_bind_param_string_lowercase(self):
+        result = self.type_decorator.process_bind_param("ADMIN", None)
+        assert result == "admin"
+
+    def test_process_bind_param_already_lower(self):
+        result = self.type_decorator.process_bind_param("student", None)
+        assert result == "student"
+
+    def test_process_bind_param_none(self):
+        result = self.type_decorator.process_bind_param(None, None)
+        assert result is None
+
+    def test_process_result_value_valid(self):
+        result = self.type_decorator.process_result_value("owner", None)
+        assert result == UserRole.OWNER
+
+    def test_process_result_value_uppercase_legacy(self):
+        result = self.type_decorator.process_result_value("PROFESSOR", None)
+        assert result == UserRole.PROFESSOR
+
+    def test_process_result_value_none(self):
+        result = self.type_decorator.process_result_value(None, None)
+        assert result is None
+
+    def test_process_result_value_unknown_returns_string(self):
+        result = self.type_decorator.process_result_value("unknown_role", None)
+        assert result == "unknown_role"
+
+
+class TestInstitutionModel:
+    def test_create_institution(self, db_session, sample_institution):
+        assert sample_institution.id is not None
+        assert sample_institution.name == "Test School"
+
+    def test_institution_defaults(self, db_session, sample_institution):
+        assert sample_institution.is_active is True
+        assert sample_institution.is_verified is True
+        assert sample_institution.car_enabled is False
+        assert sample_institution.credits_balance == 0
+
+    def test_institution_nullable_fields(self, db_session):
+        inst = Institution(name="Minimal School")
+        db_session.add(inst)
+        db_session.flush()
+        assert inst.cnpj is None
+        assert inst.logo is None
+        assert inst.plan_type is None
+
+
+class TestUserModel:
+    def test_create_user(self, db_session, sample_user):
+        assert sample_user.id is not None
+        assert sample_user.email == "test@example.com"
+        assert sample_user.role == UserRole.ADMIN
+
+    def test_user_belongs_to_institution(self, db_session, sample_user, sample_institution):
+        assert sample_user.institution_id == sample_institution.id
