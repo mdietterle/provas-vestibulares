@@ -395,7 +395,7 @@ function Avatar({ name, avatar, size = 'md' }: { name: string; avatar?: string |
   return (
     <div
       className={`${sz} rounded-full flex items-center justify-center text-white font-bold select-none shrink-0 ring-2 ring-white shadow-sm`}
-      style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
+      style={{ background: 'var(--color-primary)' }}
     >
       {initials}
     </div>
@@ -456,7 +456,7 @@ function SidebarGroup({
       <div className="relative group/tooltip">
         <button
           className={`w-full flex items-center justify-center p-2.5 rounded-xl transition-all duration-150 ${
-            isChildActive ? 'bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]' : 'text-[#7a94d0] hover:bg-white/[0.07] hover:text-white'
+            isChildActive ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]' : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
           }`}
           title={group.label}
         >
@@ -465,7 +465,7 @@ function SidebarGroup({
         {/* Tooltip */}
         <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 pointer-events-none
           opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-150">
-          <div className="bg-[#1E293B] text-white text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
+          <div className="bg-[var(--color-text)] text-[var(--color-bg)] text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
             {group.label}
           </div>
         </div>
@@ -479,12 +479,12 @@ function SidebarGroup({
         onClick={() => setOpen(o => !o)}
         className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 ${
           isChildActive
-            ? 'bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]'
-            : 'text-[#94a3b8] hover:bg-white/[0.07] hover:text-white'
+            ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]'
+            : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
         }`}
       >
         {group.icon}
-        <span className="flex-1 text-left text-[13px] text-[#cbd5e1]">{group.label}</span>
+        <span className="flex-1 text-left text-[13px] text-[var(--sidebar-text)]">{group.label}</span>
         <svg
           className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
@@ -494,7 +494,7 @@ function SidebarGroup({
       </button>
 
       {open && (
-        <div className="mt-0.5 ml-[13px] pl-3 border-l border-white/10 space-y-0.5">
+        <div className="mt-0.5 ml-[13px] pl-3 border-l border-white/[0.08] space-y-0.5">
           {visibleChildren.map(child => (
             <NavLink
               key={child.to}
@@ -503,8 +503,8 @@ function SidebarGroup({
               className={({ isActive }) =>
                 `flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors duration-150 ${
                   isActive
-                    ? 'bg-white/[0.14] text-white'
-                    : 'text-[#7a94d0] hover:bg-white/[0.07] hover:text-[#c8d8ff]'
+                    ? 'bg-white/12 text-white'
+                    : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
                 }`
               }
             >
@@ -537,7 +537,7 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
                 <div key={entry.to} className="relative group/tooltip">
                   {locked ? (
                     <div
-                      className="flex items-center justify-center p-2.5 rounded-xl text-[#7a94d0]/40 cursor-not-allowed"
+                      className="flex items-center justify-center p-2.5 rounded-xl text-[var(--sidebar-text)]/40 cursor-not-allowed"
                       aria-disabled="true"
                     >
                       {entry.icon}
@@ -548,7 +548,7 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
                       end={entry.to === '/'}
                       className={({ isActive }) =>
                         `flex items-center justify-center p-2.5 rounded-xl transition-all duration-150 ${
-                          isActive ? 'bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]' : 'text-[#7a94d0] hover:bg-white/[0.07] hover:text-white'
+                          isActive ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]' : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
                         }`
                       }
                       title={entry.label}
@@ -557,7 +557,7 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
                     </NavLink>
                   )}
                   <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-150">
-                    <div className="bg-[#1E293B] text-white text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
+                    <div className="bg-[var(--color-text)] text-[var(--color-bg)] text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
                       {tooltipText}
                     </div>
                   </div>
@@ -569,14 +569,14 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
               return (
                 <div key={entry.to} className="relative group/tooltip">
                   <div
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-[#7a94d0]/40 cursor-not-allowed opacity-60"
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-[var(--sidebar-text)]/40 cursor-not-allowed opacity-60"
                     aria-disabled="true"
                   >
                     {entry.icon}
                     {entry.label}
                   </div>
                   <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-150">
-                    <div className="bg-[#1E293B] text-white text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
+                    <div className="bg-[var(--color-text)] text-[var(--color-bg)] text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
                       {tooltipText}
                     </div>
                   </div>
@@ -592,8 +592,8 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
                 className={({ isActive }) =>
                   `relative flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-150 ${
                     isActive
-                      ? 'bg-white/12 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]'
-                      : 'text-[#7a94d0] hover:bg-white/[0.07] hover:text-white'
+                      ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]'
+                      : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
                   }`
                 }
               >
@@ -620,12 +620,12 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
       {/* Ponte pro site público — antes só era alcançável digitando a URL. */}
       {!collapsed ? (
         <div className="px-3 pb-2 pt-2 border-t border-white/[0.06] space-y-0.5">
-          <p className="px-3 pb-1 text-[10px] font-semibold text-[#5a78c0] uppercase tracking-wider">Recursos</p>
+          <p className="px-3 pb-1 text-[10px] font-semibold text-[var(--sidebar-text)] uppercase tracking-wider">Recursos</p>
           {PUBLIC_BRIDGE_LINKS.map(l => (
             <NavLink
               key={l.to}
               to={l.to}
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-[12px] font-medium text-[#7a94d0] hover:bg-white/[0.07] hover:text-white transition-colors duration-150"
+              className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-[12px] font-medium text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white transition-colors duration-150"
             >
               {l.label}
             </NavLink>
@@ -637,13 +637,13 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
             <div key={l.to} className="relative group/tooltip">
               <NavLink
                 to={l.to}
-                className="flex items-center justify-center p-2 rounded-xl text-[#7a94d0] hover:bg-white/[0.07] hover:text-white transition-colors duration-150"
+                className="flex items-center justify-center p-2 rounded-xl text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white transition-colors duration-150"
                 title={l.label}
               >
                 <span className="w-[6px] h-[6px] rounded-full bg-current" />
               </NavLink>
               <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-150">
-                <div className="bg-[#1E293B] text-white text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
+                <div className="bg-[var(--color-text)] text-[var(--color-bg)] text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
                   {l.label}
                 </div>
               </div>
@@ -657,8 +657,8 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
             className="rounded-xl px-3 py-2.5"
             style={{ background: 'rgba(255,255,255,0.05)', boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)' }}
           >
-            <p className="text-[10px] font-semibold text-[#5a78c0] uppercase tracking-wider">Versão</p>
-            <p className="text-[11px] text-[#7a94d0] mt-0.5">v1.0</p>
+            <p className="text-[10px] font-semibold text-[var(--sidebar-text)] uppercase tracking-wider">Versão</p>
+            <p className="text-[11px] text-[var(--sidebar-text)] mt-0.5">v1.0</p>
           </div>
         </div>
       )}
@@ -733,10 +733,10 @@ export default function Layout() {
   }, [userRole])
 
   return (
-    <div className="h-screen flex flex-col bg-[#f4f6fb] dark:bg-[#10131a] text-[#1E293B] dark:text-[#e2e8f0] overflow-hidden transition-colors duration-200">
+    <div className="h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-text)] overflow-hidden transition-colors duration-200">
       {/* ── Top header ── */}
       <header
-        className="bg-white/85 dark:bg-[#0e172e]/90 backdrop-blur-md flex items-center justify-between px-4 shrink-0 z-50 border-b border-[#eaeff8] dark:border-[#464554]"
+        className="bg-[var(--color-surface)]/90 backdrop-blur-md flex items-center justify-between px-4 shrink-0 z-50 border-b border-[var(--color-outline)]"
         style={{ height: 52, boxShadow: '0 1px 12px rgba(0,35,111,0.05)' }}
       >
         {/* Left: toggle + logo */}
@@ -744,7 +744,7 @@ export default function Layout() {
           {/* Hambúrguer — desktop fixa/solta o menu, mobile abre overlay */}
           <button
             onClick={() => isMobile ? setMobileSidebarOpen(o => !o) : setPinned(p => !p)}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-400 transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-surface-alt)] hover:text-[var(--color-text)] transition-colors"
             title={isMobile ? 'Menu' : pinned ? 'Soltar menu (auto-ocultar)' : 'Fixar menu aberto'}
             aria-label="Alternar menu"
           >
@@ -755,13 +755,13 @@ export default function Layout() {
           <div className="flex items-center gap-2">
             <div
               className="w-6 h-6 rounded-md flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
+              style={{ background: 'var(--color-primary)' }}
             >
               <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
-            <span className="font-display font-bold text-slate-600 dark:text-slate-400 text-sm tracking-tight hidden sm:block">
+            <span className="font-display font-bold text-[var(--color-text)] text-sm tracking-tight hidden sm:block">
               Prova Online
             </span>
           </div>
@@ -776,7 +776,7 @@ export default function Layout() {
           <div className="relative" ref={bellRef}>
             <button
               onClick={() => { setBellOpen(o => !o); setUnread(0) }}
-              className="relative w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-400 transition-colors"
+              className="relative w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-surface-alt)] hover:text-[var(--color-text)] transition-colors"
             >
               <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -789,37 +789,37 @@ export default function Layout() {
             </button>
 
             {bellOpen && (
-              <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#1d1f27] rounded-xl border border-[#e8eeff] dark:border-[#464554] z-50 overflow-hidden"
+              <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[var(--color-surface)] rounded-xl border border-[var(--color-outline)] z-50 overflow-hidden"
                 style={{ boxShadow: '0 8px 30px rgba(0,35,111,0.12)' }}>
-                <div className="px-4 py-3 border-b border-[#f0f3fa] dark:border-[#464554] flex items-center justify-between">
-                  <p className="text-sm font-semibold text-[#1E293B] dark:text-[#e1e2ec]">Notificações</p>
+                <div className="px-4 py-3 border-b border-[var(--color-outline)] flex items-center justify-between">
+                  <p className="text-sm font-semibold text-[var(--color-text)]">Notificações</p>
                   {notifications.length > 0 && (
-                    <span className="text-xs text-[#8490b0]">{notifications.length} eventos</span>
+                    <span className="text-xs text-[var(--color-text-muted)]">{notifications.length} eventos</span>
                   )}
                 </div>
-                <div className="max-h-72 overflow-y-auto divide-y divide-[#f4f6fb] dark:divide-[#464554]">
+                <div className="max-h-72 overflow-y-auto divide-y divide-[var(--color-outline)]">
                   {notifications.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 text-center px-4">
-                      <svg className="w-9 h-9 text-[#c5d0ea] dark:text-[#3b4c74] mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <svg className="w-9 h-9 text-[var(--color-text-muted)] mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                       </svg>
-                      <p className="text-sm text-[#8490b0]">Tudo em dia</p>
+                      <p className="text-sm text-[var(--color-text-muted)]">Tudo em dia</p>
                     </div>
                   ) : (
                     notifications.map(n => {
                       const c = KIND_COLORS[n.kind] ?? KIND_COLORS.submission
                       return (
-                        <div key={n.id} className={`px-4 py-3 flex items-start gap-3 ${!n.read ? 'bg-[#fafbff] dark:bg-slate-800' : ''}`}>
+                        <div key={n.id} className={`px-4 py-3 flex items-start gap-3 ${!n.read ? 'bg-[var(--color-surface-alt)]' : ''}`}>
                           <span className={`mt-0.5 px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${c.className}`}>
                             {c.label}
                           </span>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs text-[#1E293B] dark:text-[#e2e8f0] leading-snug">{n.message}</p>
+                            <p className="text-xs text-[var(--color-text)] leading-snug">{n.message}</p>
                             {n.score != null && (
                               <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">Nota: {n.score.toFixed(1)}</p>
                             )}
                           </div>
-                          <span className="text-[10px] text-[#9da5bc] dark:text-[#908fa0] shrink-0">{timeAgo(n.at)}</span>
+                          <span className="text-[10px] text-[var(--color-text-muted)] shrink-0">{timeAgo(n.at)}</span>
                         </div>
                       )
                     })
@@ -837,40 +837,40 @@ export default function Layout() {
             >
               {user && <Avatar name={user.name} avatar={user.avatar} size="sm" />}
               <div className="text-left hidden sm:block">
-                <p className="text-[13px] font-semibold text-[#1E293B] dark:text-[#e1e2ec] leading-tight">{user?.name}</p>
-                <p className="text-[11px] text-[#8490b0]">{user ? ROLE_LABEL[user.role] : ''}</p>
+                <p className="text-[13px] font-semibold text-[var(--color-text)] leading-tight">{user?.name}</p>
+                <p className="text-[11px] text-[var(--color-text-muted)]">{user ? ROLE_LABEL[user.role] : ''}</p>
               </div>
-              <svg className={`w-3.5 h-3.5 text-[#8490b0] transition-transform hidden sm:block ${menuOpen ? 'rotate-180' : ''}`}
+              <svg className={`w-3.5 h-3.5 text-[var(--color-text-muted)] transition-transform hidden sm:block ${menuOpen ? 'rotate-180' : ''}`}
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-[#1d1f27] rounded-xl border border-[#e8eeff] dark:border-[#464554] py-1 z-50"
+              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-[var(--color-surface)] rounded-xl border border-[var(--color-outline)] py-1 z-50"
                 style={{ boxShadow: '0 8px 30px rgba(0,35,111,0.12)' }}>
-                <div className="px-3.5 py-3 border-b border-[#f0f3fa] dark:border-[#464554]">
+                <div className="px-3.5 py-3 border-b border-[var(--color-outline)]">
                   <div className="flex items-center gap-2.5">
                     {user && <Avatar name={user.name} avatar={user.avatar} size="sm" />}
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-[#1E293B] dark:text-[#e1e2ec] truncate">{user?.name}</p>
-                      <p className="text-xs text-[#8490b0] truncate">{user?.email}</p>
+                      <p className="text-sm font-semibold text-[var(--color-text)] truncate">{user?.name}</p>
+                      <p className="text-xs text-[var(--color-text-muted)] truncate">{user?.email}</p>
                     </div>
                   </div>
                 </div>
                 <div className="py-1">
                   <button
                     onClick={() => { navigate('/profile'); setMenuOpen(false) }}
-                    className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-[#374060] dark:text-[#e1e2ec] hover:bg-[#f4f6fb] dark:hover:bg-slate-800 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-surface-alt)] transition-colors"
                   >
-                    <svg className="w-4 h-4 text-[#8490b0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <svg className="w-4 h-4 text-[var(--color-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                     Meu Perfil
                   </button>
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
@@ -899,7 +899,7 @@ export default function Layout() {
               className="flex flex-col fixed top-[52px] bottom-0 left-0 z-40 overflow-y-auto overflow-x-hidden"
               style={{
                 width: 256,
-                background: 'linear-gradient(180deg, #115e59 0%, #0d9488 55%, #0F172A 100%)',
+                background: 'var(--sidebar-bg)',
                 transform: mobileSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
                 transition: 'transform 0.25s ease',
               }}
@@ -919,7 +919,7 @@ export default function Layout() {
               className="fixed top-[52px] bottom-0 left-0 flex flex-col overflow-y-auto overflow-x-hidden z-40"
               style={{
                 width: desktopExpanded ? 240 : 64,
-                background: 'linear-gradient(180deg, #115e59 0%, #0d9488 55%, #0F172A 100%)',
+                background: 'var(--sidebar-bg)',
                 transition: 'width 0.2s ease',
                 boxShadow: desktopExpanded && !pinned ? '4px 0 32px rgba(0,0,0,0.22)' : 'none',
               }}
@@ -930,7 +930,7 @@ export default function Layout() {
         )}
 
         {/* ── Page content ── */}
-        <main className="flex-1 min-w-0 overflow-auto bg-[#f4f6fb] dark:bg-[#10131a]">
+        <main className="flex-1 min-w-0 overflow-auto bg-[var(--color-bg)]">
           <div className="p-4 md:p-6 max-w-7xl mx-auto">
             <Outlet />
           </div>
