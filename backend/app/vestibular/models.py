@@ -45,6 +45,7 @@ class VestibularQuestion(Base):
     __table_args__ = (
         Index("idx_vq_exam_type_year", "exam_type", "year"),
         Index("idx_vq_metadata_gin", "metadata", postgresql_using="gin"),
+        UniqueConstraint("exam_type", "year", "number", name="uq_vestibular_exam_year_number"),
     )
 
     def __repr__(self) -> str:
