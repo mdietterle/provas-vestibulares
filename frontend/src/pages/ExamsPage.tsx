@@ -476,28 +476,51 @@ export default function ExamsPage() {
                   </Link>
 
                   {user?.role === 'student' ? (
-                    <>
-                      <Link
-                        to={`/exams/${exam.id}/submit`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-all hover:opacity-90"
-                        style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
-                      >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        Responder
-                      </Link>
-                      <Link
-                        to={`/exams/${exam.id}/scan`}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-slate-500 dark:text-[#c4a4ff]"
-                      >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="3" y1="9" x2="21" y2="9" />
-                          <line x1="3" y1="15" x2="21" y2="15" /><line x1="9" y1="3" x2="9" y2="21" /><line x1="15" y1="3" x2="15" y2="21" />
-                        </svg>
-                        Scan
-                      </Link>
-                    </>
+                    (() => {
+                      const isSubmitted = exam.submitted_at != null || exam.status === 'released'
+                      return isSubmitted ? (
+                        <>
+                          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Entregue
+                          </span>
+                          <Link
+                            to={`/exams/${exam.id}/result`}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-slate-600 dark:text-slate-400"
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+                            </svg>
+                            Resultado
+                          </Link>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            to={`/exams/${exam.id}/submit`}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-all hover:opacity-90"
+                            style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Responder
+                          </Link>
+                          <Link
+                            to={`/exams/${exam.id}/scan`}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-slate-500 dark:text-[#c4a4ff]"
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="3" y1="9" x2="21" y2="9" />
+                              <line x1="3" y1="15" x2="21" y2="15" /><line x1="9" y1="3" x2="9" y2="21" /><line x1="15" y1="3" x2="15" y2="21" />
+                            </svg>
+                            Scan
+                          </Link>
+                        </>
+                      )
+                    })()
                   ) : (
                     <>
                       <Link
