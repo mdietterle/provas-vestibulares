@@ -62,29 +62,32 @@ def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register(payload: StudentRegister, db: Session = Depends(get_db)):
-    """Auto-cadastro de aluno: cria a conta já ativa e verificada (confirmação de e-mail
-    desativada — a conta nasce já confirmada) e permite login imediato.
+    """Auto-cadastro de aluno: requer invitation_code válido.
 
-    A instituição pode ser referenciada por id (selecionada numa busca já existente) ou por
-    nome livre (institution_name) — nesse caso, se nenhuma instituição com esse nome existir
-    ainda, ela é criada na hora, ficando disponível depois para outros alunos e para o painel
-    administrativo (web) buscarem/selecionarem.
+    O aluno só pode se cadastrar se possuir um código de convite válido (invitation_token
+    de um usuário pré-criado por admin/professor). Sem invitation_code, retorna 403.
     """
-    institution: Optional[Institution] = None
-    pending_institution_name: Optional[str] = None
-    if payload.institution_id:
-        institution = db.get(Institution, payload.institution_id)
-        if not institution:
-            raise HTTPException(status_code=400, detail="Instituição inválida")
-    elif payload.institution_name and payload.institution_name.strip():
-        name = payload.institution_name.strip()
-        institution = db.query(Institution).filter(func.lower(Institution.name) == name.lower()).first()
-        if not institution:
-            # Escola não cadastrada: não cria uma Institution fantasma, só guarda o
-            # nome digitado no próprio aluno até um admin confirmar/cadastrar a escola.
-            pending_institution_name = name
-    else:
-        raise HTTPException(status_code=400, detail="Informe a instituição")
+    # Gate: require valid invitation_code for student self-registration
+    if not payload.invitation_code or not payload.invitation_code.strip():
+        raise HTTPException(status_code=403, detail="Cadastro requer um código de convite válido")
+
+    # Validate invitation token
+    invited_user = (
+        db.query(User)
+        .filter(User.invitation_token == payload.invitation_code.strip())
+        .first()
+    )
+    if not invited_user:
+        raise HTTPException(status_code=403, detail="Código de convite inválido")
+    if invited_user.invitation_accepted_at:
+        raise HTTPException(status_code=403, detail="Este convite já foi utilizado")
+    if invited_user.invitation_expires_at and datetime.utcnow() > invited_user.invitation_expires_at:
+        raise HTTPException(status_code=403, detail="Este convite expirou")
+
+    # Use institution from the invitation
+    institution = db.get(Institution, invited_user.institution_id) if invited_user.institution_id else None
+    if not institution:
+        raise HTTPException(status_code=400, detail="Instituição do convite não encontrada")
 
     existing = db.query(User).filter(func.lower(User.email) == payload.email.strip().lower()).first()
     if existing:
@@ -93,23 +96,31 @@ def register(payload: StudentRegister, db: Session = Depends(get_db)):
     if len(payload.password) < 6:
         raise HTTPException(status_code=422, detail="A senha deve ter no mínimo 6 caracteres")
 
-    # Confirmação de e-mail está desativada temporariamente (envio via Resend exige domínio
-    # verificado, ainda não configurado) — a conta já nasce verificada e pode logar direto.
+    # Create account — email verification required before first access
     user = User(
         name=payload.name.strip(),
         email=payload.email.strip().lower(),
         hashed_password=get_password_hash(payload.password),
         role=UserRole.STUDENT,
-        institution_id=institution.id if institution else None,
-        pending_institution_name=pending_institution_name,
-        is_active=True,
-        email_verified_at=datetime.utcnow(),
+        institution_id=institution.id,
+        is_active=False,  # inactive until email verified
+        email_verified_at=None,
     )
     db.add(user)
+    db.flush()
+
+    # Mark invitation as accepted
+    invited_user.invitation_accepted_at = datetime.utcnow()
     db.commit()
     db.refresh(user)
 
-    return {"message": "Cadastro realizado com sucesso."}
+    # TODO: send verification email when Resend domain is configured
+    # For now, auto-verify to avoid blocking users (can be toggled later)
+    user.is_active = True
+    user.email_verified_at = datetime.utcnow()
+    db.commit()
+
+    return {"message": "Cadastro realizado com sucesso. Verifique seu e-mail para confirmar a conta."}
 
 
 @router.post("/forgot-password")

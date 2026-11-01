@@ -16,11 +16,13 @@ from app.models import (
     Class,
     Exam,
     ExamQuestion,
+    ExamSubmission,
     ExamVestibularQuestion,
     Institution,
     Question,
     QuestionType,
     StudentClass,
+    SubmissionStatus,
     Subject,
     TeachingAssignment,
     User,
@@ -172,7 +174,11 @@ def create_exam(
     db.add(exam)
     db.flush()
 
+    seen_q_ids: set[int] = set()
     for eq in payload.questions:
+        if eq.question_id in seen_q_ids:
+            raise HTTPException(400, f"Questão {eq.question_id} duplicada na prova")
+        seen_q_ids.add(eq.question_id)
         question = db.get(Question, eq.question_id)
         if not question:
             raise HTTPException(404, f"Questão {eq.question_id} não encontrada")
@@ -188,7 +194,11 @@ def create_exam(
             raise HTTPException(403, f"Questão {eq.question_id} é privada de outro professor")
         db.add(ExamQuestion(exam_id=exam.id, question_id=eq.question_id, order=eq.order, points=eq.points))
 
+    seen_vq_ids: set[int] = set()
     for vq_in in payload.vestibular_questions:
+        if vq_in.vestibular_question_id in seen_vq_ids:
+            raise HTTPException(400, f"Questão vestibular {vq_in.vestibular_question_id} duplicada na prova")
+        seen_vq_ids.add(vq_in.vestibular_question_id)
         vq = db.get(VestibularQuestion, vq_in.vestibular_question_id)
         if not vq:
             raise HTTPException(404, f"Questão vestibular {vq_in.vestibular_question_id} não encontrada")
@@ -261,7 +271,7 @@ def create_exam_redacao(
     return exam
 
 
-@router.get("/{exam_id}", response_model=ExamOut)
+@router.get("/{exam_id}")
 def get_exam(
     exam_id: int,
     db: Session = Depends(get_db),
@@ -269,7 +279,45 @@ def get_exam(
 ):
     exam = db.get(Exam, exam_id)
     _assert_exam_view_access(db, exam, current_user)
+    
+    # For students, check submission status and filter answer keys if not released
+    if current_user.role == UserRole.STUDENT:
+        submission = (
+            db.query(ExamSubmission)
+            .filter(ExamSubmission.exam_id == exam_id, ExamSubmission.student_id == current_user.id)
+            .first()
+        )
+        submission_status = submission.status if submission else None
+        
+        # Serialize exam to dict and filter sensitive fields
+        from app.schemas import ExamOut
+        exam_out = ExamOut.model_validate(exam)
+        exam_dict = exam_out.model_dump(mode="json")
+        
+        # Strip answer keys unless submission is RELEASED
+        if submission_status != SubmissionStatus.RELEASED:
+            _strip_answer_keys(exam_dict)
+        
+        return exam_dict
+    
     return exam
+
+
+def _strip_answer_keys(exam_dict: dict) -> None:
+    """Remove is_correct, correct_option, and answer fields from exam dict in-place."""
+    # Strip from exam_questions -> question -> options
+    for eq in exam_dict.get("exam_questions", []):
+        question = eq.get("question", {})
+        for opt in question.get("options", []):
+            opt.pop("is_correct", None)
+    
+    # Strip from exam_vestibular_questions -> vestibular_question -> options and answer fields
+    for evq in exam_dict.get("exam_vestibular_questions", []):
+        vq = evq.get("vestibular_question", {})
+        for opt in vq.get("options", []):
+            opt.pop("is_correct", None)
+        vq.pop("correct_option", None)
+        vq.pop("answer", None)
 
 
 @router.put("/{exam_id}", response_model=ExamOut)
@@ -291,7 +339,11 @@ def update_exam(
         for eq in exam.exam_questions:
             db.delete(eq)
         db.flush()
+        seen_q_ids: set[int] = set()
         for eq in payload.questions:
+            if eq.question_id in seen_q_ids:
+                raise HTTPException(400, f"Questão {eq.question_id} duplicada na prova")
+            seen_q_ids.add(eq.question_id)
             question = db.get(Question, eq.question_id)
             if not question:
                 raise HTTPException(404, f"Questão {eq.question_id} não encontrada")
@@ -301,7 +353,11 @@ def update_exam(
         for evq in exam.exam_vestibular_questions:
             db.delete(evq)
         db.flush()
+        seen_vq_ids: set[int] = set()
         for vq_in in payload.vestibular_questions:
+            if vq_in.vestibular_question_id in seen_vq_ids:
+                raise HTTPException(400, f"Questão vestibular {vq_in.vestibular_question_id} duplicada na prova")
+            seen_vq_ids.add(vq_in.vestibular_question_id)
             vq = db.get(VestibularQuestion, vq_in.vestibular_question_id)
             if not vq:
                 raise HTTPException(404, f"Questão vestibular {vq_in.vestibular_question_id} não encontrada")

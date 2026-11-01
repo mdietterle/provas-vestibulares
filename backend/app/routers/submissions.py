@@ -450,6 +450,24 @@ def release_all_submissions(
 
 # ── List submissions by exam (professor) ──────────────────────────────────────
 
+@router.get("/exams/{exam_id}/stats")
+def exam_submission_stats(
+    exam_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_professor),
+):
+    """Return enrolled and submitted counts for an exam's class."""
+    exam = db.get(Exam, exam_id)
+    _assert_exam_manage_access(db, exam, current_user)
+    total_enrolled = (
+        db.query(StudentClass).filter(StudentClass.class_id == exam.class_id).count()
+    )
+    total_submitted = (
+        db.query(ExamSubmission).filter(ExamSubmission.exam_id == exam_id).count()
+    )
+    return {"total_enrolled": total_enrolled, "total_submitted": total_submitted}
+
+
 @router.get("/exams/{exam_id}", response_model=List[SubmissionListOut])
 def list_submissions(
     exam_id: int,
@@ -582,6 +600,60 @@ def get_submission(
     _assert_exam_manage_access(db, exam, current_user)
     return sub
 
+
+
+
+
+# ── Save draft answers (student, in-progress) ─────────────────────────────────
+
+from pydantic import BaseModel
+from typing import Optional
+
+class DraftAnswerItem(BaseModel):
+    exam_question_id: int
+    selected_option_id: Optional[int] = None
+    essay_text: Optional[str] = None
+    essay_image_base64: Optional[str] = None
+
+class DraftSavePayload(BaseModel):
+    answers: list[DraftAnswerItem]
+
+
+@router.patch("/{submission_id}/draft", status_code=200)
+def save_draft(
+    submission_id: int,
+    payload: DraftSavePayload,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Upsert answers for an in-progress submission without changing status."""
+    if current_user.role != UserRole.STUDENT:
+        raise HTTPException(403, "Apenas alunos podem salvar rascunhos")
+
+    sub = db.query(ExamSubmission).filter_by(id=submission_id, student_id=current_user.id).first()
+    if not sub:
+        raise HTTPException(404, "Submissão não encontrada")
+    if sub.status != SubmissionStatus.PENDING:
+        raise HTTPException(400, "Rascunho só pode ser salvo antes da entrega")
+
+    existing = {a.exam_question_id: a for a in sub.answers}
+    for item in payload.answers:
+        if item.exam_question_id in existing:
+            ans = existing[item.exam_question_id]
+            ans.selected_option_id = item.selected_option_id
+            ans.essay_text = item.essay_text
+            ans.essay_image_base64 = item.essay_image_base64
+        else:
+            db.add(SubmissionAnswer(
+                submission_id=submission_id,
+                exam_question_id=item.exam_question_id,
+                selected_option_id=item.selected_option_id,
+                essay_text=item.essay_text,
+                essay_image_base64=item.essay_image_base64,
+            ))
+
+    db.commit()
+    return {"ok": True}
 
 # ── Override score for an answer (professor) ──────────────────────────────────
 

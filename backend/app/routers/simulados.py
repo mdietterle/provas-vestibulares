@@ -257,27 +257,17 @@ def _pick_questions(db: Session, exam_type: str, area: Optional[str], num_questi
     Se `area` for informada, todas as questões vêm dessa área. Caso contrário,
     distribui o total entre as áreas disponíveis em rodízio (round-robin), para
     não concentrar o simulado numa única área quando o aluno não escolhe uma.
+
+    Fallback: se os filtros estritos (_base_filters) não retornarem questões
+    suficientes, tenta novamente sem eles (aceita questões sem área definida,
+    com língua estrangeira, etc.) — melhor entregar um simulado "imperfeito"
+    do que bloquear o aluno com erro 400.
     """
     model = EXAM_TYPE_MODELS.get(exam_type)
     if model is None:
         raise ValueError(f"Unknown exam_type: {exam_type}")
 
-    filters = _base_filters(model, exam_type)
     blocked_ids = _blocked_question_ids(db, exam_type)
-
-    if area:
-        areas = [area]
-    else:
-        area_rows = db.query(model.area).distinct().filter(*filters).all()
-        areas = [r[0] for r in area_rows]
-
-    # Busca só o ID primeiro, com "tem alternativa" resolvido em SQL (EXISTS),
-    # não carregando a linha inteira (statement, image_base64 — em bancos
-    # como UFSC chega a ter PNG de até alguns MB por questão) nem disparando
-    # uma query extra por questão pra checar `len(q.options)` (N+1). Bancos
-    # grandes como o da UFSC já derrubaram o processo por OOM no plano free
-    # antes; carregar milhares de linhas inteiras só pra depois descartar a
-    # maioria delas era desperdício evitável.
     options_model = getattr(model, "options").property.mapper.class_
     has_options_subq = (
         db.query(options_model.id)
@@ -285,28 +275,55 @@ def _pick_questions(db: Session, exam_type: str, area: Optional[str], num_questi
         .exists()
     )
 
-    pools: Dict[str, List[int]] = {}
-    for a in areas:
-        id_rows = (
-            db.query(model.id)
-            .filter(*filters, model.area == a, has_options_subq)
-            .all()
-        )
-        ids = [r[0] for r in id_rows if r[0] not in blocked_ids]
-        random.shuffle(ids)
-        pools[a] = ids
+    def _try_pick(filters: List[Any], use_area: bool) -> tuple[List[int], List[str]]:
+        """Tenta sortear questões com os filtros dados. Retorna (picked_ids, areas)."""
+        if use_area and area:
+            areas_list = [area]
+        else:
+            area_rows = db.query(model.area).distinct().filter(*filters).all()
+            areas_list = [r[0] for r in area_rows if r[0] is not None]
+            if not areas_list and not use_area:
+                # Sem área definida nos filtros estritos — busca sem filtro de área
+                area_rows = db.query(model.area).distinct().all()
+                areas_list = [r[0] for r in area_rows if r[0] is not None]
 
-    picked_ids: List[int] = []
-    queue = deque(areas)
-    while queue and len(picked_ids) < num_questions:
-        a = queue.popleft()
-        pool = pools[a]
-        if pool:
-            picked_ids.append(pool.pop())
-            queue.append(a)
+        pools: Dict[str, List[int]] = {}
+        for a in areas_list:
+            q = db.query(model.id).filter(has_options_subq)
+            for f in filters:
+                q = q.filter(f)
+            if a is not None:
+                q = q.filter(model.area == a)
+            id_rows = q.all()
+            ids = [r[0] for r in id_rows if r[0] not in blocked_ids]
+            random.shuffle(ids)
+            pools[a] = ids
 
-    # Só agora carrega a linha inteira — e só das poucas questões
-    # efetivamente escolhidas, não de todo o banco filtrado.
+        picked: List[int] = []
+        queue = deque(areas_list)
+        while queue and len(picked) < num_questions:
+            a = queue.popleft()
+            pool = pools.get(a, [])
+            if pool:
+                picked.append(pool.pop())
+                queue.append(a)
+
+        return picked, areas_list
+
+    # Tentativa 1: filtros estritos (área obrigatória, sem língua estrangeira, etc.)
+    strict_filters = _base_filters(model, exam_type)
+    picked_ids, areas = _try_pick(strict_filters, use_area=True)
+
+    # Fallback: se não conseguiu questões suficientes, relaxa os filtros
+    if len(picked_ids) < num_questions:
+        relaxed_filters: List[Any] = []  # sem filtros de área/language/question_type
+        fallback_ids, fallback_areas = _try_pick(relaxed_filters, use_area=bool(area))
+        # Usa o resultado do fallback se ele conseguiu mais questões
+        if len(fallback_ids) > len(picked_ids):
+            picked_ids = fallback_ids
+            areas = fallback_areas
+
+    # Carrega as linhas inteiras só das questões escolhidas
     if not picked_ids:
         return [], areas
     rows_by_id = {q.id: q for q in db.query(model).filter(model.id.in_(picked_ids)).all()}
@@ -493,7 +510,7 @@ def create_simulado(
         raise HTTPException(400, str(e))
 
     if not questions:
-        raise HTTPException(400, "Desculpe, ainda não temos questões suficientes para gerar um simulado com esses filtros. Tente escolher outra área ou deixe o filtro de matéria em branco.")
+        raise HTTPException(400, f"Não há questões disponíveis para {exam_type.upper()}" + (f" na área \"{area}\"" if area else "") + ". Verifique se as questões foram importadas ou tente outro vestibular.")
 
     # Shuffle the questions so area groups are interleaved
     random.shuffle(questions)

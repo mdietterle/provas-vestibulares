@@ -1,10 +1,21 @@
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 
 from app.models import QuestionType, SubmissionStatus, UserRole  # EnemQuestion imported separately
 from app.vestibular.schemas import VestibularQuestionOut  # noqa: F401 — used by ExamVestibularQuestionOut forward ref
+
+_BRT = timezone(timedelta(hours=-3))
+
+
+def _to_brt(dt: datetime | None) -> datetime | None:
+    """Convert naive UTC or aware datetime to America/Sao_Paulo (UTC-3)."""
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(_BRT)
 
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
@@ -127,6 +138,7 @@ class StudentRegister(BaseModel):
     password: str
     institution_id: Optional[int] = None
     institution_name: Optional[str] = None  # usado quando o aluno digita uma instituição nova
+    invitation_code: Optional[str] = None  # código de convite obrigatório para auto-cadastro
 
 
 class ForgotPasswordRequest(BaseModel):
@@ -405,6 +417,11 @@ class SubmissionOut(BaseModel):
 
     model_config = {"from_attributes": True}
 
+    @field_validator("submitted_at", "correcting_since", mode="before")
+    @classmethod
+    def _convert_to_brt(cls, v: datetime | None) -> datetime | None:
+        return _to_brt(v)
+
 
 class SubmissionListOut(BaseModel):
     id: int
@@ -417,6 +434,11 @@ class SubmissionListOut(BaseModel):
     student: UserOut
 
     model_config = {"from_attributes": True}
+
+    @field_validator("submitted_at", "correcting_since", mode="before")
+    @classmethod
+    def _convert_to_brt(cls, v: datetime | None) -> datetime | None:
+        return _to_brt(v)
 
 
 # ── ENEM Public Question Bank ─────────────────────────────────────────────────

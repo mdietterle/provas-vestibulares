@@ -92,6 +92,26 @@ def join_html_smart(html_lines: List[str]) -> str:
     return "".join(paragraphs)
 
 
+_SUP_RE = re.compile(r'<sup>(.*?)</sup>', re.I | re.DOTALL)
+_SUB_RE = re.compile(r'<sub>(.*?)</sub>', re.I | re.DOTALL)
+
+_UNICODE_SUPERSCRIPTS = str.maketrans(
+    "0123456789+-=()",
+    "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾",
+)
+_UNICODE_SUBSCRIPTS = str.maketrans(
+    "0123456789+-=()",
+    "₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎",
+)
+
+
+def _html_to_plain_preserve_exponents(html: str) -> str:
+    """Strip HTML tags but convert <sup>/<sub> to Unicode equivalents first."""
+    result = _SUP_RE.sub(lambda m: m.group(1).translate(_UNICODE_SUPERSCRIPTS), html)
+    result = _SUB_RE.sub(lambda m: m.group(1).translate(_UNICODE_SUBSCRIPTS), result)
+    return re.sub(r'<[^>]+>', '', result).strip()
+
+
 def build_statement(
     plain_lines: List[str],
     html_lines: List[str],
@@ -99,11 +119,11 @@ def build_statement(
     """Build both plain and HTML statements from accumulated lines.
 
     Returns (statement, html_statement). html_statement is None if no HTML
-    lines were provided.
+    lines were provided. Preserves exponents by converting <sup>/<sub> to
+    Unicode superscript/subscript characters instead of stripping them.
     """
     stmt = join_lines_smart(plain_lines)
     html_stmt = join_html_smart(html_lines) if html_lines else None
     if html_stmt:
-        # Regenerate plain text from HTML to ensure consistency
-        stmt = re.sub(r'<[^>]+>', '', html_stmt).strip()
+        stmt = _html_to_plain_preserve_exponents(html_stmt)
     return stmt, html_stmt

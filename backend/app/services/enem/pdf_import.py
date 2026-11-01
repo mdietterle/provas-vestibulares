@@ -439,16 +439,34 @@ def _match_area(text: str) -> Optional[str]:
     return None
 
 
+_OPTION_LINE_RE = re.compile(
+    r"^(?:\(?([A-E])\)?\.?\s+|([A-E])\)\s*)\S", re.I
+)
+
+
+def _match_option_line(line: str) -> Optional[str]:
+    """Return the option letter (A-E) if line starts an alternative, else None.
+
+    Matches: "A)", "A.", "A ", "(A)", "(A) ", "a)", etc.
+    Requires non-whitespace after the marker to avoid false positives on
+    lines that merely start with a capital letter in the statement."""
+    m = _OPTION_LINE_RE.match(line.strip())
+    if not m:
+        return None
+    return (m.group(1) or m.group(2)).upper()
+
+
 def _split_options(lines: list[str]) -> tuple[str, list[str]]:
     """Separa o enunciado das 5 alternativas (A-E), ancorando pelo fim do bloco
     (mais robusto do que detectar A-E a partir do início, pois o enunciado
-    às vezes começa com uma frase iniciada por uma letra maiúscula isolada)."""
+    às vezes começa com uma frase iniciada por uma letra maiúscula isolada).
+
+    Supports formats: "A text", "A) text", "(A) text", "A. text"."""
     n = len(lines)
 
     def find_before(upper_bound: int, letter: str) -> Optional[int]:
-        pattern = re.compile(rf"^{letter}\s+\S")
         for i in range(upper_bound - 1, -1, -1):
-            if pattern.match(lines[i]):
+            if _match_option_line(lines[i]) == letter:
                 return i
         return None
 
@@ -467,7 +485,7 @@ def _split_options(lines: list[str]) -> tuple[str, list[str]]:
     options = []
     for k in range(5):
         seg = lines[bounds[k]:bounds[k + 1]]
-        first = re.sub(r"^[A-E]\s*", "", seg[0], count=1)
+        first = re.sub(r"^\(?[A-E]\)?\.?\s*|\)\s*", "", seg[0], count=1)
         options.append(" ".join([first] + seg[1:]).strip())
     return statement, options
 
@@ -654,6 +672,8 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
 
     from app.services.pdf_text_utils import join_lines_smart as _join_lines_smart, join_html_smart as _join_html_smart
 
+    from app.services.pdf_text_utils import _html_to_plain_preserve_exponents as _html_to_plain
+
     def flush():
         nonlocal q_num, statement_lines, statement_html_lines, pending_images
         if q_num is None:
@@ -662,7 +682,11 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
         stmt, opts = _split_options(statement_lines)
         html_stmt = _join_html_smart(statement_html_lines) if statement_html_lines else None
         if html_stmt:
-            stmt = _join_lines_smart(statement_lines)
+            # Use HTML as source of truth but preserve <sup>/<sub> as Unicode
+            stmt = _html_to_plain(html_stmt)
+        # Validate: statement must not contain option markers; need exactly 5 options
+        has_option_in_stmt = bool(re.search(r'(?:^|\n)\s*\(?[A-E]\)?\.?\s+\S', stmt))
+        parse_error = not stmt or len(opts) != 5 or has_option_in_stmt
         img_b64 = None
         extra_images = []
         if pending_images:
@@ -678,7 +702,7 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
             "options": opts,
             "image_base64": img_b64,
             "extra_images": extra_images,
-            "parse_error": not stmt or len(opts) != 5,
+            "parse_error": parse_error,
         })
         q_num, statement_lines, statement_html_lines, pending_images = None, [], [], []
 

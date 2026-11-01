@@ -38,6 +38,9 @@ export const submissionsApi = {
   aiCorrect: (submissionId: number, answerId: number) =>
     api.post<Submission>(`/submissions/${submissionId}/answers/${answerId}/ai-correct`),
 
+  stats: (examId: number) =>
+    api.get<{ total_enrolled: number; total_submitted: number }>(`/submissions/exams/${examId}/stats`),
+
   analytics: (examId: number) =>
     api.get(`/submissions/exams/${examId}/analytics`),
 
@@ -64,4 +67,7 @@ export const submissionsApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
   },
+
+  saveDraft: (submissionId: number, answers: { exam_question_id: number; selected_option_id?: number; essay_text?: string; essay_image_base64?: string }[]) =>
+    api.patch(`/submissions/${submissionId}/draft`, { answers }),
 }

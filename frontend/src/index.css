@@ -18,7 +18,7 @@
   --color-primary-hover: #334155;
   --color-secondary: #64748b;
   --color-sidebar-bg: #0F172A;
-  --color-sidebar-text: #94A3B8;
+  --color-sidebar-text: #E2E8F0;
   --color-sidebar-active: #475569;
   --shadow-card: 0px 4px 20px rgba(15, 23, 42, 0.06);
   --shadow-card-hover: 0px 8px 30px rgba(15, 23, 42, 0.10);
@@ -39,7 +39,7 @@ html.dark {
   --color-primary-hover: #cbd5e1;
   --color-secondary: #cbd5e1;
   --color-sidebar-bg: #020617;
-  --color-sidebar-text: #64748B;
+  --color-sidebar-text: #CBD5E1;
   --color-sidebar-active: #475569;
   --shadow-card: 0px 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-card-hover: 0px 8px 30px rgba(0, 0, 0, 0.4);

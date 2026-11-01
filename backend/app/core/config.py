@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = "change-this-secret-key-in-production"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 8
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 120
     DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/postgres"
     GROQ_API_KEY: str = ""
     # llama-3.3-70b-versatile foi desativado pela Groq em 16/08/2026 (e
