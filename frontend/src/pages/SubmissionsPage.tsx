@@ -142,6 +142,7 @@ export default function SubmissionsPage() {
   const [quotaModal, setQuotaModal] = useState<{ resource: 'ai_generation' | 'ai_correction'; used: number; limit: number } | null>(null)
   const [filterStatus, setFilterStatus] = useState<'all' | 'submitted' | 'not_submitted'>('all')
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
+  const [statsFromApi, setStatsFromApi] = useState<{ total_enrolled: number; total_submitted: number } | null>(null)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const loadSubmissions = () =>
@@ -152,10 +153,13 @@ export default function SubmissionsPage() {
     examsApi.get(+id)
       .then(r => {
         setExam(r.data)
-        classesApi.listStudents(r.data.class_id).then(s => setEnrolledStudents(s.data))
+        classesApi.listStudents(r.data.class_id).then(s => setEnrolledStudents(s.data)).catch(() => {})
       })
       .catch(() => navigate('/exams'))
     loadSubmissions()
+    submissionsApi.stats(+id).then(r => {
+      setStatsFromApi({ total_enrolled: r.data.total_enrolled, total_submitted: r.data.total_submitted })
+    }).catch(() => {})
     submissionsApi.ollamaStatus().then(r => setOllamaOk(r.data.available))
     return () => { if (pollRef.current) clearInterval(pollRef.current) }
   }, [id])
@@ -318,8 +322,10 @@ export default function SubmissionsPage() {
     return true
   })
 
-  const delivered = allMerged.filter(m => m.submission !== null).length
-  const total = allMerged.length
+  const deliveredClient = allMerged.filter(m => m.submission !== null).length
+  const totalClient = allMerged.length
+  const delivered = statsFromApi?.total_submitted ?? deliveredClient
+  const total = statsFromApi?.total_enrolled ?? totalClient
   const deliveredPct = total > 0 ? Math.round((delivered / total) * 100) : 0
 
   return (
