@@ -145,7 +145,10 @@ export default function SimuladoPage() {
       })
       navigate(`/simulados/${r.data.id}`)
     } catch (err: any) {
-      const msg = err?.response?.data?.detail || 'Erro ao criar simulado.'
+      const detail = err?.response?.data?.detail
+      const msg = typeof detail === 'string' && (detail.includes('Não há questões') || detail.includes('não temos questões'))
+        ? 'Não há questões disponíveis para este vestibular ainda. Tente outro tipo de simulado.'
+        : detail || 'Erro ao criar simulado.'
       toast.error(msg)
     } finally {
       setCreating(false)
