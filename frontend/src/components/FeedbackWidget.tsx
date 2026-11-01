@@ -38,7 +38,7 @@ export default function FeedbackWidget() {
         onClick={() => setOpen(true)}
         aria-label="Reportar problema"
         title="Reportar problema"
-        className="fixed bottom-5 right-5 z-[70] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg hover:-translate-y-0.5 transition-transform"
+        className="fixed bottom-5 right-5 md:bottom-5 md:right-5 bottom-20 right-4 z-[70] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg hover:-translate-y-0.5 transition-transform"
         style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)', boxShadow: '0 8px 24px rgba(0,35,111,0.3)' }}
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -49,7 +49,7 @@ export default function FeedbackWidget() {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-[70] w-80 max-w-[calc(100vw-2.5rem)] bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] shadow-2xl overflow-hidden"
+    <div className="fixed bottom-5 right-5 md:bottom-5 md:right-5 bottom-20 right-4 z-[70] w-80 max-w-[calc(100vw-2.5rem)] bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] shadow-2xl overflow-hidden"
       style={{ boxShadow: '0 12px 40px rgba(0,35,111,0.25)' }}>
       <div className="flex items-center justify-between px-4 py-3" style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}>
         <span className="text-sm font-semibold text-white">Reportar problema</span>

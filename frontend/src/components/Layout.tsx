@@ -890,13 +890,13 @@ export default function Layout() {
             {/* Backdrop mobile */}
             {mobileSidebarOpen && (
               <div
-                className="fixed inset-0 top-[52px] bg-black/40 z-30"
+                className="fixed inset-0 top-[52px] bg-black/40 z-40"
                 onClick={() => setMobileSidebarOpen(false)}
               />
             )}
             {/* Sidebar mobile: overlay deslizante de 256px */}
             <aside
-              className="flex flex-col fixed top-[52px] bottom-0 left-0 z-40 overflow-y-auto overflow-x-hidden"
+              className="flex flex-col fixed top-[52px] bottom-0 left-0 z-50 overflow-y-auto overflow-x-hidden"
               style={{
                 width: 256,
                 background: 'var(--sidebar-bg)',

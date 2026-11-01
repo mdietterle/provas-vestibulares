@@ -78,6 +78,7 @@ export default function ExamsPage() {
   const [search, setSearch] = useState('')
   const [filterSubject, setFilterSubject] = useState(0)
   const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(true)
 
   // ── Vestibular question import state ──────────────────────────────────────
   const [vqExamTypes, setVqExamTypes] = useState<{ value: string; label: string }[]>([])
@@ -100,7 +101,7 @@ export default function ExamsPage() {
   }>>([])
   const [mostUsedLoading, setMostUsedLoading] = useState(false)
 
-  const load = () => examsApi.list().then((r) => setExams(r.data))
+  const load = () => examsApi.list().then((r) => setExams(r.data)).finally(() => setLoading(false))
 
   useEffect(() => {
     load()
@@ -411,7 +412,13 @@ export default function ExamsPage() {
 
       {/* Exam list */}
       <div className="space-y-3">
-        {paginated.map((exam, idx) => {
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+            <svg className="w-8 h-8 animate-spin mb-3 text-slate-400" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+            <p className="font-medium">Carregando provas…</p>
+          </div>
+        )}
+        {!loading && paginated.map((exam, idx) => {
           const palette = EXAM_PALETTES[idx % EXAM_PALETTES.length]
           const questionCount = exam.question_count ?? exam.exam_questions?.length ?? 0
           const canManage = user?.role === 'admin' || exam.professor_id === user?.id
@@ -549,7 +556,7 @@ export default function ExamsPage() {
           )
         })}
 
-        {filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-gray-400 dark:text-slate-400">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="mb-3 opacity-40">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { examsApi } from '../api'
@@ -9,6 +9,7 @@ import { extractSource } from '../utils/questionSource'
 import { resolveImageSrc } from '../utils/image'
 import type { Exam } from '../types'
 import AdSlot from '../components/AdSlot'
+import ConfirmDialog from '../components/ConfirmDialog'
 
 const ADSENSE_SLOT_EXAM = (import.meta.env.VITE_ADSENSE_SLOT_EXAM as string | undefined) || ''
 
@@ -125,6 +126,11 @@ export default function ExamSubmitPage() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [answers, setAnswers] = useState<Record<number, { selected_option_id?: number; essay_text?: string; essay_image_base64?: string }>>({})
+  const [submissionId, setSubmissionId] = useState<number | null>(null)
+  const [showBlankConfirm, setShowBlankConfirm] = useState(false)
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const storageKey = id ? `exam-draft-${id}` : null
 
   useEffect(() => {
     if (!id) return
@@ -132,6 +138,47 @@ export default function ExamSubmitPage() {
       .then(r => { setExam(r.data); setLoading(false) })
       .catch(() => { toast.error('Prova não encontrada'); navigate('/exams') })
   }, [id])
+
+  // Restore draft from localStorage on mount
+  useEffect(() => {
+    if (!storageKey) return
+    try {
+      const saved = localStorage.getItem(storageKey)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed.answers && typeof parsed.answers === 'object') {
+          setAnswers(parsed.answers)
+        }
+        if (parsed.submissionId) {
+          setSubmissionId(parsed.submissionId)
+        }
+      }
+    } catch { /* ignore corrupt data */ }
+  }, [storageKey])
+
+  // Auto-save to localStorage on every answer change (debounced 500ms)
+  useEffect(() => {
+    if (!storageKey || Object.keys(answers).length === 0) return
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+    saveTimerRef.current = setTimeout(() => {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify({ answers, submissionId }))
+      } catch { /* quota exceeded etc */ }
+    }, 500)
+    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
+  }, [answers, submissionId, storageKey])
+
+  // Warn before closing tab while exam is in progress
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (Object.keys(answers).length > 0 && !submitting) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [answers, submitting])
 
   // Deterministic shuffle seeded by student_id + exam_id so each student gets
   // a unique but stable ordering (same on refresh, different from classmates).
@@ -173,18 +220,29 @@ export default function ExamSubmitPage() {
       return { ...a, [examQuestionId]: { essay_text: String(newSum) } }
     })
 
-  const handleSubmit = async () => {
-    if (!shuffledExam) return
-    const unanswered = shuffledExam.exam_questions.filter(eq => {
+  const getUnanswered = () => {
+    if (!shuffledExam) return []
+    return shuffledExam.exam_questions.filter(eq => {
       const ans = answers[eq.id]
       if (eq.question.question_type === 'essay') return !ans?.essay_text?.trim() && !ans?.essay_image_base64
       if (eq.question.question_type === 'summation') return ans?.essay_text == null
       return !ans?.selected_option_id
     })
+  }
+
+  const handleSubmitClick = () => {
+    if (!shuffledExam) return
+    const unanswered = getUnanswered()
     if (unanswered.length > 0) {
-      toast.error(`Responda todas as questões. Faltam ${unanswered.length}.`)
+      setShowBlankConfirm(true)
       return
     }
+    doSubmit()
+  }
+
+  const doSubmit = async () => {
+    if (!shuffledExam) return
+    setShowBlankConfirm(false)
     setSubmitting(true)
     try {
       const payload = shuffledExam.exam_questions.map(eq => ({
@@ -192,6 +250,8 @@ export default function ExamSubmitPage() {
         ...answers[eq.id],
       }))
       await submissionsApi.submit(shuffledExam.id, payload)
+      // Clear localStorage draft after successful submission
+      if (storageKey) localStorage.removeItem(storageKey)
       toast.success('Prova entregue com sucesso!')
       navigate(`/exams/${shuffledExam.id}/result`)
     } catch (err: any) {
@@ -332,18 +392,32 @@ export default function ExamSubmitPage() {
         })}
       </div>
 
-      <div className="sticky bottom-0 bg-white border-t mt-8 py-4 flex justify-between items-center">
+      <div className="sticky bottom-0 bg-white dark:bg-[var(--color-surface)] border-t mt-8 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex justify-between items-center z-30">
         <span className="text-sm text-gray-500">
           {answered} de {shuffledExam.exam_questions.length} questões respondidas
         </span>
         <button
-          onClick={handleSubmit}
+          onClick={handleSubmitClick}
           disabled={submitting}
           className="btn-primary px-8 py-2.5"
         >
           {submitting ? 'Entregando...' : 'Entregar Prova'}
         </button>
       </div>
+
+      {showBlankConfirm && (() => {
+        const unanswered = getUnanswered()
+        const total = shuffledExam?.exam_questions.length ?? 0
+        const answeredCount = total - unanswered.length
+        return (
+          <ConfirmDialog
+            open={true}
+            message={`${answeredCount} de ${total} questões respondidas. Entregar mesmo assim?`}
+            onConfirm={doSubmit}
+            onCancel={() => setShowBlankConfirm(false)}
+          />
+        )
+      })()}
     </div>
   )
 }
