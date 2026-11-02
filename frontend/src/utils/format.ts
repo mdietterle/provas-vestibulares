@@ -1,6 +1,17 @@
-/** Strip HTML tags for display-only preview contexts. */
+/** Strip HTML tags for display-only preview contexts.
+ *  Removes <script>/<style> blocks entirely, then strips remaining tags,
+ *  then decodes common HTML entities. */
 export function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '')
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
 }
 
 /** pt-BR pluralization: singular when count === 1, plural otherwise. */

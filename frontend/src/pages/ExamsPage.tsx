@@ -10,6 +10,7 @@ import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { exportExams } from '../utils/pdf'
 import { resolveImageSrc } from '../utils/image'
+import { stripHtml } from '../utils/format'
 import Pagination from '../components/Pagination'
 
 interface ExamQuestionDraft { question_id: number; order: number; points: number }
@@ -75,6 +76,7 @@ export default function ExamsPage() {
   const [redacaoForm, setRedacaoForm] = useState<RedacaoForm>({ title: '', subject_id: 0, class_id: 0, enunciado: '', points: 10, criteria: '' })
   const [redacaoExtraClassIds, setRedacaoExtraClassIds] = useState<number[]>([])
   const [creating, setCreating] = useState(false)
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
   const [search, setSearch] = useState('')
   const [filterSubject, setFilterSubject] = useState(0)
   const [page, setPage] = useState(1)
@@ -227,6 +229,18 @@ export default function ExamsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setFormErrors({})
+    if (examMode === 'regular') {
+      const errors: Record<string, string> = {}
+      if (!form.title.trim()) errors.title = 'Informe o título da prova'
+      if (!form.subject_id) errors.subject_id = 'Selecione uma matéria'
+      if (!form.class_id) errors.class_id = 'Selecione uma turma'
+      if (form.questions.length === 0) errors.questions = 'Adicione pelo menos uma questão'
+      if (Object.keys(errors).length > 0) {
+        setFormErrors(errors)
+        return
+      }
+    }
     setCreating(true)
     if (examMode === 'redacao') {
       if (!redacaoForm.enunciado.trim()) { toast.error('Digite o enunciado da redação'); setCreating(false); return }
@@ -250,7 +264,6 @@ export default function ExamsPage() {
       }
       return
     }
-    if (form.questions.length === 0) { toast.error('Adicione pelo menos uma questão'); setCreating(false); return }
     try {
       const r = await examsApi.create(form)
       const failedClasses = await applyToExtraClasses(r.data.id, extraClassIds)
@@ -460,6 +473,25 @@ export default function ExamsPage() {
                     <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400">
                       {questionCount} {questionCount !== 1 ? 'questões' : 'questão'}
                     </span>
+                    {exam.status && (
+                      <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                        exam.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
+                        exam.status === 'closed' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
+                        'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                      }`}>
+                        {exam.status === 'published' ? 'Publicada' : exam.status === 'closed' ? 'Encerrada' : 'Rascunho'}
+                      </span>
+                    )}
+                    {exam.deadline && (
+                      <span className="text-xs text-gray-400 dark:text-slate-400">
+                        até {new Date(exam.deadline).toLocaleDateString('pt-BR')}
+                      </span>
+                    )}
+                    {exam.submission_count != null && exam.total_enrolled != null && (
+                      <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
+                        {exam.submission_count}/{exam.total_enrolled} entregues
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -766,12 +798,12 @@ export default function ExamsPage() {
                 <div>
                   <label className="label">Título da Prova</label>
                   <input
-                    className="input"
+                    className={`input ${formErrors.title ? 'border-red-400 dark:border-red-500 focus:ring-red-200' : ''}`}
                     placeholder="Ex: Avaliação Bimestral — Matemática"
                     value={form.title}
-                    onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    required
+                    onChange={(e) => { setForm({ ...form, title: e.target.value }); if (formErrors.title) setFormErrors((prev) => ({ ...prev, title: '' })) }}
                   />
+                  {formErrors.title && <p className="text-xs text-red-500 mt-1">{formErrors.title}</p>}
                 </div>
                 <div>
                   <label className="label">Instruções <span className="text-gray-400 font-normal">(opcional)</span></label>
@@ -787,27 +819,27 @@ export default function ExamsPage() {
                   <div>
                     <label className="label">Matéria</label>
                     <select
-                      className="input"
+                      className={`input ${formErrors.subject_id ? 'border-red-400 dark:border-red-500 focus:ring-red-200' : ''}`}
                       value={form.subject_id}
-                      onChange={(e) => onSubjectChange(+e.target.value)}
-                      required
+                      onChange={(e) => { onSubjectChange(+e.target.value); if (formErrors.subject_id) setFormErrors((prev) => ({ ...prev, subject_id: '' })) }}
                     >
                       <option value={0}>Selecionar...</option>
                       {selectableSubjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </select>
+                    {formErrors.subject_id && <p className="text-xs text-red-500 mt-1">{formErrors.subject_id}</p>}
                   </div>
                   <div>
                     <label className="label">Turma principal</label>
                     <select
-                      className="input"
+                      className={`input ${formErrors.class_id ? 'border-red-400 dark:border-red-500 focus:ring-red-200' : ''}`}
                       value={form.class_id}
-                      onChange={(e) => { setForm({ ...form, class_id: +e.target.value }); setExtraClassIds([]) }}
-                      required
+                      onChange={(e) => { setForm({ ...form, class_id: +e.target.value }); setExtraClassIds([]); if (formErrors.class_id) setFormErrors((prev) => ({ ...prev, class_id: '' })) }}
                       disabled={user?.role === 'professor' && !form.subject_id}
                     >
                       <option value={0}>Selecionar...</option>
                       {selectableClasses.map((c) => <option key={c.id} value={c.id}>{c.name} — {c.year}</option>)}
                     </select>
+                    {formErrors.class_id && <p className="text-xs text-red-500 mt-1">{formErrors.class_id}</p>}
                   </div>
                 </div>
                 {form.class_id > 0 && (() => {
@@ -918,7 +950,7 @@ export default function ExamsPage() {
                                       {q.is_public ? 'Pública' : 'Privada'}
                                     </span>
                                   </div>
-                                  <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{q.statement}</p>
+                                  <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{stripHtml(q.statement)}</p>
                                 </div>
                                 <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-gray-400 dark:text-slate-400 group-hover:bg-slate-600 group-hover:text-white transition-colors mt-0.5">
                                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -1100,6 +1132,9 @@ export default function ExamsPage() {
                     )}
                   </div>
                 )}
+                {formErrors.questions && (
+                  <p className="text-xs text-red-500 font-medium">{formErrors.questions}</p>
+                )}
                 {form.questions.length > 0 && (
                   <div>
                     <div className="flex justify-between items-center mb-2">
@@ -1117,7 +1152,16 @@ export default function ExamsPage() {
                           <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#eef2ff] dark:bg-[#1f2547] text-slate-600 dark:text-slate-400">
                             {i + 1}
                           </span>
-                          <span className="flex-1 text-sm text-gray-700 dark:text-slate-300 truncate">{dq.question?.statement}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-gray-700 dark:text-slate-300 truncate">
+                              {dq.question ? stripHtml(dq.question.statement).slice(0, 60) + (stripHtml(dq.question.statement).length > 60 ? '…' : '') : 'Questão não encontrada'}
+                            </p>
+                            {dq.question?.metadata_?.vestibular_question_id && (
+                              <span className="text-[10px] font-medium text-gray-400 dark:text-slate-500">
+                                {dq.question.metadata_.exam_type?.toUpperCase?.() || 'Vestibular'} {dq.question.metadata_.year || ''}
+                              </span>
+                            )}
+                          </div>
                           <div className="flex items-center gap-1.5">
                             <input
                               type="number"

@@ -96,6 +96,10 @@ export interface Exam {
   exam_questions: ExamQuestion[]
   created_at: string
   question_count?: number
+  status?: string
+  deadline?: string | null
+  submission_count?: number
+  total_enrolled?: number
 }
 
 export interface GeneratedQuestionOption {

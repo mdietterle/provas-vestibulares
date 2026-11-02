@@ -1015,10 +1015,10 @@ def exam_analytics(
 
     # ── Per-question stats ────────────────────────────────────────────────────
     eq_map: dict[int, dict] = {}
-    for eq in exam.exam_questions:
+    for idx, eq in enumerate(exam.exam_questions):
         eq_map[eq.id] = {
             "exam_question_id": eq.id,
-            "order": eq.order + 1,
+            "order": idx + 1,
             "statement": eq.question.statement,
             "question_type": eq.question.question_type,
             "points": eq.points,

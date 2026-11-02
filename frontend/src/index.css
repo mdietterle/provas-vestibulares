@@ -265,7 +265,7 @@ html.dark {
   }
   .nav-item-active {
     @apply nav-item text-white;
-    background-color: var(--color-sidebar-active);
+    background-color: rgba(255, 255, 255, 0.15);
   }
 
   /* ── Rich text ── */
@@ -350,4 +350,61 @@ html.dark {
   .hover\:bg-gray-100:hover  { background-color: var(--color-surface-mid); }
   .hover\:text-slate-600:hover { color: var(--color-primary-hover); }
   .hover\:text-slate-700:hover { color: var(--color-on-surface); }
+
+  /* ── Arbitrary hex value overrides (bg-[#...], text-[#...], border-[#...]) ──
+     These catch hardcoded light-mode hex colors used via Tailwind bracket
+     syntax and remap them to dark design tokens for proper contrast. */
+
+  /* Light backgrounds → dark surface tokens */
+  .bg-\[\#eef2ff\] { background-color: var(--color-surface-low); }
+  .bg-\[\#fffbeb\] { background-color: var(--color-surface-low); }
+  .bg-\[\#f0fdf4\] { background-color: var(--color-surface-low); }
+  .bg-\[\#fff7ed\] { background-color: var(--color-surface-low); }
+  .bg-\[\#f0f9ff\] { background-color: var(--color-surface-low); }
+  .bg-\[\#fdf4ff\] { background-color: var(--color-surface-low); }
+  .bg-\[\#F4F6F9\] { background-color: var(--color-surface-low); }
+  .bg-\[\#f8fafc\] { background-color: var(--color-surface-low); }
+  .bg-\[\#f1f5f9\] { background-color: var(--color-surface-low); }
+  .bg-\[\#ffffff\] { background-color: var(--color-surface); }
+  .bg-\[\#FFFFFF\] { background-color: var(--color-surface); }
+  .bg-\[\#fff\]    { background-color: var(--color-surface); }
+  .bg-\[\#edf2ff\] { background-color: var(--color-surface-low); }
+  .bg-\[\#fef3c7\] { background-color: var(--color-surface-low); }
+  .bg-\[\#dcfce7\] { background-color: var(--color-surface-low); }
+  .bg-\[\#fee2e2\] { background-color: var(--color-surface-low); }
+  .bg-\[\#e0e7ff\] { background-color: var(--color-surface-low); }
+  .bg-\[\#ddd6fe\] { background-color: var(--color-surface-low); }
+
+  /* Dark backgrounds already set via dark: classes — ensure consistency */
+  .dark\:bg-\[\#1d1f27\] { background-color: var(--color-surface); }
+  .dark\:bg-\[\#1f2547\] { background-color: var(--color-surface-low); }
+  .dark\:bg-\[\#2a2d3a\] { background-color: var(--color-surface-mid); }
+
+  /* Text colors: light-mode accent/dark colors → readable dark-mode tokens */
+  .text-\[\#ea580c\] { color: #fb923c; }
+  .text-\[\#f59e0b\] { color: #fbbf24; }
+  .text-\[\#16a34a\] { color: #4ade80; }
+  .text-\[\#0284c7\] { color: #38bdf8; }
+  .text-\[\#9333ea\] { color: #c084fc; }
+  .text-\[\#dc2626\] { color: #f87171; }
+  .text-\[\#4f46e5\] { color: #818cf8; }
+  .text-\[\#0f172a\] { color: var(--color-on-surface); }
+  .text-\[\#1e293b\] { color: var(--color-on-surface); }
+  .text-\[\#334155\] { color: var(--color-on-surface); }
+  .text-\[\#475569\] { color: var(--color-on-surface-variant); }
+  .text-\[\#64748b\] { color: var(--color-muted); }
+
+  /* Border colors: light borders → dark outline token */
+  .border-\[\#E2E8F0\] { border-color: var(--color-outline); }
+  .border-\[\#e2e8f0\] { border-color: var(--color-outline); }
+  .border-\[\#c7d2fe\] { border-color: var(--color-outline); }
+  .border-\[\#fde68a\] { border-color: var(--color-outline); }
+  .border-\[\#bbf7d0\] { border-color: var(--color-outline); }
+  .border-\[\#fed7aa\] { border-color: var(--color-outline); }
+  .border-\[\#bae6fd\] { border-color: var(--color-outline); }
+  .border-\[\#e9d5ff\] { border-color: var(--color-outline); }
+  .border-\[\#ddd6fe\] { border-color: var(--color-outline); }
+  .border-\[\#e0d4fc\] { border-color: var(--color-outline); }
+  .border-\[\#cbd5e1\] { border-color: var(--color-outline); }
+  .border-\[\#d1d5db\] { border-color: var(--color-outline); }
 }

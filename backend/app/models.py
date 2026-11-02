@@ -230,6 +230,8 @@ class Exam(Base):
     subject_id: Mapped[int] = mapped_column(ForeignKey("subjects.id"), nullable=False, index=True)
     class_id: Mapped[int] = mapped_column(ForeignKey("classes.id"), nullable=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="draft")  # draft | published | closed
+    deadline: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
     professor: Mapped["User"] = relationship(back_populates="exams")
     subject: Mapped["Subject"] = relationship(back_populates="exams")

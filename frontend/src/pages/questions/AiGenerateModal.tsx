@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { aiApi, questionsApi } from '../../api'
+import { aiApi, billingApi, questionsApi } from '../../api'
 import type { GeneratedQuestion, GeneratedQuestionOption, Subject } from '../../types'
 import Modal from '../../components/Modal'
 import QuotaExceededModal from '../../components/QuotaExceededModal'
@@ -35,6 +35,8 @@ interface Props {
 
 export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
   const { user } = useAuth()
+  const [planType, setPlanType] = useState<string | null>(null)
+  const [planLoading, setPlanLoading] = useState(true)
   const [aiForm, setAiForm] = useState({
     subject_id: 0, topic: '', question_type: 'multiple_choice',
     difficulty: 'medium', count: 3, context: '', image_base64: '',
@@ -44,6 +46,17 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
   const [aiSelected, setAiSelected] = useState<Set<number>>(new Set())
   const [aiSaving, setAiSaving] = useState(false)
   const [quotaModal, setQuotaModal] = useState<{ resource: 'ai_generation' | 'ai_correction'; used: number; limit: number } | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    billingApi.status()
+      .then(r => { if (!cancelled) setPlanType(r.data.plan_type) })
+      .catch(() => { if (!cancelled) setPlanType(null) })
+      .finally(() => { if (!cancelled) setPlanLoading(false) })
+    return () => { cancelled = true }
+  }, [])
+
+  const isProOrAbove = planType === 'pro' || planType === 'enterprise'
 
   const creatableSubjects = subjects
 
@@ -103,6 +116,20 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
     <>
       <Modal title="Gerar Questões com IA" onClose={onClose} size="xl">
         <div className="space-y-5">
+          {!planLoading && !isProOrAbove && (
+            <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Disponível no plano Pro</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Fale com a coordenação para habilitar a geração de questões com IA.</p>
+              </div>
+            </div>
+          )}
+
+          {(planLoading || isProOrAbove) && (
+            <>
           <div className="flex items-center gap-2 px-3 py-2 rounded-xl border bg-gradient-to-br from-slate-50 to-slate-50 dark:from-slate-800 dark:to-slate-800 border-slate-200 dark:border-slate-700">
             <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br from-slate-500 to-slate-600">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -191,6 +218,8 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
               )}
             </button>
           </form>
+          </>
+        )}
 
           {aiResults.length > 0 && (
             <div className="space-y-3 border-t pt-4 border-slate-200 dark:border-slate-700">

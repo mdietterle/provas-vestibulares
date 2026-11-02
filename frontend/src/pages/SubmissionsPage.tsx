@@ -324,7 +324,7 @@ export default function SubmissionsPage() {
   })
 
   const deliveredClient = allMerged.filter(m => m.submission !== null).length
-  const totalClient = allMerged.length
+  const totalClient = enrolledStudents.length > 0 ? enrolledStudents.length : allMerged.length
   const delivered = statsFromApi?.total_submitted ?? deliveredClient
   const total = statsFromApi?.total_enrolled ?? totalClient
   const deliveredPct = total > 0 ? Math.round((delivered / total) * 100) : 0
