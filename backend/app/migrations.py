@@ -421,6 +421,10 @@ def run_migrations() -> None:
     migrations.append("ALTER TABLE IF EXISTS simulado_questions ADD COLUMN IF NOT EXISTS vestibular_question_id INTEGER REFERENCES vestibular_questions(id)")
     migrations.append("ALTER TABLE IF EXISTS simulado_questions ADD COLUMN IF NOT EXISTS vq_exam_type VARCHAR(30)")
 
+    # Exam status and deadline columns
+    migrations.append("ALTER TABLE IF EXISTS exams ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'draft'")
+    migrations.append('ALTER TABLE IF EXISTS exams ADD COLUMN IF NOT EXISTS deadline TIMESTAMP')
+
     for sql in migrations:
         try:
             with engine.begin() as conn:
