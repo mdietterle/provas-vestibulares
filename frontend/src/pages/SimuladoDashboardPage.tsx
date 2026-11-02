@@ -46,7 +46,7 @@ function AreaTable({ byArea }: { byArea: Record<string, { total: number; correct
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-medium text-[#334155] dark:text-slate-300 truncate mr-2">{area}</span>
               <span className="text-xs font-bold shrink-0" style={{ color }}>
-                {data.pct.toFixed(0)}% ({data.correct}/{data.total})
+                {formatPercent(data.pct, 0)} ({data.correct}/{data.total})
               </span>
             </div>
             <ScoreBar pct={data.pct} color={color} />
@@ -175,7 +175,7 @@ export default function SimuladoDashboardPage() {
                         <p
                           className={`text-2xl font-bold mb-1 ${stats.avg_score >= 70 ? 'text-green-700 dark:text-green-400' : stats.avg_score >= 50 ? 'text-slate-800 dark:text-slate-400' : 'text-red-700 dark:text-red-400'}`}
                         >
-                          {stats.avg_score.toFixed(1)}%
+                          {formatPercent(stats.avg_score)}
                         </p>
                         <ScoreBar
                           pct={stats.avg_score}
