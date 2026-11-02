@@ -407,4 +407,11 @@ html.dark {
   .border-\[\#e0d4fc\] { border-color: var(--color-outline); }
   .border-\[\#cbd5e1\] { border-color: var(--color-outline); }
   .border-\[\#d1d5db\] { border-color: var(--color-outline); }
+  .border-\[\#EEF2F7\] { border-color: var(--color-outline); }
+
+  /* Subject cards: white bg + dark text tokens for dark mode readability */
+  .bg-\[\#EFF6FF\] { background-color: var(--color-surface-low); }
+  .text-\[\#0d9488\] { color: #2dd4bf; }
+  .text-\[\#334155\] { color: var(--color-on-surface); }
+  .text-\[\#b6c4ff\] { color: var(--color-muted); }
 }
