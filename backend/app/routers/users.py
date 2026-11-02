@@ -68,9 +68,17 @@ def create_user(
         # de imediato, sem depender de e-mail nenhum.
         data["hashed_password"] = get_password_hash(password)
         data["invitation_accepted_at"] = datetime.utcnow()
+    elif payload.role == UserRole.PROFESSOR and not password:
+        # Professor criado sem senha: recebe convite por e-mail pra definir a dele própria.
+        token = secrets.token_urlsafe(32)
+        data["hashed_password"] = get_password_hash(secrets.token_urlsafe(16))
+        data["invitation_token"] = token
+        data["invitation_sent_at"] = datetime.utcnow()
+        data["is_active"] = True
+        send_invite = True
     else:
         if not password:
-            raise HTTPException(422, "Senha é obrigatória para professores e administradores")
+            raise HTTPException(422, "Senha é obrigatória para administradores")
         data["hashed_password"] = get_password_hash(password)
 
     user = User(**data)
@@ -81,14 +89,21 @@ def create_user(
     if send_invite:
         from app.services import email as email_service
         try:
-            email_service.send_student_invitation(
-                to_email=user.email,
-                student_name=user.name,
-                institution_name=current_user.institution.name,
-                token=token,
-            )
+            if user.role == UserRole.PROFESSOR:
+                email_service.send_professor_invitation(
+                    to_email=user.email,
+                    professor_name=user.name,
+                    institution_name=current_user.institution.name,
+                    token=token,
+                )
+            else:
+                email_service.send_student_invitation(
+                    to_email=user.email,
+                    student_name=user.name,
+                    institution_name=current_user.institution.name,
+                    token=token,
+                )
         except Exception as exc:
-            # Falha no e-mail não deve reverter o cadastro
             print(f"⚠️  Falha ao enviar convite para {user.email}: {exc}")
 
     return UserOut.from_user(user)

@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { usageApi, type UsageSummary, type UsageResource } from '../api'
 
+// ── shared constants ────────────────────────────────────────────────────────
+
+// Canonical overage policy text — used here and should be referenced by any
+// other page that explains overage behavior to avoid contradictions.
+export const OVERAGE_POLICY_TEXT =
+  'O consumo acima do limite (excedente) não bloqueia o uso — é registrado para faturamento de créditos avulsos conforme o plano contratado.'
+
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function pct(used: number, limit: number | null): number {
@@ -224,9 +231,7 @@ export default function UsagePage() {
       </div>
 
       <p className="text-[11px] text-[#9ca3af] leading-relaxed">
-        As cotas de IA são contabilizadas por professor e renovadas mensalmente. O consumo
-        acima do limite (excedente) não bloqueia o uso — é registrado para faturamento de
-        créditos avulsos conforme o plano contratado.
+        As cotas de IA são contabilizadas por professor e renovadas mensalmente. {OVERAGE_POLICY_TEXT}
       </p>
     </div>
   )
