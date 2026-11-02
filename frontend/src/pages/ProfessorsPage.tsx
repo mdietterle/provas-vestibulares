@@ -121,7 +121,7 @@ export default function ProfessorsPage() {
       setShowBulkImport(false)
       setBulkPreview(null)
       setBulkFile(null)
-      load()
+      loadProfessors()
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro ao importar')
     } finally {
