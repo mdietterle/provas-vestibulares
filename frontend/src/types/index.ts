@@ -26,6 +26,7 @@ export interface User {
   created_at: string
   invitation_sent_at?: string | null
   invitation_accepted_at?: string | null
+  class_names?: string[]
   invitation_status?: 'pending' | 'accepted' | null
 }
 
