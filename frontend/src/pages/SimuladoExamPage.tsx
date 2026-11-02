@@ -464,7 +464,7 @@ export default function SimuladoExamPage() {
   // Na tela de resultado, todas as questões aparecem de uma vez (sem
   // navegação por índice) — sem isto, o resultado mostrava o enunciado cru,
   // nunca formatado pela IA. Formata em sequência (não em paralelo, pra não
-  // estourar rate limit do Groq de uma vez).
+  // estourar rate limit da API de IA de uma vez).
   useEffect(() => {
     if (!simulado || simulado.status !== 'done') return
     let cancelled = false
