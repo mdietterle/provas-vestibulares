@@ -458,21 +458,21 @@ export default function ExamsPage() {
                         className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${palette.bgClass} ${palette.textClass}`}
                       >
                         {exam.subject.name}
-                      )}
+                      </span>
                     )}
                     {exam.class_?.name && (
                       <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-[#0f1c37] dark:text-slate-300 border border-gray-200 dark:border-[#464554]">
                         {exam.class_.name} — {exam.class_.year}
-                      )}
+                      </span>
                     )}
                     {exam.professor?.name && user?.role !== 'professor' && (
                       <span className="text-xs text-gray-400 dark:text-slate-400">
                         Prof. {exam.professor.name}
-                      )}
+                      </span>
                     )}
                     <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400">
                       {questionCount} {questionCount !== 1 ? 'questões' : 'questão'}
-                    )}
+                    </span>
                     {exam.status && (
                       <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
                         exam.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
@@ -480,17 +480,17 @@ export default function ExamsPage() {
                         'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
                       }`}>
                         {exam.status === 'published' ? 'Publicada' : exam.status === 'closed' ? 'Encerrada' : 'Rascunho'}
-                      )}
+                      </span>
                     )}
                     {exam.deadline && (
                       <span className="text-xs text-gray-400 dark:text-slate-400">
                         até {new Date(exam.deadline).toLocaleDateString('pt-BR')}
-                      )}
+                      </span>
                     )}
                     {exam.submission_count != null && exam.total_enrolled != null && (
                       <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
                         {exam.submission_count}/{exam.total_enrolled} entregues
-                      )}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -517,7 +517,7 @@ export default function ExamsPage() {
                               <polyline points="20 6 9 17 4 12" />
                             </svg>
                             Entregue
-                          )}
+                          </span>
                           <Link
                             to={`/exams/${exam.id}/result`}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-slate-600 dark:text-slate-400"
@@ -945,10 +945,10 @@ export default function ExamsPage() {
                                   <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                                     <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-[#eef2ff] dark:bg-[#1f2547] text-slate-600 dark:text-slate-400">
                                       {QUESTION_TYPE_LABEL[q.question_type] ?? q.question_type}
-                                    )}
+                                    </span>
                                     <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${q.is_public ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400'}`}>
                                       {q.is_public ? 'Pública' : 'Privada'}
-                                    )}
+                                    </span>
                                   </div>
                                   <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{stripHtml(q.statement)}</p>
                                 </div>
@@ -956,7 +956,7 @@ export default function ExamsPage() {
                                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                                   </svg>
-                                )}
+                                </span>
                               </button>
                             ))}
                           {availableQuestions.filter((q) => !form.questions.some((dq) => dq.question_id === q.id)).filter((q) => q.statement.toLowerCase().includes(questionSearch.toLowerCase())).length === 0 && (
@@ -1035,11 +1035,11 @@ export default function ExamsPage() {
                                   <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                                     <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-[#faf5ff] dark:bg-[#2d1b4e] text-[#7c3aed] dark:text-[#c4a4ff]">
                                       {vq.exam_type.toUpperCase()} {vq.year}
-                                    )}
+                                    </span>
                                     {vq.exam_name && (
                                       <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                                         {vq.exam_name}
-                                      )}
+                                      </span>
                                     )}
                                     <span className="text-[10px] text-gray-400 dark:text-slate-500">#{vq.number}</span>
                                   </div>
@@ -1096,13 +1096,13 @@ export default function ExamsPage() {
                               <div className="flex items-center gap-2 mb-1 flex-wrap">
                                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 uppercase tracking-wide">
                                   {mq.subject_name}
-                                )}
+                                </span>
                                 <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${mq.source_type === 'vestibular' ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400' : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'}`}>
                                   {mq.source_type === 'vestibular' ? `🎓 ${mq.source_detail || 'Vestibular'}` : '✏️ Própria'}
-                                )}
+                                </span>
                                 <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400">
                                   🔥 {mq.usage_count}× usada
-                                )}
+                                </span>
                               </div>
                               <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2">{mq.statement_preview}</p>
                             </div>
@@ -1144,14 +1144,14 @@ export default function ExamsPage() {
                         title={totalPoints === 10 ? 'Soma 10 pontos' : 'A soma dos pontos não é 10 — confira se é intencional'}
                       >
                         Total: {totalPoints} pts {totalPoints !== 10 && '⚠'}
-                      )}
+                      </span>
                     </div>
                     <div className="space-y-2">
                       {draftQuestionDetails.map((dq, i) => (
                         <div key={dq.question_id} className="flex items-center gap-3 px-4 py-2.5 rounded-xl border bg-[#F4F6F9] dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554]">
                           <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-[#eef2ff] dark:bg-[#1f2547] text-slate-600 dark:text-slate-400">
                             {i + 1}
-                          )}
+                          </span>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-gray-700 dark:text-slate-300 truncate">
                               {dq.question ? stripHtml(dq.question.statement).slice(0, 60) + (stripHtml(dq.question.statement).length > 60 ? '…' : '') : 'Questão não encontrada'}
@@ -1159,7 +1159,7 @@ export default function ExamsPage() {
                             {dq.question?.metadata_?.vestibular_question_id && (
                               <span className="text-[10px] font-medium text-gray-400 dark:text-slate-500">
                                 {dq.question.metadata_.exam_type?.toUpperCase?.() || 'Vestibular'} {dq.question.metadata_.year || ''}
-                              )}
+                              </span>
                             )}
                           </div>
                           <div className="flex items-center gap-1.5">
@@ -1315,11 +1315,11 @@ export default function ExamsPage() {
                         opt.is_correct ? 'bg-green-600 text-white' : 'bg-white dark:bg-[#334155] text-[#64748B]'
                       }`}>
                         {opt.letter}
-                      )}
+                      </span>
                     )}
                     <span className={opt.is_correct ? 'text-green-800 dark:text-green-300 font-medium' : 'text-[#334155] dark:text-slate-300'}>
                       {opt.text}
-                    )}
+                    </span>
                     {opt.is_correct && (
                       <svg className="ml-auto text-green-500 shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="20 6 9 17 4 12" />
