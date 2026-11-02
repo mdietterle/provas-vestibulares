@@ -96,6 +96,39 @@ export default function ProfessorsPage() {
   const [addingAssignment, setAddingAssignment] = useState(false)
   const [justCreated, setJustCreated] = useState(false)
 
+  const handleBulkPreview = async () => {
+    if (!bulkFile) return
+    setBulkLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', bulkFile)
+      formData.append('role', 'professor')
+      const r = await usersApi.bulkImportPreview(formData)
+      setBulkPreview(r.data)
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || 'Erro ao processar CSV')
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
+  const handleBulkConfirm = async () => {
+    if (!bulkPreview) return
+    setBulkImporting(true)
+    try {
+      const r = await usersApi.bulkImportConfirm({ role: 'professor', rows: bulkPreview.valid })
+      toast.success(`${r.data.created} professores importados com sucesso!`)
+      setShowBulkImport(false)
+      setBulkPreview(null)
+      setBulkFile(null)
+      load()
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || 'Erro ao importar')
+    } finally {
+      setBulkImporting(false)
+    }
+  }
+
   const loadProfessors = () => usersApi.list('professor').then(r => setProfessors(r.data))
 
   useEffect(() => {
