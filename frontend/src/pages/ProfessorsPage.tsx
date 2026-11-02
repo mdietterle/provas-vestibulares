@@ -78,7 +78,7 @@ export default function ProfessorsPage() {
   const [editing, setEditing] = useState<User | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<User | null>(null)
   const [togglingId, setTogglingId] = useState<number | null>(null)
-  const [form, setForm] = useState({ name: '', email: '', password: '', car_access: false })
+  const [form, setForm] = useState({ name: '', email: '', car_access: false })
   const [saving, setSaving] = useState(false)
 
   // assignments
@@ -117,13 +117,13 @@ export default function ProfessorsPage() {
 
   const openCreate = () => {
     setEditing(null)
-    setForm({ name: '', email: '', password: '', car_access: false })
+    setForm({ name: '', email: '', car_access: false })
     setShowModal(true)
   }
 
   const openEdit = (p: User) => {
     setEditing(p)
-    setForm({ name: p.name, email: p.email, password: '', car_access: p.car_access ?? false })
+    setForm({ name: p.name, email: p.email, car_access: p.car_access ?? false })
     setShowModal(true)
   }
 
