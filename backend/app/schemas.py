@@ -93,12 +93,13 @@ class UserOut(BaseModel):
     created_at: datetime
     invitation_sent_at: Optional[datetime] = None
     invitation_accepted_at: Optional[datetime] = None
+    class_names: Optional[List[str]] = None
     invitation_status: Optional[str] = None  # "pending" | "accepted"
 
     model_config = {"from_attributes": True}
 
     @classmethod
-    def from_user(cls, user: "User") -> "UserOut":  # type: ignore[name-defined]
+    def from_user(cls, user: "User", class_names: Optional[List[str]] = None) -> "UserOut":  # type: ignore[name-defined]
         inst = getattr(user, "institution", None)
         inv_status: Optional[str] = None
         if user.role == "student" and user.invitation_sent_at is not None:

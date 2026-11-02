@@ -6,6 +6,9 @@ import { billingApi } from '../api'
 
 type PlanKey = 'basic' | 'pro' | 'enterprise'
 
+// TODO(pricing): These prices are hardcoded for the admin panel and may diverge
+// from the public marketing site. Sync with backend/stripe or move to a shared
+// config (e.g., src/config/pricing.ts) consumed by both admin and landing page.
 const PLANS: { key: PlanKey; label: string; price: string; features: string[] }[] = [
   {
     key: 'basic',
@@ -161,18 +164,20 @@ export default function SubscriptionPage() {
                 ))}
               </ul>
               <button
-                onClick={() => handleSubscribe(plan.key)}
+                onClick={() => plan.key === 'enterprise' ? undefined : handleSubscribe(plan.key)}
                 disabled={isCurrent || actionLoading === `plan-${plan.key}`}
                 className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                   isCurrent
                     ? 'bg-[#eef1fb] dark:bg-[#464554] text-[#9ca3af] dark:text-[#908fa0] cursor-default'
-                    : 'bg-[#f59e0b] text-white hover:bg-[slate-700 disabled:opacity-50'
+                    : 'bg-[#f59e0b] text-white hover:bg-[slate-700] disabled:opacity-50'
                 }`}
               >
                 {actionLoading === `plan-${plan.key}` ? (
                   <Loader2 className="w-4 h-4 animate-spin mx-auto" />
                 ) : isCurrent ? (
                   'Plano atual'
+                ) : plan.key === 'enterprise' ? (
+                  'Falar com vendas'
                 ) : (
                   'Assinar'
                 )}

@@ -197,3 +197,61 @@ def send_password_reset(
     </html>
     """)
     _send(to_email, subject, html)
+
+
+def send_professor_invitation(
+    *,
+    to_email: str,
+    professor_name: str,
+    institution_name: str,
+    token: str,
+) -> None:
+    magic_link = f"{settings.FRONTEND_URL}/convite/{token}"
+    expire_days = settings.INVITATION_EXPIRE_DAYS
+    subject = f"Convite para a plataforma — {institution_name}"
+    html = textwrap.dedent(f"""
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+    <body style="margin:0;padding:0;background:#f4f6fb;font-family:'Segoe UI',Arial,sans-serif">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6fb;padding:40px 0">
+        <tr><td align="center">
+          <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,35,111,.10)">
+            <tr>
+              <td style="background:linear-gradient(135deg,#00236f 0%,#6b38d4 100%);padding:36px 40px 28px;text-align:center">
+                <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:700;letter-spacing:-.5px">
+                  Você foi convidado! 🎉
+                </h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:36px 40px">
+                <p style="margin:0 0 12px;font-size:16px;color:#0b1c30">Olá, <strong>{professor_name}</strong>!</p>
+                <p style="margin:0 0 24px;font-size:15px;color:#444651;line-height:1.6">
+                  A instituição <strong>{institution_name}</strong> convidou você para acessar a
+                  plataforma de avaliações como professor. Clique no botão abaixo para criar sua senha e começar a usar.
+                </p>
+                <div style="text-align:center;margin:32px 0">
+                  <a href="{magic_link}"
+                     style="display:inline-block;background:linear-gradient(135deg,#00236f,#6b38d4);color:#ffffff;text-decoration:none;padding:14px 36px;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:.3px">
+                    Criar minha senha e acessar
+                  </a>
+                </div>
+                <p style="margin:24px 0 0;font-size:13px;color:#757682;text-align:center">
+                  Ou copie e cole este link no seu navegador:<br>
+                  <span style="color:#6b38d4;word-break:break-all">{magic_link}</span>
+                </p>
+                <hr style="margin:32px 0;border:none;border-top:1px solid #e5eeff">
+                <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">
+                  Este link é pessoal e expira em <strong>{expire_days} dias</strong>.<br>
+                  Se você não esperava este e-mail, pode ignorá-lo com segurança.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td></tr>
+      </table>
+    </body>
+    </html>
+    """)
+    _send(to_email, subject, html)

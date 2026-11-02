@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { subjectsApi } from '../api'
 import { useAuth } from '../contexts/AuthContext'
@@ -7,6 +7,56 @@ import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { exportSubjects } from '../utils/pdf'
 import Pagination from '../components/Pagination'
+
+function CardActionsMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--color-muted)] hover:bg-[var(--color-surface-low)] hover:text-[var(--color-on-surface)] transition-colors"
+        aria-label="Ações"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 w-32 bg-white dark:bg-[var(--color-surface)] rounded-lg border border-[var(--color-outline)] shadow-lg z-20 py-1">
+          <button
+            onClick={() => { onEdit(); setOpen(false) }}
+            className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-[var(--color-on-surface)] hover:bg-[var(--color-surface-low)] transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Editar
+          </button>
+          <button
+            onClick={() => { onDelete(); setOpen(false) }}
+            className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Excluir
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 const PALETTES = [
   { color: '#0d9488', bg: 'slate-50', icon: '#4059aa' },
@@ -193,30 +243,10 @@ export default function SubjectsPage() {
                   <p className="text-xs text-[var(--color-muted)] mt-0.5">Matéria</p>
                 </div>
 
-                {/* Actions — admin only */}
+                {/* Actions — admin only, tucked into dropdown to reduce visual weight */}
                 {isAdmin && (
-                  <div className="flex gap-2 pt-1 border-t border-[#EEF2F7]">
-                    <button
-                      onClick={() => openEdit(s)}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
-                      style={{ background: '#EFF6FF', color: '#0d9488' }}
-                      onMouseEnter={e => (e.currentTarget.style.background = '#E2E8F0')}
-                      onMouseLeave={e => (e.currentTarget.style.background = '#EFF6FF')}
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => setConfirmDelete(s)}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-colors bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50"
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                      Excluir
-                    </button>
+                  <div className="flex justify-end pt-1 border-t border-[var(--color-outline)]">
+                    <CardActionsMenu onEdit={() => openEdit(s)} onDelete={() => setConfirmDelete(s)} />
                   </div>
                 )}
               </div>

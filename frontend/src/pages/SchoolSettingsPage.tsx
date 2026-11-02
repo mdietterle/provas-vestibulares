@@ -5,11 +5,40 @@ import { institutionsApi, usageApi, type UsageSummary } from '../api'
 import { useAuth } from '../contexts/AuthContext'
 import type { Institution } from '../types'
 
+// CNPJ mask: formats raw digits into 00.000.000/0000-00
+function formatCNPJ(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 14)
+  return digits
+    .replace(/^(\d{2})(\d)/, '$1.$2')
+    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+    .replace(/\.(\d{3})(\d)/, '.$1/$2')
+    .replace(/(\d{4})(\d)/, '$1-$2')
+}
+
+// Validates CNPJ check digits (mod 11 algorithm)
+function isValidCNPJ(cnpj: string): boolean {
+  const digits = cnpj.replace(/\D/g, '')
+  if (digits.length !== 14) return false
+  if (/^(\d)\1{13}$/.test(digits)) return false // all same digit
+  const calc = (len: number) => {
+    let sum = 0
+    let pos = len - 7
+    for (let i = 0; i < len; i++) {
+      sum += parseInt(digits[i]) * pos--
+      if (pos < 2) pos = 9
+    }
+    const result = sum % 11 < 2 ? 0 : 11 - (sum % 11)
+    return result === parseInt(digits[len])
+  }
+  return calc(12) && calc(13)
+}
+
 export default function SchoolSettingsPage() {
   const { user } = useAuth()
   const [inst, setInst] = useState<Institution | null>(null)
   const [name, setName] = useState('')
   const [cnpj, setCnpj] = useState('')
+  const [cnpjError, setCnpjError] = useState('')
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -39,9 +68,31 @@ export default function SchoolSettingsPage() {
   useEffect(() => { load() }, [])
   useEffect(() => { usageApi.summary().then(r => setUsage(r.data)).catch(() => {}) }, [])
 
+  const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatCNPJ(e.target.value)
+    setCnpj(formatted)
+    // Clear error while typing; validate on blur or submit
+    if (cnpjError) setCnpjError('')
+  }
+
+  const handleCnpjBlur = () => {
+    const digits = cnpj.replace(/\D/g, '')
+    if (digits.length > 0 && !isValidCNPJ(cnpj)) {
+      setCnpjError('CNPJ inválido. Verifique os dígitos.')
+    } else {
+      setCnpjError('')
+    }
+  }
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!inst) return
+    // Validate CNPJ before saving
+    const digits = cnpj.replace(/\D/g, '')
+    if (digits.length > 0 && !isValidCNPJ(cnpj)) {
+      setCnpjError('CNPJ inválido. Verifique os dígitos.')
+      return
+    }
     setSaving(true)
     try {
       await institutionsApi.update(inst.id, { name, cnpj: cnpj || undefined })
@@ -222,11 +273,18 @@ export default function SchoolSettingsPage() {
               <span className="ml-1 text-gray-400 font-normal">(opcional)</span>
             </label>
             <input
-              className="input"
+              className={`input ${cnpjError ? 'border-red-400 focus:border-red-500' : ''}`}
               value={cnpj}
-              onChange={(e) => setCnpj(e.target.value)}
+              onChange={handleCnpjChange}
+              onBlur={handleCnpjBlur}
               placeholder="00.000.000/0000-00"
+              maxLength={18}
+              aria-invalid={!!cnpjError}
+              aria-describedby={cnpjError ? 'cnpj-error' : undefined}
             />
+            {cnpjError && (
+              <p id="cnpj-error" className="text-xs text-red-600 mt-1" role="alert">{cnpjError}</p>
+            )}
           </div>
           <div className="flex justify-end pt-2 border-t border-[#E2E8F0]">
             <button
@@ -318,23 +376,49 @@ export default function SchoolSettingsPage() {
           )}
         </div>
 
-        {/* Toggle Sugestão Automática */}
-        <div className="flex items-center justify-between py-3 border-t border-[#E2E8F0]">
-          <div>
-            <p className="text-sm font-medium text-gray-800">Sugestão Automática</p>
-            <p className="text-xs text-[#64748B]">IA sugere questões ao criar novas provas</p>
-          </div>
-          <button
-            onClick={() => setAiAutoSuggest(v => !v)}
-            className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${aiAutoSuggest ? '' : 'bg-[#d1d5db] dark:bg-slate-300'}`}
-            style={aiAutoSuggest ? { background: 'linear-gradient(135deg, #475569, #64748b)' } : undefined}
-          >
-            <span
-              className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform"
-              style={{ transform: aiAutoSuggest ? 'translateX(20px)' : 'translateX(0)' }}
-            />
-          </button>
-        </div>
+        {/* Toggle Sugestão Automática — gated to Pro/Enterprise plans */}
+        {(() => {
+          const planKey = usage?.plan.key?.toLowerCase() ?? ''
+          const isProOrAbove = planKey === 'pro' || planKey === 'enterprise'
+          return (
+            <div className="flex items-center justify-between py-3 border-t border-[#E2E8F0]">
+              <div>
+                <p className="text-sm font-medium text-gray-800 flex items-center gap-1.5">
+                  Sugestão Automática
+                  {!isProOrAbove && (
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  )}
+                </p>
+                <p className="text-xs text-[#64748B]">
+                  {isProOrAbove
+                    ? 'IA sugere questões ao criar novas provas'
+                    : 'Disponível no plano Pro'}
+                </p>
+              </div>
+              <button
+                onClick={() => isProOrAbove && setAiAutoSuggest(v => !v)}
+                disabled={!isProOrAbove}
+                aria-label={isProOrAbove ? 'Alternar sugestão automática' : 'Sugestão automática disponível no plano Pro'}
+                className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${
+                  !isProOrAbove
+                    ? 'bg-[#e2e8f0] dark:bg-slate-700 cursor-not-allowed opacity-60'
+                    : aiAutoSuggest
+                      ? ''
+                      : 'bg-[#d1d5db] dark:bg-slate-300'
+                }`}
+                style={isProOrAbove && aiAutoSuggest ? { background: 'linear-gradient(135deg, #475569, #64748b)' } : undefined}
+              >
+                <span
+                  className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform"
+                  style={{ transform: aiAutoSuggest && isProOrAbove ? 'translateX(20px)' : 'translateX(0)' }}
+                />
+              </button>
+            </div>
+          )
+        })()}
       </div>
 
       {/* Info card */}

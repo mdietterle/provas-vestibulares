@@ -106,6 +106,7 @@ export default function StudentsPage() {
   const [students, setStudents] = useState<User[]>([])
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all')
+  const [filterClass, setFilterClass] = useState<string>('all')
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
 
@@ -120,13 +121,20 @@ export default function StudentsPage() {
   const [classes, setClasses] = useState<Class[]>([])
   const [saving, setSaving] = useState(false)
 
+  // Bulk import
+  const [showBulkImport, setShowBulkImport] = useState(false)
+  const [bulkPreview, setBulkPreview] = useState<{valid: any[], errors: any[], total: number} | null>(null)
+  const [bulkFile, setBulkFile] = useState<File | null>(null)
+  const [bulkLoading, setBulkLoading] = useState(false)
+  const [bulkImporting, setBulkImporting] = useState(false)
+
   const load = () => usersApi.list('student').then(r => setStudents(r.data))
   useEffect(() => {
     load().finally(() => setLoading(false))
     classesApi.list().then(r => setClasses(r.data))
   }, [])
 
-  useEffect(() => { setPage(1) }, [search, filterStatus])
+  useEffect(() => { setPage(1) }, [search, filterStatus, filterClass])
 
   // ── Filtering ─────────────────────────────────────────────────────────────
 
@@ -138,7 +146,10 @@ export default function StudentsPage() {
       filterStatus === 'all' ||
       (filterStatus === 'active' && s.is_active) ||
       (filterStatus === 'inactive' && !s.is_active)
-    return matchesSearch && matchesStatus
+    const matchesClass =
+      filterClass === 'all' ||
+      (s.class_names?.some(cn => cn === filterClass) ?? false)
+    return matchesSearch && matchesStatus && matchesClass
   })
 
   // ── CRUD ──────────────────────────────────────────────────────────────────
@@ -236,7 +247,41 @@ export default function StudentsPage() {
     }
   }
 
+  const handleBulkPreview = async () => {
+    if (!bulkFile) return
+    setBulkLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', bulkFile)
+      formData.append('role', 'student')
+      const r = await usersApi.bulkImportPreview(formData)
+      setBulkPreview(r.data)
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || 'Erro ao processar CSV')
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
+  const handleBulkConfirm = async () => {
+    if (!bulkPreview) return
+    setBulkImporting(true)
+    try {
+      const r = await usersApi.bulkImportConfirm({ role: 'student', rows: bulkPreview.valid })
+      toast.success(`${r.data.created} alunos importados com sucesso!`)
+      setShowBulkImport(false)
+      setBulkPreview(null)
+      setBulkFile(null)
+      load()
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || 'Erro ao importar')
+    } finally {
+      setBulkImporting(false)
+    }
+  }
+
   const activeCount = students.filter(s => s.is_active && s.invitation_accepted_at).length
+  const allClassNames = Array.from(new Set(students.flatMap(s => s.class_names ?? []))).sort()
   const pendingInviteCount = students.filter(s => s.invitation_status === 'pending').length
   const inactiveCount = students.filter(s => !s.is_active).length
 
@@ -264,6 +309,15 @@ export default function StudentsPage() {
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Exportar PDF
+          </button>
+          <button
+            onClick={() => { setShowBulkImport(true); setBulkPreview(null); setBulkFile(null) }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border border-[#E2E8F0] bg-white text-[#0d9488] hover:bg-[#EFF6FF] transition-all"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            Importar CSV
           </button>
           <button
             onClick={openCreate}
@@ -326,6 +380,19 @@ export default function StudentsPage() {
           ))}
         </div>
 
+        {allClassNames.length > 0 && (
+          <select
+            value={filterClass}
+            onChange={e => setFilterClass(e.target.value)}
+            className="px-3 py-2 rounded-lg text-xs font-semibold border border-[#E2E8F0] bg-white text-[#334155] focus:outline-none focus:ring-2 focus:ring-[#0d9488]"
+          >
+            <option value="all">Todas as turmas</option>
+            {allClassNames.map(cn => (
+              <option key={cn} value={cn}>{cn}</option>
+            ))}
+          </select>
+        )}
+
         <span className="text-xs text-[#64748B] ml-auto">
           {filtered.length} de {students.length} alunos
         </span>
@@ -339,6 +406,7 @@ export default function StudentsPage() {
             <tr className="border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-slate-800">
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Aluno</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Email</th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Turma</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Status</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Convite</th>
               <th className="px-6 py-3.5" />
@@ -363,6 +431,21 @@ export default function StudentsPage() {
 
                 {/* Email */}
                 <td className="px-6 py-4 text-[#334155]">{s.email}</td>
+
+                {/* Turma */}
+                <td className="px-6 py-4">
+                  {s.class_names && s.class_names.length > 0 ? (
+                    <div className="flex flex-wrap gap-1">
+                      {s.class_names.map(cn => (
+                        <span key={cn} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-slate-400 border border-[#c7d2fe] dark:border-[#464554]">
+                          {cn}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-gray-400 dark:text-[#908fa0]">—</span>
+                  )}
+                </td>
 
                 {/* Status — clicável para toggle (desabilitado enquanto convite pendente) */}
                 <td className="px-6 py-4">
@@ -412,7 +495,7 @@ export default function StudentsPage() {
 
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-6 py-16 text-center">
+                <td colSpan={5} className="px-6 py-16 text-center">
                   <div className="flex flex-col items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-[#EFF6FF] flex items-center justify-center">
                       <svg className="w-6 h-6 text-[#b6c4ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -594,6 +677,95 @@ export default function StudentsPage() {
               </button>
             </div>
           </form>
+        </Modal>
+      )}
+
+
+      {/* Bulk Import Modal */}
+      {showBulkImport && (
+        <Modal title="Importar Alunos via CSV" onClose={() => setShowBulkImport(false)}>
+          <div className="space-y-4">
+            {!bulkPreview ? (
+              <>
+                <p className="text-sm text-[#64748B]">
+                  Envie um arquivo CSV com as colunas: <strong>nome</strong>, <strong>email</strong>, <strong>turma</strong> (opcional).
+                </p>
+                <div className="border-2 border-dashed border-[#E2E8F0] rounded-xl p-8 text-center hover:border-[#0d9488] transition-colors">
+                  <input
+                    type="file"
+                    accept=".csv"
+                    onChange={e => setBulkFile(e.target.files?.[0] || null)}
+                    className="hidden"
+                    id="csv-upload"
+                  />
+                  <label htmlFor="csv-upload" className="cursor-pointer flex flex-col items-center gap-2">
+                    <svg className="w-10 h-10 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <span className="text-sm font-medium text-[#334155]">
+                      {bulkFile ? bulkFile.name : 'Clique para selecionar o arquivo CSV'}
+                    </span>
+                  </label>
+                </div>
+                <div className="flex justify-end pt-2">
+                  <button
+                    onClick={handleBulkPreview}
+                    disabled={!bulkFile || bulkLoading}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-40"
+                    style={{ background: 'linear-gradient(135deg, #0d9488, #f59e0b)' }}
+                  >
+                    {bulkLoading ? 'Processando...' : 'Visualizar'}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-green-700 dark:text-green-400">{bulkPreview.valid.length}</p>
+                    <p className="text-xs text-green-600 dark:text-green-500">Válidos</p>
+                  </div>
+                  <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-red-700 dark:text-red-400">{bulkPreview.errors.length}</p>
+                    <p className="text-xs text-red-600 dark:text-red-500">Erros</p>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-slate-700 dark:text-slate-300">{bulkPreview.total}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">Total</p>
+                  </div>
+                </div>
+
+                {bulkPreview.errors.length > 0 && (
+                  <div className="max-h-32 overflow-y-auto rounded-lg border border-red-200 bg-red-50 dark:bg-red-900/10 p-3">
+                    <p className="text-xs font-semibold text-red-700 mb-1">Linhas com erro:</p>
+                    {bulkPreview.errors.slice(0, 5).map((err, i) => (
+                      <p key={i} className="text-xs text-red-600">Linha {err.row}: {err.errors.join(', ')}</p>
+                    ))}
+                    {bulkPreview.errors.length > 5 && (
+                      <p className="text-xs text-red-500 mt-1">...e mais {bulkPreview.errors.length - 5} erros</p>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex justify-end gap-3 pt-2">
+                  <button
+                    onClick={() => { setBulkPreview(null); setBulkFile(null) }}
+                    className="px-4 py-2 rounded-lg text-sm font-medium text-[#334155] bg-[#EFF6FF] hover:bg-[#E2E8F0]"
+                  >
+                    Voltar
+                  </button>
+                  <button
+                    onClick={handleBulkConfirm}
+                    disabled={bulkPreview.valid.length === 0 || bulkImporting}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-40"
+                    style={{ background: 'linear-gradient(135deg, #0d9488, #f59e0b)' }}
+                  >
+                    {bulkImporting ? 'Importando...' : `Importar ${bulkPreview.valid.length} alunos`}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </Modal>
       )}
 

@@ -49,6 +49,8 @@ export const usersApi = {
   update: (id: number, data: Partial<User> & { password?: string }) => api.put<User>(`/users/${id}`, data),
   toggleActive: (id: number) => api.patch<User>(`/users/${id}/toggle-active`),
   delete: (id: number) => api.delete(`/users/${id}`),
+  bulkImportPreview: (formData: FormData) => api.post('/users/bulk-import/preview', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  bulkImportConfirm: (payload: { role: string; rows: any[] }) => api.post('/users/bulk-import/confirm', payload),
   assignments: (userId: number) => api.get<TeachingAssignment[]>(`/users/${userId}/assignments`),
 }
 
