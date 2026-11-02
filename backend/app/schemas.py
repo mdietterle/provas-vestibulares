@@ -367,7 +367,11 @@ class ExamListOut(BaseModel):
     subject: SubjectOut
     class_: ClassOut
     created_at: datetime
+    status: str = "draft"
+    deadline: Optional[datetime] = None
     question_count: int = 0
+    submission_count: int = 0
+    total_enrolled: int = 0
 
     model_config = {"from_attributes": True}
 

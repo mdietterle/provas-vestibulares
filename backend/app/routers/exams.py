@@ -140,10 +140,30 @@ def list_exams(
         .all()
     )
 
+    # Get submission counts per exam
+    exam_ids = [e.id for e in q.all()]
+    sub_counts = dict(
+        db.query(ExamSubmission.exam_id, func.count(ExamSubmission.id))
+        .filter(ExamSubmission.exam_id.in_(exam_ids))
+        .group_by(ExamSubmission.exam_id)
+        .all()
+    ) if exam_ids else {}
+
+    # Get enrolled counts per class
+    class_ids = list(set(e.class_id for e in q.all()))
+    enrolled_counts = dict(
+        db.query(StudentClass.class_id, func.count(StudentClass.student_id))
+        .filter(StudentClass.class_id.in_(class_ids))
+        .group_by(StudentClass.class_id)
+        .all()
+    ) if class_ids else {}
+
     result = []
     for exam in q.all():
         item = ExamListOut.model_validate(exam)
         item.question_count = counts.get(exam.id, 0)
+        item.submission_count = sub_counts.get(exam.id, 0)
+        item.total_enrolled = enrolled_counts.get(exam.class_id, 0)
         result.append(item)
     return result
 
