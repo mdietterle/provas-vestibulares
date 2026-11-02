@@ -133,7 +133,7 @@ export default function ProfessorsPage() {
     try {
       if (editing) {
         const data: Record<string, unknown> = { name: form.name, email: form.email, car_access: form.car_access }
-        if (form.password) data.password = form.password
+
         await usersApi.update(editing.id, data)
         toast.success('Professor atualizado')
         setShowModal(false)
@@ -421,8 +421,16 @@ export default function ProfessorsPage() {
               </p>
             ) : (
               <div>
-                <label className="label">Senha</label>
-                <input type="password" className="input" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Sua senha" required minLength={6} />
+                {!editing && (
+                  <div className="flex items-start gap-3 p-3 rounded-lg border border-[#b6c4ff] dark:border-[#464554] bg-[#EFF6FF] dark:bg-slate-800">
+                    <svg className="w-5 h-5 text-[#f59e0b] dark:text-slate-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <p className="text-xs text-[#334155] leading-relaxed">
+                      O professor receberá um <strong>e-mail de convite</strong> com um link para definir sua própria senha.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
             <label className="flex items-center gap-3 cursor-pointer select-none rounded-xl border border-[#E2E8F0] px-4 py-3 hover:bg-[#F4F6F9] transition-colors">

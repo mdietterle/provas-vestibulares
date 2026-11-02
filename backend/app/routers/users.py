@@ -2,7 +2,7 @@ import secrets
 from datetime import datetime
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -308,3 +308,146 @@ def unenroll_student(
         raise HTTPException(404, "Matrícula não encontrada")
     db.delete(enrollment)
     db.commit()
+
+
+# ── Bulk Import ───────────────────────────────────────────────────────────────
+
+class BulkImportPreview(BaseModel):
+    valid: List[dict]
+    errors: List[dict]
+    total: int
+
+@router.post("/bulk-import/preview", response_model=BulkImportPreview)
+def preview_bulk_import(
+    file: UploadFile = File(...),
+    role: UserRole = Query(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    """Parse CSV and return preview with valid rows and errors."""
+    import csv
+    import io
+    
+    if not file.filename or not file.filename.endswith('.csv'):
+        raise HTTPException(400, 'Arquivo deve ser CSV')
+    
+    raw = file.file.read().decode('utf-8-sig')
+    reader = csv.DictReader(io.StringIO(raw))
+    
+    valid_rows = []
+    error_rows = []
+    
+    existing_emails = {
+        u.email.lower() 
+        for u in db.query(User).filter(User.institution_id == current_user.institution_id).all()
+    }
+    
+    for i, row in enumerate(reader, start=2):  # start=2 because row 1 is header
+        name = (row.get('name') or row.get('nome') or '').strip()
+        email = (row.get('email') or row.get('e-mail') or '').strip().lower()
+        
+        errors = []
+        if not name:
+            errors.append('Nome obrigatório')
+        if not email:
+            errors.append('Email obrigatório')
+        elif '@' not in email:
+            errors.append('Email inválido')
+        elif email in existing_emails:
+            errors.append('Email já cadastrado')
+        
+        if role == UserRole.STUDENT:
+            class_name = (row.get('class') or row.get('turma') or '').strip()
+            row_data = {'name': name, 'email': email, 'class_name': class_name}
+        else:
+            subjects = (row.get('subjects') or row.get('matérias') or '').strip()
+            row_data = {'name': name, 'email': email, 'subjects': subjects}
+        
+        if errors:
+            error_rows.append({'row': i, **row_data, 'errors': errors})
+        else:
+            valid_rows.append(row_data)
+            existing_emails.add(email)  # prevent duplicates within same file
+    
+    return BulkImportPreview(valid=valid_rows, errors=error_rows, total=len(valid_rows) + len(error_rows))
+
+
+@router.post("/bulk-import/confirm", status_code=201)
+def confirm_bulk_import(
+    payload: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    """Create users from validated rows. Returns count of created users."""
+    role_str = payload.get('role', 'student')
+    role = UserRole.STUDENT if role_str == 'student' else UserRole.PROFESSOR
+    rows = payload.get('rows', [])
+    
+    if not rows:
+        raise HTTPException(400, 'Nenhuma linha para importar')
+    
+    # Check professor limit
+    if role == UserRole.PROFESSOR:
+        from app.services import usage as usage_service
+        remaining = usage_service.get_remaining_professors(db, current_user.institution_id)
+        if remaining is not None and len(rows) > remaining:
+            raise HTTPException(
+                403,
+                f'Limite de professores do plano atingido. Restam {remaining} vagas.'
+            )
+    
+    created = 0
+    failed = 0
+    
+    for row in rows:
+        try:
+            token = secrets.token_urlsafe(32)
+            user = User(
+                name=row['name'].strip(),
+                email=row['email'].strip().lower(),
+                hashed_password=get_password_hash(secrets.token_urlsafe(16)),
+                role=role,
+                institution_id=current_user.institution_id,
+                invitation_token=token,
+                invitation_sent_at=datetime.utcnow(),
+                is_active=True,
+            )
+            db.add(user)
+            db.flush()
+            
+            # Enroll student in class if specified
+            if role == UserRole.STUDENT and row.get('class_name'):
+                class_ = db.query(Class).filter(
+                    Class.name == row['class_name'],
+                    Class.institution_id == current_user.institution_id
+                ).first()
+                if class_:
+                    db.add(StudentClass(student_id=user.id, class_id=class_.id))
+            
+            # Send invitation email
+            from app.services import email as email_service
+            try:
+                if role == UserRole.PROFESSOR:
+                    email_service.send_professor_invitation(
+                        to_email=user.email,
+                        professor_name=user.name,
+                        institution_name=current_user.institution.name,
+                        token=token,
+                    )
+                else:
+                    email_service.send_student_invitation(
+                        to_email=user.email,
+                        student_name=user.name,
+                        institution_name=current_user.institution.name,
+                        token=token,
+                    )
+            except Exception as exc:
+                print(f'⚠️ Falha ao enviar convite para {user.email}: {exc}')
+            
+            created += 1
+        except Exception as exc:
+            print(f'⚠️ Falha ao criar usuário {row.get("email")}: {exc}')
+            failed += 1
+    
+    db.commit()
+    return {'created': created, 'failed': failed}
