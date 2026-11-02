@@ -803,10 +803,9 @@ def _build_exam_pdf(exam: Exam, student: Optional[User], student_id: Optional[in
                 pass
 
         if vq.options:
-            if student_id:
-                opts_to_render = seeded_shuffle(sorted(vq.options, key=lambda o: o.order), vq_seed + evq.id)
-            else:
-                opts_to_render = sorted(vq.options, key=lambda o: o.order)
+            # Vestibular question statements reference options by letter (A, B, C...)
+            # so shuffling would break the mapping. Preserve original order.
+            opts_to_render = sorted(vq.options, key=lambda o: o.order)
             for j, opt in enumerate(opts_to_render):
                 letter = LETTERS[j] if j < len(LETTERS) else str(j + 1)
                 story.append(Paragraph(f"( &nbsp;) &nbsp;<b>{letter})</b> {opt.text}", opt_style))
