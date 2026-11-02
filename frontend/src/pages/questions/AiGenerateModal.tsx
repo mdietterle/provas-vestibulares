@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { aiApi, questionsApi } from '../../api'
+import { aiApi, billingApi, questionsApi } from '../../api'
 import type { GeneratedQuestion, GeneratedQuestionOption, Subject } from '../../types'
 import Modal from '../../components/Modal'
 import QuotaExceededModal from '../../components/QuotaExceededModal'
@@ -35,6 +35,8 @@ interface Props {
 
 export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
   const { user } = useAuth()
+  const [planType, setPlanType] = useState<string | null>(null)
+  const [planLoading, setPlanLoading] = useState(true)
   const [aiForm, setAiForm] = useState({
     subject_id: 0, topic: '', question_type: 'multiple_choice',
     difficulty: 'medium', count: 3, context: '', image_base64: '',
@@ -44,6 +46,17 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
   const [aiSelected, setAiSelected] = useState<Set<number>>(new Set())
   const [aiSaving, setAiSaving] = useState(false)
   const [quotaModal, setQuotaModal] = useState<{ resource: 'ai_generation' | 'ai_correction'; used: number; limit: number } | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    billingApi.status()
+      .then(r => { if (!cancelled) setPlanType(r.data.plan_type) })
+      .catch(() => { if (!cancelled) setPlanType(null) })
+      .finally(() => { if (!cancelled) setPlanLoading(false) })
+    return () => { cancelled = true }
+  }, [])
+
+  const isProOrAbove = planType === 'pro' || planType === 'enterprise'
 
   const creatableSubjects = subjects
 
