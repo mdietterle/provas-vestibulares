@@ -638,14 +638,20 @@ function StudentDashboard() {
   const [allExams, setAllExams] = useState<Exam[]>([])
   const [simulados, setSimulados] = useState<SimuladoSummary[]>([])
   const [data, setData] = useState<StudentDashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([examsApi.list(), simuladosApi.list(), dashboardApi.student()]).then(([e, s, d]) => {
-      setAllExams(Array.isArray(e.data) ? e.data : [])
-      setSimulados(Array.isArray(s.data) ? s.data : [])
-      setData(d.data)
-    }).catch(() => {})
+    Promise.all([examsApi.list(), simuladosApi.list(), dashboardApi.student()])
+      .then(([e, s, d]) => {
+        setAllExams(Array.isArray(e.data) ? e.data : [])
+        setSimulados(Array.isArray(s.data) ? s.data : [])
+        setData(d.data)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
+
+  const hasData = !loading && data != null
 
   const exams = allExams.slice(0, 4)
   const pendingSimulados = simulados.filter(s => s.status !== 'done')
@@ -673,8 +679,12 @@ function StudentDashboard() {
         <div>
           <h1 className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC]">Olá, {user?.name?.split(' ')[0]}! 👋</h1>
           <p className="text-sm text-[#64748B] dark:text-slate-400 mt-0.5">
-            Você tem <span className="font-semibold text-[#0d9488]">{totalAssessments} avaliações</span> disponíveis
-            ({allExams.length} {allExams.length === 1 ? 'prova' : 'provas'}, {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}).
+            {loading
+              ? 'Carregando avaliações…'
+              : totalAssessments > 0
+                <>Você tem <span className="font-semibold text-[#0d9488]">{totalAssessments} avaliações</span> disponíveis
+                ({allExams.length} {allExams.length === 1 ? 'prova' : 'provas'}, {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}).</>
+                : 'Nenhuma avaliação disponível no momento.'}
           </p>
         </div>
         <QuickAction to="/exams" label="Ver minhas Provas" gradient icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>} />
