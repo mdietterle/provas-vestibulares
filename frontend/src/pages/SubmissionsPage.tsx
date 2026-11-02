@@ -9,6 +9,7 @@ import type { Submission, SubmissionList } from '../types/submission'
 import Modal from '../components/Modal'
 import QuotaExceededModal from '../components/QuotaExceededModal'
 import { exportSubmissions } from '../utils/pdf'
+import { formatDateTime } from '../utils/format'
 
 function ImageLightbox({ src, onClose }: { src: string; onClose: () => void }) {
   const [scale, setScale] = useState(1)
@@ -481,7 +482,7 @@ export default function SubmissionsPage() {
                 <tr key={student.id} className={`table-row ${sub === null ? 'opacity-60' : ''}`}>
                   <td className="table-cell font-medium text-[#1E293B] dark:text-slate-100">{student.name}</td>
                   <td className="table-cell text-[#8490b0] dark:text-slate-400">
-                    {sub ? new Date(sub.submitted_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—'}
+                    {sub ? formatDateTime(sub.submitted_at) : '—'}
                   </td>
                   <td className="table-cell">
                     <span className={sub ? STATUS_CONFIG[sub.status]?.cls ?? 'badge-neutral' : 'badge-danger'}>

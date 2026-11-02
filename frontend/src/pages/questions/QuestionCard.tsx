@@ -1,6 +1,7 @@
 import { Question } from '../../types'
 import { useAuth } from '../../contexts/AuthContext'
 import { resolveImageSrc } from '../../utils/image'
+import { stripHtml } from '../../utils/format'
 
 const TYPE_LABELS: Record<string, string> = {
   multiple_choice: 'Múltipla Escolha',
@@ -104,7 +105,7 @@ export default function QuestionCard({ q, isExpanded, onToggleExpand, onEdit, on
             />
           ) : (
             <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed line-clamp-2">
-              {q.statement.replace(/<[^>]*>/g, '')}
+              {stripHtml(q.statement)}
             </p>
           )}
 
