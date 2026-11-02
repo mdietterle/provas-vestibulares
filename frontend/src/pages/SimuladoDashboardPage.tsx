@@ -137,12 +137,12 @@ export default function SimuladoDashboardPage() {
             />
             <StatCard
               label="Média geral"
-              value={data.average_score != null ? `${data.average_score.toFixed(1)}%` : '—'}
+              value={data.average_score != null ? formatPercent(data.average_score) : '—'}
               sub="sobre simulados concluídos"
             />
             <StatCard
               label="Melhor nota"
-              value={data.best_score != null ? `${data.best_score.toFixed(1)}%` : '—'}
+              value={data.best_score != null ? formatPercent(data.best_score) : '—'}
             />
             <StatCard
               label="Esta semana"
@@ -230,7 +230,7 @@ export default function SimuladoDashboardPage() {
                             {EXAM_TYPE_LABEL[s.exam_type] || s.exam_type}
                           </td>
                           <td className="px-4 py-3 text-[#334155] dark:text-slate-300">
-                            {new Date(s.created_at).toLocaleDateString('pt-BR')}
+                            {formatDateLong(s.created_at)}
                           </td>
                           <td className="px-4 py-3">
                             <span

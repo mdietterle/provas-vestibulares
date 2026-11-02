@@ -199,13 +199,15 @@ function AdminDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Taxa de correção */}
             <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5 flex items-center gap-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
-              <CircleProgress pct={correctionRate} size={72} stroke={7} color="#f59e0b" />
+              <CircleProgress pct={subs.total > 0 ? correctionRate : 0} size={72} stroke={7} color={subs.total > 0 ? '#f59e0b' : '#9ca3af'} label={subs.total === 0 ? undefined : undefined} />
               <div>
                 <p className="text-xs text-[#64748B] dark:text-slate-400 font-medium mb-0.5">Taxa de Correção</p>
                 <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC]">
-                  {subs.done + subs.released} de {subs.total} corrigidas
+                  {subs.total > 0 ? `${subs.done + subs.released} de ${subs.total} corrigidas` : '—'}
                 </p>
-                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">{subs.pending} aguardando</p>
+                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
+                  {subs.total > 0 ? `${subs.pending} aguardando` : 'Nenhuma submissão ainda'}
+                </p>
               </div>
             </div>
 
@@ -465,15 +467,19 @@ function ProfessorDashboard() {
   const { user } = useAuth()
   const [exams, setExams] = useState<Exam[]>([])
   const [data, setData] = useState<ProfessorDashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([examsApi.list(), dashboardApi.professor()]).then(([e, d]) => {
-      setExams(e.data.slice(0, 4))
-      setData(d.data)
-    })
+    Promise.all([examsApi.list(), dashboardApi.professor()])
+      .then(([e, d]) => {
+        setExams(e.data.slice(0, 4))
+        setData(d.data)
+      })
+      .finally(() => setLoading(false))
   }, [])
 
-  const aiProgress = data?.ai_progress ?? 0
+  const hasData = !loading && data != null
+  const aiProgress = hasData ? (data!.ai_progress ?? 0) : 0
 
   return (
     <div className="space-y-8">
