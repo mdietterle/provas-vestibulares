@@ -631,26 +631,7 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
             </NavLink>
           ))}
         </div>
-      ) : (
-        <div className="px-2 pb-2 pt-2 border-t border-white/[0.06] space-y-0.5">
-          {PUBLIC_BRIDGE_LINKS.map(l => (
-            <div key={l.to} className="relative group/tooltip">
-              <NavLink
-                to={l.to}
-                className="flex items-center justify-center p-2 rounded-xl text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white transition-colors duration-150"
-                title={l.label}
-              >
-                <span className="w-[6px] h-[6px] rounded-full bg-current" />
-              </NavLink>
-              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50 pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-150">
-                <div className="bg-[var(--color-text)] text-[var(--color-bg)] text-xs rounded-lg px-3 py-1.5 whitespace-nowrap shadow-lg">
-                  {l.label}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      ) : null}
       {!collapsed && (
         <div className="px-3 pb-4 pt-2">
           <div
@@ -679,7 +660,9 @@ export default function Layout() {
   const [unread, setUnread] = useState(0)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [sidebarHovered, setSidebarHovered] = useState(false)
-  const [pinned, setPinned] = useState(false) // fixa o menu expandido no desktop
+  const [pinned, setPinned] = useState(() => {
+    try { return localStorage.getItem('sidebar-pinned') === 'true' } catch { return false }
+  }) // fixa o menu expandido no desktop; persistido em localStorage
   const [isMobile, setIsMobile] = useState(false)
   const [availableBankSlugs, setAvailableBankSlugs] = useState<Set<string> | null>(null)
 
@@ -756,7 +739,7 @@ export default function Layout() {
         <div className="flex items-center gap-3">
           {/* Hambúrguer — desktop fixa/solta o menu, mobile abre overlay */}
           <button
-            onClick={() => isMobile ? setMobileSidebarOpen(o => !o) : setPinned(p => !p)}
+            onClick={() => isMobile ? setMobileSidebarOpen(o => !o) : setPinned(p => { const next = !p; try { localStorage.setItem('sidebar-pinned', String(next)) } catch {} return next })}
             className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-surface-alt)] hover:text-[var(--color-text)] transition-colors"
             title={isMobile ? 'Menu' : pinned ? 'Soltar menu (auto-ocultar)' : 'Fixar menu aberto'}
             aria-label="Alternar menu"
