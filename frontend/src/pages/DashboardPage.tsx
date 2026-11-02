@@ -171,14 +171,14 @@ function AdminDashboard() {
       {/* 6 KPI cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         {[
-          { label: 'Professores', value: c.professors, tone: 'teal' as Tone, sub: growth.new_users_this_month > 0 ? `+${growth.new_users_this_month} este mês` : undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> },
+          { label: 'Professores', value: c.professors, tone: 'teal' as Tone, sub: growth.new_users_this_month > 0 && c.professors > 0 ? `+${growth.new_users_this_month} este mês` : undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> },
           { label: 'Alunos',      value: c.students,   tone: 'green' as Tone, sub: undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg> },
           { label: 'Matérias',    value: c.subjects,   tone: 'amber' as Tone, sub: undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253z"/></svg> },
           { label: 'Turmas',      value: c.classes,    tone: 'navy' as Tone, sub: undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg> },
           { label: 'Questões',    value: c.questions,  tone: 'orange' as Tone, sub: undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
-          { label: 'Provas',      value: c.exams,      tone: 'red' as Tone, sub: growth.new_exams_this_month > 0 ? `+${growth.new_exams_this_month} este mês` : undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
+          { label: 'Provas',      value: c.exams,      tone: 'red' as Tone, sub: growth.new_exams_this_month > 0 && c.exams > 0 ? `+${growth.new_exams_this_month} este mês` : undefined, icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
         ].map(k => (
-          <MetricCard key={k.label} label={k.label} value={k.value} tone={k.tone} sub={k.sub} icon={k.icon} />
+          <MetricCard key={k.label} label={k.label} value={k.value} tone={k.tone} sub={k.sub} icon={k.icon} loading={loading} />
         ))}
       </div>
 
@@ -199,13 +199,15 @@ function AdminDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Taxa de correção */}
             <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5 flex items-center gap-5" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
-              <CircleProgress pct={correctionRate} size={72} stroke={7} color="#f59e0b" />
+              <CircleProgress pct={subs.total > 0 ? correctionRate : 0} size={72} stroke={7} color={subs.total > 0 ? '#f59e0b' : '#9ca3af'} label={subs.total === 0 ? undefined : undefined} />
               <div>
                 <p className="text-xs text-[#64748B] dark:text-slate-400 font-medium mb-0.5">Taxa de Correção</p>
                 <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC]">
-                  {subs.done + subs.released} de {subs.total} corrigidas
+                  {subs.total > 0 ? `${subs.done + subs.released} de ${subs.total} corrigidas` : '—'}
                 </p>
-                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">{subs.pending} aguardando</p>
+                <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
+                  {subs.total > 0 ? `${subs.pending} aguardando` : 'Nenhuma submissão ainda'}
+                </p>
               </div>
             </div>
 
@@ -465,15 +467,19 @@ function ProfessorDashboard() {
   const { user } = useAuth()
   const [exams, setExams] = useState<Exam[]>([])
   const [data, setData] = useState<ProfessorDashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([examsApi.list(), dashboardApi.professor()]).then(([e, d]) => {
-      setExams(e.data.slice(0, 4))
-      setData(d.data)
-    })
+    Promise.all([examsApi.list(), dashboardApi.professor()])
+      .then(([e, d]) => {
+        setExams(e.data.slice(0, 4))
+        setData(d.data)
+      })
+      .finally(() => setLoading(false))
   }, [])
 
-  const aiProgress = data?.ai_progress ?? 0
+  const hasData = !loading && data != null
+  const aiProgress = hasData ? (data!.ai_progress ?? 0) : 0
 
   return (
     <div className="space-y-8">
@@ -503,19 +509,19 @@ function ProfessorDashboard() {
 
       {/* 4 KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard label="Questões Criadas" value={data?.question_count ?? '—'} tone="navy" sub="no banco"
+        <MetricCard label="Questões Criadas" value={hasData ? (data!.question_count ?? 0) : '—'} tone="navy" sub="no banco" loading={loading}
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>}
         />
-        <MetricCard label="Provas Criadas" value={data?.exam_count ?? '—'} tone="teal" sub="no total"
+        <MetricCard label="Provas Criadas" value={hasData ? (data!.exam_count ?? 0) : '—'} tone="teal" sub="no total" loading={loading}
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>}
         />
-        <MetricCard label="Tempo Economizado (estimado)" value={data?.time_saved ?? '—'} tone="green" sub="~2min por correção automática de IA"
+        <MetricCard label="Tempo Economizado (estimado)" value={hasData ? (data!.time_saved ?? '—') : '—'} tone="green" sub="~2min por correção automática de IA" loading={loading}
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>}
         />
         <MetricCard
           label="Média da Turma"
-          value={data?.avg_score != null ? data.avg_score.toFixed(1).replace('.', ',') : '—'}
-          tone="amber" sub="nas provas liberadas"
+          value={hasData && data!.avg_score != null ? data!.avg_score.toFixed(1).replace('.', ',') : '—'}
+          tone="amber" sub="nas provas liberadas" loading={loading}
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>}
         />
       </div>
@@ -535,14 +541,18 @@ function ProfessorDashboard() {
           </div>
 
           <div className="flex items-center gap-6 mb-5">
-            <CircleProgress pct={aiProgress} size={88} stroke={8} color="#f59e0b" label="corrigido" />
+            <CircleProgress pct={aiProgress} size={88} stroke={8} color={hasData ? '#f59e0b' : '#9ca3af'} label={hasData ? 'corrigido' : undefined} />
             <div className="flex-1 space-y-1 text-sm">
               <p className="text-[#334155] dark:text-slate-300">
-                <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{aiProgress}%</span> das submissões desta semana já foram processadas pela IA.
+                {hasData ? (
+                  <>
+                    <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{aiProgress}%</span> das submissões desta semana já foram processadas pela IA.
+                  </>
+                ) : 'Carregando dados de correção…'}
               </p>
-              {data?.correction_by_class && data.correction_by_class.length > 0 && (
+              {hasData && data!.correction_by_class && data!.correction_by_class.length > 0 && (
                 <p className="text-xs text-[#64748B] dark:text-slate-400">
-                  {data.correction_by_class.reduce((s, t) => s + t.corrigidos, 0)} de {data.correction_by_class.reduce((s, t) => s + t.total, 0)} alunos corrigidos em {data.correction_by_class.length} turma{data.correction_by_class.length !== 1 ? 's' : ''}.
+                  {data!.correction_by_class.reduce((s, t) => s + t.corrigidos, 0)} de {data!.correction_by_class.reduce((s, t) => s + t.total, 0)} alunos corrigidos em {data!.correction_by_class.length} turma{data!.correction_by_class.length !== 1 ? 's' : ''}.
                 </p>
               )}
             </div>
@@ -628,14 +638,20 @@ function StudentDashboard() {
   const [allExams, setAllExams] = useState<Exam[]>([])
   const [simulados, setSimulados] = useState<SimuladoSummary[]>([])
   const [data, setData] = useState<StudentDashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([examsApi.list(), simuladosApi.list(), dashboardApi.student()]).then(([e, s, d]) => {
-      setAllExams(Array.isArray(e.data) ? e.data : [])
-      setSimulados(Array.isArray(s.data) ? s.data : [])
-      setData(d.data)
-    }).catch(() => {})
+    Promise.all([examsApi.list(), simuladosApi.list(), dashboardApi.student()])
+      .then(([e, s, d]) => {
+        setAllExams(Array.isArray(e.data) ? e.data : [])
+        setSimulados(Array.isArray(s.data) ? s.data : [])
+        setData(d.data)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
+
+  const hasData = !loading && data != null
 
   const exams = allExams.slice(0, 4)
   const pendingSimulados = simulados.filter(s => s.status !== 'done')
@@ -663,8 +679,12 @@ function StudentDashboard() {
         <div>
           <h1 className="font-display text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC]">Olá, {user?.name?.split(' ')[0]}! 👋</h1>
           <p className="text-sm text-[#64748B] dark:text-slate-400 mt-0.5">
-            Você tem <span className="font-semibold text-[#0d9488]">{totalAssessments} avaliações</span> disponíveis
-            ({allExams.length} {allExams.length === 1 ? 'prova' : 'provas'}, {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}).
+            {loading
+              ? 'Carregando avaliações…'
+              : totalAssessments > 0
+                ? <>Você tem <span className="font-semibold text-[#0d9488]">{totalAssessments} avaliações</span> disponíveis
+                  ({allExams.length} {allExams.length === 1 ? 'prova' : 'provas'}, {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}).</>
+                : 'Nenhuma avaliação disponível no momento.'}
           </p>
         </div>
         <QuickAction to="/exams" label="Ver minhas Provas" gradient icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>} />
@@ -720,10 +740,10 @@ function StudentDashboard() {
         {/* Taxa de conclusão */}
         <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5 flex items-center gap-4" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <CircleProgress
-            pct={data?.completion_rate ?? 0}
+            pct={hasData ? (data!.completion_rate ?? 0) : 0}
             size={60}
             stroke={6}
-            color={data?.completion_rate == null ? '#9ca3af' : data.completion_rate >= 75 ? '#22c55e' : data.completion_rate >= 50 ? '#f59e0b' : '#ef4444'}
+            color={!hasData ? '#9ca3af' : data!.completion_rate == null ? '#9ca3af' : data!.completion_rate >= 75 ? '#22c55e' : data!.completion_rate >= 50 ? '#f59e0b' : '#ef4444'}
           />
           <div>
             <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#F8FAFC]">{completionStr}</p>

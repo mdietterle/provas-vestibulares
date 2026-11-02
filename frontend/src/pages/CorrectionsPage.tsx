@@ -96,7 +96,7 @@ export default function CorrectionsPage() {
                 (ollamaOk ? "bg-green-500" : ollamaOk === false ? "bg-red-500" : "bg-gray-400 dark:bg-gray-500")
               }
             />
-            {ollamaOk === null ? 'Verificando IA…' : ollamaOk ? 'IA Online (Groq)' : 'IA Offline (GROQ_API_KEY)'}
+            {ollamaOk === null ? 'Verificando IA…' : ollamaOk ? 'Correção por IA' : 'IA Offline'}
           </div>
         </div>
       </div>

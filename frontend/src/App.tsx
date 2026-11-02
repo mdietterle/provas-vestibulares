@@ -54,7 +54,6 @@ const InvitationPage = lazy(() => import('./pages/InvitationPage'))
 const StudentAuthPage = lazy(() => import('./pages/StudentAuthPage'))
 const MindMapsListPage = lazy(() => import('./pages/MindMapsListPage'))
 const MindMapEditorPage = lazy(() => import('./pages/MindMapEditorPage'))
-const LandingPage = lazy(() => import('./pages/LandingPage'))
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'))
 
@@ -71,7 +70,7 @@ function LoadingFallback() {
 function RootRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   if (loading) return <LoadingFallback />
-  if (!user) return <LandingPage />
+  if (!user) return <Navigate to="/login?expired=1" replace />
   return <>{children}</>
 }
 

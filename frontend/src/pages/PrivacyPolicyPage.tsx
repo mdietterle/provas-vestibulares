@@ -58,7 +58,7 @@ export default function PrivacyPolicyPage() {
             <p>Para operar o serviço, utilizamos os seguintes fornecedores, que podem processar dados em nosso nome:</p>
             <ul className="list-disc pl-5 space-y-1 mt-2">
               <li><strong>Resend</strong> — envio de e-mails transacionais (confirmação de cadastro, convites).</li>
-              <li><strong>Groq</strong> — processamento de IA para geração e correção de questões/redações.</li>
+              <li><strong>Correção por IA</strong> — processamento de IA para geração e correção de questões/redações.</li>
               <li><strong>Google AdMob</strong> — exibição de anúncios no aplicativo mobile. O AdMob pode coletar identificadores de publicidade conforme a{' '}
                 <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="text-slate-500 dark:text-slate-400 hover:underline">
                   política de privacidade do Google

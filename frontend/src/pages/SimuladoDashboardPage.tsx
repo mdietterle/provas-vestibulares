@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { simuladosApi, type SimuladoDashboard } from '../api/simulados'
 
 import { EXAM_TYPE_LABEL, EXAM_TYPE_COLOR } from '../utils/exams'
+import { formatDateLong, formatPercent, pluralize } from '../utils/format'
 
 const STATUS_LABEL: Record<string, string> = {
   pending: 'Em andamento',
@@ -45,7 +46,7 @@ function AreaTable({ byArea }: { byArea: Record<string, { total: number; correct
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-medium text-[#334155] dark:text-slate-300 truncate mr-2">{area}</span>
               <span className="text-xs font-bold shrink-0" style={{ color }}>
-                {data.pct.toFixed(0)}% ({data.correct}/{data.total})
+                {formatPercent(data.pct, 0)} ({data.correct}/{data.total})
               </span>
             </div>
             <ScoreBar pct={data.pct} color={color} />
@@ -132,16 +133,16 @@ export default function SimuladoDashboardPage() {
             <StatCard
               label="Total de simulados"
               value={data.total_simulados}
-              sub={`${data.completed_simulados} concluídos`}
+              sub={pluralize(data.completed_simulados, 'concluído', 'concluídos')}
             />
             <StatCard
               label="Média geral"
-              value={data.average_score != null ? `${data.average_score.toFixed(1)}%` : '—'}
+              value={data.average_score != null ? formatPercent(data.average_score) : '—'}
               sub="sobre simulados concluídos"
             />
             <StatCard
               label="Melhor nota"
-              value={data.best_score != null ? `${data.best_score.toFixed(1)}%` : '—'}
+              value={data.best_score != null ? formatPercent(data.best_score) : '—'}
             />
             <StatCard
               label="Esta semana"
@@ -166,7 +167,7 @@ export default function SimuladoDashboardPage() {
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC]">{EXAM_TYPE_LABEL[type] || type}</p>
-                        <p className="text-xs text-[#64748B] dark:text-slate-400">{stats.count} simulado{stats.count !== 1 ? 's' : ''}</p>
+                        <p className="text-xs text-[#64748B] dark:text-slate-400">{pluralize(stats.count, 'simulado', 'simulados')}</p>
                       </div>
                     </div>
                     {stats.avg_score != null ? (
@@ -174,7 +175,7 @@ export default function SimuladoDashboardPage() {
                         <p
                           className={`text-2xl font-bold mb-1 ${stats.avg_score >= 70 ? 'text-green-700 dark:text-green-400' : stats.avg_score >= 50 ? 'text-slate-800 dark:text-slate-400' : 'text-red-700 dark:text-red-400'}`}
                         >
-                          {stats.avg_score.toFixed(1)}%
+                          {formatPercent(stats.avg_score)}
                         </p>
                         <ScoreBar
                           pct={stats.avg_score}
@@ -229,7 +230,7 @@ export default function SimuladoDashboardPage() {
                             {EXAM_TYPE_LABEL[s.exam_type] || s.exam_type}
                           </td>
                           <td className="px-4 py-3 text-[#334155] dark:text-slate-300">
-                            {new Date(s.created_at).toLocaleDateString('pt-BR')}
+                            {formatDateLong(s.created_at)}
                           </td>
                           <td className="px-4 py-3">
                             <span
@@ -245,7 +246,7 @@ export default function SimuladoDashboardPage() {
                             </span>
                           </td>
                           <td className={`px-4 py-3 font-bold ${scoreColorClass}`}>
-                            {s.total_score != null ? `${s.total_score.toFixed(1)}%` : '—'}
+                            {s.total_score != null ? formatPercent(s.total_score) : '—'}
                           </td>
                           <td className="px-4 py-3 text-right">
                             <button

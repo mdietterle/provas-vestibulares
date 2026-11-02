@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import AdSlot from '../components/AdSlot'
@@ -64,9 +64,16 @@ const stats = [
 
 export default function LoginPage() {
   const { login } = useAuth()
+  const [searchParams] = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (searchParams.get('expired') === '1') {
+      toast.error('Sua sessão expirou. Faça login novamente.')
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -148,7 +155,7 @@ export default function LoginPage() {
                   className="w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#1d1f27] text-[#1E293B] dark:text-slate-100 placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Sua senha"
                   required
                 />
               </div>

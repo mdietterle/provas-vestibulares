@@ -838,8 +838,17 @@ export default function ExamsPage() {
                     </div>
                   )
                 })()}
-                {form.subject_id > 0 && (
-                  <div className="rounded-xl border p-4 space-y-3 bg-[#F4F6F9] dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554]">
+                <div className={`rounded-xl border p-4 space-y-3 bg-[#F4F6F9] dark:bg-[#1d1f27] border-[#E2E8F0] dark:border-[#464554] ${form.subject_id === 0 ? 'opacity-60 pointer-events-none select-none' : ''}`}>
+                  {form.subject_id === 0 && (
+                    <div className="flex items-center gap-3 py-6 justify-center text-gray-500 dark:text-slate-400">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                        <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                      <p className="text-sm font-medium">Selecione uma matéria para adicionar questões</p>
+                    </div>
+                  )}
+                  {form.subject_id > 0 && (
+                    <>
                     {/* Tabs */}
                     <div className="flex gap-1 bg-gray-200/60 dark:bg-[#2a2d3a] rounded-lg p-1 w-fit">
                       <button
@@ -1034,8 +1043,9 @@ export default function ExamsPage() {
                         </div>
                       </>
                     )}
-                  </div>
+                  </>
                 )}
+                </div>
                 {questionTab === 'most-used' && (
                   <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
                     {mostUsedLoading ? (

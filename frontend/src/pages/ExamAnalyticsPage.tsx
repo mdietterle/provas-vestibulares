@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { submissionsApi } from '../api/submissions'
 import { exportAnalytics } from '../utils/pdf'
+import { formatPercent, stripHtml } from '../utils/format'
 
 interface StudentRef { id: number; name: string }
 interface PlagiarismAlert {
@@ -73,7 +74,7 @@ function SimilarityBadge({ sim }: { sim: number }) {
     : 'bg-yellow-100 text-yellow-700 border-yellow-200'
   return (
     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${cls}`}>
-      {pct}% similar
+      {formatPercent(pct, 0)} similar
     </span>
   )
 }
@@ -131,7 +132,7 @@ export default function ExamAnalyticsPage() {
         />
         <StatCard
           label="Taxa de aprovação"
-          value={`${data.pass_rate}%`}
+          value={formatPercent(data.pass_rate, 0)}
           sub="(≥ 50% da nota total)"
         />
         <StatCard
@@ -186,7 +187,7 @@ export default function ExamAnalyticsPage() {
                 <tr key={q.exam_question_id} className="hover:bg-gray-50">
                   <td className="px-6 py-3 font-semibold text-gray-400">{q.order}</td>
                   <td className="px-6 py-3 max-w-xs">
-                    <span className="line-clamp-2 text-gray-700">{q.statement}</span>
+                    <span className="line-clamp-2 text-gray-700">{stripHtml(q.statement)}</span>
                   </td>
                   <td className="px-6 py-3 text-gray-400 whitespace-nowrap">
                     {q.question_type === 'essay' ? 'Dissertativa' :
@@ -204,7 +205,7 @@ export default function ExamAnalyticsPage() {
                         } />
                       </div>
                       <span className={`text-xs w-10 text-right ${errorColor(q.error_rate)}`}>
-                        {Math.round(q.error_rate * 100)}%
+                        {formatPercent(q.error_rate * 100, 0)}
                       </span>
                     </div>
                   </td>
