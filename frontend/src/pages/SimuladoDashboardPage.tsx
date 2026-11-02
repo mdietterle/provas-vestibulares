@@ -167,7 +167,7 @@ export default function SimuladoDashboardPage() {
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC]">{EXAM_TYPE_LABEL[type] || type}</p>
-                        <p className="text-xs text-[#64748B] dark:text-slate-400">{stats.count} simulado{stats.count !== 1 ? 's' : ''}</p>
+                        <p className="text-xs text-[#64748B] dark:text-slate-400">{pluralize(stats.count, 'simulado', 'simulados')}</p>
                       </div>
                     </div>
                     {stats.avg_score != null ? (
@@ -246,7 +246,7 @@ export default function SimuladoDashboardPage() {
                             </span>
                           </td>
                           <td className={`px-4 py-3 font-bold ${scoreColorClass}`}>
-                            {s.total_score != null ? `${s.total_score.toFixed(1)}%` : '—'}
+                            {s.total_score != null ? formatPercent(s.total_score) : '—'}
                           </td>
                           <td className="px-4 py-3 text-right">
                             <button
