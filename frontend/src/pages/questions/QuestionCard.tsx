@@ -86,7 +86,10 @@ export default function QuestionCard({ q, isExpanded, onToggleExpand, onEdit, on
                 {diffCfg.label}
               </span>
             )}
-            <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${q.is_public ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>
+            <span
+              className={`text-xs font-medium px-2.5 py-0.5 rounded-full cursor-help ${q.is_public ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}
+              title={q.is_public ? 'Pública: visível para todos os professores da escola' : 'Privada: só o autor e a coordenação podem ver'}
+            >
               {q.is_public ? 'Pública' : 'Privada'}
             </span>
             {q.professor_id !== user?.id && (
