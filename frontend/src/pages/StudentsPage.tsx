@@ -106,6 +106,7 @@ export default function StudentsPage() {
   const [students, setStudents] = useState<User[]>([])
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all')
+  const [filterClass, setFilterClass] = useState<string>('all')
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
 
@@ -126,7 +127,7 @@ export default function StudentsPage() {
     classesApi.list().then(r => setClasses(r.data))
   }, [])
 
-  useEffect(() => { setPage(1) }, [search, filterStatus])
+  useEffect(() => { setPage(1) }, [search, filterStatus, filterClass])
 
   // ── Filtering ─────────────────────────────────────────────────────────────
 
@@ -138,7 +139,10 @@ export default function StudentsPage() {
       filterStatus === 'all' ||
       (filterStatus === 'active' && s.is_active) ||
       (filterStatus === 'inactive' && !s.is_active)
-    return matchesSearch && matchesStatus
+    const matchesClass =
+      filterClass === 'all' ||
+      (s.class_names?.some(cn => cn === filterClass) ?? false)
+    return matchesSearch && matchesStatus && matchesClass
   })
 
   // ── CRUD ──────────────────────────────────────────────────────────────────
@@ -237,6 +241,7 @@ export default function StudentsPage() {
   }
 
   const activeCount = students.filter(s => s.is_active && s.invitation_accepted_at).length
+  const allClassNames = Array.from(new Set(students.flatMap(s => s.class_names ?? []))).sort()
   const pendingInviteCount = students.filter(s => s.invitation_status === 'pending').length
   const inactiveCount = students.filter(s => !s.is_active).length
 
@@ -326,6 +331,19 @@ export default function StudentsPage() {
           ))}
         </div>
 
+        {allClassNames.length > 0 && (
+          <select
+            value={filterClass}
+            onChange={e => setFilterClass(e.target.value)}
+            className="px-3 py-2 rounded-lg text-xs font-semibold border border-[#E2E8F0] bg-white text-[#334155] focus:outline-none focus:ring-2 focus:ring-[#0d9488]"
+          >
+            <option value="all">Todas as turmas</option>
+            {allClassNames.map(cn => (
+              <option key={cn} value={cn}>{cn}</option>
+            ))}
+          </select>
+        )}
+
         <span className="text-xs text-[#64748B] ml-auto">
           {filtered.length} de {students.length} alunos
         </span>
@@ -339,6 +357,7 @@ export default function StudentsPage() {
             <tr className="border-b border-[#E2E8F0] bg-[#F4F6F9] dark:bg-slate-800">
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Aluno</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Email</th>
+              <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Turma</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Status</th>
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-[#334155] uppercase tracking-wide">Convite</th>
               <th className="px-6 py-3.5" />
@@ -363,6 +382,21 @@ export default function StudentsPage() {
 
                 {/* Email */}
                 <td className="px-6 py-4 text-[#334155]">{s.email}</td>
+
+                {/* Turma */}
+                <td className="px-6 py-4">
+                  {s.class_names && s.class_names.length > 0 ? (
+                    <div className="flex flex-wrap gap-1">
+                      {s.class_names.map(cn => (
+                        <span key={cn} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#eef2ff] dark:bg-slate-800 text-[#0d9488] dark:text-slate-400 border border-[#c7d2fe] dark:border-[#464554]">
+                          {cn}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-gray-400 dark:text-[#908fa0]">—</span>
+                  )}
+                </td>
 
                 {/* Status — clicável para toggle (desabilitado enquanto convite pendente) */}
                 <td className="px-6 py-4">
@@ -412,7 +446,7 @@ export default function StudentsPage() {
 
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-6 py-16 text-center">
+                <td colSpan={5} className="px-6 py-16 text-center">
                   <div className="flex flex-col items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-[#EFF6FF] flex items-center justify-center">
                       <svg className="w-6 h-6 text-[#b6c4ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

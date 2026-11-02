@@ -27,7 +27,23 @@ def list_users(
         q = q.filter(User.role == role)
     if not include_deleted:
         q = q.filter(User.deleted_at.is_(None))
-    return [UserOut.from_user(u) for u in q.all()]
+    users = q.all()
+    
+    # For students, fetch class names in bulk to avoid N+1 queries
+    if role == UserRole.STUDENT and users:
+        user_ids = [u.id for u in users]
+        enrollments = (
+            db.query(StudentClass.student_id, Class.name)
+            .join(Class, StudentClass.class_id == Class.id)
+            .filter(StudentClass.student_id.in_(user_ids))
+            .all()
+        )
+        class_map: dict[int, list[str]] = {}
+        for student_id, class_name in enrollments:
+            class_map.setdefault(student_id, []).append(class_name)
+        return [UserOut.from_user(u, class_names=class_map.get(u.id, [])) for u in users]
+    
+    return [UserOut.from_user(u) for u in users]
 
 
 @router.post("", response_model=UserOut, status_code=201)
