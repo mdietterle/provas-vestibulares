@@ -112,6 +112,7 @@ export default function QuestionsPage() {
               <path d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
             Gerar com IA
+            <span className="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded bg-slate-600 text-white leading-none">Pro</span>
           </button>
           <button onClick={openCreate} className="btn-primary btn-sm">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
