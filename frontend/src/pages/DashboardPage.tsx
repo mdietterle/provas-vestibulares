@@ -682,8 +682,8 @@ function StudentDashboard() {
             {loading
               ? 'Carregando avaliações…'
               : totalAssessments > 0
-                <>Você tem <span className="font-semibold text-[#0d9488]">{totalAssessments} avaliações</span> disponíveis
-                ({allExams.length} {allExams.length === 1 ? 'prova' : 'provas'}, {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}).</>
+                ? <>Você tem <span className="font-semibold text-[#0d9488]">{totalAssessments} avaliações</span> disponíveis
+                  ({allExams.length} {allExams.length === 1 ? 'prova' : 'provas'}, {pendingSimulados.length} {pendingSimulados.length === 1 ? 'simulado' : 'simulados'}).</>
                 : 'Nenhuma avaliação disponível no momento.'}
           </p>
         </div>
@@ -740,10 +740,10 @@ function StudentDashboard() {
         {/* Taxa de conclusão */}
         <div className="bg-white dark:bg-[#1d1f27] rounded-2xl border border-[#E2E8F0] dark:border-[#464554] p-5 flex items-center gap-4" style={{ boxShadow: '0 4px 20px rgba(0,35,111,0.06)' }}>
           <CircleProgress
-            pct={data?.completion_rate ?? 0}
+            pct={hasData ? (data!.completion_rate ?? 0) : 0}
             size={60}
             stroke={6}
-            color={data?.completion_rate == null ? '#9ca3af' : data.completion_rate >= 75 ? '#22c55e' : data.completion_rate >= 50 ? '#f59e0b' : '#ef4444'}
+            color={!hasData ? '#9ca3af' : data!.completion_rate == null ? '#9ca3af' : data!.completion_rate >= 75 ? '#22c55e' : data!.completion_rate >= 50 ? '#f59e0b' : '#ef4444'}
           />
           <div>
             <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#F8FAFC]">{completionStr}</p>
