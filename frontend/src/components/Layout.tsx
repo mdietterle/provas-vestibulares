@@ -484,7 +484,7 @@ function SidebarGroup({
         }`}
       >
         {group.icon}
-        <span className="flex-1 text-left text-[13px] text-[var(--sidebar-text)]">{group.label}</span>
+        <span className="flex-1 text-left text-[13px] text-white">{group.label}</span>
         <svg
           className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
@@ -504,7 +504,7 @@ function SidebarGroup({
                 `flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[12px] font-medium transition-colors duration-150 ${
                   isActive
                     ? 'bg-white/12 text-white'
-                    : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
+                    : 'text-white/70 hover:bg-white/[0.05] hover:text-white'
                 }`
               }
             >
@@ -666,8 +666,9 @@ export default function Layout() {
   const [isMobile, setIsMobile] = useState(false)
   const [availableBankSlugs, setAvailableBankSlugs] = useState<Set<string> | null>(null)
 
+  // Below 1024px sidebar becomes a drawer overlay to prevent content overlap
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
+    const check = () => setIsMobile(window.innerWidth < 1024)
     check()
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
