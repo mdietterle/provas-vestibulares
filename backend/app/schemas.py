@@ -93,6 +93,7 @@ class UserOut(BaseModel):
     created_at: datetime
     invitation_sent_at: Optional[datetime] = None
     invitation_accepted_at: Optional[datetime] = None
+    class_names: Optional[List[str]] = None
     invitation_status: Optional[str] = None  # "pending" | "accepted"
 
     model_config = {"from_attributes": True}
