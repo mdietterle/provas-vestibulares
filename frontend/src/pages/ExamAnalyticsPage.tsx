@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { submissionsApi } from '../api/submissions'
 import { exportAnalytics } from '../utils/pdf'
+import { formatPercent, stripHtml } from '../utils/format'
 
 interface StudentRef { id: number; name: string }
 interface PlagiarismAlert {
@@ -73,7 +74,7 @@ function SimilarityBadge({ sim }: { sim: number }) {
     : 'bg-yellow-100 text-yellow-700 border-yellow-200'
   return (
     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${cls}`}>
-      {pct}% similar
+      {formatPercent(pct, 0)} similar
     </span>
   )
 }
@@ -131,7 +132,7 @@ export default function ExamAnalyticsPage() {
         />
         <StatCard
           label="Taxa de aprovação"
-          value={`${data.pass_rate}%`}
+          value={formatPercent(data.pass_rate, 0)}
           sub="(≥ 50% da nota total)"
         />
         <StatCard
