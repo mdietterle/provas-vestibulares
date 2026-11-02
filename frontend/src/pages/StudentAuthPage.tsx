@@ -308,7 +308,7 @@ export default function StudentAuthPage() {
                       className={inputClass}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
+                      placeholder="Sua senha"
                       autoComplete="current-password"
                       required
                     />

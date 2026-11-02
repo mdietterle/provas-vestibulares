@@ -352,7 +352,7 @@ export default function SubmissionsPage() {
           {/* IA status */}
           <div className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg ${ollamaOk ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${ollamaOk ? 'bg-emerald-500' : 'bg-red-400'}`} />
-            {ollamaOk ? 'IA Online (Groq)' : 'IA Offline (GROQ_API_KEY)'}
+            {ollamaOk ? 'Correção por IA' : 'IA Offline'}
           </div>
 
           <Link to={`/exams/${id}/analytics`} className="btn-secondary btn-sm">Analytics</Link>
@@ -360,7 +360,7 @@ export default function SubmissionsPage() {
           <button
             onClick={handleCorrectAll}
             disabled={correctingAll || !ollamaOk}
-            title={!ollamaOk ? 'IA Offline (GROQ_API_KEY não configurada)' : 'Corrige todas as respostas pendentes: múltipla escolha e somatória automaticamente, dissertativas com IA'}
+            title={!ollamaOk ? 'IA Offline (chave não configurada)' : 'Corrige todas as respostas pendentes: múltipla escolha e somatória automaticamente, dissertativas com Correção por IA'}
             className="btn-ai btn-sm"
           >
             {correctingAll ? (

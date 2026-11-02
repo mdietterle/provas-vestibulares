@@ -202,7 +202,7 @@ export default function ProfilePage() {
               className="input"
               value={currentPwd}
               onChange={e => setCurrentPwd(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Sua senha"
               autoComplete="current-password"
             />
           </div>
@@ -214,7 +214,7 @@ export default function ProfilePage() {
                 className="input"
                 value={newPwd}
                 onChange={e => setNewPwd(e.target.value)}
-                placeholder="••••••••"
+                placeholder="Sua senha"
                 minLength={6}
                 autoComplete="new-password"
               />
@@ -226,7 +226,7 @@ export default function ProfilePage() {
                 className="input"
                 value={confirmPwd}
                 onChange={e => setConfirmPwd(e.target.value)}
-                placeholder="••••••••"
+                placeholder="Sua senha"
                 autoComplete="new-password"
               />
             </div>

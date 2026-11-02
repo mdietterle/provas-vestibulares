@@ -697,6 +697,19 @@ export default function Layout() {
   const location = useLocation()
   useEffect(() => { setMobileSidebarOpen(false) }, [location.pathname])
 
+  // Dynamic tab title based on route
+  useEffect(() => {
+    const path = location.pathname
+    let title = 'Prova Online'
+    if (path === '/') title = 'Prova Online'
+    else if (path.startsWith('/exams')) title = 'Provas - Prova Online'
+    else if (path.startsWith('/simulados')) title = 'Simulados - Prova Online'
+    else if (path === '/dashboard') title = 'Painel - Prova Online'
+    else if (path.startsWith('/redacoes')) title = 'Redações - Prova Online'
+    else if (path.startsWith('/mindmaps')) title = 'Mapas Mentais - Prova Online'
+    document.title = title
+  }, [location.pathname])
+
   const handleLogout = () => { logout(); navigate('/login') }
 
   useEffect(() => {

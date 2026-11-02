@@ -422,7 +422,7 @@ export default function ProfessorsPage() {
             ) : (
               <div>
                 <label className="label">Senha</label>
-                <input type="password" className="input" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="••••••••" required minLength={6} />
+                <input type="password" className="input" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Sua senha" required minLength={6} />
               </div>
             )}
             <label className="flex items-center gap-3 cursor-pointer select-none rounded-xl border border-[#E2E8F0] px-4 py-3 hover:bg-[#F4F6F9] transition-colors">

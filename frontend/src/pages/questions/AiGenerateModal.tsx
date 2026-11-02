@@ -107,7 +107,7 @@ export default function AiGenerateModal({ subjects, onClose, onSaved }: Props) {
             <div className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br from-slate-500 to-slate-600">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </div>
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Powered by Groq — qwen3-32b</span>
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Correção por IA</span>
             <span className="ml-auto text-xs text-gray-400">Revise e edite antes de salvar</span>
           </div>
 
