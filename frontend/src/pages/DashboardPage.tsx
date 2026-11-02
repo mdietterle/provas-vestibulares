@@ -509,19 +509,19 @@ function ProfessorDashboard() {
 
       {/* 4 KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard label="Questões Criadas" value={data?.question_count ?? '—'} tone="navy" sub="no banco"
+        <MetricCard label="Questões Criadas" value={hasData ? (data!.question_count ?? 0) : '—'} tone="navy" sub="no banco" loading={loading}
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>}
         />
-        <MetricCard label="Provas Criadas" value={data?.exam_count ?? '—'} tone="teal" sub="no total"
+        <MetricCard label="Provas Criadas" value={hasData ? (data!.exam_count ?? 0) : '—'} tone="teal" sub="no total" loading={loading}
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>}
         />
-        <MetricCard label="Tempo Economizado (estimado)" value={data?.time_saved ?? '—'} tone="green" sub="~2min por correção automática de IA"
+        <MetricCard label="Tempo Economizado (estimado)" value={hasData ? (data!.time_saved ?? '—') : '—'} tone="green" sub="~2min por correção automática de IA" loading={loading}
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>}
         />
         <MetricCard
           label="Média da Turma"
-          value={data?.avg_score != null ? data.avg_score.toFixed(1).replace('.', ',') : '—'}
-          tone="amber" sub="nas provas liberadas"
+          value={hasData && data!.avg_score != null ? data!.avg_score.toFixed(1).replace('.', ',') : '—'}
+          tone="amber" sub="nas provas liberadas" loading={loading}
           icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>}
         />
       </div>
@@ -541,14 +541,18 @@ function ProfessorDashboard() {
           </div>
 
           <div className="flex items-center gap-6 mb-5">
-            <CircleProgress pct={aiProgress} size={88} stroke={8} color="#f59e0b" label="corrigido" />
+            <CircleProgress pct={aiProgress} size={88} stroke={8} color={hasData ? '#f59e0b' : '#9ca3af'} label={hasData ? 'corrigido' : undefined} />
             <div className="flex-1 space-y-1 text-sm">
               <p className="text-[#334155] dark:text-slate-300">
-                <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{aiProgress}%</span> das submissões desta semana já foram processadas pela IA.
+                {hasData ? (
+                  <>
+                    <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{aiProgress}%</span> das submissões desta semana já foram processadas pela IA.
+                  </>
+                ) : 'Carregando dados de correção…'}
               </p>
-              {data?.correction_by_class && data.correction_by_class.length > 0 && (
+              {hasData && data!.correction_by_class && data!.correction_by_class.length > 0 && (
                 <p className="text-xs text-[#64748B] dark:text-slate-400">
-                  {data.correction_by_class.reduce((s, t) => s + t.corrigidos, 0)} de {data.correction_by_class.reduce((s, t) => s + t.total, 0)} alunos corrigidos em {data.correction_by_class.length} turma{data.correction_by_class.length !== 1 ? 's' : ''}.
+                  {data!.correction_by_class.reduce((s, t) => s + t.corrigidos, 0)} de {data!.correction_by_class.reduce((s, t) => s + t.total, 0)} alunos corrigidos em {data!.correction_by_class.length} turma{data!.correction_by_class.length !== 1 ? 's' : ''}.
                 </p>
               )}
             </div>
