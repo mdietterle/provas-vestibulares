@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { simuladosApi, type SimuladoDashboard } from '../api/simulados'
 
 import { EXAM_TYPE_LABEL, EXAM_TYPE_COLOR } from '../utils/exams'
+import { formatDateLong, formatPercent, pluralize } from '../utils/format'
 
 const STATUS_LABEL: Record<string, string> = {
   pending: 'Em andamento',
@@ -132,7 +133,7 @@ export default function SimuladoDashboardPage() {
             <StatCard
               label="Total de simulados"
               value={data.total_simulados}
-              sub={`${data.completed_simulados} concluídos`}
+              sub={pluralize(data.completed_simulados, 'concluído', 'concluídos')}
             />
             <StatCard
               label="Média geral"
