@@ -429,10 +429,15 @@ export default function ExamSubmitPage() {
         const unanswered = getUnanswered()
         const total = shuffledExam?.exam_questions.length ?? 0
         const answeredCount = total - unanswered.length
+        const msg = unanswered.length > 0
+          ? `Você respondeu ${answeredCount} de ${total} questões.\n\nVocê tem ${unanswered.length} questão${unanswered.length === 1 ? '' : 's'} sem resposta.\n\nEntregar mesmo assim?`
+          : `Você respondeu todas as ${total} questões.\n\nConfirmar entrega?`
         return (
           <ConfirmDialog
             open={true}
-            message={`${answeredCount} de ${total} questões respondidas. Entregar mesmo assim?`}
+            title="Entregar prova"
+            message={msg}
+            confirmLabel="Entregar"
             onConfirm={doSubmit}
             onCancel={() => setShowBlankConfirm(false)}
           />
