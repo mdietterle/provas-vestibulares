@@ -388,7 +388,7 @@ export default function ExamsPage() {
         {[
           { label: 'Total de Provas', value: exams.length, textClass: 'text-slate-600 dark:text-slate-400', bgClass: 'bg-[#eef2ff] dark:bg-slate-800 border-[#eef2ff] dark:border-[#464554]' },
           { label: user?.role === 'student' ? 'Disponíveis' : 'Matérias Cobertas', value: user?.role === 'student' ? exams.length : new Set(exams.map(e => e.subject_id)).size, textClass: 'text-slate-500 dark:text-[#c4a4ff]', bgClass: 'bg-[#f5f0ff] dark:bg-[#241b3f] border-[#f5f0ff] dark:border-[#3a2a5c]' },
-          { label: user?.role === 'student' ? 'Para Responder' : 'Turmas', value: user?.role === 'student' ? exams.length : new Set(exams.map(e => e.class_id)).size, textClass: 'text-[#27c38a] dark:text-[#4ade80]', bgClass: 'bg-[#f0fdf8] dark:bg-[#132a1f] border-[#f0fdf8] dark:border-[#1f4535]' },
+          { label: user?.role === 'student' ? 'Para Responder' : 'Turmas', value: user?.role === 'student' ? exams.filter(e => !e.submitted_at && e.status !== 'released').length : new Set(exams.map(e => e.class_id)).size, textClass: 'text-[#27c38a] dark:text-[#4ade80]', bgClass: 'bg-[#f0fdf8] dark:bg-[#132a1f] border-[#f0fdf8] dark:border-[#1f4535]' },
         ].map((s) => (
           <div key={s.label} className={`rounded-2xl border p-4 ${s.bgClass}`}>
             <p className="text-xs font-medium text-gray-500 dark:text-slate-400 mb-1">{s.label}</p>
@@ -542,6 +542,7 @@ export default function ExamsPage() {
                           </Link>
                           <Link
                             to={`/exams/${exam.id}/scan`}
+                            title="Enviar foto da folha de respostas"
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-slate-500 dark:text-[#c4a4ff]"
                           >
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
