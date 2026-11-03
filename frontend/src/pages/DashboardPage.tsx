@@ -710,7 +710,7 @@ function StudentDashboard() {
       )}
 
       {!loading && (
-        <div className="space-y-8">
+        <div className="contents">
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Média geral */}
@@ -993,6 +993,7 @@ function StudentDashboard() {
         </div>
       </div>
     </div>)}
+    </div>
   )
 }
 
