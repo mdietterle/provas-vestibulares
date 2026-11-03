@@ -925,7 +925,7 @@ function StudentDashboard() {
               const urgent = msLeft != null && msLeft > 0 && msLeft < 48 * 60 * 60 * 1000
               const expired = msLeft != null && msLeft <= 0
               const deadlineStr = deadline
-                ? deadline.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ', ' + deadline.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                ? formatDateTime(exam.deadline)
                 : null
               return (
                 <Link key={exam.id} to={`/exams/${exam.id}/submit`} className={`flex items-center gap-4 bg-white dark:bg-[#1d1f27] rounded-xl border px-4 py-3 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-colors group ${urgent ? 'border-[#f59e0b] dark:border-[#f59e0b]' : 'border-[#E2E8F0] dark:border-[#464554]'}`}>
