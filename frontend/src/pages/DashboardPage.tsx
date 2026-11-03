@@ -697,6 +697,20 @@ function StudentDashboard() {
         description="Veja como realizar provas, consultar seus resultados e aproveitar ao máximo as sugestões personalizadas da IA."
       />
 
+      {/* Loading skeleton while server wakes up (Issue #3) */}
+      {loading && (
+        <div className="space-y-6 animate-pulse">
+          <div className="h-8 w-64 bg-gray-200 dark:bg-[#2a2d3a] rounded-lg" />
+          <div className="h-24 bg-gray-200 dark:bg-[#2a2d3a] rounded-2xl" />
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3].map(i => <div key={i} className="h-32 bg-gray-200 dark:bg-[#2a2d3a] rounded-2xl" />)}
+          </div>
+          <div className="h-40 bg-gray-200 dark:bg-[#2a2d3a] rounded-2xl" />
+        </div>
+      )}
+
+      {!loading && (
+        <div className="space-y-8">
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Média geral */}
@@ -978,7 +992,7 @@ function StudentDashboard() {
           </div>
         </div>
       </div>
-    </div>
+    </div>)}
   )
 }
 
