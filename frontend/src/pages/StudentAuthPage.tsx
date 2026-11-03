@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import AdSlot from '../components/AdSlot'
 import PublicHeader from '../components/PublicHeader'
 import PublicFooter from '../components/PublicFooter'
+import Seo from '../components/Seo'
 import { EXAM_TYPES, type Region } from '../utils/exams'
 
 const REGION_ORDER: Region[] = ['Nacional', 'Sudeste', 'Sul', 'Centro-Oeste', 'Nordeste', 'Norte']
@@ -245,6 +246,11 @@ export default function StudentAuthPage() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans">
+      <Seo
+        title={mode === 'login' ? 'Entrar | Prova Online' : 'Cadastro de Aluno | Prova Online'}
+        description={mode === 'login' ? 'Acesse seus simulados e provas escolares.' : 'Crie sua conta gratuita e comece a praticar para o vestibular.'}
+        path="/aluno"
+      />
       <PublicHeader />
       <div className="flex-1 flex flex-col items-center px-4 py-12 bg-[linear-gradient(160deg,#EFF6FF_0%,#f6f2ff_100%)] dark:bg-none dark:bg-[#10131a]">
       <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-10 items-center">

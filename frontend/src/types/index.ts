@@ -101,6 +101,7 @@ export interface Exam {
   deadline?: string | null
   submission_count?: number
   total_enrolled?: number
+  submitted_at?: string | null
 }
 
 export interface GeneratedQuestionOption {

@@ -28,7 +28,7 @@ function CircleProgress({ pct, size = 80, stroke = 7, color = '#f59e0b', label }
           strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]" style={{ fontSize: size * 0.22 }}>{pct}%</span>
+        <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]" style={{ fontSize: size * 0.22 }}>{pct === 0 && !label ? '—' : `${pct}%`}</span>
         {label && <span className="text-[#64748B] dark:text-slate-400" style={{ fontSize: size * 0.12 }}>{label}</span>}
       </div>
     </div>
@@ -903,20 +903,37 @@ function StudentDashboard() {
                 Nenhuma prova disponível no momento.
               </div>
             )}
-            {exams.map(exam => (
-              <Link key={exam.id} to={`/exams/${exam.id}/submit`} className="flex items-center gap-4 bg-white dark:bg-[#1d1f27] rounded-xl border border-[#E2E8F0] dark:border-[#464554] px-4 py-3 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-colors group">
-                <div className="w-9 h-9 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 text-[#0d9488]">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC] truncate">{exam.title}</p>
-                  <p className="text-xs text-[#64748B] dark:text-slate-400">{exam.subject?.name} · {exam.class_?.name}</p>
-                </div>
-                <span className="text-xs font-semibold text-white px-2.5 py-1 rounded-lg shrink-0" style={{ background: 'linear-gradient(135deg,#0d9488,#f59e0b)' }}>
-                  Realizar →
-                </span>
-              </Link>
-            ))}
+            {exams.map(exam => {
+              const deadline = exam.deadline ? new Date(exam.deadline) : null
+              const now = Date.now()
+              const msLeft = deadline ? deadline.getTime() - now : null
+              const urgent = msLeft != null && msLeft > 0 && msLeft < 48 * 60 * 60 * 1000
+              const expired = msLeft != null && msLeft <= 0
+              const deadlineStr = deadline
+                ? deadline.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ', ' + deadline.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                : null
+              return (
+                <Link key={exam.id} to={`/exams/${exam.id}/submit`} className={`flex items-center gap-4 bg-white dark:bg-[#1d1f27] rounded-xl border px-4 py-3 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-colors group ${urgent ? 'border-[#f59e0b] dark:border-[#f59e0b]' : 'border-[#E2E8F0] dark:border-[#464554]'}`}>
+                  <div className="w-9 h-9 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 text-[#0d9488]">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-[#1E293B] dark:text-[#F8FAFC] truncate">{exam.title}</p>
+                    <p className="text-xs text-[#64748B] dark:text-slate-400">
+                      {exam.subject?.name} · {exam.class_?.name}
+                      {deadlineStr && (
+                        <span className={expired ? ' text-red-500 font-semibold' : urgent ? ' text-[#f59e0b] font-semibold' : ''}>
+                          {' '}· até {deadlineStr}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <span className="text-xs font-semibold text-white px-2.5 py-1 rounded-lg shrink-0" style={{ background: 'linear-gradient(135deg,#0d9488,#f59e0b)' }}>
+                    Realizar →
+                  </span>
+                </Link>
+              )
+            })}
           </div>
         </div>
 
@@ -929,7 +946,7 @@ function StudentDashboard() {
               size={96}
               stroke={9}
               color={data?.avg_grade == null ? '#9ca3af' : data.avg_grade >= 7 ? '#22c55e' : data.avg_grade >= 5 ? '#f59e0b' : '#ef4444'}
-              label="nota"
+              label={data?.avg_grade != null ? 'nota' : undefined}
             />
             <p className="text-xs text-[#64748B] dark:text-slate-400 mt-2 text-center">
               {data?.avg_grade == null
@@ -952,7 +969,7 @@ function StudentDashboard() {
             </div>
             <div className="flex items-center justify-between py-2 border-b border-[#f5f5f5] dark:border-[#464554]">
               <span className="text-[#64748B] dark:text-slate-400">Total de alunos</span>
-              <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{data?.total_ranked ?? '—'}</span>
+              <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{data?.total_ranked != null ? Math.max(data.total_ranked, 1) : '—'}</span>
             </div>
             <div className="flex items-center justify-between py-2">
               <span className="text-[#64748B] dark:text-slate-400">Provas concluídas</span>

@@ -140,7 +140,7 @@ def list_exams(
         .all()
     )
 
-    # Get submission counts per exam
+    # Get submission counts per exam (and current student's submitted_at)
     exam_ids = [e.id for e in q.all()]
     sub_counts = dict(
         db.query(ExamSubmission.exam_id, func.count(ExamSubmission.id))
@@ -148,6 +148,18 @@ def list_exams(
         .group_by(ExamSubmission.exam_id)
         .all()
     ) if exam_ids else {}
+
+    # For students: fetch their own submission timestamp per exam
+    my_submitted: dict[int, object] = {}
+    if current_user.role == UserRole.STUDENT and exam_ids:
+        my_submitted = dict(
+            db.query(ExamSubmission.exam_id, ExamSubmission.submitted_at)
+            .filter(
+                ExamSubmission.exam_id.in_(exam_ids),
+                ExamSubmission.student_id == current_user.id,
+            )
+            .all()
+        )
 
     # Get enrolled counts per class
     class_ids = list(set(e.class_id for e in q.all()))
@@ -164,6 +176,9 @@ def list_exams(
         item.question_count = counts.get(exam.id, 0)
         item.submission_count = sub_counts.get(exam.id, 0)
         item.total_enrolled = enrolled_counts.get(exam.class_id, 0)
+        if current_user.role == UserRole.STUDENT:
+            sa = my_submitted.get(exam.id)
+            item.submitted_at = sa.isoformat() if sa else None
         result.append(item)
     return result
 

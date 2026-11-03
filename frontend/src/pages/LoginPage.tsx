@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import AdSlot from '../components/AdSlot'
 import PublicHeader from '../components/PublicHeader'
 import PublicFooter from '../components/PublicFooter'
+import Seo from '../components/Seo'
 
 const ADSENSE_SLOT_LOGIN = (import.meta.env.VITE_ADSENSE_SLOT_LOGIN as string | undefined) || ''
 
@@ -90,6 +91,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#10131a] font-sans">
 
+      <Seo
+        title="Entrar | Prova Online"
+        description="Acesse sua conta de professor ou administrador no Prova Online."
+        path="/login"
+      />
       <PublicHeader />
 
       {/* ── HERO ── */}
@@ -168,6 +174,12 @@ export default function LoginPage() {
                 {loading ? 'Entrando...' : 'Entrar'}
               </button>
             </form>
+
+            {/* TODO: Unify student (/aluno) and professor/admin (/login) auth into a single page with role selection */}
+            <p className="text-center text-xs text-[#64748B] dark:text-slate-400 mt-4">
+              É aluno?{' '}
+              <Link to="/aluno" className="text-[#f59e0b] hover:underline font-semibold">Acesse aqui</Link>
+            </p>
           </div>
         </div>
       </section>

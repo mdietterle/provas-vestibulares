@@ -373,6 +373,7 @@ class ExamListOut(BaseModel):
     question_count: int = 0
     submission_count: int = 0
     total_enrolled: int = 0
+    submitted_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
 
