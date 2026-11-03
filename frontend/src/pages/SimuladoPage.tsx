@@ -163,7 +163,8 @@ export default function SimuladoPage() {
       <div>
         <h1 className="text-2xl font-bold text-[#1E293B]">Simulados</h1>
         <p className="text-sm text-[#64748B] mt-1">
-          Pratique com questões reais dos principais vestibulares. Um simulado por dia, corrigido por IA.
+          {/* TODO: Contradiction — landing/FAQ say "simulados ilimitados"; backend enforces 1/day. Using permissive text until product decides. */}
+          Pratique com questões reais dos principais vestibulares. Simulados ilimitados, corrigidos por IA.
         </p>
       </div>
 

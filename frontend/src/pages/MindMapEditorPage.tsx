@@ -1,6 +1,16 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import { mindmapsApi, type MindMapData, type MindMapNode } from '../api/mindmaps'
+
+function generateDefaultTitle() {
+  const now = new Date()
+  const dd = String(now.getDate()).padStart(2, '0')
+  const mm = String(now.getMonth() + 1).padStart(2, '0')
+  const hh = String(now.getHours()).padStart(2, '0')
+  const min = String(now.getMinutes()).padStart(2, '0')
+  return `Mapa Mental - ${dd}/${mm} ${hh}:${min}`
+}
 
 const BRANCH_COLORS = {
   top: '#f97316',
@@ -65,7 +75,7 @@ export default function MindMapEditorPage() {
   const { id } = useParams<{ id: string }>()
   const isEdit = !!id
 
-  const [title, setTitle] = useState('Novo Mapa Mental')
+  const [title, setTitle] = useState(() => isEdit ? 'Novo Mapa Mental' : generateDefaultTitle())
   const [nodes, setNodes] = useState<MindMapNode[]>([
     { id: 'root', text: 'Ideia Central', x: 500, y: 400, color: '#f97316', type: 'box' }
   ])
@@ -109,9 +119,10 @@ export default function MindMapEditorPage() {
       } else {
         await mindmapsApi.create(title, data)
       }
+      toast.success('Mapa salvo')
       navigate('/mindmaps')
     } catch (err) {
-      alert('Erro ao salvar mapa mental')
+      toast.error('Erro ao salvar mapa mental')
     } finally {
       setSaving(false)
     }
@@ -124,8 +135,9 @@ export default function MindMapEditorPage() {
 
   const confirmAddNode = useCallback((type: 'box' | 'text') => {
     setShowTypeSelector(false)
-    const parentId = pendingParentId
-    const parent = parentId ? nodes.find(n => n.id === parentId) : nodes[0]
+    // Auto-connect to explicitly chosen parent, or currently selected node, or root
+    const parentId = pendingParentId || selectedNode || 'root'
+    const parent = nodes.find(n => n.id === parentId) || nodes[0]
     const existingChildren = connections.filter(c => c.from === (parentId || 'root')).length
     const angle = (existingChildren * Math.PI * 2) / 6 + Math.random() * 0.5
     const distance = 180 + Math.random() * 80
@@ -561,10 +573,10 @@ export default function MindMapEditorPage() {
           })}
         </div>
 
-        {/* Empty state hint */}
+        {/* Empty state hint — positioned above canvas center to avoid overlapping central node */}
         {nodes.length === 1 && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <p className="text-sm text-[#64748B] dark:text-slate-400 bg-white/80 dark:bg-slate-800/80 px-4 py-2 rounded-lg">
+          <div className="absolute top-6 left-0 right-0 flex justify-center pointer-events-none z-30">
+            <p className="text-sm text-[#64748B] dark:text-slate-400 bg-white/90 dark:bg-slate-800/90 px-4 py-2 rounded-lg shadow-sm border border-[#E2E8F0] dark:border-[#464554]">
               Clique em "+ Nó" para adicionar • Arraste o fundo para mover • Scroll para zoom
             </p>
           </div>
