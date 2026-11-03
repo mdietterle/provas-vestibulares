@@ -11,6 +11,7 @@ import QuotaExceededModal from '../components/QuotaExceededModal'
 import { exportSubmissions } from '../utils/pdf'
 import { formatDateTime } from '../utils/format'
 import { seededShuffle } from '../utils/shuffle'
+import ConfirmDialog from '../components/ConfirmDialog'
 
 function ImageLightbox({ src, onClose }: { src: string; onClose: () => void }) {
   const [scale, setScale] = useState(1)
@@ -140,6 +141,7 @@ export default function SubmissionsPage() {
   const [correctingId, setCorrectingId] = useState<number | null>(null)
   const [finalizingId, setFinalizingId] = useState<number | null>(null)
   const [releasingId, setReleasingId] = useState<number | null>(null)
+  const [releaseConfirm, setReleaseConfirm] = useState<{id: number; type: 'one' | 'all'} | null>(null)
   const [releasing, setReleasing] = useState(false)
   const [quotaModal, setQuotaModal] = useState<{ resource: 'ai_generation' | 'ai_correction'; used: number; limit: number } | null>(null)
   const [filterStatus, setFilterStatus] = useState<'all' | 'submitted' | 'not_submitted'>('all')
@@ -266,10 +268,16 @@ export default function SubmissionsPage() {
     }
   }
 
-  const handleReleaseOne = async (sub: SubmissionList) => {
-    setReleasingId(sub.id)
+  const handleReleaseOne = (sub: SubmissionList) => {
+    setReleaseConfirm({ id: sub.id, type: 'one' })
+  }
+
+  const doReleaseOne = async () => {
+    if (!releaseConfirm) return
+    setReleasingId(releaseConfirm.id)
+    setReleaseConfirm(null)
     try {
-      await submissionsApi.release(sub.id)
+      await submissionsApi.release(releaseConfirm.id)
       toast.success('Nota liberada para o aluno')
       await loadSubmissions()
     } catch (err: any) {
@@ -279,8 +287,14 @@ export default function SubmissionsPage() {
     }
   }
 
-  const handleReleaseAll = async () => {
+  const handleReleaseAll = () => {
     if (!exam) return
+    setReleaseConfirm({ id: exam.id, type: 'all' })
+  }
+
+  const doReleaseAll = async () => {
+    if (!exam) return
+    setReleaseConfirm(null)
     setReleasing(true)
     try {
       await submissionsApi.releaseAll(exam.id)
@@ -713,6 +727,16 @@ export default function SubmissionsPage() {
       {lightboxSrc && (
         <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
       )}
+      <ConfirmDialog
+        open={releaseConfirm != null}
+        title={releaseConfirm?.type === 'all' ? 'Liberar todas as notas?' : 'Liberar nota?'}
+        message={releaseConfirm?.type === 'all'
+          ? 'Todos os alunos verão suas notas imediatamente. Esta ação não pode ser desfeita.'
+          : 'O aluno verá a nota imediatamente. Esta ação não pode ser desfeita.'}
+        confirmLabel="Liberar"
+        onConfirm={releaseConfirm?.type === 'all' ? doReleaseAll : doReleaseOne}
+        onCancel={() => setReleaseConfirm(null)}
+      />
     </div>
   )
 }

@@ -130,6 +130,31 @@ export default function ClassesPage() {
     }
   }
 
+  const [pendingStudentId, setPendingStudentId] = useState<number | null>(null)
+
+  const checkAndAddStudent = (studentId: number) => {
+    if (!showDetail) return
+    // Check if student is already in a class of the same year
+    const student = availableStudents.find(s => s.id === studentId)
+    const sameYearClass = classes.find(c =>
+      c.year === showDetail.year &&
+      c.id !== showDetail.id &&
+      classStudents.some(cs => cs.id === studentId)
+    )
+    if (sameYearClass) {
+      setPendingStudentId(studentId)
+      return
+    }
+    addStudent(studentId)
+  }
+
+  const confirmAddStudent = async () => {
+    if (pendingStudentId == null) return
+    const sid = pendingStudentId
+    setPendingStudentId(null)
+    await addStudent(sid)
+  }
+
   const addStudent = async (studentId: number) => {
     if (!showDetail) return
     try {
@@ -506,7 +531,7 @@ export default function ClassesPage() {
                   <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">Adicionar Aluno</label>
                   <select
                     className="input"
-                    onChange={(e) => { if (e.target.value) addStudent(+e.target.value) }}
+                    onChange={(e) => { if (e.target.value) checkAndAddStudent(+e.target.value) }}
                     defaultValue=""
                   >
                     <option value="">Selecionar aluno...</option>
