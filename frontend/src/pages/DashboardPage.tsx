@@ -8,6 +8,7 @@ import type { DashboardStats, DashboardMonitoring, ProfessorDashboardData, Stude
 import type { SimuladoSummary } from '../api/simulados'
 import type { Exam } from '../types'
 import { exportDashboardReport } from '../utils/pdf'
+import { formatDateTime, formatDateShort } from '../utils/format'
 import {
   MetricCard, SectionTitle, MonitoringSection, DocBanner, AreaChart,
   TONE_BADGE, TONE_TEXT, TONE_DOT, TONE_BG,
@@ -380,7 +381,7 @@ function AdminDashboard() {
               {(stats?.recent_activity ?? []).map(act => {
                 const cfg = STATUS_CFG[act.status] ?? STATUS_CFG.pending
                 const date = act.submitted_at
-                  ? new Date(act.submitted_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+                  ? formatDateTime(act.submitted_at)
                   : '—'
                 return (
                   <div key={act.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#464554] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-colors">
