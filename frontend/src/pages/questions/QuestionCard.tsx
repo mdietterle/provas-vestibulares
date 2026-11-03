@@ -104,7 +104,7 @@ export default function QuestionCard({ q, isExpanded, onToggleExpand, onEdit, on
           {isExpanded ? (
             <div
               className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed prose prose-sm dark:prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: q.statement }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(q.statement ) }}
             />
           ) : (
             <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed line-clamp-2">

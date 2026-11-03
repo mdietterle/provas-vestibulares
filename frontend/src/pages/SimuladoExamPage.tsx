@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { simuladosApi, type SimuladoDetail, type SimuladoQuestionItem } from '../api/simulados'
 import AdSlot from '../components/AdSlot'
+import { sanitizeHtml } from '../utils/format'
 
 const ADSENSE_SLOT_SIMULADO = (import.meta.env.VITE_ADSENSE_SLOT_SIMULADO as string | undefined) || ''
 
@@ -226,7 +227,7 @@ function QuestionCard({
 
           <div
             className="text-sm text-[#1E293B] dark:text-[#e2e8f0] leading-relaxed prose prose-sm dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: sq.statement }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(sq.statement ) }}
           />
 
           {sq.options.length === 0 && (
@@ -315,7 +316,7 @@ function ResultCard({ sq, index }: { sq: SimuladoQuestionItem; index: number }) 
 
       <div
         className="text-sm text-[#1E293B] dark:text-[#e2e8f0] leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: sq.statement }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(sq.statement ) }}
       />
 
       {sq.images && sq.images.map((img, i) => (

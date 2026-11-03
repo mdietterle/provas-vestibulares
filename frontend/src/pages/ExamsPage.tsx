@@ -10,7 +10,7 @@ import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { exportExams } from '../utils/pdf'
 import { resolveImageSrc } from '../utils/image'
-import { stripHtml } from '../utils/format'
+import { stripHtml , sanitizeHtml } from '../utils/format'
 import Pagination from '../components/Pagination'
 
 interface ExamQuestionDraft { question_id: number; order: number; points: number }
@@ -1303,7 +1303,7 @@ export default function ExamsPage() {
             ))}
 
             <div className="text-sm text-[#1E293B] dark:text-slate-200 leading-relaxed whitespace-pre-line">
-              {vqPreview.html_statement ? <div dangerouslySetInnerHTML={{ __html: vqPreview.html_statement }} /> : vqPreview.statement}
+              {vqPreview.html_statement ? <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(vqPreview.html_statement ) }} /> : vqPreview.statement}
             </div>
 
             {vqPreview.options && vqPreview.options.length > 0 && (

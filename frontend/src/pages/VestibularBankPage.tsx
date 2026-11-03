@@ -5,6 +5,7 @@ import type { VestibularQuestion } from '../api/vestibular'
 import { getExamBankConfig, type ExamBankConfig } from '../config/examBanks'
 import Pagination from '../components/Pagination'
 import { resolveImageSrc } from '../utils/image'
+import { sanitizeHtml } from '../utils/format'
 
 interface Props {
   examType: string
@@ -190,7 +191,7 @@ function QuestionCard({ question: q, config }: { question: VestibularQuestion; c
         {q.html_statement ? (
           <div
             className="[&>p]:mb-2 [&>p:last-child]:mb-0 [&_b]:font-bold [&_i]:italic"
-            dangerouslySetInnerHTML={{ __html: q.html_statement }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(q.html_statement ) }}
           />
         ) : (
           <div className="whitespace-pre-line">{q.statement}</div>

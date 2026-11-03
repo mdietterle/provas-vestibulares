@@ -4,6 +4,7 @@ import { submissionsApi } from '../api/submissions'
 import { exportStudentResult } from '../utils/pdf'
 import { extractSource } from '../utils/questionSource'
 import type { Submission } from '../types/submission'
+import { sanitizeHtml } from '../utils/format'
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -159,7 +160,7 @@ export default function ExamResultPage() {
               {(q as any).images && (q as any).images.length > 0 && (q as any).images.map((img: any) => (
                 <img key={img.id} src={resolveImageSrc(img.image_base64)} alt="Questão" className="mb-3 rounded-lg border border-[#E2E8F0] max-h-64 object-contain" />
               ))}
-              <div className="text-gray-800 text-sm mb-3 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: statement }} />
+              <div className="text-gray-800 text-sm mb-3 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHtml(statement ) }} />
 
               {q.question_type !== 'essay' ? (
                 <div className="space-y-1.5">
@@ -171,7 +172,7 @@ export default function ExamResultPage() {
                         isSelected && !opt.is_correct ? 'bg-red-50 text-red-700'   : 'text-gray-600'
                       }`}>
                         <span className="font-medium w-4">{LETTERS[j]})</span>
-                        <span className="flex-1 prose prose-xs max-w-none" dangerouslySetInnerHTML={{ __html: opt.text }} />
+                        <span className="flex-1 prose prose-xs max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHtml(opt.text ) }} />
                         {opt.is_correct && <span className="text-green-600 text-xs font-bold">✓ Correta</span>}
                         {isSelected && !opt.is_correct && <span className="text-red-500 text-xs">Sua resposta</span>}
                         {isSelected && opt.is_correct && <span className="text-green-600 text-xs font-bold">✓ Sua resposta</span>}

@@ -7,6 +7,7 @@ import { downloadBulkPdf, downloadPdf } from '../api/download'
 import { useAuth } from '../contexts/AuthContext'
 import { resolveImageSrc } from '../utils/image'
 import type { Exam, User } from '../types'
+import { sanitizeHtml } from '../utils/format'
 
 const TYPE_LABELS: Record<string, string> = {
   multiple_choice: 'Múltipla Escolha',
@@ -177,7 +178,7 @@ export default function ExamDetailPage() {
                 />
               )}
 
-              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: q.statement }} />
+              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: sanitizeHtml(q.statement ) }} />
 
               {q.options.length > 0 && (
                 <div className="space-y-2">

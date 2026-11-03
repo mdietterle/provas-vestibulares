@@ -9,7 +9,7 @@ import type { Submission, SubmissionList } from '../types/submission'
 import Modal from '../components/Modal'
 import QuotaExceededModal from '../components/QuotaExceededModal'
 import { exportSubmissions } from '../utils/pdf'
-import { formatDateTime } from '../utils/format'
+import { formatDateTime , sanitizeHtml } from '../utils/format'
 import { seededShuffle } from '../utils/shuffle'
 import ConfirmDialog from '../components/ConfirmDialog'
 
@@ -606,7 +606,7 @@ export default function SubmissionsPage() {
                     )}
                   </div>
 
-                  <div className="text-sm text-[#374060] dark:text-slate-300 rich-statement" dangerouslySetInnerHTML={{ __html: q.statement }} />
+                  <div className="text-sm text-[#374060] dark:text-slate-300 rich-statement" dangerouslySetInnerHTML={{ __html: sanitizeHtml(q.statement ) }} />
 
                   {q.question_type !== 'essay' ? (
                     <div className="space-y-1">
@@ -616,7 +616,7 @@ export default function SubmissionsPage() {
                           ans.selected_option_id === opt.id ? 'bg-red-50 text-red-700' : 'text-[#6b7a9a] bg-[#f7f9ff] dark:bg-[#1d1f27]'
                         }`}>
                           <span className="font-medium shrink-0">{LETTERS[j]})</span>
-                          <span className="flex-1 rich-statement" dangerouslySetInnerHTML={{ __html: opt.text }} />
+                          <span className="flex-1 rich-statement" dangerouslySetInnerHTML={{ __html: sanitizeHtml(opt.text ) }} />
                           {opt.is_correct && <span className="shrink-0 font-semibold text-emerald-700">✓</span>}
                           {ans.selected_option_id === opt.id && !opt.is_correct && <span className="shrink-0 text-red-500">← aluno</span>}
                           {ans.selected_option_id === opt.id && opt.is_correct && <span className="shrink-0 text-emerald-600">← aluno ✓</span>}

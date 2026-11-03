@@ -1,3 +1,35 @@
+/** Sanitize HTML for safe rendering with dangerouslySetInnerHTML.
+ *  Uses DOMParser to parse the HTML, removes dangerous elements/attributes,
+ *  and returns clean HTML string. Falls back to stripHtml if DOMParser unavailable. */
+export function sanitizeHtml(html: string): string {
+  if (!html) return ''
+  if (typeof DOMParser === 'undefined') return stripHtml(html)
+
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+
+  // Remove dangerous elements
+  const dangerous = doc.querySelectorAll('script, style, iframe, object, embed, form, input, textarea, select, button, link, meta, base, applet')
+  dangerous.forEach(el => el.remove())
+
+  // Remove event handler attributes from all elements
+  const allElements = doc.body?.querySelectorAll('*') ?? []
+  allElements.forEach(el => {
+    const attrs = Array.from(el.attributes)
+    attrs.forEach(attr => {
+      if (attr.name.startsWith('on') || attr.value.trim().startsWith('javascript:')) {
+        el.removeAttribute(attr.name)
+      }
+    })
+    // Remove href/src with javascript: protocol
+    const href = el.getAttribute('href')
+    const src = el.getAttribute('src')
+    if (href && href.trim().toLowerCase().startsWith('javascript:')) el.removeAttribute('href')
+    if (src && src.trim().toLowerCase().startsWith('javascript:')) el.removeAttribute('src')
+  })
+
+  return doc.body?.innerHTML ?? ''
+}
+
 /** Strip HTML tags for display-only preview contexts.
  *  Removes <script>/<style> blocks entirely, then strips remaining tags,
  *  then decodes common HTML entities. */

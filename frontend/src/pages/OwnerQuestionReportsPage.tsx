@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { sanitizeHtml } from '../utils/format'
 import {
   ownerQuestionReportsApi,
   type QuestionReportGroup,
@@ -106,7 +107,7 @@ function ReviewModal({
             </label>
             <div
               className="text-sm text-[#1E293B] dark:text-[#e2e8f0] leading-relaxed prose prose-sm max-w-none border border-[#E2E8F0] dark:border-[#464554] rounded-lg p-3 bg-[#F4F6F9] dark:bg-[#10131a] mb-2 max-h-48 overflow-y-auto"
-              dangerouslySetInnerHTML={{ __html: statement }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(statement ) }}
             />
             <label className="block text-xs font-semibold text-[#334155] dark:text-slate-300 uppercase tracking-wide mb-1">
               HTML bruto (editável)

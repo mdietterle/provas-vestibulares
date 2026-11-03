@@ -10,6 +10,7 @@ import { resolveImageSrc } from '../utils/image'
 import type { Exam } from '../types'
 import AdSlot from '../components/AdSlot'
 import ConfirmDialog from '../components/ConfirmDialog'
+import { sanitizeHtml } from '../utils/format'
 
 const ADSENSE_SLOT_EXAM = (import.meta.env.VITE_ADSENSE_SLOT_EXAM as string | undefined) || ''
 
@@ -374,7 +375,7 @@ export default function ExamSubmitPage() {
                   className="mb-4 rounded-lg border max-h-64 object-contain"
                 />
               )}
-              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: stripStemOptionLetters(statement) }} />
+              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: sanitizeHtml(stripStemOptionLetters(statement) ) }} />
 
               {q.question_type === 'summation' ? (
                 <div className="space-y-2">
