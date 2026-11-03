@@ -53,7 +53,10 @@ export default function MindMapsListPage() {
       {maps.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-[#c5ceff] dark:border-[#464554] p-16 text-center">
           <svg className="w-12 h-12 text-[#c5ceff] dark:text-[#3d3470] mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <circle cx="12" cy="5" r="2" />
+            <circle cx="5" cy="19" r="2" />
+            <circle cx="19" cy="19" r="2" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v4m0 0l-5 6m5-6l5 6" />
           </svg>
           <p className="text-base font-semibold text-[#1E293B] dark:text-[#F8FAFC] mb-1">Nenhum mapa mental ainda</p>
           <p className="text-sm text-[#64748B] dark:text-slate-400">Crie seu primeiro mapa para organizar seus estudos.</p>
@@ -76,7 +79,10 @@ export default function MindMapsListPage() {
               <div className="flex items-start justify-between mb-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-orange-400 to-pink-500">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    <circle cx="12" cy="5" r="2" />
+                    <circle cx="5" cy="19" r="2" />
+                    <circle cx="19" cy="19" r="2" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v4m0 0l-5 6m5-6l5 6" />
                   </svg>
                 </div>
                 <button

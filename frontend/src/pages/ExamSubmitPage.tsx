@@ -15,6 +15,16 @@ const ADSENSE_SLOT_EXAM = (import.meta.env.VITE_ADSENSE_SLOT_EXAM as string | un
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
+// Strip leading option letters (A), B), etc.) from stem HTML so shuffled
+// button labels don't conflict with letters baked into imported question text.
+function stripStemOptionLetters(html: string): string {
+  if (!html) return html
+  return html.replace(
+    /(?:^|(<br\s*\/?>|<\/p>|<\/div>|<\/li>))\s*([A-Z])\)\s*/gi,
+    (_, tag) => (tag ? tag + ' ' : ''),
+  )
+}
+
 function EssayInput({
   essayText,
   essayImage,
@@ -232,12 +242,8 @@ export default function ExamSubmitPage() {
 
   const handleSubmitClick = () => {
     if (!shuffledExam) return
-    const unanswered = getUnanswered()
-    if (unanswered.length > 0) {
-      setShowBlankConfirm(true)
-      return
-    }
-    doSubmit()
+    // Always require explicit confirmation before submitting
+    setShowBlankConfirm(true)
   }
 
   const doSubmit = async () => {
@@ -276,10 +282,24 @@ export default function ExamSubmitPage() {
           <span>•</span>
           <span>{shuffledExam.class_.name}</span>
           <span>•</span>
-          <span>{totalPoints} pontos</span>
+          <span>{totalPoints} {totalPoints === 1 ? 'ponto' : 'pontos'}</span>
           <span>•</span>
           <span>{answered}/{shuffledExam.exam_questions.length} respondidas</span>
         </div>
+        {shuffledExam.deadline && (() => {
+          const dl = new Date(shuffledExam.deadline)
+          const now = new Date()
+          const msLeft = dl.getTime() - now.getTime()
+          const urgent = msLeft > 0 && msLeft < 3_600_000
+          return (
+            <div className={`mt-2 flex items-center gap-1.5 text-sm font-semibold ${urgent ? 'text-red-700' : 'text-blue-700'}`}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+              </svg>
+              Prazo: até {dl.toLocaleDateString('pt-BR')} {dl.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          )
+        })()}
         {shuffledExam.instructions && (
           <p className="mt-3 text-sm text-blue-800 italic">{shuffledExam.instructions}</p>
         )}
@@ -316,7 +336,7 @@ export default function ExamSubmitPage() {
                   className="mb-4 rounded-lg border max-h-64 object-contain"
                 />
               )}
-              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: statement }} />
+              <div className="rich-statement text-gray-900 mb-4" dangerouslySetInnerHTML={{ __html: stripStemOptionLetters(statement) }} />
 
               {q.question_type === 'summation' ? (
                 <div className="space-y-2">
