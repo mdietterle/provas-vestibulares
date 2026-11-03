@@ -16,6 +16,7 @@ from app.core.security import get_password_hash
 from app.database import Base, SessionLocal, engine
 from app.middleware.rate_limit import TenantRateLimitMiddleware
 from app.middleware.request_context import RequestContextMiddleware
+from app.middleware.security_headers import SecurityHeadersMiddleware
 from app.migrations import run_migrations
 from app.models import Institution, User, UserRole
 from app.router_registry import register_all_routers
@@ -60,6 +61,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RequestContextMiddleware)
 app.add_middleware(TenantRateLimitMiddleware)
 
