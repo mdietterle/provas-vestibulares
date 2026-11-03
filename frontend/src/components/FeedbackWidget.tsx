@@ -1,16 +1,22 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { feedbackApi } from '../api'
 import { useAuth } from '../contexts/AuthContext'
 
 /** Janela flutuante recolhível (canto inferior direito) pra reportar
  * problemas durante a fase de testes. Presente em toda página, pública
- * ou privada, montada uma única vez em App.tsx fora das rotas. */
+ * ou privada, montada uma única vez em App.tsx fora das rotas.
+ * Hidden on exam submit page to avoid overlapping the sticky bottom bar. */
 export default function FeedbackWidget() {
   const { user } = useAuth()
+  const location = useLocation()
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [sending, setSending] = useState(false)
+
+  // Hide on exam submit/take pages where sticky bottom bar exists
+  if (/\/exams\/\d+\/submit/.test(location.pathname)) return null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -8,6 +8,7 @@ import type { DashboardStats, DashboardMonitoring, ProfessorDashboardData, Stude
 import type { SimuladoSummary } from '../api/simulados'
 import type { Exam } from '../types'
 import { exportDashboardReport } from '../utils/pdf'
+import { formatDateTime } from '../utils/format'
 import {
   MetricCard, SectionTitle, MonitoringSection, DocBanner, AreaChart,
   TONE_BADGE, TONE_TEXT, TONE_DOT, TONE_BG,
@@ -380,7 +381,7 @@ function AdminDashboard() {
               {(stats?.recent_activity ?? []).map(act => {
                 const cfg = STATUS_CFG[act.status] ?? STATUS_CFG.pending
                 const date = act.submitted_at
-                  ? new Date(act.submitted_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+                  ? formatDateTime(act.submitted_at)
                   : '—'
                 return (
                   <div key={act.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#464554] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-colors">
@@ -697,6 +698,20 @@ function StudentDashboard() {
         description="Veja como realizar provas, consultar seus resultados e aproveitar ao máximo as sugestões personalizadas da IA."
       />
 
+      {/* Loading skeleton while server wakes up (Issue #3) */}
+      {loading && (
+        <div className="space-y-6 animate-pulse">
+          <div className="h-8 w-64 bg-gray-200 dark:bg-[#2a2d3a] rounded-lg" />
+          <div className="h-24 bg-gray-200 dark:bg-[#2a2d3a] rounded-2xl" />
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3].map(i => <div key={i} className="h-32 bg-gray-200 dark:bg-[#2a2d3a] rounded-2xl" />)}
+          </div>
+          <div className="h-40 bg-gray-200 dark:bg-[#2a2d3a] rounded-2xl" />
+        </div>
+      )}
+
+      {!loading && (
+        <div className="contents">
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Média geral */}
@@ -910,7 +925,7 @@ function StudentDashboard() {
               const urgent = msLeft != null && msLeft > 0 && msLeft < 48 * 60 * 60 * 1000
               const expired = msLeft != null && msLeft <= 0
               const deadlineStr = deadline
-                ? deadline.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ', ' + deadline.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                ? formatDateTime(deadline)
                 : null
               return (
                 <Link key={exam.id} to={`/exams/${exam.id}/submit`} className={`flex items-center gap-4 bg-white dark:bg-[#1d1f27] rounded-xl border px-4 py-3 hover:border-[#b6c4ff] hover:bg-[#F4F6F9] dark:hover:bg-[#1a2947] transition-colors group ${urgent ? 'border-[#f59e0b] dark:border-[#f59e0b]' : 'border-[#E2E8F0] dark:border-[#464554]'}`}>
@@ -978,6 +993,7 @@ function StudentDashboard() {
           </div>
         </div>
       </div>
+    </div>)}
     </div>
   )
 }

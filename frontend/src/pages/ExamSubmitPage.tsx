@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { examsApi } from '../api'
 import { submissionsApi } from '../api/submissions'
@@ -132,15 +132,20 @@ export default function ExamSubmitPage() {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [exam, setExam] = useState<Exam | null>(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const [answers, setAnswers] = useState<Record<number, { selected_option_id?: number; essay_text?: string; essay_image_base64?: string }>>({})
   const [submissionId, setSubmissionId] = useState<number | null>(null)
   const [showBlankConfirm, setShowBlankConfirm] = useState(false)
+  const [unansweredIds, setUnansweredIds] = useState<Set<number>>(new Set())
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const questionRefs = useRef<Map<number, HTMLDivElement>>(new Map())
 
-  const storageKey = id ? `exam-draft-${id}` : null
+  const storageKey = id ? `exam_draft_${id}` : null
+  const isExamRoute = /\/exams\/\d+\/submit/.test(location.pathname)
 
   useEffect(() => {
     if (!id) return
@@ -149,7 +154,7 @@ export default function ExamSubmitPage() {
       .catch(() => { toast.error('Prova não encontrada'); navigate('/exams') })
   }, [id])
 
-  // Restore draft from localStorage on mount
+  // Restore draft from localStorage on mount — immediate save, no debounce
   useEffect(() => {
     if (!storageKey) return
     try {
@@ -158,37 +163,39 @@ export default function ExamSubmitPage() {
         const parsed = JSON.parse(saved)
         if (parsed.answers && typeof parsed.answers === 'object') {
           setAnswers(parsed.answers)
+          toast.success('Rascunho restaurado')
         }
         if (parsed.submissionId) {
           setSubmissionId(parsed.submissionId)
+          setSubmitted(true)
         }
       }
     } catch { /* ignore corrupt data */ }
   }, [storageKey])
 
-  // Auto-save to localStorage on every answer change (debounced 500ms)
+  // Auto-save to localStorage immediately on every answer change
   useEffect(() => {
-    if (!storageKey || Object.keys(answers).length === 0) return
+    if (!storageKey) return
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(() => {
       try {
         localStorage.setItem(storageKey, JSON.stringify({ answers, submissionId }))
       } catch { /* quota exceeded etc */ }
-    }, 500)
+    }, 300)
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
   }, [answers, submissionId, storageKey])
 
   // Warn before closing tab while exam is in progress
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (Object.keys(answers).length > 0 && !submitting) {
+      if (Object.keys(answers).length > 0 && !submitting && !submitted) {
         e.preventDefault()
         e.returnValue = ''
       }
     }
     window.addEventListener('beforeunload', handler)
     return () => window.removeEventListener('beforeunload', handler)
-  }, [answers, submitting])
+  }, [answers, submitting, submitted])
 
   // Deterministic shuffle seeded by student_id + exam_id so each student gets
   // a unique but stable ordering (same on refresh, different from classmates).
@@ -241,8 +248,16 @@ export default function ExamSubmitPage() {
   }
 
   const handleSubmitClick = () => {
-    if (!shuffledExam) return
-    // Always require explicit confirmation before submitting
+    if (!shuffledExam || submitted) return
+    const unanswered = getUnanswered()
+    // Highlight unanswered questions for visual feedback (Issue #4)
+    if (unanswered.length > 0) {
+      setUnansweredIds(new Set(unanswered.map(u => u.id)))
+      // Scroll to first unanswered question
+      const firstId = unanswered[0].id
+      const el = questionRefs.current.get(firstId)
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
     setShowBlankConfirm(true)
   }
 
@@ -258,8 +273,8 @@ export default function ExamSubmitPage() {
       await submissionsApi.submit(shuffledExam.id, payload)
       // Clear localStorage draft after successful submission
       if (storageKey) localStorage.removeItem(storageKey)
+      setSubmitted(true)
       toast.success('Prova entregue com sucesso!')
-      navigate(`/exams/${shuffledExam.id}/result`)
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro ao entregar prova')
     } finally {
@@ -270,11 +285,30 @@ export default function ExamSubmitPage() {
   if (loading) return <div className="text-center py-12 text-gray-400">Carregando...</div>
   if (!shuffledExam) return null
 
+  // Issue #2: Full-screen success state after submission
+  if (submitted) {
+    return (
+      <div className="max-w-3xl mx-auto flex flex-col items-center justify-center py-20 text-center">
+        <div className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-6">
+          <svg className="w-10 h-10 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h1 className="text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC] mb-2">Prova entregue com sucesso!</h1>
+        <p className="text-[#64748B] dark:text-slate-400 mb-8 max-w-md">Sua prova foi enviada e está aguardando correção pelo professor. Você será notificado quando o resultado estiver disponível.</p>
+        <div className="flex gap-3">
+          <button onClick={() => navigate('/exams')} className="btn-secondary px-6 py-2.5">Voltar para Provas</button>
+          <button onClick={() => navigate(`/exams/${shuffledExam.id}/result`)} className="btn-primary px-6 py-2.5">Ver Resultado</button>
+        </div>
+      </div>
+    )
+  }
+
   const totalPoints = shuffledExam.exam_questions.reduce((s, eq) => s + eq.points, 0)
   const answered = Object.keys(answers).length
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-3xl pb-24">
       <div className="card mb-6 bg-blue-50 border-blue-200">
         <h1 className="text-xl font-bold text-blue-900">{shuffledExam.title}</h1>
         <div className="flex gap-4 mt-2 text-sm text-blue-700">
@@ -311,7 +345,11 @@ export default function ExamSubmitPage() {
           const ans = answers[eq.id]
           const { statement, source } = extractSource(q.statement)
           return (
-            <div key={eq.id} className="card">
+            <div
+              key={eq.id}
+              ref={el => { if (el) questionRefs.current.set(eq.id, el); else questionRefs.current.delete(eq.id) }}
+              className={`card transition-colors ${unansweredIds.has(eq.id) ? 'ring-2 ring-amber-400 dark:ring-amber-500' : ''}`}
+            >
               <div className="flex justify-between items-start mb-3 gap-3">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-semibold text-gray-800">
@@ -355,6 +393,7 @@ export default function ExamSubmitPage() {
                           checked={isChecked}
                           onChange={() => toggleProposition(eq.id, opt.order)}
                           className="mt-0.5 accent-orange-600"
+                          aria-label={`Proposição ${String(opt.order).padStart(2, '0')}: ${opt.text}`}
                         />
                         <span className="font-mono font-bold text-sm shrink-0 w-6" style={{ color: isChecked ? '#c2410c' : '#9ca3af' }}>
                           {String(opt.order).padStart(2, '0')}
@@ -388,6 +427,7 @@ export default function ExamSubmitPage() {
                         checked={ans?.selected_option_id === opt.id}
                         onChange={() => setOption(eq.id, opt.id)}
                         className="mt-0.5 accent-blue-600"
+                        aria-label={`${LETTERS[j]}) ${opt.text}`}
                       />
                       <span className="text-sm">
                         <b className="mr-1">{LETTERS[j]})</b> {opt.text}
@@ -412,16 +452,16 @@ export default function ExamSubmitPage() {
         })}
       </div>
 
-      <div className="sticky bottom-0 bg-white dark:bg-[var(--color-surface)] border-t mt-8 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] flex justify-between items-center z-30">
-        <span className="text-sm text-gray-500">
-          {answered} de {shuffledExam.exam_questions.length} questões respondidas
+      <div className="sticky bottom-0 bg-white dark:bg-[var(--color-surface)] border-t mt-8 py-4 px-4 sm:px-6 pb-[calc(1rem+env(safe-area-inset-bottom))] flex justify-between items-center gap-3 z-30">
+        <span className="text-sm text-gray-500 min-w-0 truncate">
+          {answered} de {shuffledExam.exam_questions.length} respondidas
         </span>
         <button
           onClick={handleSubmitClick}
-          disabled={submitting}
-          className="btn-primary px-8 py-2.5"
+          disabled={submitting || submitted}
+          className="btn-primary px-6 sm:px-8 py-2.5 shrink-0"
         >
-          {submitting ? 'Entregando...' : 'Entregar Prova'}
+          {submitted ? 'Entregue' : submitting ? 'Entregando...' : 'Entregar Prova'}
         </button>
       </div>
 

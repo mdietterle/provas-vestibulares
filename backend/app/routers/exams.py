@@ -131,6 +131,7 @@ def list_exams(
         q = q.filter(Exam.subject_id == subject_id)
     if class_id:
         q = q.filter(Exam.class_id == class_id)
+    q = q.order_by(Exam.created_at.desc())
 
     # Count questions per exam in one query instead of N lazy loads
     counts = dict(

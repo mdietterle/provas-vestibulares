@@ -690,8 +690,9 @@ export default function ExamsPage() {
                   O sistema cria automaticamente uma questão dissertativa com o enunciado abaixo. O aluno poderá <strong>digitar</strong> ou <strong>enviar foto</strong> da redação, e a IA corrigirá automaticamente.
                 </div>
                 <div>
-                  <label className="label">Título da Avaliação</label>
+                  <label className="label" htmlFor="redacao-title">Título da Avaliação</label>
                   <input
+                    id="redacao-title"
                     className="input"
                     placeholder="Ex: Redação — 1º Bimestre"
                     value={redacaoForm.title}
@@ -701,8 +702,9 @@ export default function ExamsPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="label">Matéria</label>
+                    <label className="label" htmlFor="redacao-subject">Matéria</label>
                     <select
+                      id="redacao-subject"
                       className="input"
                       value={redacaoForm.subject_id}
                       onChange={(e) => setRedacaoForm({ ...redacaoForm, subject_id: +e.target.value, class_id: 0 })}
@@ -713,8 +715,9 @@ export default function ExamsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="label">Turma principal</label>
+                    <label className="label" htmlFor="redacao-class">Turma principal</label>
                     <select
+                      id="redacao-class"
                       className="input"
                       value={redacaoForm.class_id}
                       onChange={(e) => { setRedacaoForm({ ...redacaoForm, class_id: +e.target.value }); setRedacaoExtraClassIds([]) }}
@@ -761,8 +764,9 @@ export default function ExamsPage() {
                   )
                 })()}
                 <div>
-                  <label className="label">Enunciado / Proposta da Redação</label>
+                  <label className="label" htmlFor="redacao-enunciado">Enunciado / Proposta da Redação</label>
                   <textarea
+                    id="redacao-enunciado"
                     className="input min-h-32 resize-y"
                     placeholder="Descreva o tema, o gênero textual esperado e as instruções para a redação..."
                     value={redacaoForm.enunciado}
@@ -771,8 +775,9 @@ export default function ExamsPage() {
                   />
                 </div>
                 <div>
-                  <label className="label">Critérios de Correção <span className="text-gray-400 font-normal">(opcional — orienta a IA)</span></label>
+                  <label className="label" htmlFor="redacao-criteria">Critérios de Correção <span className="text-gray-400 font-normal">(opcional — orienta a IA)</span></label>
                   <textarea
+                    id="redacao-criteria"
                     className="input resize-y"
                     rows={2}
                     placeholder="Ex: Avaliar coesão, coerência, norma culta, argumentação e proposta de intervenção..."
@@ -781,8 +786,9 @@ export default function ExamsPage() {
                   />
                 </div>
                 <div className="flex items-center gap-3">
-                  <label className="label mb-0 whitespace-nowrap">Pontuação total</label>
+                  <label className="label mb-0 whitespace-nowrap" htmlFor="redacao-points">Pontuação total</label>
                   <input
+                    id="redacao-points"
                     type="number"
                     className="input w-24 text-center"
                     min={1} max={100} step={0.5}
@@ -797,7 +803,7 @@ export default function ExamsPage() {
               /* ── Formulário Prova Regular ── */
               <>
                 <div>
-                  <label className="label">Título da Prova</label>
+                  <label className="label" htmlFor="exam-title">Título da Prova</label>
                   <input
                     className={`input ${formErrors.title ? 'border-red-400 dark:border-red-500 focus:ring-red-200' : ''}`}
                     placeholder="Ex: Avaliação Bimestral — Matemática"

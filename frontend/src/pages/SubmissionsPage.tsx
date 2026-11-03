@@ -10,6 +10,7 @@ import Modal from '../components/Modal'
 import QuotaExceededModal from '../components/QuotaExceededModal'
 import { exportSubmissions } from '../utils/pdf'
 import { formatDateTime } from '../utils/format'
+import { seededShuffle } from '../utils/shuffle'
 
 function ImageLightbox({ src, onClose }: { src: string; onClose: () => void }) {
   const [scale, setScale] = useState(1)
@@ -595,7 +596,7 @@ export default function SubmissionsPage() {
 
                   {q.question_type !== 'essay' ? (
                     <div className="space-y-1">
-                      {q.options.sort((a, b) => a.order - b.order).map((opt, j) => (
+                      {seededShuffle([...q.options], detail.student_id + eq.id).map((opt, j) => (
                         <div key={opt.id} className={`text-xs flex gap-2 px-3 py-2 rounded-lg ${
                           opt.is_correct ? 'bg-emerald-50 text-emerald-800 font-medium' :
                           ans.selected_option_id === opt.id ? 'bg-red-50 text-red-700' : 'text-[#6b7a9a] bg-[#f7f9ff] dark:bg-[#1d1f27]'

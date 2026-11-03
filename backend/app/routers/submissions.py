@@ -209,7 +209,7 @@ def _do_correct(submission_id: int):
         db.close()
 
 
-# ── Submit (student only — no auto-correction) ────────────────────────────────
+# ── Submit (student — auto-grades objective questions immediately) ────────────
 
 @router.post("/exams/{exam_id}", response_model=SubmissionOut, status_code=201)
 def submit_exam(
@@ -236,16 +236,55 @@ def submit_exam(
     db.flush()
 
     eq_map = {eq.id: eq for eq in exam.exam_questions}
+    has_essay = False
+    all_scored = True
+    total_score = 0.0
+
     for ans in payload.answers:
         if ans.exam_question_id not in eq_map:
             raise HTTPException(400, f"Questão {ans.exam_question_id} não pertence a esta prova")
-        db.add(SubmissionAnswer(
+
+        eq = eq_map[ans.exam_question_id]
+        q = eq.question
+        sa = SubmissionAnswer(
             submission_id=submission.id,
             exam_question_id=ans.exam_question_id,
             selected_option_id=ans.selected_option_id,
             essay_text=ans.essay_text,
             essay_image_base64=ans.essay_image_base64,
-        ))
+        )
+
+        # Auto-grade objective questions immediately on submit
+        if q.question_type in (QuestionType.MULTIPLE_CHOICE, QuestionType.TRUE_FALSE):
+            if ans.selected_option_id:
+                opt = db.get(QuestionOption, ans.selected_option_id)
+                sa.score = eq.points if (opt and opt.is_correct) else 0.0
+            else:
+                sa.score = 0.0
+            sa.is_auto_corrected = True
+            total_score += sa.score
+        elif q.question_type == QuestionType.SUMMATION:
+            correct_sum = sum(o.order for o in q.options if o.is_correct)
+            try:
+                student_sum = int(ans.essay_text or "0")
+            except (ValueError, TypeError):
+                student_sum = -1
+            sa.score = eq.points if student_sum == correct_sum else 0.0
+            sa.is_auto_corrected = True
+            total_score += sa.score
+        else:
+            # Essay/dissertative — needs manual or AI grading
+            has_essay = True
+            all_scored = False
+
+        db.add(sa)
+
+    # Set status based on whether all questions were auto-graded
+    if all_scored:
+        submission.status = SubmissionStatus.DONE
+        submission.total_score = round(total_score, 2)
+    elif has_essay:
+        submission.status = SubmissionStatus.PENDING
 
     db.commit()
     db.refresh(submission)
