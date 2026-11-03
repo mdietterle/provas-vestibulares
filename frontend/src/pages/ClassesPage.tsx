@@ -131,6 +131,7 @@ export default function ClassesPage() {
   }
 
   const [pendingStudentId, setPendingStudentId] = useState<number | null>(null)
+  const [confirmStudentAction, setConfirmStudentAction] = useState<number | null>(null)
 
   const checkAndAddStudent = (studentId: number) => {
     if (!showDetail) return
@@ -166,6 +167,13 @@ export default function ClassesPage() {
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro')
     }
+  }
+
+  const executeStudentAction = async () => {
+    if (confirmStudentAction == null) return
+    const sid = confirmStudentAction
+    setConfirmStudentAction(null)
+    await removeStudent(sid)
   }
 
   const removeStudent = async (studentId: number) => {
@@ -551,7 +559,7 @@ export default function ClassesPage() {
                     </div>
                     {user?.role === 'admin' && (
                       <button
-                        onClick={() => removeStudent(s.id)}
+                        onClick={() => setConfirmStudentAction(s.id)}
                         className="p-1.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
                         title="Remover aluno"
                       >
@@ -569,6 +577,15 @@ export default function ClassesPage() {
             </div>
           )}
         </Modal>
+      )}
+
+      {confirmStudentAction != null && (
+        <ConfirmDialog
+          open={true}
+          message="Remover este aluno da turma?"
+          onConfirm={executeStudentAction}
+          onCancel={() => setConfirmStudentAction(null)}
+        />
       )}
 
       {confirmDelete && (
