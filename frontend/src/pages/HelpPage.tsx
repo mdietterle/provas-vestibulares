@@ -102,7 +102,7 @@ export default function HelpPage() {
             />
             <FaqItem
               q="Esqueci minha senha, o que eu faço?"
-              a="Entre em contato com o administrador da sua instituição para redefinir o acesso."
+              a="Use o link “Esqueceu a senha?” na tela de login para redefinir seu acesso. Se não receber o e-mail de recuperação, entre em contato com o administrador da sua instituição."
             />
             <FaqItem
               q="Posso refazer um simulado quantas vezes eu quiser?"
