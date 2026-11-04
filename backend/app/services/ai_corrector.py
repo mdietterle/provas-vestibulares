@@ -12,13 +12,11 @@ def _get_client():
 
 
 def _call_groq(prompt: str, json_mode: bool = True) -> str:
-    """`json_mode=True` (padrão, usado pela correção de redação/prova) força
-    response_format json_object — a API do Groq EXIGE que o prompt mencione
-    "json" nesse modo, senão o request falha. Quem pede texto/HTML solto
-    (ex.: formatação de enunciado de simulado) precisa chamar com
-    `json_mode=False`, senão a chamada falha sempre (silenciosamente, do
-    lado de quem chama) e o texto nunca é formatado."""
-    try:
+    """`json_mode=True` (padrão) força response_format json_object.
+    Rate-limited via groq_rate_limiter to respect GROQ_MAX_RPM with 429 retry."""
+    from app.services.groq_rate_limiter import call_with_rate_limit
+
+    def _do_call():
         client = _get_client()
         kwargs = {"response_format": {"type": "json_object"}} if json_mode else {}
         resp = client.chat.completions.create(
@@ -28,9 +26,11 @@ def _call_groq(prompt: str, json_mode: bool = True) -> str:
             **kwargs,
         )
         return resp.choices[0].message.content or ""
+
+    try:
+        return call_with_rate_limit(_do_call)
     except Exception as e:
         raise RuntimeError(f"Erro ao chamar Groq: {e}")
-
 
 def _strip_thinking(text: str) -> str:
     return re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
@@ -282,4 +282,13 @@ def groq_is_available() -> bool:
 
 
 # Keep old name as alias for backward compatibility with submissions.py
-ollama_is_available = groq_is_available
+def _deprecated_ollama_is_available():
+    """DEPRECATED: Use groq_is_available() instead."""
+    import warnings
+    warnings.warn(
+        "ollama_is_available() is deprecated; use groq_is_available()",
+        DeprecationWarning, stacklevel=2,
+    )
+    return groq_is_available()
+
+ollama_is_available = _deprecated_ollama_is_available

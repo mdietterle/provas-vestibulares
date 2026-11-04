@@ -21,19 +21,26 @@ def _strip_thinking(text: str) -> str:
 
 
 def _call_vision(prompt: str, image_b64: str, temperature: float = 0.0) -> str:
-    client = _get_client()
-    resp = client.chat.completions.create(
-        model=settings.GROQ_VISION_MODEL,
-        messages=[{
-            "role": "user",
-            "content": [
-                {"type": "text", "text": prompt},
-                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_b64}"}},
-            ],
-        }],
-        temperature=temperature,
-    )
-    return _strip_thinking(resp.choices[0].message.content or "")
+    """Rate-limited vision call respecting GROQ_MAX_RPM with 429 retry."""
+    from app.services.groq_rate_limiter import call_with_rate_limit
+
+    def _do_call():
+        client = _get_client()
+        resp = client.chat.completions.create(
+            model=settings.GROQ_VISION_MODEL,
+            messages=[{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_b64}"}},
+                ],
+            }],
+            temperature=temperature,
+        )
+        return resp.choices[0].message.content or ""
+
+    raw = call_with_rate_limit(_do_call)
+    return _strip_thinking(raw)
 
 
 def groq_vision_available() -> bool:
@@ -41,7 +48,16 @@ def groq_vision_available() -> bool:
 
 
 # Keep old name as alias for backward compatibility with submissions.py
-ollama_vision_available = groq_vision_available
+def _deprecated_ollama_vision_available():
+    """DEPRECATED: Use groq_vision_available() instead."""
+    import warnings
+    warnings.warn(
+        "ollama_vision_available() is deprecated; use groq_vision_available()",
+        DeprecationWarning, stacklevel=2,
+    )
+    return groq_vision_available()
+
+ollama_vision_available = _deprecated_ollama_vision_available
 
 
 def identify_student_from_scan(
@@ -104,7 +120,7 @@ def identify_student_from_scan(
     read_name = (data.get("student_name") or "").strip()
     if read_name:
         best_student, best_score = _fuzzy_match(read_name, enrolled_students)
-        if best_student and best_score >= 0.70:
+        if best_student and best_score >= 0.85:
             confidence = "high" if best_score >= 0.90 else "medium"
             return {
                 "student_id": best_student.id,
