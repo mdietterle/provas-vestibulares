@@ -853,6 +853,17 @@ async def upload_scan(
 
     # Validate file type
     allowed = {"image/jpeg", "image/png", "image/webp", "application/pdf"}
+    # Validate file size before reading into memory (max 5MB)
+    MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
+    file.file.seek(0, 2)  # seek to end
+    file_size = file.file.tell()
+    file.file.seek(0)  # reset to beginning
+    if file_size > MAX_IMAGE_SIZE:
+        raise HTTPException(
+            status_code=413,
+            detail=f"Imagem excede o tamanho máximo de 5MB (recebido: {file_size // (1024*1024)}MB)"
+        )
+
     if file.content_type not in allowed:
         raise HTTPException(400, "Formato inválido. Envie JPEG, PNG, WebP ou PDF.")
 
