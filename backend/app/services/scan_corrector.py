@@ -237,6 +237,21 @@ def correct_from_scan(submission: ExamSubmission, image_bytes: bytes, db) -> Non
 
     ai_map = {a["exam_question_id"]: a for a in ai_answers if "exam_question_id" in a}
 
+    # Validate completeness BEFORE deleting existing answers.
+    # If AI returned fewer answers than exam questions, preserve existing data
+    # and defer to manual review instead of silently losing responses.
+    expected_ids = {eq.id for eq in exam_questions}
+    answered_ids = set(ai_map.keys())
+    missing_ids = expected_ids - answered_ids
+    if missing_ids:
+        _mark_manual_review(
+            db, submission,
+            f"IA respondeu apenas {len(answered_ids)} de {len(expected_ids)} questões. "
+            f"Revisão manual necessária para evitar perda de dados.",
+        )
+        return
+
+    # Safe to delete: AI covered all questions
     for existing in submission.answers:
         db.delete(existing)
     db.flush()
