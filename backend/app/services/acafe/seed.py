@@ -429,7 +429,7 @@ def _clean_option(text: str) -> str:
 # mais antigo ("Alternativa correta." sem letra explícita, marcador de
 # alternativa não-padrão) que este parser não reconhece — ficam de fora,
 # reportadas como "Nenhuma questão reconhecida" em vez de importadas.
-_GABARITO_ANCHOR = re.compile(r"(?:(?:Dados|Informações) da questão\s*\n?\s*)?Alternativa correta letra:\s*[A-D]")
+_GABARITO_ANCHOR = re.compile(r"(?:(?:Dados|Informações) da questão\s*\n?\s*)?Alternativa correta letra:\s*[A-D]", re.IGNORECASE)
 
 
 def _parse_question_text(region: str) -> dict | None:
