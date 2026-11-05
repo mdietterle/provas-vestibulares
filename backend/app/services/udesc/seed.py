@@ -36,7 +36,29 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
-from app.services.ufpr.seed import _page_content_images, _xref_to_dataurl
+def _xref_to_dataurl(doc, xref: int) -> str | None:
+    """Extract image from PDF xref and return as data URL."""
+    try:
+        pix = fitz.Pixmap(doc, xref)
+        if pix.n - pix.alpha > 3:
+            pix = fitz.Pixmap(fitz.csRGB, pix)
+        buf = pix.tobytes("png")
+        import base64
+        b64 = base64.b64encode(buf).decode("ascii")
+        return f"data:image/png;base64,{b64}"
+    except Exception:
+        return None
+
+def _page_content_images(page) -> list[tuple[float, int]]:
+    """Return (y_position, xref) for each image drawn on the page."""
+    result = []
+    for img in page.get_images(full=True):
+        xref = img[0]
+        rects = page.get_image_rects(xref)
+        y = min(r.y0 for r in rects) if rects else 0
+        result.append((y, xref))
+    result.sort(key=lambda t: t[0])
+    return result
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
 _INDEX_URL = "https://www.udesc.br/vestibular/provasanteriores"
