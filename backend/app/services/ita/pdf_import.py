@@ -24,6 +24,35 @@ from app.services.pdf_figures import extract_figure_events
 from app.services.pdf_text_utils import join_lines_smart
 import requests
 
+
+# ── OCR Support for scanned PDFs ──────────────────────────────────────────────
+_ocr_ready: Optional[bool] = None
+_OCR_DPI = 300
+
+def _ensure_ocr() -> bool:
+    global _ocr_ready
+    if _ocr_ready is not None:
+        return _ocr_ready
+    try:
+        import pytesseract  # noqa: F401
+        pytesseract.get_tesseract_version()
+        _ocr_ready = True
+    except Exception:
+        _ocr_ready = False
+    return _ocr_ready
+
+def _ocr_page_text(page, dpi: int = _OCR_DPI) -> str:
+    """Extract text from a scanned PDF page using OCR."""
+    if not _ensure_ocr():
+        return ''
+    from PIL import Image
+    import pytesseract
+    
+    pix = page.get_pixmap(dpi=dpi)
+    img = Image.frombytes('RGB', (pix.width, pix.height), pix.samples)
+    text = pytesseract.image_to_string(img, lang='por')
+    return text
+
 _INDEX_URL = "https://www.vestibular.ita.br/provas.htm"
 
 _AREA_NAMES = {
@@ -35,7 +64,7 @@ _AREA_NAMES = {
     "REDACAO": "Português",
 }
 
-_Q_START = re.compile(r"^Questao\s+(\d+)\.?\s*(.*)$", re.I)
+_Q_START = re.compile(r"^Questa[oa]o?\s+(\d+)\.?\s*(.*)$", re.I)
 _OPT_START = re.compile(r"\b([A-E])\s*\(\s*\)")
 
 
@@ -172,7 +201,28 @@ def _parse_gabarito(gabarito_pdf: Path, subject: Optional[str] = None) -> dict[i
     answers: dict[int, str] = {}
     
     for page_idx, page in enumerate(doc):
-        words = page.get_text("words")  # list of (x0, y0, x1, y1, word, ...)
+        words = page.get_text("words")
+        
+        # OCR fallback for scanned PDFs (no extractable text)
+        if not words:
+            ocr_text = _ocr_page_text(page)
+            if ocr_text:
+                # Convert OCR text to word-like tuples for compatibility
+                lines = ocr_text.strip().split('\n')
+                y_pos = 50.0
+                for line in lines:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    word_tuples = []
+                    x_pos = 50.0
+                    for word in line.split():
+                        w = len(word) * 6  # approximate width
+                        word_tuples.append((x_pos, y_pos, x_pos + w, y_pos + 12, word))
+                        x_pos += w + 4
+                    if word_tuples:
+                        words.extend(word_tuples)
+                    y_pos += 18  # list of (x0, y0, x1, y1, word, ...)
         
         # Encontra todos os x0 de números que aparecem (dígitos entre 1 e 80)
         num_x_coords = sorted([w[0] for w in words if w[4].isdigit() and 1 <= int(w[4]) <= 80])
@@ -275,6 +325,23 @@ def _parse_exam(
     
     for page_idx, page in enumerate(doc):
         words = page.get_text("words")
+        
+        # OCR fallback for scanned PDFs (no extractable text)
+        if not words:
+            ocr_text = _ocr_page_text(page)
+            if ocr_text:
+                lines_ocr = ocr_text.strip().split('\n')
+                y_pos = 50.0
+                for line in lines_ocr:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    x_pos = 50.0
+                    for word in line.split():
+                        w = len(word) * 6
+                        words.append((x_pos, y_pos, x_pos + w, y_pos + 12, word))
+                        x_pos += w + 4
+                    y_pos += 18
         
         # Agrupa palavras por y0 aproximado (limiar de 4px)
         lines_dict = defaultdict(list)
