@@ -43,18 +43,19 @@ def _get_importer_func(vestibular: str):
     import importlib
 
     # Padrão principal: import_all_{vest}_exams no service module
-    try:
-        mod = importlib.import_module(f"app.services.{vestibular}.pdf_import")
-        # Tenta nome específico primeiro
-        func = getattr(mod, f"import_all_{vestibular}_exams", None)
-        if func:
-            return func
-        # Fallback: alias genérico import_all
-        func = getattr(mod, "import_all", None)
-        if func:
-            return func
-    except (ImportError, AttributeError):
-        pass
+    for submodule in ("pdf_import", "seed"):
+        try:
+            mod = importlib.import_module(f"app.services.{vestibular}.{submodule}")
+            # Tenta nome específico primeiro
+            func = getattr(mod, f"import_all_{vestibular}_exams", None)
+            if func:
+                return func
+            # Fallback: alias genérico import_all
+            func = getattr(mod, "import_all", None)
+            if func:
+                return func
+        except (ImportError, AttributeError):
+            continue
 
     return None
 
@@ -141,6 +142,10 @@ def _run_batch_import(
                     kwargs["since_year"] = year
                 if "until_year" in params:
                     kwargs["until_year"] = year
+                elif "since_year" in params:
+                    # Garante que importadores com default until_year != year
+                    # (ex.: ENEM default=2025) não processem anos extras
+                    kwargs.setdefault("until_year", year)
                 if "year" in params and "since_year" not in params:
                     kwargs["year"] = year
                 if "force_reimport" in params:
@@ -150,7 +155,7 @@ def _run_batch_import(
                 if "task_id" in params or any(
                     p.kind == inspect.Parameter.VAR_KEYWORD for p in params.values()
                 ):
-                    kwargs["task_id"] = None  # Não repassa task_id do lote
+                    kwargs["task_id"] = task_id  # Repassa para progresso granular
 
                 result = func(**kwargs)
 
