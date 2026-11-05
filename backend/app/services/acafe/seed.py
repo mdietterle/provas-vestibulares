@@ -36,7 +36,7 @@ import requests
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal, engine
-from app.services.progress import update_task_progress, complete_task, fail_task
+from app.services.progress import update_task_progress
 from app.services.import_batch import save_vestibular_question
 from app.services.pdf_text_utils import join_lines_smart
 
@@ -913,12 +913,8 @@ def import_all_acafe_exams(since_year: Optional[int] = None, until_year: Optiona
                             update_task_progress(task_id, current=period_index, total=total_periods, log=f"❌ Erro em {period} {year}: {e}")
 
         res = {"total_added": total_added, "exams": results}
-        if task_id:
-            complete_task(task_id, res)
         return res
     except Exception as e:
-        if task_id:
-            fail_task(task_id, str(e))
         raise
     finally:
         if close_after:

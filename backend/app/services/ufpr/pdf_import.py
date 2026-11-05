@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.services.progress import update_task_progress, complete_task, fail_task
+from app.services.progress import update_task_progress
 from typing import Optional
 import gc
 """Importa questões da UFPR a partir dos PDFs disponibilizados pelo Brasil
@@ -299,8 +299,6 @@ def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = No
     except Exception as e:
         if close_after:
             db.close()
-        if task_id:
-            fail_task(task_id, f"Falha ao criar tabelas: {e}")
         raise RuntimeError(f"Falha ao criar tabelas: {e}")
 
     year_to = until_year or 2026
@@ -347,12 +345,8 @@ def import_all_ufpr_exams(since_year: int = 2009, until_year: Optional[int] = No
             done += 1
 
         res = {"total_added": total_added, "exams": results}
-        if task_id:
-            complete_task(task_id, res)
         return res
     except Exception as e:
-        if task_id:
-            fail_task(task_id, str(e))
         raise
     finally:
         if close_after:
