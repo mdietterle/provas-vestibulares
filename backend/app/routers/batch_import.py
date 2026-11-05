@@ -152,10 +152,6 @@ def _run_batch_import(
                     kwargs["force_reimport"] = force_reimport
                 if "db" in params:
                     kwargs["db"] = db
-                if "task_id" in params or any(
-                    p.kind == inspect.Parameter.VAR_KEYWORD for p in params.values()
-                ):
-                    kwargs["task_id"] = task_id  # Repassa para progresso granular
 
                 result = func(**kwargs)
 
