@@ -208,10 +208,6 @@ def run_batch_import(
                     gc.collect()
 
         res = {"total_links_found": len(items), "total_added": total_added, "exams": results}
-        if task_id:
-            complete_task(task_id, res)
         return res
     except Exception as e:
-        if task_id:
-            fail_task(task_id, str(e))
         raise
