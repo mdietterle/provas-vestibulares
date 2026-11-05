@@ -35,7 +35,18 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
-from app.services.ufpr.seed import _xref_to_dataurl
+def _xref_to_dataurl(doc, xref: int) -> str | None:
+    """Extract image from PDF xref and return as data URL."""
+    try:
+        pix = fitz.Pixmap(doc, xref)
+        if pix.n - pix.alpha > 3:
+            pix = fitz.Pixmap(fitz.csRGB, pix)
+        buf = pix.tobytes("png")
+        import base64
+        b64 = base64.b64encode(buf).decode("ascii")
+        return f"data:image/png;base64,{b64}"
+    except Exception:
+        return None
 
 _HEADERS = {"User-Agent": "Mozilla/5.0"}
 _REPO_URL = "https://www.puc-rio.br/vestibular/repositorio/"
