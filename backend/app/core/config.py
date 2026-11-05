@@ -15,9 +15,8 @@ class Settings(BaseSettings):
     GROQ_API_KEY: str = ""
     # llama-3.3-70b-versatile foi desativado pela Groq em 16/08/2026 (e
     # qwen/qwen3-32b, usado antes disso, em 17/07/2026) — openai/gpt-oss-120b
-    # é o substituto recomendado pela própria Groq para ambos.
-    # Ver: https://console.groq.com/docs/deprecations
-    GROQ_MODEL: str = "openai/gpt-oss-120b"
+    # llama-3.1-8b-instant: modelo free sem TPD limit (gpt-oss-120b esgotou cota free).
+    GROQ_MODEL: str = "llama-3.1-8b-instant"
     GROQ_VISION_MODEL: str = "meta-llama/llama-4-scout-17b-16e-instruct"
     # Limite de segurança de requisições/minuto ao Groq (fica abaixo do limite real da
     # conta para não estourar o rate limit em importações com muitas questões).
