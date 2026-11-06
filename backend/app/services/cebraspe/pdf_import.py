@@ -421,11 +421,11 @@ def seed_cebraspe(db, year: int, **kwargs) -> dict:
         gabarito = _parse_gabarito(gab_path)
         parsed = _extract_items_from_exam(prova_path, gabarito)
 
-    if not parsed:
-        return {"exam_name": exam_name, "total_added": 0, "reason": "Nenhum item reconhecido."}
+        if not parsed:
+            return {"exam_name": exam_name, "total_added": 0, "reason": "Nenhum item reconhecido."}
 
-    added, skipped = _persist_parsed_items(db, exam_name, yr, parsed, force_reimport=kwargs.get("force_reimport", False))
-    return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped}
+        added, skipped = _persist_parsed_items(db, exam_name, yr, parsed, force_reimport=kwargs.get("force_reimport", False))
+        return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped}
 
 
 def import_all_cebraspe_exams(

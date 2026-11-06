@@ -449,14 +449,14 @@ def import_udesc_shift(db, year: int, semester: int, shift: str, prova_url: str,
         download_pdf(prova_url, pdf_path)
         parsed = parse_udesc_pdf(pdf_path)
 
-    if len(parsed) < _MIN_QUESTIONS:
-        return {
-            "exam_name": exam_name,
-            "total_parsed": len(parsed),
-            "total_added": 0,
-            "skipped": True,
-            "reason": f"Só {len(parsed)} questões reconhecidas (provável falha de parsing nesse formato de PDF)",
-        }
+        if len(parsed) < _MIN_QUESTIONS:
+            return {
+                "exam_name": exam_name,
+                "total_parsed": len(parsed),
+                "total_added": 0,
+                "skipped": True,
+                "reason": f"Só {len(parsed)} questões reconhecidas (provável falha de parsing nesse formato de PDF)",
+            }
 
     _merge_gabarito(parsed, gabarito_map.get(shift, {}))
 

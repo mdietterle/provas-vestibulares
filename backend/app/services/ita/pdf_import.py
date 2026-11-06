@@ -703,13 +703,13 @@ def import_all_ita_exams(
                     gabarito = _parse_gabarito(gabarito_path, subject=subject)
                     parsed = _parse_exam(prova_path, gabarito, subject=subject)
 
-                if not parsed:
-                    results.append({"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida."})
-                    continue
+                    if not parsed:
+                        results.append({"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida."})
+                        continue
 
-                added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed, force_reimport=force_reimport)
-                total_added += added
-                results.append({"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing})
+                    added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, parsed, force_reimport=force_reimport)
+                    total_added += added
+                    results.append({"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing})
                 
                 if task_id:
                     update_task_progress(task_id, current=i + 1, log=f"✅ {exam_name}: {added} adicionadas, {skipped_existing} ignoradas.")
