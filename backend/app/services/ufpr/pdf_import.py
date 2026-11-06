@@ -206,14 +206,14 @@ def import_ufpr_year(db, year: int, pdf_url: str, force_reimport: bool = False) 
         download_pdf(pdf_url, pdf_path)
         parsed = parse_ufpr_pdf(pdf_path)
 
-    if not parsed:
-        return {
-            "exam_name": exam_name,
-            "total_parsed": 0,
-            "total_added": 0,
-            "skipped": True,
-            "reason": "Nenhuma questão reconhecida (PDF em formato inesperado)",
-        }
+        if not parsed:
+            return {
+                "exam_name": exam_name,
+                "total_parsed": 0,
+                "total_added": 0,
+                "skipped": True,
+                "reason": "Nenhuma questão reconhecida (PDF em formato inesperado)",
+            }
 
     added = 0
     skipped_existing = 0
