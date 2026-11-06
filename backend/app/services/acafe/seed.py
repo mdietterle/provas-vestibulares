@@ -833,16 +833,16 @@ def import_acafe_edition(db: Session, year: int, period: str, edition: dict, for
             except Exception:
                 pass  # best-effort: mantém as respostas já embutidas na prova comentada
 
-    if not parsed:
-        return {
-            "exam_name": exam_name,
-            "total_parsed": 0,
-            "total_added": 0,
-            "skipped": True,
-            "reason": "Nenhuma questão reconhecida (PDF em formato inesperado, sem os marcadores 'Dados da questão').",
-        }
+        if not parsed:
+            return {
+                "exam_name": exam_name,
+                "total_parsed": 0,
+                "total_added": 0,
+                "skipped": True,
+                "reason": "Nenhuma questão reconhecida (PDF em formato inesperado, sem os marcadores 'Dados da questão').",
+            }
 
-    return _persist_parsed_acafe_questions(db, exam_name, year, period, parsed, force_reimport=force_reimport)
+        return _persist_parsed_acafe_questions(db, exam_name, year, period, parsed, force_reimport=force_reimport)
 
 
 def import_all_acafe_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, db: Session | None = None, task_id: Optional[str] = None, **kwargs) -> dict:
