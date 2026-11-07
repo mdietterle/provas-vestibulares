@@ -393,16 +393,16 @@ def import_fuvest_year(db, year: int, edition: dict, force_reimport: bool = Fals
     # texto extraído sem espaços entre palavras), não de uma prova realmente
     # menor — melhor pular e reportar do que gravar um exame manco que
     # trava reimportação futura (a checagem de "já existe" é por exam_name).
-    if len(parsed) < 20:
-        return {
-            "exam_name": exam_name,
-            "total_parsed": len(parsed),
-            "total_added": 0,
-            "skipped": True,
-            "reason": f"Só {len(parsed)} questões reconhecidas de ~90 esperadas (provável falha de parsing nesse formato de PDF)",
-        }
+        if len(parsed) < 20:
+            return {
+                "exam_name": exam_name,
+                "total_parsed": len(parsed),
+                "total_added": 0,
+                "skipped": True,
+                "reason": f"Só {len(parsed)} questões reconhecidas de ~90 esperadas (provável falha de parsing nesse formato de PDF)",
+            }
 
-    added = 0
+        added = 0
     skipped_existing = 0
     seen: set[int] = set()
     for q in parsed:

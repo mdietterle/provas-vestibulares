@@ -365,14 +365,14 @@ def import_pucrs_edition(db, edition: dict, force_reimport: bool = False) -> dic
         except Exception:
             gabarito = {}
 
-    if len(parsed) < _MIN_QUESTIONS:
-        return {
-            "exam_name": exam_name,
-            "total_parsed": len(parsed),
-            "total_added": 0,
-            "skipped": True,
-            "reason": f"Só {len(parsed)} questões reconhecidas (provável falha de parsing nesse formato de PDF)",
-        }
+        if len(parsed) < _MIN_QUESTIONS:
+            return {
+                "exam_name": exam_name,
+                "total_parsed": len(parsed),
+                "total_added": 0,
+                "skipped": True,
+                "reason": f"Só {len(parsed)} questões reconhecidas (provável falha de parsing nesse formato de PDF)",
+            }
 
     # A faixa 1-10 é compartilhada entre Espanhol e Inglês (2 questões com o
     # mesmo número na prova, uma por idioma) — usa a mesma indexação por

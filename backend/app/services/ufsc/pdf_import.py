@@ -260,11 +260,11 @@ def import_all_ufsc_exams(since_year: Optional[int] = None, until_year: Optional
             )
             parsed = _parse_exam(prova_path, gabarito)
 
-        if not parsed:
-            return {"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida (provável prova antiga escaneada, sem texto extraível)."}
+            if not parsed:
+                return {"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida (provável prova antiga escaneada, sem texto extraível)."}
 
-        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, color, parsed, force_reimport=force_reimport)
-        return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
+            added, skipped_existing = _persist_parsed_questions(db, exam_name, year, phase, color, parsed, force_reimport=force_reimport)
+            return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
     try:
         links = fetch_exam_links()
