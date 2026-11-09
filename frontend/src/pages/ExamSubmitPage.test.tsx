@@ -41,6 +41,7 @@ vi.mock('../components/AdSlot', () => ({ default: () => null }))
 vi.mock('react-router-dom', () => ({
   useParams: () => ({ id: '1' }),
   useNavigate: () => vi.fn(),
+  useLocation: () => ({ pathname: '/exams/1', search: '', hash: '', state: null }),
 }))
 
 describe('ExamSubmitPage', () => {

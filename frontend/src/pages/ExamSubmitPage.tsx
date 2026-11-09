@@ -202,7 +202,7 @@ export default function ExamSubmitPage() {
   const shuffledExam = useMemo(() => {
     if (!exam || !user) return null
     const seed = user.id * 1_000_003 + exam.id
-    const shuffledQuestions = seededShuffle(exam.exam_questions, seed)
+    const shuffledQuestions = seededShuffle(exam.exam_questions ?? [], seed)
     return {
       ...exam,
       exam_questions: shuffledQuestions.map((eq, idx) => ({
@@ -304,7 +304,7 @@ export default function ExamSubmitPage() {
     )
   }
 
-  const totalPoints = shuffledExam.exam_questions.reduce((s, eq) => s + eq.points, 0)
+  const totalPoints = shuffledExam.exam_questions?.reduce((s, eq) => s + eq.points, 0) ?? 0
   const answered = Object.keys(answers).length
 
   return (
