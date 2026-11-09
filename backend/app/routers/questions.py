@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 from app.deps import get_current_user, require_professor
@@ -128,6 +128,11 @@ def list_questions(
         q = (
             db.query(Question)
             .join(Subject)
+            .options(
+                joinedload(Question.subject),
+                joinedload(Question.professor),
+                joinedload(Question.options),
+            )
             .filter(Subject.institution_id == current_user.institution_id)
         )
     else:
@@ -135,6 +140,11 @@ def list_questions(
         q = (
             db.query(Question)
             .join(Subject)
+            .options(
+                joinedload(Question.subject),
+                joinedload(Question.professor),
+                joinedload(Question.options),
+            )
             .filter(
                 Subject.institution_id == current_user.institution_id,
                 or_(
@@ -268,11 +278,19 @@ def get_question(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    question = db.get(Question, question_id)
+    question = (
+        db.query(Question)
+        .options(
+            joinedload(Question.subject),
+            joinedload(Question.professor),
+            joinedload(Question.options),
+        )
+        .filter(Question.id == question_id)
+        .first()
+    )
     if not question:
         raise HTTPException(404, "Questão não encontrada")
-    subject = db.get(Subject, question.subject_id)
-    if subject.institution_id != current_user.institution_id:
+    if question.subject.institution_id != current_user.institution_id:
         raise HTTPException(403, "Sem acesso")
     if (
         current_user.role == UserRole.PROFESSOR
@@ -290,13 +308,21 @@ def update_question(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_professor),
 ):
-    question = db.get(Question, question_id)
+    question = (
+        db.query(Question)
+        .options(
+            joinedload(Question.subject),
+            joinedload(Question.professor),
+            joinedload(Question.options),
+        )
+        .filter(Question.id == question_id)
+        .first()
+    )
     if not question:
         raise HTTPException(404, "Questão não encontrada")
 
     # Institution boundary: admins from other institutions must not edit this question
-    subject = db.get(Subject, question.subject_id)
-    if not subject or subject.institution_id != current_user.institution_id:
+    if question.subject.institution_id != current_user.institution_id:
         raise HTTPException(403, "Sem acesso a esta questão")
 
     if current_user.role == UserRole.PROFESSOR and question.professor_id != current_user.id:
@@ -356,13 +382,17 @@ def delete_question(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_professor),
 ):
-    question = db.get(Question, question_id)
+    question = (
+        db.query(Question)
+        .options(joinedload(Question.subject))
+        .filter(Question.id == question_id)
+        .first()
+    )
     if not question:
         raise HTTPException(404, "Questão não encontrada")
 
     # Institution boundary: admins from other institutions must not delete this question
-    subject = db.get(Subject, question.subject_id)
-    if subject.institution_id != current_user.institution_id:
+    if question.subject.institution_id != current_user.institution_id:
         raise HTTPException(403, "Sem acesso a esta questão")
 
     if current_user.role == UserRole.PROFESSOR and question.professor_id != current_user.id:
