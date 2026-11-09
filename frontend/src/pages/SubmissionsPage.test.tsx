@@ -21,6 +21,7 @@ vi.mock('../api/submissions', () => ({
     grade: vi.fn().mockResolvedValue({ data: {} }),
     release: vi.fn().mockResolvedValue({ data: {} }),
     ollamaStatus: vi.fn().mockResolvedValue({ data: { available: true } }),
+    stats: vi.fn().mockResolvedValue({ data: { total_enrolled: 10, total_submitted: 5 } }),
   },
 }))
 

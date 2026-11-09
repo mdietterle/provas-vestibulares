@@ -326,7 +326,7 @@ export default function SubmissionsPage() {
     </div>
   )
 
-  const totalPossible = exam.exam_questions.reduce((s, eq) => s + eq.points, 0)
+  const totalPossible = exam.exam_questions?.reduce((s, eq) => s + eq.points, 0) ?? 0
   const subMap = new Map(submissions.map(s => [s.student_id, s]))
   const allMerged: MergedStudent[] = enrolledStudents
     .map(student => ({ student, submission: subMap.get(student.id) ?? null }))

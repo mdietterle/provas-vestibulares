@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "frontend-dev",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-l", "5176", "dist"],
+      "port": 5176,
+      "url": "http://localhost:5176"
+    }
+  ]
+}

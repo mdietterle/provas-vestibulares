@@ -96,7 +96,7 @@ export default function ExamDetailPage() {
   if (loading) return <div className="text-center py-12">Carregando...</div>
   if (!exam) return null
 
-  const totalPoints = exam.exam_questions.reduce((s, q) => s + q.points, 0)
+  const totalPoints = exam.exam_questions?.reduce((s, q) => s + q.points, 0) ?? 0
 
   return (
     <div className="max-w-3xl">
@@ -146,7 +146,7 @@ export default function ExamDetailPage() {
       </div>
 
       <div className="space-y-4">
-        {exam.exam_questions.map((eq, i) => {
+        {(exam.exam_questions ?? []).map((eq, i) => {
           const q = eq.question
           return (
             <div key={eq.id} className="card">
