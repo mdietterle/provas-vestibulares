@@ -130,6 +130,8 @@ export default function SimuladoPage() {
 
   const filteredExams = EXAM_TYPES.filter(t => t.label.toLowerCase().includes(search.toLowerCase()))
 
+  const [startError, setStartError] = useState<string | null>(null)
+
   const handleStart = async (area: string | null, numQuestions: number) => {
     if (!selectedType) return
     if (today?.has_simulado) {
@@ -137,6 +139,7 @@ export default function SimuladoPage() {
       return
     }
     setCreating(true)
+    setStartError(null)
     try {
       const r = await simuladosApi.create({
         exam_type: selectedType.id,
@@ -146,9 +149,14 @@ export default function SimuladoPage() {
       navigate(`/simulados/${r.data.id}`)
     } catch (err: any) {
       const detail = err?.response?.data?.detail
-      const msg = typeof detail === 'string' && (detail.includes('Não há questões') || detail.includes('não temos questões'))
-        ? 'Não há questões disponíveis para este vestibular ainda. Tente outro tipo de simulado.'
-        : detail || 'Erro ao criar simulado.'
+      // detail pode vir como lista/objeto (erro de validação); toast com objeto
+      // não mostra nada, então sempre reduz para texto.
+      const msg = typeof detail === 'string'
+        ? (detail.includes('Não há questões') || detail.includes('não temos questões')
+            ? 'Não há questões disponíveis para este vestibular ainda. Tente outro tipo de simulado.'
+            : detail)
+        : 'Não foi possível iniciar o simulado. Tente novamente ou escolha outro vestibular.'
+      setStartError(msg)
       toast.error(msg)
     } finally {
       setCreating(false)
@@ -167,6 +175,12 @@ export default function SimuladoPage() {
           Pratique com questões reais dos principais vestibulares. Simulados ilimitados, corrigidos por IA.
         </p>
       </div>
+
+      {startError && (
+        <div role="alert" className="rounded-xl p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 text-sm text-red-700 dark:text-red-300">
+          {startError}
+        </div>
+      )}
 
       {/* Today's simulado banner */}
       {!loadingToday && today?.has_simulado && (

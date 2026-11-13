@@ -100,7 +100,7 @@ def _assert_professor_teaches(db: Session, professor_id: int, subject_id: int, c
         raise HTTPException(403, "Você não leciona esta matéria nesta turma")
 
 
-@router.get("", response_model=List[ExamListOut])
+@router.get("")
 def list_exams(
     subject_id: Optional[int] = Query(None),
     class_id: Optional[int] = Query(None),
@@ -171,16 +171,27 @@ def list_exams(
         .all()
     ) if class_ids else {}
 
+    is_student = current_user.role == UserRole.STUDENT
     result = []
     for exam in q.all():
         item = ExamListOut.model_validate(exam)
         item.question_count = counts.get(exam.id, 0)
-        item.submission_count = sub_counts.get(exam.id, 0)
-        item.total_enrolled = enrolled_counts.get(exam.class_id, 0)
-        if current_user.role == UserRole.STUDENT:
+        if is_student:
+            # Prova sem questões não tem o que responder: não aparece para o aluno.
+            if item.question_count == 0:
+                continue
             sa = my_submitted.get(exam.id)
             item.submitted_at = sa.isoformat() if sa else None
-        result.append(item)
+        else:
+            item.submission_count = sub_counts.get(exam.id, 0)
+            item.total_enrolled = enrolled_counts.get(exam.class_id, 0)
+        data = item.model_dump(mode="json")
+        if is_student:
+            # Contadores e dados do professor são informação de gestão.
+            data.pop("submission_count", None)
+            data.pop("total_enrolled", None)
+            _strip_professor_details(data)
+        result.append(data)
     return result
 
 
@@ -315,8 +326,11 @@ def get_exam(
 ):
     exam = db.get(Exam, exam_id)
     _assert_exam_view_access(db, exam, current_user)
-    
-    # For students, check submission status and filter answer keys if not released
+
+    # Serializa sempre pelo ExamOut: sem isso o professor recebia só as colunas
+    # da tabela (sem subject, class_, professor e questões) e a tela quebrava.
+    exam_dict = ExamOut.model_validate(exam).model_dump(mode="json")
+
     if current_user.role == UserRole.STUDENT:
         submission = (
             db.query(ExamSubmission)
@@ -324,19 +338,20 @@ def get_exam(
             .first()
         )
         submission_status = submission.status if submission else None
-        
-        # Serialize exam to dict and filter sensitive fields
-        from app.schemas import ExamOut
-        exam_out = ExamOut.model_validate(exam)
-        exam_dict = exam_out.model_dump(mode="json")
-        
+
         # Strip answer keys unless submission is RELEASED
         if submission_status != SubmissionStatus.RELEASED:
             _strip_answer_keys(exam_dict)
-        
-        return exam_dict
-    
-    return exam
+        _strip_professor_details(exam_dict)
+
+    return exam_dict
+
+
+def _strip_professor_details(data: dict) -> None:
+    """O aluno só precisa do nome do professor: remove e-mail, papel, datas etc."""
+    prof = data.get("professor")
+    if isinstance(prof, dict):
+        data["professor"] = {"id": prof.get("id"), "name": prof.get("name")}
 
 
 def _strip_answer_keys(exam_dict: dict) -> None:

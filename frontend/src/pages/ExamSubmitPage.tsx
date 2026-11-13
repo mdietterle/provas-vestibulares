@@ -137,6 +137,7 @@ export default function ExamSubmitPage() {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false)
   const [answers, setAnswers] = useState<Record<number, { selected_option_id?: number; essay_text?: string; essay_image_base64?: string }>>({})
   const [submissionId, setSubmissionId] = useState<number | null>(null)
   const [showBlankConfirm, setShowBlankConfirm] = useState(false)
@@ -152,7 +153,19 @@ export default function ExamSubmitPage() {
     examsApi.get(+id)
       .then(r => { setExam(r.data); setLoading(false) })
       .catch(() => { toast.error('Prova não encontrada'); navigate('/exams') })
+    // Se o aluno já entregou, não reabre o formulário pelo link: 404 = ainda
+    // não entregou; 200 ou 403 (nota não liberada) = já existe entrega.
+    submissionsApi.mySubmission(+id)
+      .then(() => markAlreadySubmitted())
+      .catch((err: any) => { if (err?.response?.status === 403) markAlreadySubmitted() })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  const markAlreadySubmitted = () => {
+    setAlreadySubmitted(true)
+    setSubmitted(true)
+    if (storageKey) { try { localStorage.removeItem(storageKey) } catch { /* ignore */ } }
+  }
 
   // Restore draft from localStorage on mount — immediate save, no debounce
   useEffect(() => {
@@ -294,8 +307,8 @@ export default function ExamSubmitPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC] mb-2">Prova entregue com sucesso!</h1>
-        <p className="text-[#64748B] dark:text-slate-400 mb-8 max-w-md">Sua prova foi enviada e está aguardando correção pelo professor. Você será notificado quando o resultado estiver disponível.</p>
+        <h1 className="text-2xl font-bold text-[#1E293B] dark:text-[#F8FAFC] mb-2">{alreadySubmitted ? 'Prova já entregue' : 'Prova entregue com sucesso!'}</h1>
+        <p className="text-[#64748B] dark:text-slate-400 mb-8 max-w-md">{alreadySubmitted ? 'Você já entregou esta prova. Acompanhe o resultado quando o professor liberar a nota.' : 'Sua prova foi enviada e está aguardando correção pelo professor. Você será notificado quando o resultado estiver disponível.'}</p>
         <div className="flex gap-3">
           <button onClick={() => navigate('/exams')} className="btn-secondary px-6 py-2.5">Voltar para Provas</button>
           <button onClick={() => navigate(`/exams/${shuffledExam.id}/result`)} className="btn-primary px-6 py-2.5">Ver Resultado</button>
@@ -312,9 +325,9 @@ export default function ExamSubmitPage() {
       <div className="card mb-6 bg-blue-50 border-blue-200">
         <h1 className="text-xl font-bold text-blue-900">{shuffledExam.title}</h1>
         <div className="flex gap-4 mt-2 text-sm text-blue-700">
-          <span>{shuffledExam.subject.name}</span>
+          <span>{shuffledExam.subject?.name}</span>
           <span>•</span>
-          <span>{shuffledExam.class_.name}</span>
+          <span>{shuffledExam.class_?.name}</span>
           <span>•</span>
           <span>{totalPoints} {totalPoints === 1 ? 'ponto' : 'pontos'}</span>
           <span>•</span>

@@ -34,14 +34,15 @@ def list_users(
     if role == UserRole.STUDENT and users:
         user_ids = [u.id for u in users]
         enrollments = (
-            db.query(StudentClass.student_id, Class.name)
+            db.query(StudentClass.student_id, Class.name, Class.year)
             .join(Class, StudentClass.class_id == Class.id)
             .filter(StudentClass.student_id.in_(user_ids))
             .all()
         )
         class_map: dict[int, list[str]] = {}
-        for student_id, class_name in enrollments:
-            class_map.setdefault(student_id, []).append(class_name)
+        for student_id, class_name, class_year in enrollments:
+            label = f"{class_name} · {class_year}" if class_year else class_name
+            class_map.setdefault(student_id, []).append(label)
         return [UserOut.from_user(u, class_names=class_map.get(u.id, [])) for u in users]
     
     return [UserOut.from_user(u) for u in users]

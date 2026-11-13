@@ -88,7 +88,7 @@ export default function QuestionsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="page-title">Banco de Questões</h1>
-          <p className="page-subtitle">{questions.length} {questions.length !== 1 ? 'questões' : 'questão'} cadastrada{questions.length !== 1 ? 's' : ''}</p>
+          <p className="page-subtitle">{loading ? 'Carregando questões…' : `${questions.length} ${questions.length !== 1 ? 'questões' : 'questão'} cadastrada${questions.length !== 1 ? 's' : ''}`}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button

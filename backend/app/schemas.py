@@ -121,6 +121,7 @@ class UserOut(BaseModel):
             invitation_sent_at=user.invitation_sent_at,
             invitation_accepted_at=user.invitation_accepted_at,
             invitation_status=inv_status,
+            class_names=class_names,
         )
 
 
@@ -354,6 +355,8 @@ class ExamOut(BaseModel):
     exam_questions: List[ExamQuestionOut]
     exam_vestibular_questions: List[ExamVestibularQuestionOut] = []
     created_at: datetime
+    status: str = "draft"
+    deadline: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
 

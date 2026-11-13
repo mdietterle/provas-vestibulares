@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { notificationsApi, questionBanksApi, type Notification } from '../api'
 import ThemeToggle from './ThemeToggle'
+import PageErrorBoundary from './PageErrorBoundary'
 
 // ── Nav structure ─────────────────────────────────────────────────────────────
 
@@ -448,18 +449,30 @@ function SidebarGroup({
     return location.pathname.startsWith(c.to)
   })
 
-  const [open, setOpen] = useState(isChildActive)
+  // Lembra quais grupos o usuário deixou abertos entre recargas.
+  const storageKey = `sidebar-group-open:${group.label}`
+  const [open, setOpen] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageKey)
+      if (saved != null) return saved === 'true' || isChildActive
+    } catch { /* ignore */ }
+    return isChildActive
+  })
 
   useEffect(() => {
     if (isChildActive) setOpen(true)
   }, [isChildActive])
+
+  useEffect(() => {
+    try { localStorage.setItem(storageKey, String(open)) } catch { /* ignore */ }
+  }, [open, storageKey])
 
   if (collapsed) {
     return (
       <div className="relative group/tooltip">
         <button
           className={`w-full flex items-center justify-center p-2.5 rounded-xl transition-all duration-150 ${
-            isChildActive ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]' : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
+            isChildActive ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]' : 'text-[var(--color-sidebar-text)] hover:bg-white/[0.05] hover:text-white'
           }`}
           title={group.label}
         >
@@ -483,7 +496,7 @@ function SidebarGroup({
         className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-150 ${
           isChildActive
             ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]'
-            : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
+            : 'text-[var(--color-sidebar-text)] hover:bg-white/[0.05] hover:text-white'
         }`}
       >
         {group.icon}
@@ -540,7 +553,7 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
                 <div key={entry.to} className="relative group/tooltip">
                   {locked ? (
                     <div
-                      className="flex items-center justify-center p-2.5 rounded-xl text-[var(--sidebar-text)]/40 cursor-not-allowed"
+                      className="flex items-center justify-center p-2.5 rounded-xl text-[var(--color-sidebar-text)]/40 cursor-not-allowed"
                       aria-disabled="true"
                     >
                       {entry.icon}
@@ -551,7 +564,7 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
                       end={entry.to === '/'}
                       className={({ isActive }) =>
                         `flex items-center justify-center p-2.5 rounded-xl transition-all duration-150 ${
-                          isActive ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]' : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
+                          isActive ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]' : 'text-[var(--color-sidebar-text)] hover:bg-white/[0.05] hover:text-white'
                         }`
                       }
                       title={entry.label}
@@ -572,7 +585,7 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
               return (
                 <div key={entry.to} className="relative group/tooltip">
                   <div
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-[var(--sidebar-text)]/40 cursor-not-allowed opacity-60"
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-[var(--color-sidebar-text)]/40 cursor-not-allowed opacity-60"
                     aria-disabled="true"
                   >
                     {entry.icon}
@@ -596,7 +609,7 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
                   `relative flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-150 ${
                     isActive
                       ? 'bg-white/10 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]'
-                      : 'text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white'
+                      : 'text-[var(--color-sidebar-text)] hover:bg-white/[0.05] hover:text-white'
                   }`
                 }
               >
@@ -623,12 +636,12 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
       {/* Ponte pro site público — antes só era alcançável digitando a URL. */}
       {!collapsed ? (
         <div className="px-3 pb-2 pt-2 border-t border-white/[0.06] space-y-0.5">
-          <p className="px-3 pb-1 text-[10px] font-semibold text-[var(--sidebar-text)] uppercase tracking-wider">Recursos</p>
+          <p className="px-3 pb-1 text-[10px] font-semibold text-[var(--color-sidebar-text)] uppercase tracking-wider">Recursos</p>
           {PUBLIC_BRIDGE_LINKS.map(l => (
             <NavLink
               key={l.to}
               to={l.to}
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-[12px] font-medium text-[var(--sidebar-text)] hover:bg-white/[0.05] hover:text-white transition-colors duration-150"
+              className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-[12px] font-medium text-[var(--color-sidebar-text)] hover:bg-white/[0.05] hover:text-white transition-colors duration-150"
             >
               {l.label}
             </NavLink>
@@ -641,8 +654,8 @@ function SidebarContent({ userRole, carAccessOk, collapsed, availableBankSlugs, 
             className="rounded-xl px-3 py-2.5"
             style={{ background: 'rgba(255,255,255,0.05)', boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)' }}
           >
-            <p className="text-[10px] font-semibold text-[var(--sidebar-text)] uppercase tracking-wider">Versão</p>
-            <p className="text-[11px] text-[var(--sidebar-text)] mt-0.5">v1.0</p>
+            <p className="text-[10px] font-semibold text-[var(--color-sidebar-text)] uppercase tracking-wider">Versão</p>
+            <p className="text-[11px] text-[var(--color-sidebar-text)] mt-0.5">v1.0</p>
           </div>
         </div>
       )}
@@ -899,7 +912,7 @@ export default function Layout() {
               className="flex flex-col fixed top-[52px] bottom-0 left-0 z-50 overflow-y-auto overflow-x-hidden"
               style={{
                 width: 256,
-                background: 'var(--sidebar-bg)',
+                background: 'var(--color-sidebar-bg)',
                 transform: mobileSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
                 transition: 'transform 0.25s ease',
               }}
@@ -913,13 +926,15 @@ export default function Layout() {
             onMouseEnter={() => setSidebarHovered(true)}
             onMouseLeave={() => setSidebarHovered(false)}
             className="shrink-0 z-40"
-            style={{ width: 64 }}
+            // Fixado: reserva os 240px do painel para o conteúdo ficar ao lado,
+            // não por baixo. Só o painel aberto por hover passa por cima.
+            style={{ width: pinned ? 240 : 64, transition: 'width 0.2s ease' }}
           >
             <div
               className="fixed top-[52px] bottom-0 left-0 flex flex-col overflow-y-auto overflow-x-hidden z-40"
               style={{
                 width: desktopExpanded ? 240 : 64,
-                background: 'var(--sidebar-bg)',
+                background: 'var(--color-sidebar-bg)',
                 transition: 'width 0.2s ease',
                 boxShadow: desktopExpanded && !pinned ? '4px 0 32px rgba(0,0,0,0.22)' : 'none',
               }}
@@ -932,7 +947,9 @@ export default function Layout() {
         {/* ── Page content ── */}
         <main className="flex-1 min-w-0 overflow-auto bg-[var(--color-bg)]">
           <div className="p-4 md:p-6 max-w-7xl mx-auto">
-            <Outlet />
+            <PageErrorBoundary resetKey={location.pathname}>
+              <Outlet />
+            </PageErrorBoundary>
           </div>
         </main>
       </div>

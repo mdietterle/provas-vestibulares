@@ -286,6 +286,10 @@ def _pick_questions(db: Session, exam_type: str, area: Optional[str], num_questi
                 # Sem área definida nos filtros estritos — busca sem filtro de área
                 area_rows = db.query(model.area).distinct().all()
                 areas_list = [r[0] for r in area_rows if r[0] is not None]
+                if not areas_list:
+                    # Banco inteiro sem área preenchida: sorteia de um pool único
+                    # (None = sem filtro de área) em vez de devolver zero questões.
+                    areas_list = [None]
 
         pools: Dict[str, List[int]] = {}
         for a in areas_list:
