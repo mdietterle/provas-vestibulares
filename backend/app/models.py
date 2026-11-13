@@ -147,6 +147,8 @@ class Class(Base):
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
     institution_id: Mapped[int] = mapped_column(ForeignKey("institutions.id"), nullable=False, index=True)
+    # Código que o aluno informa no autocadastro para entrar já matriculado.
+    join_code: Mapped[Optional[str]] = mapped_column(String(16), nullable=True, unique=True)
 
     institution: Mapped["Institution"] = relationship(back_populates="classes")
     teaching_assignments: Mapped[List["TeachingAssignment"]] = relationship(back_populates="class_")
@@ -232,6 +234,7 @@ class Exam(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="draft")  # draft | published | closed
     deadline: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    published_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
     professor: Mapped["User"] = relationship(back_populates="exams")
     subject: Mapped["Subject"] = relationship(back_populates="exams")
