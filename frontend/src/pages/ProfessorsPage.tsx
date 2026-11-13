@@ -9,6 +9,7 @@ import ConfirmDialog from '../components/ConfirmDialog'
 import { SkeletonTable } from '../components/Skeleton'
 import { exportProfessors } from '../utils/pdf'
 import Pagination from '../components/Pagination'
+import { importProfessorsCsv, type ProfessorCsvImportResult } from '../api/professorsCsv'
 
 // ── Avatar ────────────────────────────────────────────────────────────────────
 
@@ -61,6 +62,28 @@ function IconBtn({ onClick, title, children, danger }: {
   )
 }
 
+// ── Resumo da importação CSV ────────────────────────────────────────────────
+
+function BulkSummary({ result, createdLabel }: { result: ProfessorCsvImportResult; createdLabel: string }) {
+  return (
+    <>
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-green-700 dark:text-green-400">{result.created}</p><p className="text-xs text-green-600 dark:text-green-500">{createdLabel}</p></div>
+        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-amber-700 dark:text-amber-400">{result.skipped}</p><p className="text-xs text-amber-600 dark:text-amber-500">Já cadastrados</p></div>
+        <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-red-700 dark:text-red-400">{result.errors.length}</p><p className="text-xs text-red-600 dark:text-red-500">Avisos</p></div>
+      </div>
+      {result.errors.length > 0 && (
+        <div className="max-h-40 overflow-y-auto rounded-lg border border-red-200 bg-red-50 dark:bg-red-900/10 p-3">
+          <p className="text-xs font-semibold text-red-700 mb-1">Avisos por linha:</p>
+          {result.errors.map((err, i) => (
+            <p key={i} className="text-xs text-red-600">Linha {err.row}{err.email ? ` (${err.email})` : ''}: {err.message}</p>
+          ))}
+        </div>
+      )}
+    </>
+  )
+}
+
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function ProfessorsPage() {
@@ -81,12 +104,13 @@ export default function ProfessorsPage() {
   const [form, setForm] = useState({ name: '', email: '', car_access: false })
   const [saving, setSaving] = useState(false)
 
- // Bulk import
- const [showBulkImport, setShowBulkImport] = useState(false)
- const [bulkPreview, setBulkPreview] = useState<{valid: any[], errors: any[], total: number} | null>(null)
- const [bulkFile, setBulkFile] = useState<File | null>(null)
- const [bulkLoading, setBulkLoading] = useState(false)
- const [bulkImporting, setBulkImporting] = useState(false)
+  // Bulk import (CSV): primeiro valida (dry run), depois importa de verdade
+  const [showBulkImport, setShowBulkImport] = useState(false)
+  const [bulkPreview, setBulkPreview] = useState<ProfessorCsvImportResult | null>(null)
+  const [bulkResult, setBulkResult] = useState<ProfessorCsvImportResult | null>(null)
+  const [bulkFile, setBulkFile] = useState<File | null>(null)
+  const [bulkLoading, setBulkLoading] = useState(false)
+  const [bulkImporting, setBulkImporting] = useState(false)
 
   // assignments
   const [assignTarget, setAssignTarget] = useState<User | null>(null)
@@ -96,14 +120,18 @@ export default function ProfessorsPage() {
   const [addingAssignment, setAddingAssignment] = useState(false)
   const [justCreated, setJustCreated] = useState(false)
 
+  const openBulkImport = () => {
+    setBulkFile(null)
+    setBulkPreview(null)
+    setBulkResult(null)
+    setShowBulkImport(true)
+  }
+
   const handleBulkPreview = async () => {
     if (!bulkFile) return
     setBulkLoading(true)
     try {
-      const formData = new FormData()
-      formData.append('file', bulkFile)
-      formData.append('role', 'professor')
-      const r = await usersApi.bulkImportPreview(formData)
+      const r = await importProfessorsCsv(bulkFile, true)
       setBulkPreview(r.data)
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro ao processar CSV')
@@ -113,14 +141,15 @@ export default function ProfessorsPage() {
   }
 
   const handleBulkConfirm = async () => {
-    if (!bulkPreview) return
+    if (!bulkFile) return
     setBulkImporting(true)
     try {
-      const r = await usersApi.bulkImportConfirm({ role: 'professor', rows: bulkPreview.valid })
-      toast.success(`${r.data.created} professores importados com sucesso!`)
-      setShowBulkImport(false)
+      const r = await importProfessorsCsv(bulkFile, false)
+      setBulkResult(r.data)
       setBulkPreview(null)
-      setBulkFile(null)
+      if (r.data.created > 0) {
+        toast.success(`${r.data.created} professor${r.data.created !== 1 ? 'es' : ''} importado${r.data.created !== 1 ? 's' : ''} — convites enviados`)
+      }
       loadProfessors()
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro ao importar')
@@ -304,6 +333,10 @@ export default function ProfessorsPage() {
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             PDF
+          </button>
+          <button onClick={openBulkImport} className="btn-secondary btn-sm">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+            Importar CSV
           </button>
           <button onClick={openCreate} className="btn-primary btn-sm">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -601,55 +634,54 @@ export default function ProfessorsPage() {
       )}
 
       
- {/* Bulk Import Modal */}
- {showBulkImport && (
- <Modal title="Importar Professores via CSV" onClose={() => setShowBulkImport(false)}>
- <div className="space-y-4">
- {!bulkPreview ? (
- <>
- <p className="text-sm text-[#64748B]">
- Envie um arquivo CSV com as colunas: <strong>nome</strong>, <strong>email</strong>, <strong>matérias</strong> (opcional).
- </p>
- <div className="border-2 border-dashed border-[#E2E8F0] rounded-xl p-8 text-center hover:border-[#0d9488] transition-colors">
- <input type="file" accept=".csv" onChange={e => setBulkFile(e.target.files?.[0] || null)} className="hidden" id="csv-upload-prof" />
- <label htmlFor="csv-upload-prof" className="cursor-pointer flex flex-col items-center gap-2">
- <svg className="w-10 h-10 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
- <span className="text-sm font-medium text-[#334155]">{bulkFile ? bulkFile.name : 'Clique para selecionar o arquivo CSV'}</span>
- </label>
- </div>
- <div className="flex justify-end pt-2">
- <button onClick={handleBulkPreview} disabled={!bulkFile || bulkLoading} className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-40" style={{ background: 'linear-gradient(135deg, #0d9488, #f59e0b)' }}>
- {bulkLoading ? 'Processando...' : 'Visualizar'}
- </button>
- </div>
- </>
- ) : (
- <>
- <div className="grid grid-cols-3 gap-3">
- <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-green-700 dark:text-green-400">{bulkPreview.valid.length}</p><p className="text-xs text-green-600 dark:text-green-500">Válidos</p></div>
- <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-red-700 dark:text-red-400">{bulkPreview.errors.length}</p><p className="text-xs text-red-600 dark:text-red-500">Erros</p></div>
- <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3 text-center"><p className="text-2xl font-bold text-slate-700 dark:text-slate-300">{bulkPreview.total}</p><p className="text-xs text-slate-600 dark:text-slate-400">Total</p></div>
- </div>
- {bulkPreview.errors.length > 0 && (
- <div className="max-h-32 overflow-y-auto rounded-lg border border-red-200 bg-red-50 dark:bg-red-900/10 p-3">
- <p className="text-xs font-semibold text-red-700 mb-1">Linhas com erro:</p>
- {bulkPreview.errors.slice(0, 5).map((err, i) => (<p key={i} className="text-xs text-red-600">Linha {err.row}: {err.errors.join(', ')}</p>))}
- {bulkPreview.errors.length > 5 && (<p className="text-xs text-red-500 mt-1">...e mais {bulkPreview.errors.length - 5} erros</p>)}
- </div>
- )}
- <div className="flex justify-end gap-3 pt-2">
- <button onClick={() => { setBulkPreview(null); setBulkFile(null) }} className="px-4 py-2 rounded-lg text-sm font-medium text-[#334155] bg-[#EFF6FF] hover:bg-[#E2E8F0]">Voltar</button>
- <button onClick={handleBulkConfirm} disabled={bulkPreview.valid.length === 0 || bulkImporting} className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-40" style={{ background: 'linear-gradient(135deg, #0d9488, #f59e0b)' }}>
- {bulkImporting ? 'Importando...' : `Importar ${bulkPreview.valid.length} professores`}
- </button>
- </div>
- </>
- )}
- </div>
- </Modal>
- )}
+      {/* Bulk Import Modal */}
+      {showBulkImport && (
+        <Modal title="Importar Professores via CSV" onClose={() => setShowBulkImport(false)}>
+          <div className="space-y-4">
+            {bulkResult ? (
+              <>
+                <BulkSummary result={bulkResult} createdLabel="Criados" />
+                <div className="flex justify-end pt-2">
+                  <button onClick={() => setShowBulkImport(false)} className="btn-primary">Concluir</button>
+                </div>
+              </>
+            ) : !bulkPreview ? (
+              <>
+                <p className="text-sm text-[#64748B]">
+                  Envie um arquivo CSV com as colunas <strong>nome</strong>, <strong>email</strong>,{' '}
+                  <strong>materias</strong> (opcional) e <strong>turmas</strong> (opcional). Use <strong>;</strong> para
+                  separar várias matérias ou turmas. Cada professor recebe um convite por e-mail para definir a senha.
+                </p>
+                <pre className="text-xs rounded-lg bg-[#F4F6F9] dark:bg-slate-800 p-3 overflow-x-auto">{'nome,email,materias,turmas\nAna Souza,ana@escola.com,Matemática;Física,1 Ano EM'}</pre>
+                <div className="border-2 border-dashed border-[#E2E8F0] rounded-xl p-8 text-center hover:border-[#0d9488] transition-colors">
+                  <input type="file" accept=".csv" onChange={e => setBulkFile(e.target.files?.[0] || null)} className="hidden" id="csv-upload-prof" />
+                  <label htmlFor="csv-upload-prof" className="cursor-pointer flex flex-col items-center gap-2">
+                    <svg className="w-10 h-10 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                    <span className="text-sm font-medium text-[#334155]">{bulkFile ? bulkFile.name : 'Clique para selecionar o arquivo CSV'}</span>
+                  </label>
+                </div>
+                <div className="flex justify-end pt-2">
+                  <button onClick={handleBulkPreview} disabled={!bulkFile || bulkLoading} className="btn-primary disabled:opacity-40">
+                    {bulkLoading ? 'Verificando...' : 'Verificar arquivo'}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <BulkSummary result={bulkPreview} createdLabel="Serão criados" />
+                <div className="flex justify-end gap-3 pt-2">
+                  <button onClick={() => { setBulkPreview(null); setBulkFile(null) }} className="btn-secondary">Voltar</button>
+                  <button onClick={handleBulkConfirm} disabled={bulkPreview.created === 0 || bulkImporting} className="btn-primary disabled:opacity-40">
+                    {bulkImporting ? 'Importando...' : `Importar ${bulkPreview.created} professor${bulkPreview.created !== 1 ? 'es' : ''}`}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </Modal>
+      )}
 
- {confirmDelete && (
+      {confirmDelete && (
         <ConfirmDialog
           open={true}
           message={`Excluir permanentemente o professor "${confirmDelete.name}"? O registro será ocultado de todas as listagens e o login será bloqueado. Esta ação não pode ser desfeita.`}

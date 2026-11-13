@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { classesApi, subjectsApi, usersApi } from '../api'
 import { useAuth } from '../contexts/AuthContext'
@@ -7,6 +7,7 @@ import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { exportClasses } from '../utils/pdf'
 import Pagination from '../components/Pagination'
+import { classJoinCodeApi } from '../api/classJoinCode'
 
 const CLASS_PALETTES = [
   { bg: '#eef2ff', icon: '#0d9488', border: '#c7d2fe', darkBg: '#1a2947', darkIcon: 'slate-300', darkBorder: '#2d3f6a' },
@@ -57,6 +58,49 @@ function StudentAvatar({ name, index }: { name: string; index: number }) {
   )
 }
 
+const classLabel = (c: Pick<Class, 'name' | 'year'>) => `${c.name} · ${c.year}`
+
+function CardActionsMenu({ onDelete }: { onDelete: () => void }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+        aria-label="Ações da turma"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 w-36 bg-white dark:bg-[#1d1f27] rounded-lg border border-[#E2E8F0] dark:border-[#464554] shadow-lg z-20 py-1">
+          <button
+            onClick={() => { onDelete(); setOpen(false) }}
+            className="w-full flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Excluir turma
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function ClassesPage() {
   const { user } = useAuth()
   const [classes, setClasses] = useState<Class[]>([])
@@ -67,7 +111,15 @@ export default function ClassesPage() {
   const [classStudents, setClassStudents] = useState<User[]>([])
   const [classAssignments, setClassAssignments] = useState<TeachingAssignment[]>([])
   const [allStudents, setAllStudents] = useState<User[]>([])
-  const [enrolledStudentIds, setEnrolledStudentIds] = useState<Set<number>>(new Set())
+  // Nº de professores por turma (id → nº distinto de professores atribuídos)
+  const [professorCounts, setProfessorCounts] = useState<Record<number, number>>({})
+  // Matrícula: escolhe o aluno, confirma com o botão; se já estiver em outra
+  // turma do mesmo ano, pede confirmação antes.
+  const [selectedStudentId, setSelectedStudentId] = useState(0)
+  const [enrollConflict, setEnrollConflict] = useState<{ student: User; classes: Class[] } | null>(null)
+  const [enrolling, setEnrolling] = useState(false)
+  const [joinCodeConfirm, setJoinCodeConfirm] = useState<'rotate' | 'disable' | null>(null)
+  const [joinCodeBusy, setJoinCodeBusy] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState<Class | null>(null)
   const [form, setForm] = useState({ name: '', year: new Date().getFullYear() })
   const [assignForm, setAssignForm] = useState({ professor_id: 0, subject_id: 0 })
@@ -77,33 +129,34 @@ export default function ClassesPage() {
 
   const load = () => classesApi.list().then((r) => setClasses(r.data))
 
-  // Soma real de matrículas: cada turma tem sua própria lista de alunos, então
-  // "matriculados" = união dos alunos que aparecem em pelo menos uma turma —
-  // não o total de alunos da instituição (que inclui os sem nenhuma turma).
-  const refreshEnrollmentTotals = async (classList: Class[]) => {
-    const lists = await Promise.all(classList.map(c => classesApi.listStudents(c.id).then(r => r.data).catch(() => [])))
-    setEnrolledStudentIds(new Set(lists.flat().map(s => s.id)))
-  }
+  // A listagem de alunos já traz as turmas de cada um (class_names = "Nome · Ano"),
+  // então contagens e checagem de "mesmo ano" saem de uma chamada só, sem
+  // buscar os alunos turma por turma.
+  const loadStudents = () => usersApi.list('student').then((r) => setAllStudents(r.data))
 
   useEffect(() => {
-    classesApi.list().then((r) => {
-      setClasses(r.data)
-      refreshEnrollmentTotals(r.data)
-    })
+    load()
     usersApi.list('professor').then((r) => setProfessors(r.data))
     subjectsApi.list().then((r) => setSubjects(r.data))
-    usersApi.list('student').then((r) => setAllStudents(r.data))
+    loadStudents()
   }, [])
+
+  const studentsInClass = (c: Class) => allStudents.filter(s => s.class_names?.includes(classLabel(c)))
+  const studentCount = (c: Class) => c.student_count ?? studentsInClass(c).length
+
+  const countProfessors = (assigns: TeachingAssignment[]) => new Set(assigns.map(a => a.professor_id)).size
 
   const openDetail = async (c: Class) => {
     setShowDetail(c)
     setDetailTab('professors')
+    setSelectedStudentId(0)
     const [studs, assigns] = await Promise.all([
       classesApi.listStudents(c.id),
       classesApi.listAssignments(c.id),
     ])
     setClassStudents(studs.data)
     setClassAssignments(assigns.data)
+    setProfessorCounts(prev => ({ ...prev, [c.id]: countProfessors(assigns.data) }))
   }
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -130,41 +183,44 @@ export default function ClassesPage() {
     }
   }
 
-  const [pendingStudentId, setPendingStudentId] = useState<number | null>(null)
-
-  const checkAndAddStudent = (studentId: number) => {
-    if (!showDetail) return
-    // Check if student is already in a class of the same year
-    const student = availableStudents.find(s => s.id === studentId)
-    const sameYearClass = classes.find(c =>
+  const handleEnrollClick = () => {
+    if (!showDetail || !selectedStudentId) return
+    const student = allStudents.find(st => st.id === selectedStudentId)
+    if (!student) return
+    // Outras turmas do mesmo ano em que o aluno já está
+    const sameYear = classes.filter(c =>
       c.year === showDetail.year &&
       c.id !== showDetail.id &&
-      classStudents.some(cs => cs.id === studentId)
+      (student.class_names ?? []).includes(classLabel(c))
     )
-    if (sameYearClass) {
-      setPendingStudentId(studentId)
+    if (sameYear.length > 0) {
+      setEnrollConflict({ student, classes: sameYear })
       return
     }
-    addStudent(studentId)
+    addStudent(student.id)
   }
 
-  const confirmAddStudent = async () => {
-    if (pendingStudentId == null) return
-    const sid = pendingStudentId
-    setPendingStudentId(null)
+  const confirmEnrollConflict = async () => {
+    if (!enrollConflict) return
+    const sid = enrollConflict.student.id
+    setEnrollConflict(null)
     await addStudent(sid)
   }
 
   const addStudent = async (studentId: number) => {
     if (!showDetail) return
+    setEnrolling(true)
     try {
       await classesApi.addStudent(showDetail.id, studentId)
-      toast.success('Aluno adicionado')
+      toast.success('Aluno matriculado')
+      setSelectedStudentId(0)
       const r = await classesApi.listStudents(showDetail.id)
       setClassStudents(r.data)
-      setEnrolledStudentIds(prev => new Set(prev).add(studentId))
+      await loadStudents()
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Erro')
+      toast.error(err.response?.data?.detail || 'Erro ao matricular')
+    } finally {
+      setEnrolling(false)
     }
   }
 
@@ -175,8 +231,8 @@ export default function ClassesPage() {
       toast.success('Aluno removido')
       const r = await classesApi.listStudents(showDetail.id)
       setClassStudents(r.data)
-      // O aluno pode continuar matriculado em outras turmas — recalcula certo
-      await refreshEnrollmentTotals(classes)
+      // O aluno pode continuar matriculado em outras turmas — recarrega as turmas dele
+      await loadStudents()
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro')
     }
@@ -190,6 +246,7 @@ export default function ClassesPage() {
       toast.success('Professor atribuído')
       const r = await classesApi.listAssignments(showDetail.id)
       setClassAssignments(r.data)
+      setProfessorCounts(prev => ({ ...prev, [showDetail.id]: countProfessors(r.data) }))
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro')
     }
@@ -202,10 +259,62 @@ export default function ClassesPage() {
       if (showDetail) {
         const r = await classesApi.listAssignments(showDetail.id)
         setClassAssignments(r.data)
+        setProfessorCounts(prev => ({ ...prev, [showDetail.id]: countProfessors(r.data) }))
       }
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro')
     }
+  }
+
+  // ── Código de autocadastro ────────────────────────────────────────────────
+  const updateJoinCode = (classId: number, join_code: string | null) => {
+    setClasses(prev => prev.map(c => c.id === classId ? { ...c, join_code } : c))
+    setShowDetail(prev => prev && prev.id === classId ? { ...prev, join_code } : prev)
+  }
+
+  const generateJoinCode = async () => {
+    if (!showDetail) return
+    setJoinCodeBusy(true)
+    try {
+      const r = await classJoinCodeApi.generate(showDetail.id)
+      updateJoinCode(showDetail.id, r.data.join_code)
+      toast.success(showDetail.join_code ? 'Novo código gerado — o anterior deixou de valer' : 'Código gerado')
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || 'Erro ao gerar código')
+    } finally {
+      setJoinCodeBusy(false)
+    }
+  }
+
+  const disableJoinCode = async () => {
+    if (!showDetail) return
+    setJoinCodeBusy(true)
+    try {
+      await classJoinCodeApi.disable(showDetail.id)
+      updateJoinCode(showDetail.id, null)
+      toast.success('Código desativado')
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || 'Erro ao desativar código')
+    } finally {
+      setJoinCodeBusy(false)
+    }
+  }
+
+  const copyJoinCode = async () => {
+    if (!showDetail?.join_code) return
+    try {
+      await navigator.clipboard.writeText(showDetail.join_code)
+      toast.success('Código copiado')
+    } catch {
+      toast.error('Não foi possível copiar — selecione o código e copie manualmente')
+    }
+  }
+
+  const confirmJoinCodeAction = async () => {
+    const action = joinCodeConfirm
+    setJoinCodeConfirm(null)
+    if (action === 'rotate') await generateJoinCode()
+    else if (action === 'disable') await disableJoinCode()
   }
 
   const enrolledIds = new Set(classStudents.map((s) => s.id))
@@ -221,7 +330,31 @@ export default function ClassesPage() {
   const PAGE_SIZE = 16
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
-  const totalStudentsEnrolled = enrolledStudentIds.size
+  // Alunos em pelo menos uma turma (não o total de alunos da instituição)
+  const totalStudentsEnrolled = allStudents.filter(s => (s.class_names?.length ?? 0) > 0).length
+
+  // Nº de professores: vem da API se ela mandar; senão busca só as turmas da
+  // página visível (no máx. PAGE_SIZE chamadas, uma vez por turma).
+  const paginatedIdsKey = paginated.map(c => c.id).join(',')
+  useEffect(() => {
+    const missing = paginated.filter(c => c.professor_count == null && professorCounts[c.id] == null)
+    if (missing.length === 0) return
+    let cancelled = false
+    Promise.all(missing.map(c =>
+      classesApi.listAssignments(c.id)
+        .then(r => [c.id, countProfessors(r.data)] as const)
+        .catch(() => null)
+    )).then(results => {
+      if (cancelled) return
+      const next: Record<number, number> = {}
+      results.forEach(res => { if (res) next[res[0]] = res[1] })
+      setProfessorCounts(prev => ({ ...prev, ...next }))
+    })
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paginatedIdsKey])
+
+  const professorCount = (c: Class) => c.professor_count ?? professorCounts[c.id]
 
   return (
     <div className="space-y-6">
@@ -312,8 +445,14 @@ export default function ClassesPage() {
               >
                 {/* Card header */}
                 <div className="p-4 flex flex-col gap-3 flex-1">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[var(--pal-bg)] dark:bg-[var(--pal-dark-bg)]">
-                    <ClassIcon color={palette.icon} />
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[var(--pal-bg)] dark:bg-[var(--pal-dark-bg)]">
+                      <ClassIcon color={palette.icon} />
+                    </div>
+                    {/* Excluir fica no menu, longe do botão "Detalhes" */}
+                    {user?.role === 'admin' && (
+                      <CardActionsMenu onDelete={() => setConfirmDelete(c)} />
+                    )}
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-gray-100 leading-tight">{c.name}</h3>
@@ -321,30 +460,23 @@ export default function ClassesPage() {
                       {c.year}
                     </span>
                   </div>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                    <span>{(() => { const n = studentCount(c); return `${n} aluno${n !== 1 ? 's' : ''}` })()}</span>
+                    <span>{(() => {
+                      const n = professorCount(c)
+                      return n == null ? '… professores' : `${n} professor${n !== 1 ? 'es' : ''}`
+                    })()}</span>
+                  </div>
                 </div>
 
                 {/* Card footer */}
-                <div className="px-4 pb-4 flex gap-2">
+                <div className="px-4 pb-4">
                   <button
                     onClick={() => openDetail(c)}
-                    className="flex-1 py-1.5 rounded-lg text-xs font-semibold border transition-colors hover:opacity-80 border-[var(--pal-border)] dark:border-[var(--pal-dark-border)] text-[var(--pal-icon)] dark:text-[var(--pal-dark-icon)] bg-[var(--pal-bg)] dark:bg-[var(--pal-dark-bg)]"
+                    className="w-full py-1.5 rounded-lg text-xs font-semibold border transition-colors hover:opacity-80 border-[var(--pal-border)] dark:border-[var(--pal-dark-border)] text-[var(--pal-icon)] dark:text-[var(--pal-dark-icon)] bg-[var(--pal-bg)] dark:bg-[var(--pal-dark-bg)]"
                   >
                     Detalhes
                   </button>
-                  {user?.role === 'admin' && (
-                    <button
-                      onClick={() => setConfirmDelete(c)}
-                      className="p-1.5 rounded-lg border border-red-100 text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
-                      title="Excluir turma"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="3 6 5 6 21 6" />
-                        <path d="M19 6l-1 14H6L5 6" />
-                        <path d="M10 11v6M14 11v6" />
-                        <path d="M9 6V4h6v2" />
-                      </svg>
-                    </button>
-                  )}
                 </div>
               </div>
             )
@@ -446,6 +578,54 @@ export default function ClassesPage() {
       {/* Detail Modal */}
       {showDetail && (
         <Modal title={`${showDetail.name} — ${showDetail.year}`} onClose={() => setShowDetail(null)} size="xl">
+          {/* Código de autocadastro */}
+          {(user?.role === 'admin' || user?.role === 'professor') && (
+            <div className="mb-5 p-4 rounded-xl border bg-[#F4F6F9] dark:bg-slate-800 border-[#E2E8F0] dark:border-[#464554]">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex-1 min-w-[12rem]">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Código da turma</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    O aluno usa este código para criar a conta e já entra nesta turma.
+                  </p>
+                </div>
+                {showDetail.join_code ? (
+                  <span data-testid="join-code" className="font-mono text-lg font-bold tracking-widest px-3 py-1 rounded-lg bg-white dark:bg-[#1d1f27] border border-[#E2E8F0] dark:border-[#464554] text-gray-900 dark:text-gray-100 select-all">
+                    {showDetail.join_code}
+                  </span>
+                ) : (
+                  <span className="text-sm text-gray-400">Nenhum código ativo</span>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2 mt-3">
+                {showDetail.join_code && (
+                  <button type="button" onClick={copyJoinCode} className="btn-secondary btn-sm">Copiar</button>
+                )}
+                {user?.role === 'admin' && (
+                  <>
+                    <button
+                      type="button"
+                      disabled={joinCodeBusy}
+                      onClick={() => showDetail.join_code ? setJoinCodeConfirm('rotate') : generateJoinCode()}
+                      className="btn-primary btn-sm disabled:opacity-50"
+                    >
+                      {showDetail.join_code ? 'Gerar novo código' : 'Gerar código'}
+                    </button>
+                    {showDetail.join_code && (
+                      <button
+                        type="button"
+                        disabled={joinCodeBusy}
+                        onClick={() => setJoinCodeConfirm('disable')}
+                        className="px-3 py-1.5 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50"
+                      >
+                        Desativar
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Tabs */}
           <div className="flex gap-1 mb-5 p-1 rounded-xl bg-gray-100 dark:bg-gray-800 w-fit">
             {(['professors', 'students'] as const).map((tab) => (
@@ -528,15 +708,30 @@ export default function ClassesPage() {
             <div className="space-y-4">
               {user?.role === 'admin' && availableStudents.length > 0 && (
                 <div className="p-4 rounded-xl border bg-[#F4F6F9] dark:bg-slate-800 border-[#E2E8F0] dark:border-[#464554]">
-                  <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">Adicionar Aluno</label>
-                  <select
-                    className="input"
-                    onChange={(e) => { if (e.target.value) checkAndAddStudent(+e.target.value) }}
-                    defaultValue=""
-                  >
-                    <option value="">Selecionar aluno...</option>
-                    {availableStudents.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-                  </select>
+                  <label htmlFor="enroll-student" className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">Matricular aluno</label>
+                  <div className="flex gap-2">
+                    <select
+                      id="enroll-student"
+                      className="input flex-1"
+                      value={selectedStudentId}
+                      onChange={(e) => setSelectedStudentId(+e.target.value)}
+                    >
+                      <option value={0}>Selecionar aluno...</option>
+                      {availableStudents.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}{s.class_names?.length ? ` — ${s.class_names.join(', ')}` : ''}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={handleEnrollClick}
+                      disabled={!selectedStudentId || enrolling}
+                      className="px-4 py-2 rounded-xl text-white text-sm font-semibold whitespace-nowrap disabled:opacity-40 bg-gradient-to-br from-[#0d9488] to-slate-500 dark:from-slate-800 dark:to-[#4c2f8c]"
+                    >
+                      {enrolling ? 'Matriculando...' : 'Matricular'}
+                    </button>
+                  </div>
                 </div>
               )}
               <div className="space-y-2">
@@ -577,6 +772,30 @@ export default function ClassesPage() {
           message={`Excluir turma "${confirmDelete.name}"?`}
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(null)}
+        />
+      )}
+
+      {enrollConflict && showDetail && (
+        <ConfirmDialog
+          open={true}
+          title="Aluno já tem turma neste ano"
+          message={`${enrollConflict.student.name} já está na turma ${enrollConflict.classes.map(classLabel).join(', ')}.\nMatricular também em ${classLabel(showDetail)}?`}
+          confirmLabel="Matricular mesmo assim"
+          onConfirm={confirmEnrollConflict}
+          onCancel={() => setEnrollConflict(null)}
+        />
+      )}
+
+      {joinCodeConfirm && (
+        <ConfirmDialog
+          open={true}
+          title={joinCodeConfirm === 'rotate' ? 'Gerar novo código?' : 'Desativar código?'}
+          message={joinCodeConfirm === 'rotate'
+            ? 'O código atual deixa de funcionar. Alunos que ainda não se cadastraram vão precisar do novo código.'
+            : 'Novos alunos não vão conseguir usar este código para entrar na turma. Você pode gerar outro depois.'}
+          confirmLabel={joinCodeConfirm === 'rotate' ? 'Gerar novo código' : 'Desativar'}
+          onConfirm={confirmJoinCodeAction}
+          onCancel={() => setJoinCodeConfirm(null)}
         />
       )}
     </div>

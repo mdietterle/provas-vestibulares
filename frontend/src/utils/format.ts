@@ -1,17 +1,40 @@
+// Tags de bloco: ao remover a tag, o texto de um bloco grudava no do próximo
+// ("TEXTO I</p><p>As mariposas" → "TEXTO IAs mariposas"). Viram quebra de linha.
+const BLOCK_TAG = /<\/?(?:p|div|br|h[1-6]|li|ul|ol|tr|table|thead|tbody|tfoot|blockquote|pre|section|article|header|footer|figure|figcaption|hr|dd|dt|dl)\b[^>]*>/gi
+// Células de tabela/legenda ficam na mesma linha, separadas por espaço.
+const INLINE_SEP_TAG = /<\/?(?:td|th|caption|img)\b[^>]*>/gi
+
 /** Strip HTML tags for display-only preview contexts.
- *  Removes <script>/<style> blocks entirely, then strips remaining tags,
- *  then decodes common HTML entities. */
+ *  Removes <script>/<style> blocks entirely, turns block-level tags into line
+ *  breaks (so paragraphs don't glue together), strips remaining tags, then
+ *  decodes common HTML entities. Output is plain text — render it with
+ *  `whitespace-pre-line` to keep the paragraph breaks, or as-is to fold them
+ *  into spaces. */
 export function stripHtml(html: string): string {
+  if (!html) return ''
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(BLOCK_TAG, '\n')
+    .replace(INLINE_SEP_TAG, ' ')
     .replace(/<[^>]*>/g, '')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n[ \t]+/g, '\n')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/\n{2,}/g, '\n')
+    .trim()
+}
+
+/** Single-line version of {@link stripHtml} (line breaks folded into spaces),
+ *  for table cells, titles and truncated previews. */
+export function stripHtmlInline(html: string): string {
+  return stripHtml(html).replace(/\s+/g, ' ').trim()
 }
 
 /** pt-BR pluralization: singular when count === 1, plural otherwise. */

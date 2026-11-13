@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import type { Question, Subject, TeachingAssignment } from '../types'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { exportQuestions } from '../utils/pdf'
+import { stripHtmlInline } from '../utils/format'
 import Pagination from '../components/Pagination'
 import QuestionCard from './questions/QuestionCard'
 import QuestionFormModal from './questions/QuestionFormModal'
@@ -75,7 +76,8 @@ export default function QuestionsPage() {
     if (filterSubject && q.subject_id !== filterSubject) return false
     if (filterType && q.question_type !== filterType) return false
     if (filterDifficulty && q.difficulty !== filterDifficulty) return false
-    if (search && !q.statement.toLowerCase().includes(search.toLowerCase())) return false
+    // Busca no texto visível (sem tags), com os blocos separados por espaço
+    if (search && !stripHtmlInline(q.statement).toLowerCase().includes(search.toLowerCase())) return false
     return true
   })
 
