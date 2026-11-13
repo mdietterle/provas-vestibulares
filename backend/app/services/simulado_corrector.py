@@ -4,12 +4,143 @@ import re
 import time
 from datetime import datetime, timezone
 
-from sqlalchemy.orm import Session
+from typing import Any, Dict, Iterable, List, Optional
 
+from sqlalchemy import bindparam, inspect as sa_inspect, text
+from sqlalchemy.orm import Session, object_session
+
+import app.models
 from app.core.config import settings
 from app.database import SessionLocal
 from app.models import Simulado, SimuladoQuestion
 from app.services.enem.scoring import build_score_breakdown
+from app.vestibular.models import VestibularQuestion
+
+
+# ── Questão por trás de um SimuladoQuestion ───────────────────────────────────
+#
+# Simulados novos apontam pra tabela unificada `vestibular_questions`
+# (SimuladoQuestion.vestibular_question_id + vq_exam_type). Simulados antigos
+# apontam pras tabelas legadas por banco (enem_questions, ufsc_questions, ...)
+# por colunas `<exam_type>_question_id` que continuam existindo no Postgres,
+# mas que não são mais mapeadas no ORM — por isso são lidas aqui via SQL cru,
+# só as colunas que de fato existem no banco.
+
+LEGACY_EXAM_TYPE_MODELS: Dict[str, Any] = {}
+for _name, _obj in vars(app.models).items():
+    if _name.endswith("Question") and _name not in ("Question", "SimuladoQuestion", "BaseQuestion", "ExamQuestion"):
+        if hasattr(_obj, "__tablename__"):
+            LEGACY_EXAM_TYPE_MODELS[_name[:-8].lower()] = _obj
+
+_LEGACY_FK_COLS_CACHE: Dict[int, List[str]] = {}
+_UNSET = object()
+
+
+def _legacy_fk_columns(db: Session) -> List[str]:
+    bind = db.get_bind()
+    key = id(bind)
+    cols = _LEGACY_FK_COLS_CACHE.get(key)
+    if cols is None:
+        # Reflete pela conexão da própria sessão (não abre outra conexão do pool).
+        try:
+            existing = {c["name"] for c in sa_inspect(db.connection()).get_columns("simulado_questions")}
+        except Exception as exc:
+            print(f"⚠️  simulado: não consegui ler colunas de simulado_questions: {exc}")
+            existing = set()
+        cols = [f"{et}_question_id" for et in LEGACY_EXAM_TYPE_MODELS if f"{et}_question_id" in existing]
+        _LEGACY_FK_COLS_CACHE[key] = cols
+    return cols
+
+
+def attach_underlying_questions(db: Session, sqs: Iterable[SimuladoQuestion]) -> None:
+    """Resolve em lote (uma query por banco) a questão legada dos
+    SimuladoQuestion antigos, sem vestibular_question_id. Guarda o resultado
+    no próprio objeto (_legacy_ref / _legacy_question)."""
+    pending = [
+        sq for sq in sqs
+        if sq.vestibular_question_id is None and getattr(sq, "_legacy_question", _UNSET) is _UNSET
+    ]
+    if not pending:
+        return
+    for sq in pending:
+        sq._legacy_ref = None
+        sq._legacy_question = None
+
+    cols = _legacy_fk_columns(db)
+    if not cols:
+        return
+
+    stmt = text(
+        f"SELECT id, {', '.join(cols)} FROM simulado_questions WHERE id IN :ids"
+    ).bindparams(bindparam("ids", expanding=True))
+    rows = db.execute(stmt, {"ids": [sq.id for sq in pending]}).fetchall()
+
+    refs: Dict[int, tuple] = {}
+    ids_by_type: Dict[str, set] = {}
+    for row in rows:
+        for col, val in zip(cols, row[1:]):
+            if val is not None:
+                et = col[: -len("_question_id")]
+                refs[row[0]] = (et, val)
+                ids_by_type.setdefault(et, set()).add(val)
+                break
+
+    loaded: Dict[tuple, Any] = {}
+    for et, qids in ids_by_type.items():
+        model = LEGACY_EXAM_TYPE_MODELS[et]
+        for q in db.query(model).filter(model.id.in_(list(qids))).all():
+            loaded[(et, q.id)] = q
+
+    for sq in pending:
+        ref = refs.get(sq.id)
+        sq._legacy_ref = ref
+        sq._legacy_question = loaded.get(ref) if ref else None
+
+
+def get_underlying_question(sq: SimuladoQuestion):
+    """VestibularQuestion (simulado novo) ou a questão da tabela legada
+    (simulado antigo); None se a questão de origem não existe mais."""
+    if sq.vestibular_question_id is not None:
+        return sq.vestibular_question
+    if getattr(sq, "_legacy_question", _UNSET) is _UNSET:
+        db = object_session(sq)
+        if db is None:
+            return None
+        attach_underlying_questions(db, [sq])
+    return getattr(sq, "_legacy_question", None)
+
+
+def get_underlying_ref(sq: SimuladoQuestion) -> tuple:
+    """(exam_type, question_id, is_unified) da questão de origem."""
+    if sq.vestibular_question_id is not None:
+        exam_type = sq.vq_exam_type or (sq.simulado.exam_type if sq.simulado else None)
+        return exam_type, sq.vestibular_question_id, True
+    get_underlying_question(sq)  # garante _legacy_ref resolvido
+    ref = getattr(sq, "_legacy_ref", None)
+    if ref:
+        return ref[0], ref[1], False
+    return None, None, False
+
+
+def question_metadata(q) -> Dict[str, Any]:
+    if isinstance(q, VestibularQuestion):
+        meta = q.metadata_
+        return meta if isinstance(meta, dict) else {}
+    return {}
+
+
+def question_type_of(q) -> str:
+    """"summation" (UFSC, marca várias e soma) ou o tipo da questão legada;
+    "single" por padrão."""
+    if q is None:
+        return "single"
+    if isinstance(q, VestibularQuestion):
+        return "summation" if question_metadata(q).get("question_type") == "summation" else "single"
+    return getattr(q, "question_type", None) or "single"
+
+
+def sorted_options(q) -> List[Any]:
+    return sorted(q.options, key=lambda o: (getattr(o, "order", None) or 0, o.id or 0))
 
 
 def _get_groq_client():
@@ -70,30 +201,48 @@ def _grade_summation(sq: SimuladoQuestion, q) -> tuple[bool, str]:
     student_sum = sum(
         (getattr(opt, "value", None) or 0) for opt in q.options if _option_letter(opt) in selected
     )
-    correct_sum = q.answer if isinstance(getattr(q, "answer", None), int) else sum(
-        (getattr(opt, "value", None) or 0) for opt in q.options if getattr(opt, "is_correct", False)
-    )
+    correct_sum = _int_or_none(getattr(q, "answer", None))
+    if correct_sum is None:
+        correct_sum = sum(
+            (getattr(opt, "value", None) or 0) for opt in q.options if getattr(opt, "is_correct", False)
+        )
     is_correct = student_sum == correct_sum
     feedback = f"Soma das afirmativas marcadas: {student_sum}. Soma correta (gabarito): {correct_sum}."
     return is_correct, feedback
 
 
-def _get_underlying_question(sq: SimuladoQuestion):
-    for k, v in sq.__dict__.items():
-        if k.endswith("_question_id") and v is not None:
-            rel_name = k[:-3]
-            return getattr(sq, rel_name, None)
+def _int_or_none(value) -> Optional[int]:
+    # vestibular_questions.answer é TEXT ("23"); as tabelas legadas guardavam int.
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and value.strip().isdigit():
+        return int(value.strip())
     return None
+
+
+def _get_underlying_question(sq: SimuladoQuestion):
+    return get_underlying_question(sq)
+
 
 def _get_correct_option(sq: SimuladoQuestion):
     """Return (correct_letter, correct_text) for the question linked to this SimuladoQuestion."""
     q = _get_underlying_question(sq)
     if not q:
         return None, None
-        
+
     for opt in q.options:
         if getattr(opt, "is_correct", False):
             return _option_letter(opt), getattr(opt, "text", "")
+
+    # vestibular_questions pode trazer o gabarito só em correct_option (letra),
+    # sem marcar is_correct na alternativa.
+    correct = (getattr(q, "correct_option", None) or "").strip().upper()
+    if correct:
+        for opt in q.options:
+            if _option_letter(opt).upper() == correct:
+                return _option_letter(opt), getattr(opt, "text", "")
     return None, None
 
 
@@ -128,6 +277,7 @@ def correct_simulado(simulado_id: int) -> None:
         total_count = 0
         area_stats: dict[str, dict[str, int]] = {}
 
+        attach_underlying_questions(db, simulado.questions)
         for sq in simulado.questions:
             underlying_q = _get_underlying_question(sq)
             no_options = underlying_q is not None and len(underlying_q.options) == 0
@@ -145,7 +295,7 @@ def correct_simulado(simulado_id: int) -> None:
             area_stats.setdefault(area, {"correct": 0, "total": 0})
             area_stats[area]["total"] += 1
 
-            if underlying_q is not None and getattr(underlying_q, "question_type", None) == "summation":
+            if underlying_q is not None and question_type_of(underlying_q) == "summation":
                 sq.is_correct, sq.ai_feedback = _grade_summation(sq, underlying_q)
                 if sq.is_correct:
                     correct_count += 1
