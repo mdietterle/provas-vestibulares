@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { examPublishApi } from '../api/examPublish'
 import toast from 'react-hot-toast'
 import { classesApi, examsApi, questionsApi, subjectsApi, usersApi } from '../api'
 import { vestibularApi, type VestibularQuestion as VQ } from '../api/vestibular'
@@ -77,6 +78,9 @@ export default function ExamsPage() {
   const [redacaoExtraClassIds, setRedacaoExtraClassIds] = useState<number[]>([])
   const [creating, setCreating] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+  // Publicar já ao criar (padrão) ou deixar como rascunho, invisível para a turma.
+  const [publishNow, setPublishNow] = useState(true)
+  const [publishingId, setPublishingId] = useState<number | null>(null)
   const [search, setSearch] = useState('')
   const [filterSubject, setFilterSubject] = useState(0)
   const [page, setPage] = useState(1)
@@ -292,6 +296,7 @@ export default function ExamsPage() {
           points: redacaoForm.points,
           criteria: redacaoForm.criteria || undefined,
         })
+        if (publishNow) await examPublishApi.publish(r.data.id)
         const failedClasses = await applyToExtraClasses(r.data.id, redacaoExtraClassIds)
         reportCreationResult('Avaliação de redação', 1 + redacaoExtraClassIds.length - failedClasses.length, failedClasses.length)
         setShowModal(false)
@@ -305,8 +310,9 @@ export default function ExamsPage() {
     }
     try {
       const r = await examsApi.create(form)
+      if (publishNow) await examPublishApi.publish(r.data.id)
       const failedClasses = await applyToExtraClasses(r.data.id, extraClassIds)
-      reportCreationResult('Prova', 1 + extraClassIds.length - failedClasses.length, failedClasses.length)
+      reportCreationResult(publishNow ? 'Prova' : 'Rascunho de prova', 1 + extraClassIds.length - failedClasses.length, failedClasses.length)
       setShowModal(false)
       load()
     } catch (err: any) {
@@ -346,6 +352,24 @@ export default function ExamsPage() {
       load()
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro')
+    }
+  }
+
+  const togglePublish = async (exam: Exam) => {
+    setPublishingId(exam.id)
+    try {
+      if (exam.status === 'published') {
+        await examPublishApi.unpublish(exam.id)
+        toast.success('Prova voltou para rascunho')
+      } else {
+        await examPublishApi.publish(exam.id)
+        toast.success('Prova publicada para a turma')
+      }
+      load()
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || 'Erro ao alterar a publicação')
+    } finally {
+      setPublishingId(null)
     }
   }
 
@@ -409,7 +433,7 @@ export default function ExamsPage() {
           </button>
           {user?.role !== 'student' && (
             <button
-              onClick={() => { setForm({ title: '', instructions: '', subject_id: 0, class_id: 0, questions: [] }); setExtraClassIds([]); setQuestionSearch(''); setRedacaoForm({ title: '', subject_id: 0, class_id: 0, enunciado: '', points: 10, criteria: '' }); setRedacaoExtraClassIds([]); setExamMode('regular'); setFormErrors({}); setShowModal(true) }}
+              onClick={() => { setForm({ title: '', instructions: '', subject_id: 0, class_id: 0, questions: [] }); setExtraClassIds([]); setQuestionSearch(''); setRedacaoForm({ title: '', subject_id: 0, class_id: 0, enunciado: '', points: 10, criteria: '' }); setRedacaoExtraClassIds([]); setExamMode('regular'); setFormErrors({}); setPublishNow(true); setShowModal(true) }}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-semibold shadow-sm transition-all hover:opacity-90 active:scale-95"
               style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
             >
@@ -512,9 +536,7 @@ export default function ExamsPage() {
                     <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400">
                       {questionCount} {questionCount !== 1 ? 'questões' : 'questão'}
                     </span>
-                    {/* Não existe fluxo de publicar: toda prova nasce "draft" e já fica
-                        visível para a turma, então o selo Rascunho só confundia. */}
-                    {user?.role !== 'student' && (exam.status === 'published' || exam.status === 'closed') && (
+                    {user?.role !== 'student' && exam.status && (
                       <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
                         exam.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
                         exam.status === 'closed' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
@@ -597,6 +619,23 @@ export default function ExamsPage() {
                     })()
                   ) : (
                     <>
+                      {canManage && (exam.status === 'draft' || exam.status === 'published') && (
+                        <button
+                          type="button"
+                          onClick={() => togglePublish(exam)}
+                          disabled={publishingId === exam.id || (exam.status === 'published' && (exam.submission_count ?? 0) > 0)}
+                          title={exam.status === 'published'
+                            ? ((exam.submission_count ?? 0) > 0 ? 'Já há entregas: não dá para voltar a rascunho' : 'Voltar para rascunho (some para os alunos)')
+                            : 'Liberar a prova para a turma'}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 ${
+                            exam.status === 'published'
+                              ? 'border border-[#E2E8F0] dark:border-[#464554] text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#0f1c37]'
+                              : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                          }`}
+                        >
+                          {publishingId === exam.id ? '…' : exam.status === 'published' ? 'Despublicar' : 'Publicar'}
+                        </button>
+                      )}
                       <Link
                         to={`/exams/${exam.id}/submissions`}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-gray-700 dark:text-slate-300"
@@ -1241,6 +1280,20 @@ export default function ExamsPage() {
               </>
             )}
 
+            <label className="flex items-start gap-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">
+              <input
+                type="checkbox"
+                className="mt-0.5"
+                checked={publishNow}
+                onChange={(e) => setPublishNow(e.target.checked)}
+              />
+              <span>
+                Publicar agora para a turma
+                <span className="block text-xs text-gray-500 dark:text-slate-400">
+                  Desmarcado, a prova fica como rascunho e os alunos só a veem depois de você clicar em Publicar.
+                </span>
+              </span>
+            </label>
             <div className="flex gap-3 justify-end pt-2 border-t border-[#E2E8F0] dark:border-[#464554]">
               <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
               <button
@@ -1253,7 +1306,7 @@ export default function ExamsPage() {
                   ? 'Criando...'
                   : (() => {
                       const extraCount = examMode === 'redacao' ? redacaoExtraClassIds.length : extraClassIds.length
-                      const base = examMode === 'redacao' ? 'Criar Avaliação de Redação' : 'Criar Prova'
+                      const base = !publishNow ? 'Salvar rascunho' : examMode === 'redacao' ? 'Criar Avaliação de Redação' : 'Criar Prova'
                       return extraCount > 0 ? `${base} (${1 + extraCount} turmas)` : base
                     })()}
               </button>

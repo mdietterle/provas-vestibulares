@@ -58,6 +58,7 @@ def create_checkout_session(
 
 @router.post("/credits-checkout")
 def create_credits_checkout(
+    pack: str = "questions",
     db: Session = Depends(get_db),
     admin: User = Depends(require_admin),
 ):
@@ -69,6 +70,7 @@ def create_credits_checkout(
             admin,
             success_url=f"{settings.FRONTEND_URL}/subscription?credits=success",
             cancel_url=f"{settings.FRONTEND_URL}/subscription?credits=cancel",
+            pack=pack,
         )
     except (ValueError, stripe.error.StripeError) as e:
         raise HTTPException(status_code=400, detail=str(e))

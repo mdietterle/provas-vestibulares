@@ -6,28 +6,37 @@ import { billingApi } from '../api'
 
 type PlanKey = 'basic' | 'pro' | 'enterprise'
 
-// TODO(pricing): These prices are hardcoded for the admin panel and may diverge
-// from the public marketing site. Sync with backend/stripe or move to a shared
-// config (e.g., src/config/pricing.ts) consumed by both admin and landing page.
-const PLANS: { key: PlanKey; label: string; price: string; features: string[] }[] = [
+// Mesmos valores do site /plans (PlansPage). O Stripe cobra a base do plano
+// + um assento por professor ativo; ver backend/app/services/billing.py.
+const PLANS: { key: PlanKey; label: string; price: string; seat: string; features: string[] }[] = [
   {
     key: 'basic',
     label: 'Basic',
     price: 'R$ 199/mês',
-    features: ['Sem IA', 'Até 15 professores', 'Banco de questões manual'],
+    seat: '+ R$ 9,90 por professor',
+    features: ['Sem IA — aplicação e correção manual', 'Banco de questões manual (ilimitado)', 'Alunos ilimitados'],
   },
   {
     key: 'pro',
     label: 'Pro',
     price: 'R$ 399/mês',
-    features: ['20 gerações de IA/prof/mês', '50 correções de IA/prof/mês', 'Até 50 professores'],
+    seat: '+ R$ 24,90 por professor',
+    features: ['Geração IA: 20 questões/prof/mês incluso', 'Correção IA: 50 discursivas/prof/mês incluso', 'Créditos extras de IA (pacotes avulsos)'],
   },
   {
     key: 'enterprise',
     label: 'Enterprise',
-    price: 'R$ 799/mês',
-    features: ['40 gerações de IA/prof/mês', '100 correções de IA/prof/mês', 'Professores ilimitados'],
+    price: 'R$ 799/mês por unidade',
+    seat: '+ R$ 19,90 por professor (por unidade)',
+    features: ['Geração IA: 40 questões/prof/mês incluso', 'Correção IA: 100 discursivas/prof/mês incluso', 'Gestão multi-unidade'],
   },
+]
+
+type PackKey = 'questions' | 'corrections' | 'mixed'
+const PACKS: { key: PackKey; label: string; price: string }[] = [
+  { key: 'questions', label: '100 questões geradas com IA', price: 'R$ 39' },
+  { key: 'corrections', label: '200 correções de discursivas com IA', price: 'R$ 59' },
+  { key: 'mixed', label: 'Pacote misto (100 questões + 200 correções)', price: 'R$ 89' },
 ]
 
 interface BillingStatus {
@@ -75,10 +84,10 @@ export default function SubscriptionPage() {
     }
   }
 
-  async function handleBuyCredits() {
-    setActionLoading('credits')
+  async function handleBuyCredits(pack: PackKey) {
+    setActionLoading(`credits-${pack}`)
     try {
-      const { data } = await billingApi.creditsCheckout()
+      const { data } = await billingApi.creditsCheckout(pack)
       window.location.href = data.url
     } catch {
       toast.error('Não foi possível iniciar a compra de créditos.')
@@ -105,7 +114,8 @@ export default function SubscriptionPage() {
     )
   }
 
-  const currentPlan = status?.plan_type?.toLowerCase() || null
+  // Sem plan_type a instituição está no Basic (padrão do backend).
+  const currentPlan = status ? (status.plan_type?.toLowerCase() || 'basic') : null
 
   return (
     <div className="space-y-8">
@@ -155,6 +165,7 @@ export default function SubscriptionPage() {
               <div>
                 <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#e1e2ec]">{plan.label}</p>
                 <p className="text-2xl font-bold text-[#1E293B] dark:text-[#e1e2ec] mt-1">{plan.price}</p>
+                <p className="text-sm text-[#64748B] dark:text-slate-300">{plan.seat}</p>
               </div>
               <ul className="space-y-2 flex-1">
                 {plan.features.map((f) => (
@@ -187,21 +198,28 @@ export default function SubscriptionPage() {
         })}
       </div>
 
-      <div className="card flex flex-wrap items-center justify-between gap-4">
+      <div className="card space-y-4">
         <div>
-          <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#e1e2ec]">Pacote de créditos avulsos</p>
+          <p className="font-display text-lg font-bold text-[#1E293B] dark:text-[#e1e2ec]">Pacotes de créditos avulsos de IA</p>
           <p className="text-sm text-[#64748B] dark:text-slate-300 mt-1">
-            100 créditos de IA (gerações + correções) por R$ 49 — usados automaticamente quando sua cota mensal do plano é excedida.
+            Usados automaticamente quando a cota mensal do plano é excedida.
           </p>
         </div>
-        <button
-          onClick={handleBuyCredits}
-          disabled={actionLoading === 'credits'}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#1E293B] text-white text-sm font-semibold hover:bg-[#182c45] disabled:opacity-50 shrink-0"
-        >
-          {actionLoading === 'credits' && <Loader2 className="w-4 h-4 animate-spin" />}
-          Comprar 100 créditos — R$ 49
-        </button>
+        <div className="grid sm:grid-cols-3 gap-3">
+          {PACKS.map((pack) => (
+            <div key={pack.key} className="rounded-xl border border-[#E2E8F0] dark:border-[#464554] p-4 flex flex-col gap-3">
+              <p className="text-sm font-semibold text-[#1E293B] dark:text-[#e1e2ec] flex-1">{pack.label}</p>
+              <button
+                onClick={() => handleBuyCredits(pack.key)}
+                disabled={actionLoading === `credits-${pack.key}`}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#1E293B] text-white text-sm font-semibold hover:bg-[#182c45] disabled:opacity-50"
+              >
+                {actionLoading === `credits-${pack.key}` && <Loader2 className="w-4 h-4 animate-spin" />}
+                Comprar — {pack.price}
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

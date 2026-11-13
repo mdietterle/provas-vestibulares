@@ -1,4 +1,5 @@
 import io
+from datetime import datetime
 import re
 import zipfile
 from html.parser import HTMLParser
@@ -32,6 +33,9 @@ from app.vestibular.models import VestibularQuestion
 from app.schemas import ExamApply, ExamCreate, ExamCreateRedacao, ExamListOut, ExamOut, ExamUpdate
 
 router = APIRouter(prefix="/exams", tags=["exams"])
+
+# Status em que a prova aparece para o aluno. "draft" só o professor/admin vê.
+STUDENT_VISIBLE_STATUSES = ("published", "closed")
 
 
 # Questões importadas de bancos públicos têm a origem embutida no fim do
@@ -84,6 +88,8 @@ def _assert_exam_view_access(db: Session, exam: Optional[Exam], current_user: Us
         )
         if not enrolled:
             raise HTTPException(403, "Sem acesso")
+        if exam.status not in STUDENT_VISIBLE_STATUSES:
+            raise HTTPException(404, "Prova não encontrada")
 
 
 def _assert_professor_teaches(db: Session, professor_id: int, subject_id: int, class_id: int):
@@ -127,6 +133,8 @@ def list_exams(
             .subquery()
         )
         q = q.filter(Exam.class_id.in_(enrolled_class_ids))
+        # Rascunho fica invisível para o aluno até o professor publicar.
+        q = q.filter(Exam.status.in_(STUDENT_VISIBLE_STATUSES))
     if subject_id:
         q = q.filter(Exam.subject_id == subject_id)
     if class_id:
@@ -448,6 +456,9 @@ def apply_exam(
         professor_id=current_user.id,
         subject_id=exam.subject_id,
         class_id=payload.class_id,
+        # A cópia nasce no mesmo estado da original (rascunho continua rascunho).
+        status=exam.status if exam.status in ("draft", "published") else "draft",
+        published_at=datetime.utcnow() if exam.status == "published" else None,
     )
     db.add(new_exam)
     db.flush()
@@ -466,6 +477,47 @@ def apply_exam(
     db.commit()
     db.refresh(new_exam)
     return new_exam
+
+
+@router.post("/{exam_id}/publish", response_model=ExamOut)
+def publish_exam(
+    exam_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_professor),
+):
+    """Libera a prova para os alunos da turma."""
+    exam = db.get(Exam, exam_id)
+    _assert_exam_manage_access(db, exam, current_user)
+    has_questions = (
+        db.query(ExamQuestion.id).filter(ExamQuestion.exam_id == exam_id).first()
+        or db.query(ExamVestibularQuestion.id).filter(ExamVestibularQuestion.exam_id == exam_id).first()
+    )
+    if not has_questions:
+        raise HTTPException(400, "Adicione pelo menos uma questão antes de publicar")
+    if exam.status != "published":
+        exam.status = "published"
+        exam.published_at = datetime.utcnow()
+        db.commit()
+        db.refresh(exam)
+    return exam
+
+
+@router.post("/{exam_id}/unpublish", response_model=ExamOut)
+def unpublish_exam(
+    exam_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_professor),
+):
+    """Volta a prova para rascunho, desde que nenhum aluno tenha entregado."""
+    exam = db.get(Exam, exam_id)
+    _assert_exam_manage_access(db, exam, current_user)
+    if db.query(ExamSubmission.id).filter(ExamSubmission.exam_id == exam_id).first():
+        raise HTTPException(400, "A prova já tem entregas e não pode voltar para rascunho")
+    exam.status = "draft"
+    exam.published_at = None
+    db.commit()
+    db.refresh(exam)
+    return exam
 
 
 @router.delete("/{exam_id}", status_code=204)

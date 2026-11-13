@@ -66,6 +66,8 @@ def _assert_student_can_submit(db: Session, exam: Exam, current_user: User):
     )
     if not enrolled:
         raise HTTPException(403, "Você não está matriculado na turma desta prova")
+    if exam.status != "published":
+        raise HTTPException(400, "Esta prova não está aberta para entregas")
 
 
 def _ai_correction_allowed(db: Session, professor_id: int) -> bool:
@@ -163,9 +165,9 @@ def _do_correct(submission_id: int):
                 quota = usage_service.check_quota(
                     db, prof, UsageEventType.AI_CORRECTION.value, quantity=1
                 ) if prof else {"allowed": False}
-                if not quota["allowed"]:
+                if not usage_service.can_use_ai(quota):
                     answer.ai_feedback = (
-                        "Cota mensal de correções por IA esgotada. Revisão manual necessária."
+                        "Correção por IA indisponível no plano atual. Revisão manual necessária."
                     )
                     answer.score = None
                     all_scored = False
@@ -767,7 +769,7 @@ def ai_correct_answer(
         )
 
     quota = _check_ai_correction_quota(db, exam.professor_id)
-    if not quota["allowed"]:
+    if not usage_service.can_use_ai(quota):
         raise HTTPException(
             402,
             {
@@ -777,8 +779,7 @@ def ai_correct_answer(
                 "limit": quota["limit"],
                 "remaining": quota["remaining"],
                 "message": (
-                    f"Você utilizou {quota['used']} de {quota['limit']} correções por IA "
-                    f"disponíveis neste mês. Adquira um pacote avulso para continuar."
+                    "A correção por IA está disponível a partir do plano Pro."
                 ),
             },
         )
