@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { authApi, institutionsApi } from '../api'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import { authApi, classesApi } from '../api'
 import { useAuth } from '../contexts/AuthContext'
 import AdSlot from '../components/AdSlot'
 import PublicHeader from '../components/PublicHeader'
@@ -13,9 +13,11 @@ const REGION_ORDER: Region[] = ['Nacional', 'Sudeste', 'Sul', 'Centro-Oeste', 'N
 const ADSENSE_SLOT_LOGIN = (import.meta.env.VITE_ADSENSE_SLOT_LOGIN as string | undefined) || ''
 
 type Mode = 'login' | 'register'
-type InstitutionOption = { id: number; name: string }
-// Instituição existente (selecionada) ou nova (nome digitado ainda não cadastrado)
-type SelectedInstitution = InstitutionOption | { id: null; name: string }
+type ClassInfo = { class_name: string; year: number; institution_name: string }
+
+// Mesmo alfabeto do backend (sem 0/O/1/I/L); normaliza o que o aluno digitar.
+const normalizeClassCode = (v: string) => v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 16)
+const MIN_CLASS_CODE_LENGTH = 6
 
 const inputClass =
   'w-full border border-[#c5c5d3] dark:border-[#464554] rounded-lg px-3 py-2.5 text-sm bg-white dark:bg-[#1d1f27] text-[#1E293B] dark:text-[#F8FAFC] placeholder-[#64748B] dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0d9488] focus:border-transparent transition-all'
@@ -110,7 +112,7 @@ function IntroPanel() {
         Sua preparação para o vestibular começa aqui
       </h1>
       <p className="text-[#64748B] dark:text-slate-300 leading-relaxed mb-6">
-        Crie sua conta gratuita com o e-mail da sua instituição de ensino e comece a estudar hoje: simulados
+        Crie sua conta gratuita com o código da sua turma e comece a estudar hoje: simulados
         ilimitados, correção instantânea com Inteligência Artificial e acompanhamento do seu progresso.
       </p>
 
@@ -138,7 +140,10 @@ function IntroPanel() {
 export default function StudentAuthPage() {
   const navigate = useNavigate()
   const { user, loading: authLoading, login } = useAuth()
-  const [mode, setMode] = useState<Mode>('login')
+  // Link de convite da turma: /aluno?turma=CODIGO abre o cadastro já preenchido
+  const [searchParams] = useSearchParams()
+  const codeFromLink = normalizeClassCode(searchParams.get('turma') || '')
+  const [mode, setMode] = useState<Mode>(codeFromLink ? 'register' : 'login')
 
   // Campos compartilhados
   const [email, setEmail] = useState('')
@@ -150,32 +155,41 @@ export default function StudentAuthPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const passwordsMismatch = confirmPassword.length > 0 && password !== confirmPassword
-  const [institutionQuery, setInstitutionQuery] = useState('')
-  const [institutionOptions, setInstitutionOptions] = useState<InstitutionOption[]>([])
-  const [selectedInstitution, setSelectedInstitution] = useState<SelectedInstitution | null>(null)
-  const [searching, setSearching] = useState(false)
+  const [classCode, setClassCode] = useState(codeFromLink)
+  const [classInfo, setClassInfo] = useState<ClassInfo | null>(null)
+  const [checkingCode, setCheckingCode] = useState(false)
+  const [codeError, setCodeError] = useState<string | null>(null)
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Busca de instituições (debounce), espelhando o app mobile
+  // Confirma o código da turma (debounce) e mostra turma/escola antes do envio
   useEffect(() => {
     if (mode !== 'register') return
-    if (selectedInstitution || institutionQuery.trim().length < 2) {
-      setInstitutionOptions([])
+    setClassInfo(null)
+    setCodeError(null)
+    if (classCode.length < MIN_CLASS_CODE_LENGTH) {
+      setCheckingCode(false)
       return
     }
     let cancelled = false
-    setSearching(true)
+    setCheckingCode(true)
     const timer = setTimeout(() => {
-      institutionsApi
-        .searchPublic(institutionQuery.trim())
-        .then((r) => { if (!cancelled) setInstitutionOptions(r.data) })
-        .catch(() => { if (!cancelled) setInstitutionOptions([]) })
-        .finally(() => { if (!cancelled) setSearching(false) })
-    }, 350)
+      classesApi
+        .lookupJoinCode(classCode)
+        .then((r) => { if (!cancelled) setClassInfo(r.data) })
+        .catch((err: any) => {
+          if (cancelled) return
+          setCodeError(
+            err?.response?.status === 429
+              ? 'Muitas tentativas. Aguarde um minuto e tente novamente.'
+              : 'Código não encontrado. Confira com seu professor.',
+          )
+        })
+        .finally(() => { if (!cancelled) setCheckingCode(false) })
+    }, 400)
     return () => { cancelled = true; clearTimeout(timer) }
-  }, [institutionQuery, selectedInstitution, mode])
+  }, [classCode, mode])
 
   // Já autenticado → vai direto para o dashboard do aluno
   if (!authLoading && user) return <Navigate to="/" replace />
@@ -212,8 +226,8 @@ export default function StudentAuthPage() {
       setError('Preencha todos os campos.')
       return
     }
-    if (!selectedInstitution) {
-      setError('Selecione ou cadastre sua escola.')
+    if (!classInfo) {
+      setError('Informe um código de turma válido.')
       return
     }
     if (password.length < 6) {
@@ -231,9 +245,7 @@ export default function StudentAuthPage() {
         name: name.trim(),
         email: email.trim(),
         password,
-        ...(selectedInstitution.id
-          ? { institution_id: selectedInstitution.id }
-          : { institution_name: selectedInstitution.name }),
+        class_code: classCode,
       })
       await login(email.trim(), password)
       navigate('/', { replace: true })
@@ -358,61 +370,40 @@ export default function StudentAuthPage() {
                     />
                   </div>
 
-                  {/* Escola */}
+                  {/* Código da turma */}
                   <div>
-                    <label className={labelClass}>Escola</label>
-                    {selectedInstitution ? (
-                      <div className="flex items-center justify-between gap-3 border border-[#0d9488] dark:border-slate-400 rounded-lg px-3 py-2.5 bg-[#0d94880d] dark:bg-[#464554]">
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-[#0d9488] dark:text-slate-400 truncate">{selectedInstitution.name}</p>
-                          {!selectedInstitution.id && <p className="text-xs text-[#f59e0b] dark:text-slate-400 mt-0.5">Nova escola</p>}
+                    <label htmlFor="register-class-code" className={labelClass}>Código da turma</label>
+                    <input
+                      id="register-class-code"
+                      type="text"
+                      className={`${inputClass} font-mono tracking-widest uppercase ${codeError ? 'border-red-400 dark:border-red-500 focus:ring-red-400' : ''}`}
+                      value={classCode}
+                      onChange={(e) => setClassCode(normalizeClassCode(e.target.value))}
+                      placeholder="Ex.: ABCD2345"
+                      autoComplete="off"
+                      autoCapitalize="characters"
+                      spellCheck={false}
+                      aria-describedby="register-class-code-help"
+                      aria-invalid={!!codeError}
+                      required
+                    />
+                    <div id="register-class-code-help" aria-live="polite">
+                      {checkingCode && <p className="text-xs text-[#64748B] dark:text-slate-300 mt-1">Verificando código...</p>}
+                      {codeError && <p className="text-xs text-red-500 mt-1">{codeError}</p>}
+                      {classInfo && (
+                        <div className="mt-2 border border-[#0d9488] dark:border-slate-400 rounded-lg px-3 py-2.5 bg-[#0d94880d] dark:bg-[#464554]">
+                          <p className="text-sm font-semibold text-[#0d9488] dark:text-slate-300 truncate">
+                            {classInfo.class_name} · {classInfo.year}
+                          </p>
+                          <p className="text-xs text-[#64748B] dark:text-slate-300 mt-0.5 truncate">{classInfo.institution_name}</p>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => { setSelectedInstitution(null); setInstitutionQuery('') }}
-                          className="text-xs font-semibold text-[#f59e0b] hover:underline shrink-0"
-                        >
-                          Trocar
-                        </button>
-                      </div>
-                    ) : (
-                      <>
-                        <input
-                          type="text"
-                          className={inputClass}
-                          value={institutionQuery}
-                          onChange={(e) => setInstitutionQuery(e.target.value)}
-                          placeholder="Busque pelo nome da sua escola"
-                        />
-                        {searching && <p className="text-xs text-[#64748B] dark:text-slate-300 mt-1">Buscando...</p>}
-                        {institutionOptions.length > 0 && (
-                          <div className="mt-1 border border-[#E2E8F0] dark:border-[#464554] rounded-lg overflow-hidden">
-                            {institutionOptions.map((opt) => (
-                              <button
-                                key={opt.id}
-                                type="button"
-                                onClick={() => { setSelectedInstitution(opt); setInstitutionOptions([]) }}
-                                className="w-full text-left px-3 py-2.5 text-sm text-[#1E293B] dark:text-[#e1e2ec] hover:bg-[#F4F6F9] dark:hover:bg-[#1e2d4a] border-b border-[#EEF2F7] dark:border-[#464554] last:border-0"
-                              >
-                                {opt.name}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        {!searching && institutionQuery.trim().length >= 2 && institutionOptions.length === 0 && (
-                          <div className="mt-2">
-                            <p className="text-xs text-[#64748B] dark:text-slate-300 mb-1">Nenhuma escola encontrada.</p>
-                            <button
-                              type="button"
-                              onClick={() => setSelectedInstitution({ id: null, name: institutionQuery.trim() })}
-                              className="w-full border border-dashed border-[#f59e0b] dark:border-slate-400 rounded-lg px-3 py-2.5 text-sm font-semibold text-[#f59e0b] dark:text-slate-400 hover:bg-[#f6f2ff] dark:hover:bg-[#1e2d4a] transition-colors"
-                            >
-                              Cadastrar "{institutionQuery.trim()}" como nova escola
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    )}
+                      )}
+                      {!checkingCode && !codeError && !classInfo && (
+                        <p className="text-xs text-[#64748B] dark:text-slate-300 mt-1">
+                          Peça o código ao seu professor ou à secretaria da escola.
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   <div>
@@ -448,7 +439,7 @@ export default function StudentAuthPage() {
 
                   <button
                     type="submit"
-                    disabled={submitting}
+                    disabled={submitting || !classInfo}
                     className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-60 mt-1"
                     style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
                   >

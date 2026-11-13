@@ -1,13 +1,9 @@
-// Mesmo fallback de client.ts: em produção usa o backend do Render,
-// em dev usa o proxy /api do Vite. Evita baixar o index.html da SPA como PDF.
-const API_ORIGIN = import.meta.env.VITE_API_URL
-  || (import.meta.env.PROD ? 'https://provas-khsq.onrender.com' : '')
-
-const API_BASE = API_ORIGIN ? `${API_ORIGIN}/api` : '/api'
+import { API_BASE, CSRF_HEADERS } from './client'
 
 async function fetchBlob(url: string): Promise<Blob> {
-  const token = localStorage.getItem('token')
-  const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+  // A sessão vai no cookie httpOnly; credentials: 'include' cobre também um
+  // VITE_API_URL em outro host do mesmo site.
+  const response = await fetch(url, { credentials: 'include', headers: { ...CSRF_HEADERS } })
   if (!response.ok) throw new Error(`HTTP ${response.status}`)
   const blob = await response.blob()
   // Guarda contra resposta HTML (ex.: SPA servida no lugar da API) salva como PDF corrompido.

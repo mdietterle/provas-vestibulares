@@ -78,3 +78,41 @@ def filter_exam_response_for_student(exam_data: dict, submission_status=None) ->
                     vq.pop("answer", None)
     
     return exam_data
+
+
+# ── Cookie de sessão ──────────────────────────────────────────────────────────
+_LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1", "[::1]", "testserver"}
+
+
+def _cookie_secure(request) -> bool:
+    mode = (settings.SESSION_COOKIE_SECURE or "auto").strip().lower()
+    if mode in ("true", "1", "yes"):
+        return True
+    if mode in ("false", "0", "no"):
+        return False
+    host = (getattr(request, "url", None) and request.url.hostname) or ""
+    host = host.lower()
+    return not (host in _LOCAL_HOSTS or host.endswith(".localhost"))
+
+
+def set_session_cookie(response, token: str, request) -> None:
+    """Grava o JWT num cookie HttpOnly (não acessível via JavaScript)."""
+    response.set_cookie(
+        key=settings.SESSION_COOKIE_NAME,
+        value=token,
+        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        httponly=True,
+        secure=_cookie_secure(request),
+        samesite=settings.SESSION_COOKIE_SAMESITE,
+        path="/",
+    )
+
+
+def clear_session_cookie(response, request) -> None:
+    response.delete_cookie(
+        key=settings.SESSION_COOKIE_NAME,
+        httponly=True,
+        secure=_cookie_secure(request),
+        samesite=settings.SESSION_COOKIE_SAMESITE,
+        path="/",
+    )

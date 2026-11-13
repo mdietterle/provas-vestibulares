@@ -6,35 +6,41 @@ interface AuthContextType {
   user: User | null
   loading: boolean
   login: (email: string, password: string) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
   setUser: (user: User) => void
 }
 
 const AuthContext = createContext<AuthContextType>(null!)
+
+// Chave antiga: o JWT ficava em localStorage antes da sessão em cookie httpOnly.
+const LEGACY_TOKEN_KEY = 'token'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (!token) { setLoading(false); return }
+    try { localStorage.removeItem(LEGACY_TOKEN_KEY) } catch { /* ignore */ }
+    // A sessão vive num cookie httpOnly: o único jeito de saber se há login é perguntar ao backend.
     authApi.me()
       .then((r) => setUser(r.data))
-      .catch(() => localStorage.removeItem('token'))
+      .catch(() => setUser(null))
       .finally(() => setLoading(false))
   }, [])
 
   const login = async (email: string, password: string) => {
-    const { data } = await authApi.login(email, password)
-    localStorage.setItem('token', data.access_token)
+    await authApi.login(email, password) // o backend grava o cookie de sessão
     const me = await authApi.me()
     setUser(me.data)
   }
 
-  const logout = () => {
-    localStorage.removeItem('token')
+  const logout = async () => {
     setUser(null)
+    try {
+      await authApi.logout()
+    } catch {
+      // Sem rede: o cookie expira sozinho; o estado local já foi limpo.
+    }
   }
 
   return (

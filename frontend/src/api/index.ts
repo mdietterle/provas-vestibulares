@@ -6,12 +6,9 @@ export const authApi = {
   login: (email: string, password: string) =>
     api.post<{ access_token: string; token_type: string }>('/auth/login', new URLSearchParams({ username: email, password })),
   me: () => api.get<User>('/auth/me'),
-  register: (
-    data: { name: string; email: string; password: string } & (
-      | { institution_id: number }
-      | { institution_name: string }
-    ),
-  ) => api.post<{ message: string }>('/auth/register', data),
+  logout: () => api.post<{ message: string }>('/auth/logout'),
+  register: (data: { name: string; email: string; password: string; class_code: string }) =>
+    api.post<{ message: string }>('/auth/register', data),
   forgotPassword: (email: string) => api.post<{ message: string }>('/auth/forgot-password', { email }),
   verifyResetToken: (token: string) => api.get<{ valid: boolean; name: string; email: string }>(`/auth/verify-reset-token/${token}`),
   resetPassword: (token: string, password: string) => api.post<{ message: string }>('/auth/reset-password', { token, password }),
@@ -37,7 +34,8 @@ export const billingApi = {
   }>('/billing/status'),
   checkoutSession: (plan: 'basic' | 'pro' | 'enterprise') =>
     api.post<{ url: string }>('/billing/checkout-session', null, { params: { plan } }),
-  creditsCheckout: () => api.post<{ url: string }>('/billing/credits-checkout'),
+  creditsCheckout: (pack: 'questions' | 'corrections' | 'mixed') =>
+    api.post<{ url: string }>('/billing/credits-checkout', null, { params: { pack } }),
   portal: () => api.post<{ url: string }>('/billing/portal'),
 }
 
@@ -84,6 +82,13 @@ export const classesApi = {
   createAssignment: (data: { professor_id: number; subject_id: number; class_id: number }) =>
     api.post<TeachingAssignment>('/classes/assignments', data),
   deleteAssignment: (id: number) => api.delete(`/classes/assignments/${id}`),
+  // Código de turma para auto-cadastro de aluno
+  lookupJoinCode: (code: string) =>
+    api.get<{ class_name: string; year: number; institution_name: string }>(
+      `/classes/join-code/${encodeURIComponent(code)}`,
+    ),
+  generateJoinCode: (classId: number) => api.post<{ join_code: string }>(`/classes/${classId}/join-code`),
+  disableJoinCode: (classId: number) => api.delete(`/classes/${classId}/join-code`),
 }
 
 // ── Questions ─────────────────────────────────────────────────────────────────

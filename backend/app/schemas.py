@@ -138,9 +138,9 @@ class StudentRegister(BaseModel):
     name: str
     email: EmailStr
     password: str
-    institution_id: Optional[int] = None
-    institution_name: Optional[str] = None  # usado quando o aluno digita uma instituição nova
-    invitation_code: Optional[str] = None  # código de convite obrigatório para auto-cadastro
+    # Código de turma (Class.join_code) obrigatório: define a instituição e a turma
+    # do aluno. Opcional no schema só para devolver 400 com mensagem amigável.
+    class_code: Optional[str] = None
 
 
 class ForgotPasswordRequest(BaseModel):
@@ -193,8 +193,20 @@ class ClassOut(BaseModel):
     name: str
     year: int
     institution_id: int
+    # Preenchido apenas para admin e professor da turma; sempre None para alunos.
+    join_code: Optional[str] = None
 
     model_config = {"from_attributes": True}
+
+
+class ClassJoinCodeOut(BaseModel):
+    join_code: str
+
+
+class ClassJoinCodeLookupOut(BaseModel):
+    class_name: str
+    year: int
+    institution_name: str
 
 
 # ── Enrollments ───────────────────────────────────────────────────────────────

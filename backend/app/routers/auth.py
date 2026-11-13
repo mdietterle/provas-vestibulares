@@ -3,7 +3,7 @@ import secrets
 from datetime import datetime, timedelta
 
 import requests as http_requests
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, UploadFile, File, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from sqlalchemy import func
@@ -11,10 +11,17 @@ from sqlalchemy.orm import Session
 from typing import Optional
 
 from app.core.config import settings
-from app.core.security import create_access_token, get_password_hash, verify_password
+from app.core.security import (
+    clear_session_cookie,
+    create_access_token,
+    get_password_hash,
+    set_session_cookie,
+    verify_password,
+)
 from app.database import get_db
 from app.deps import get_current_user
-from app.models import Institution, User, UserRole
+from app.models import Institution, StudentClass, User, UserRole
+from app.routers.classes import find_class_by_join_code
 from app.schemas import (
     ForgotPasswordRequest,
     ResetPasswordRequest,
@@ -43,8 +50,33 @@ class ProfileUpdate(BaseModel):
     new_password: Optional[str] = None
 
 
+def _resolve_class_code(db: Session, code: Optional[str]):
+    """Valida o código de turma e devolve (turma, instituição) ou levanta 400."""
+    if not code or not code.strip():
+        raise HTTPException(status_code=400, detail="Informe o código da turma fornecido pela sua escola.")
+    class_ = find_class_by_join_code(db, code)
+    institution = db.get(Institution, class_.institution_id) if class_ else None
+    if not class_ or not institution:
+        raise HTTPException(status_code=400, detail="Código de turma inválido. Confira o código com seu professor.")
+    if not institution.is_active:
+        raise HTTPException(status_code=400, detail="Esta instituição está desativada. Entre em contato com a escola.")
+    return class_, institution
+
+
+def _issue_session(user: User, request: Request, response: Response) -> dict:
+    """Gera o JWT, grava no cookie httpOnly e devolve o corpo legado (mobile usa access_token)."""
+    token = create_access_token({"sub": str(user.id)})
+    set_session_cookie(response, token, request)
+    return {"access_token": token, "token_type": "bearer"}
+
+
 @router.post("/login", response_model=Token)
-def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login(
+    request: Request,
+    response: Response,
+    form: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
     user = db.query(User).filter(func.lower(User.email) == form.username.strip().lower()).first()
     if not user or not verify_password(form.password, user.hashed_password):
         raise HTTPException(
@@ -57,37 +89,23 @@ def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     if not user.is_active:
         raise HTTPException(status_code=400, detail="Usuário inativo")
     _ensure_institution_active(db, user)
-    token = create_access_token({"sub": str(user.id)})
-    return {"access_token": token, "token_type": "bearer"}
+    return _issue_session(user, request, response)
+
+
+@router.post("/logout")
+def logout(request: Request, response: Response):
+    """Encerra a sessão do navegador apagando o cookie httpOnly."""
+    clear_session_cookie(response, request)
+    return {"message": "Sessão encerrada"}
+
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register(payload: StudentRegister, db: Session = Depends(get_db)):
-    """Auto-cadastro de aluno: requer invitation_code válido.
+    """Auto-cadastro de aluno: requer o código da turma (Class.join_code).
 
-    O aluno só pode se cadastrar se possuir um código de convite válido (invitation_token
-    de um usuário pré-criado por admin/professor). Sem invitation_code, retorna 403.
+    A conta é criada na instituição da turma e o aluno já fica matriculado nela.
     """
-    # Gate: require valid invitation_code for student self-registration
-    if not payload.invitation_code or not payload.invitation_code.strip():
-        raise HTTPException(status_code=403, detail="Cadastro requer um código de convite válido")
-
-    # Validate invitation token
-    invited_user = (
-        db.query(User)
-        .filter(User.invitation_token == payload.invitation_code.strip())
-        .first()
-    )
-    if not invited_user:
-        raise HTTPException(status_code=403, detail="Código de convite inválido")
-    if invited_user.invitation_accepted_at:
-        raise HTTPException(status_code=403, detail="Este convite já foi utilizado")
-    if invited_user.invitation_expires_at and datetime.utcnow() > invited_user.invitation_expires_at:
-        raise HTTPException(status_code=403, detail="Este convite expirou")
-
-    # Use institution from the invitation
-    institution = db.get(Institution, invited_user.institution_id) if invited_user.institution_id else None
-    if not institution:
-        raise HTTPException(status_code=400, detail="Instituição do convite não encontrada")
+    class_, institution = _resolve_class_code(db, payload.class_code)
 
     existing = db.query(User).filter(func.lower(User.email) == payload.email.strip().lower()).first()
     if existing:
@@ -96,31 +114,25 @@ def register(payload: StudentRegister, db: Session = Depends(get_db)):
     if len(payload.password) < 6:
         raise HTTPException(status_code=422, detail="A senha deve ter no mínimo 6 caracteres")
 
-    # Create account — email verification required before first access
+    if not payload.name or not payload.name.strip():
+        raise HTTPException(status_code=422, detail="Informe seu nome")
+
+    # TODO: exigir verificação de e-mail quando o domínio do Resend estiver configurado.
     user = User(
         name=payload.name.strip(),
         email=payload.email.strip().lower(),
         hashed_password=get_password_hash(payload.password),
         role=UserRole.STUDENT,
         institution_id=institution.id,
-        is_active=False,  # inactive until email verified
-        email_verified_at=None,
+        is_active=True,
+        email_verified_at=datetime.utcnow(),
     )
     db.add(user)
     db.flush()
-
-    # Mark invitation as accepted
-    invited_user.invitation_accepted_at = datetime.utcnow()
-    db.commit()
-    db.refresh(user)
-
-    # TODO: send verification email when Resend domain is configured
-    # For now, auto-verify to avoid blocking users (can be toggled later)
-    user.is_active = True
-    user.email_verified_at = datetime.utcnow()
+    db.add(StudentClass(student_id=user.id, class_id=class_.id))
     db.commit()
 
-    return {"message": "Cadastro realizado com sucesso. Verifique seu e-mail para confirmar a conta."}
+    return {"message": "Cadastro realizado com sucesso. Você já pode entrar com seu e-mail e senha."}
 
 
 @router.post("/forgot-password")
@@ -186,11 +198,18 @@ def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db))
 
 class GoogleLoginPayload(BaseModel):
     access_token: str
-    institution_id: Optional[int] = None
+    # Obrigatório apenas quando a conta ainda não existe (mesma regra do /register).
+    class_code: Optional[str] = None
+    institution_id: Optional[int] = None  # legado, ignorado
 
 
 @router.post("/google", response_model=Token)
-def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
+def google_login(
+    payload: GoogleLoginPayload,
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db),
+):
     """Exchange a Google OAuth access token for a platform JWT."""
     resp = http_requests.get(
         "https://www.googleapis.com/oauth2/v1/userinfo",
@@ -210,11 +229,7 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
     user = db.query(User).filter(func.lower(User.email) == email.strip().lower()).first()
 
     if not user:
-        if not payload.institution_id:
-            raise HTTPException(status_code=400, detail="Selecione a instituição para concluir o cadastro")
-        institution = db.get(Institution, payload.institution_id)
-        if not institution:
-            raise HTTPException(status_code=400, detail="Instituição inválida")
+        class_, institution = _resolve_class_code(db, payload.class_code)
         user = User(
             name=name,
             email=email,
@@ -224,6 +239,8 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
             is_active=True,
         )
         db.add(user)
+        db.flush()
+        db.add(StudentClass(student_id=user.id, class_id=class_.id))
         db.commit()
         db.refresh(user)
 
@@ -232,9 +249,7 @@ def google_login(payload: GoogleLoginPayload, db: Session = Depends(get_db)):
     if not user.is_active:
         raise HTTPException(status_code=400, detail="Usuário inativo")
     _ensure_institution_active(db, user)
-
-    token = create_access_token({"sub": str(user.id)})
-    return {"access_token": token, "token_type": "bearer"}
+    return _issue_session(user, request, response)
 
 
 @router.get("/me", response_model=UserOut)
