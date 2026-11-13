@@ -425,6 +425,25 @@ def run_migrations() -> None:
     migrations.append("ALTER TABLE IF EXISTS exams ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'draft'")
     migrations.append('ALTER TABLE IF EXISTS exams ADD COLUMN IF NOT EXISTS deadline TIMESTAMP')
 
+    # Fluxo Rascunho -> Publicar. Até aqui toda prova nascia 'draft' e já
+    # ficava visível para a turma; na primeira execução marca as existentes
+    # como publicadas para não sumirem dos alunos. Só roda uma vez: o UPDATE
+    # fica dentro do IF que cria a coluna published_at.
+    migrations.append("""DO $$
+    BEGIN
+        IF NOT EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_name = 'exams' AND column_name = 'published_at'
+        ) THEN
+            ALTER TABLE exams ADD COLUMN published_at TIMESTAMP;
+            UPDATE exams SET status = 'published', published_at = created_at WHERE status = 'draft';
+        END IF;
+    END $$""")
+
+    # Código de turma para o autocadastro de aluno.
+    migrations.append("ALTER TABLE IF EXISTS classes ADD COLUMN IF NOT EXISTS join_code VARCHAR(16)")
+    migrations.append("CREATE UNIQUE INDEX IF NOT EXISTS uq_classes_join_code ON classes (join_code) WHERE join_code IS NOT NULL")
+
     for sql in migrations:
         try:
             with engine.begin() as conn:

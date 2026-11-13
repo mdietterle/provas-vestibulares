@@ -57,7 +57,7 @@ def check_quota(db: Session, user: User, event_type: str, quantity: int = 1) -> 
     limit = _ai_limit_for_user(db, user, event_type)
     used = get_month_usage(db, user.id, event_type)
     if limit is None:
-        return {"allowed": True, "used": used, "limit": None, "remaining": None, "overage_count": 0}
+        return {"allowed": True, "used": used, "limit": None, "remaining": None, "overage_count": 0, "overage_allowed": True}
     remaining = max(0, limit - used)
     will_exceed = (used + quantity) > limit
     return {
@@ -66,7 +66,16 @@ def check_quota(db: Session, user: User, event_type: str, quantity: int = 1) -> 
         "limit": limit,
         "remaining": remaining,
         "overage_count": max(0, used - limit),
+        # Regra comercial: em plano com IA o excedente não bloqueia, é
+        # registrado (record_usage) e vai para faturamento. Só plano sem IA
+        # (Basic) é bloqueado.
+        "overage_allowed": ai_enabled(db, user.institution_id),
     }
+
+
+def can_use_ai(quota: dict) -> bool:
+    """True quando o uso pode seguir: dentro da cota ou excedente faturável."""
+    return bool(quota.get("allowed") or quota.get("overage_allowed"))
 
 
 def record_usage(db: Session, user: User, event_type: str, quantity: int = 1) -> dict:

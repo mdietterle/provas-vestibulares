@@ -28,7 +28,10 @@ vi.mock('../components/ConfirmDialog', () => ({ default: ({ open, onConfirm }: a
 vi.mock('../components/Pagination', () => ({ default: () => <div>Pagination</div> }))
 vi.mock('../utils/pdf', () => ({ exportExams: vi.fn() }))
 vi.mock('../utils/image', () => ({ resolveImageSrc: (v: string) => v || '' }))
-vi.mock('react-router-dom', () => ({ Link: ({ children, to }: any) => <a href={to}>{children}</a> }))
+vi.mock('react-router-dom', () => ({
+  Link: ({ children, to }: any) => <a href={to}>{children}</a>,
+  useSearchParams: () => [new URLSearchParams(), vi.fn()],
+}))
 
 describe('ExamsPage', () => {
   beforeEach(() => { vi.clearAllMocks() })

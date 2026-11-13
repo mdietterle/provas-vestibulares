@@ -41,6 +41,11 @@ export interface Class {
   name: string
   year: number
   institution_id: number
+  /** Código de autocadastro do aluno (só para admin/professor); null = desativado. */
+  join_code?: string | null
+  /** Contagens opcionais — se a API passar a mandá-las, a tela de turmas usa direto. */
+  student_count?: number
+  professor_count?: number
 }
 
 export interface TeachingAssignment {

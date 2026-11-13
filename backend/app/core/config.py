@@ -26,6 +26,12 @@ class Settings(BaseSettings):
     EMAIL_FROM: str = "onboarding@resend.dev"  # domínio verificado no Resend
     FRONTEND_URL: str = "http://localhost:5173"
     ALLOWED_ORIGINS: str = ""  # comma-separated list, e.g. "https://app.example.com,https://admin.example.com"
+    # ── Sessão (cookie httpOnly) ───────────────────────────────────────────────
+    SESSION_COOKIE_NAME: str = "session"
+    # "auto" = Secure em qualquer host que não seja local (localhost/127.0.0.1/::1/
+    # *.localhost/testserver); "true"/"false" forçam o valor.
+    SESSION_COOKIE_SECURE: str = "auto"
+    SESSION_COOKIE_SAMESITE: str = "lax"
     INVITATION_EXPIRE_DAYS: int = 7
     EMAIL_VERIFICATION_EXPIRE_HOURS: int = 48
     PASSWORD_RESET_EXPIRE_HOURS: int = 2
@@ -37,6 +43,17 @@ class Settings(BaseSettings):
     STRIPE_PRICE_ENTERPRISE: str = ""
     STRIPE_PRICE_CREDITS_PACK: str = ""
     STRIPE_CREDITS_PACK_AMOUNT: int = 100
+    # Preço por professor (assento) de cada plano, cobrado junto da base.
+    STRIPE_PRICE_BASIC_SEAT: str = ""
+    STRIPE_PRICE_PRO_SEAT: str = ""
+    STRIPE_PRICE_ENTERPRISE_SEAT: str = ""
+    # Pacotes avulsos de IA anunciados em /plans.
+    STRIPE_PRICE_PACK_QUESTIONS: str = ""
+    STRIPE_PRICE_PACK_CORRECTIONS: str = ""
+    STRIPE_PRICE_PACK_MIXED: str = ""
+    # Enquanto o piloto roda no sandbox, chave live (sk_live_) é recusada.
+    # Trocar para true só quando for cobrar de verdade.
+    STRIPE_LIVE_MODE: bool = False
     # ── Cloudflare R2 (image storage) ──────────────────────────────────────────
     R2_ACCOUNT_ID: str = ""
     R2_ACCESS_KEY_ID: str = ""

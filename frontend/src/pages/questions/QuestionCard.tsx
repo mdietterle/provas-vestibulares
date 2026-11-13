@@ -107,7 +107,7 @@ export default function QuestionCard({ q, isExpanded, onToggleExpand, onEdit, on
               dangerouslySetInnerHTML={{ __html: q.statement }}
             />
           ) : (
-            <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed line-clamp-2">
+            <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed line-clamp-2 whitespace-pre-line">
               {stripHtml(q.statement)}
             </p>
           )}

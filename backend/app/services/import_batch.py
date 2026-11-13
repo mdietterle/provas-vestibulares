@@ -51,7 +51,13 @@ def save_vestibular_question(
     Writes to `vestibular_questions` + options/images tables. Returns
     (question, created). If question already exists (same exam_type +
     exam_name + number) and force_reimport=False, returns (existing, False) without modifying data.
-    If force_reimport=True, deletes existing question and reimports with new data/images.
+    If force_reimport=True, updates the existing question IN PLACE and returns
+    (existing, True): the VestibularQuestion id is kept (it is referenced by
+    `exam_vestibular_questions` — ON DELETE CASCADE, so deleting it silently
+    removed the question from teachers' exams — and by
+    `simulado_questions.vestibular_question_id`), fields and metadata are
+    overwritten, options are updated by position (ids kept where the position
+    still exists, extra ones added/removed) and images are replaced.
 
     Images are uploaded to R2 automatically; only URLs are stored in DB.
     Pass `image_base64` for the main question image or `images` list for
@@ -61,17 +67,11 @@ def save_vestibular_question(
     Exam-specific fields (color, phase, day, module, area, subject, etc.)
     go in `metadata` JSONB dict.
     """
-    existing = (
-        db.query(VestibularQuestion)
-        .filter_by(exam_type=exam_type, exam_name=exam_name, number=number)
-        .first()
+    existing = _find_existing_question(
+        db, exam_type=exam_type, exam_name=exam_name, number=number, metadata=metadata,
     )
     if existing and not force_reimport:
         return existing, False
-    if existing and force_reimport:
-        # Delete existing question and its related data
-        db.delete(existing)
-        db.flush()
 
     # Upload main question image to R2 if provided
     image_url = None
@@ -94,20 +94,43 @@ def save_vestibular_question(
     if instructions:
         merged_metadata["instructions"] = instructions
 
-    vq = VestibularQuestion(
-        exam_type=exam_type,
-        exam_name=exam_name,
-        year=year,
-        number=number,
-        statement=statement,
-        html_statement=html_statement,
-        answer=answer,
-        is_annulled=is_annulled,
-        correct_option=correct_option,
-        metadata_=merged_metadata,
-    )
-    db.add(vq)
-    db.flush()
+    if existing:
+        vq = existing
+        vq.year = year
+        vq.statement = statement
+        vq.html_statement = html_statement
+        vq.image_base64 = None  # imagens moram na tabela de imagens
+        vq.answer = answer
+        vq.is_annulled = is_annulled
+        vq.correct_option = correct_option
+        vq.metadata_ = merged_metadata
+        _update_options_in_place(vq, options)
+        # Imagens são substituídas. Se o upload da imagem principal falhou,
+        # mantém a imagem principal antiga em vez de deixar a questão sem figura.
+        keep_old_main = bool(image_base64) and image_url is None
+        for old_img in list(vq.images):
+            if keep_old_main and old_img.order == 0:
+                continue
+            vq.images.remove(old_img)
+        db.flush()
+    else:
+        vq = VestibularQuestion(
+            exam_type=exam_type,
+            exam_name=exam_name,
+            year=year,
+            number=number,
+            statement=statement,
+            html_statement=html_statement,
+            answer=answer,
+            is_annulled=is_annulled,
+            correct_option=correct_option,
+            metadata_=merged_metadata,
+        )
+        db.add(vq)
+        db.flush()
+        for opt in options:
+            db.add(VestibularQuestionOption(question_id=vq.id, **opt))
+
     # Main question image goes to images table, not model field
     if image_url:
         db.add(VestibularQuestionImage(
@@ -115,9 +138,6 @@ def save_vestibular_question(
             image_url=image_url,
             order=0,
         ))
-
-    for opt in options:
-        db.add(VestibularQuestionOption(question_id=vq.id, **opt))
 
     # Upload additional images to R2 and store URLs
     for idx, img in enumerate(images or []):
@@ -149,7 +169,66 @@ def save_vestibular_question(
                 order=img.get("order", idx),
             ))
 
+    if existing:
+        db.flush()
+        # Recarrega as coleções para refletir as imagens adicionadas acima
+        # via db.add (o chamador pode ler vq.images na mesma sessão).
+        db.expire(vq, ["images", "options"])
+
     return vq, True
+
+
+_OPTION_FIELDS = ("letter", "value", "text", "is_correct", "order")
+_OPTION_DEFAULTS = {"letter": None, "value": None, "text": "", "is_correct": False}
+
+
+def _find_existing_question(
+    db: Session,
+    *,
+    exam_type: str,
+    exam_name: Optional[str],
+    number: int,
+    metadata: Optional[Dict[str, Any]],
+) -> Optional[VestibularQuestion]:
+    """Busca a questão já importada (exam_type + exam_name + number). Se houver
+    mais de uma linha (ex.: ENEM Q1-5 em Inglês e Espanhol com o mesmo
+    número), prefere a de mesmo `metadata.language`."""
+    rows = (
+        db.query(VestibularQuestion)
+        .filter_by(exam_type=exam_type, exam_name=exam_name, number=number)
+        .order_by(VestibularQuestion.id)
+        .all()
+    )
+    if not rows:
+        return None
+    language = (metadata or {}).get("language")
+    if len(rows) > 1 and language is not None:
+        for row in rows:
+            if (row.metadata_ or {}).get("language") == language:
+                return row
+    return rows[0]
+
+
+def _update_options_in_place(vq: VestibularQuestion, options: List[Dict[str, Any]]) -> None:
+    """Atualiza as alternativas pela posição (ordem), mantendo os ids onde a
+    posição continua existindo; adiciona as que sobrarem e remove as extras."""
+    current = sorted(vq.options, key=lambda o: (o.order if o.order is not None else 0, o.id or 0))
+    for idx, opt in enumerate(options):
+        if idx < len(current):
+            target = current[idx]
+            for field in _OPTION_FIELDS:
+                if field in opt:
+                    setattr(target, field, opt[field])
+                elif field == "order":
+                    target.order = idx
+                else:
+                    setattr(target, field, _OPTION_DEFAULTS[field])
+        else:
+            data = dict(opt)
+            data.setdefault("order", idx)
+            vq.options.append(VestibularQuestionOption(**data))
+    for extra in current[len(options):]:
+        vq.options.remove(extra)
 
 
 def run_batch_import(

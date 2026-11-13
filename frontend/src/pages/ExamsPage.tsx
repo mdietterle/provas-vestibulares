@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { examPublishApi } from '../api/examPublish'
 import toast from 'react-hot-toast'
 import { classesApi, examsApi, questionsApi, subjectsApi, usersApi } from '../api'
 import { vestibularApi, type VestibularQuestion as VQ } from '../api/vestibular'
@@ -77,6 +78,9 @@ export default function ExamsPage() {
   const [redacaoExtraClassIds, setRedacaoExtraClassIds] = useState<number[]>([])
   const [creating, setCreating] = useState(false)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+  // Publicar já ao criar (padrão) ou deixar como rascunho, invisível para a turma.
+  const [publishNow, setPublishNow] = useState(true)
+  const [publishingId, setPublishingId] = useState<number | null>(null)
   const [search, setSearch] = useState('')
   const [filterSubject, setFilterSubject] = useState(0)
   const [page, setPage] = useState(1)
@@ -91,6 +95,8 @@ export default function ExamsPage() {
   const [vqResults, setVqResults] = useState<VQ[]>([])
   const [vqLoading, setVqLoading] = useState(false)
   const [vqImporting, setVqImporting] = useState<number | null>(null)
+  // Questão de vestibular -> questão da biblioteca gerada ao importar.
+  const [vqImported, setVqImported] = useState<Record<number, number>>({})
   const [vqPreview, setVqPreview] = useState<VQ | null>(null)
   const [questionTab, setQuestionTab] = useState<'library' | 'vestibular' | 'most-used'>('library')
   const [mostUsedQuestions, setMostUsedQuestions] = useState<Array<{
@@ -116,6 +122,18 @@ export default function ExamsPage() {
 
   useEffect(() => { setPage(1) }, [search, filterSubject])
 
+  // Atalho "Nova Prova" do Dashboard chega com ?new=1 e já abre o formulário.
+  const [searchParams, setSearchParams] = useSearchParams()
+  useEffect(() => {
+    if (searchParams.get('new') === '1' && user?.role !== 'student') {
+      setFormErrors({})
+      setShowModal(true)
+      searchParams.delete('new')
+      setSearchParams(searchParams, { replace: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Load vestibular exam types when modal opens
   useEffect(() => {
     if (showModal && vqExamTypes.length === 0) {
@@ -134,6 +152,14 @@ export default function ExamsPage() {
       setVqResults([])
     }
   }, [vqSelectedType])
+
+  // Filtra enquanto o professor digita, sem precisar clicar em Buscar.
+  useEffect(() => {
+    if (!showModal || !vqSelectedType) return
+    const t = setTimeout(() => { handleVqSearch() }, 400)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vqSearch])
 
   const handleVqSearch = async () => {
     if (!vqSelectedType) return
@@ -178,9 +204,21 @@ export default function ExamsPage() {
 
   const importVestibularQuestion = async (vq: VQ) => {
     if (!form.subject_id) { toast.error('Selecione uma matéria primeiro'); return }
+    if (vqImporting !== null) return
+    const importedId = vqImported[vq.id]
+    if (importedId && form.questions.some((dq) => dq.question_id === importedId)) {
+      toast.error('Questão já adicionada'); return
+    }
     setVqImporting(vq.id)
     try {
       const imported = await questionsApi.importFromVestibular(vq.id, form.subject_id)
+      // A questão importada não está na lista carregada da matéria: sem isto a
+      // lista de selecionadas mostrava "Questão não encontrada" e o botão
+      // continuava ativo, permitindo importar a mesma questão de novo.
+      setAvailableQuestions((prev) =>
+        prev.some((q) => q.id === imported.data.id) ? prev : [...prev, imported.data]
+      )
+      setVqImported((m) => ({ ...m, [vq.id]: imported.data.id }))
       addQuestion(imported.data.id)
       toast.success('Questão importada e adicionada à prova')
     } catch (err: any) {
@@ -213,6 +251,11 @@ export default function ExamsPage() {
     if (form.questions.some((q) => q.question_id === questionId)) {
       toast.error('Questão já adicionada'); return
     }
+    setFormErrors((errs) => {
+      if (!errs.questions) return errs
+      const { questions: _omit, ...rest } = errs
+      return rest
+    })
     setForm((f) => ({
       ...f,
       questions: [...f.questions, { question_id: questionId, order: f.questions.length + 1, points: 1 }],
@@ -253,6 +296,7 @@ export default function ExamsPage() {
           points: redacaoForm.points,
           criteria: redacaoForm.criteria || undefined,
         })
+        if (publishNow) await examPublishApi.publish(r.data.id)
         const failedClasses = await applyToExtraClasses(r.data.id, redacaoExtraClassIds)
         reportCreationResult('Avaliação de redação', 1 + redacaoExtraClassIds.length - failedClasses.length, failedClasses.length)
         setShowModal(false)
@@ -266,8 +310,9 @@ export default function ExamsPage() {
     }
     try {
       const r = await examsApi.create(form)
+      if (publishNow) await examPublishApi.publish(r.data.id)
       const failedClasses = await applyToExtraClasses(r.data.id, extraClassIds)
-      reportCreationResult('Prova', 1 + extraClassIds.length - failedClasses.length, failedClasses.length)
+      reportCreationResult(publishNow ? 'Prova' : 'Rascunho de prova', 1 + extraClassIds.length - failedClasses.length, failedClasses.length)
       setShowModal(false)
       load()
     } catch (err: any) {
@@ -307,6 +352,24 @@ export default function ExamsPage() {
       load()
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Erro')
+    }
+  }
+
+  const togglePublish = async (exam: Exam) => {
+    setPublishingId(exam.id)
+    try {
+      if (exam.status === 'published') {
+        await examPublishApi.unpublish(exam.id)
+        toast.success('Prova voltou para rascunho')
+      } else {
+        await examPublishApi.publish(exam.id)
+        toast.success('Prova publicada para a turma')
+      }
+      load()
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || 'Erro ao alterar a publicação')
+    } finally {
+      setPublishingId(null)
     }
   }
 
@@ -358,7 +421,7 @@ export default function ExamsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold font-display text-slate-600 dark:text-slate-400">Provas</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{exams.length} prova{exams.length !== 1 ? 's' : ''} cadastrada{exams.length !== 1 ? 's' : ''}</p>
+          <p className="text-sm text-gray-500 mt-0.5">{loading ? 'Carregando provas…' : `${exams.length} prova${exams.length !== 1 ? 's' : ''} cadastrada${exams.length !== 1 ? 's' : ''}`}</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button
@@ -370,7 +433,7 @@ export default function ExamsPage() {
           </button>
           {user?.role !== 'student' && (
             <button
-              onClick={() => { setForm({ title: '', instructions: '', subject_id: 0, class_id: 0, questions: [] }); setExtraClassIds([]); setQuestionSearch(''); setRedacaoForm({ title: '', subject_id: 0, class_id: 0, enunciado: '', points: 10, criteria: '' }); setRedacaoExtraClassIds([]); setExamMode('regular'); setShowModal(true) }}
+              onClick={() => { setForm({ title: '', instructions: '', subject_id: 0, class_id: 0, questions: [] }); setExtraClassIds([]); setQuestionSearch(''); setRedacaoForm({ title: '', subject_id: 0, class_id: 0, enunciado: '', points: 10, criteria: '' }); setRedacaoExtraClassIds([]); setExamMode('regular'); setFormErrors({}); setPublishNow(true); setShowModal(true) }}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-semibold shadow-sm transition-all hover:opacity-90 active:scale-95"
               style={{ background: 'linear-gradient(135deg, #475569 0%, #64748b 100%)' }}
             >
@@ -392,7 +455,7 @@ export default function ExamsPage() {
         ].map((s) => (
           <div key={s.label} className={`rounded-2xl border p-4 ${s.bgClass}`}>
             <p className="text-xs font-medium text-gray-500 dark:text-slate-400 mb-1">{s.label}</p>
-            <p className={`text-2xl font-bold font-display ${s.textClass}`}>{s.value}</p>
+            <p className={`text-2xl font-bold font-display ${s.textClass}`}>{loading ? '—' : s.value}</p>
           </div>
         ))}
       </div>
@@ -418,7 +481,7 @@ export default function ExamsPage() {
           onChange={(e) => setFilterSubject(+e.target.value)}
         >
           <option value={0}>Todas as matérias</option>
-          {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+          {(user?.role === 'professor' ? selectableSubjects : subjects).map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
         <span className="text-xs text-gray-400 ml-auto">{filtered.length} resultado{filtered.length !== 1 ? 's' : ''}</span>
       </div>
@@ -473,7 +536,7 @@ export default function ExamsPage() {
                     <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400">
                       {questionCount} {questionCount !== 1 ? 'questões' : 'questão'}
                     </span>
-                    {exam.status && (
+                    {user?.role !== 'student' && exam.status && (
                       <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
                         exam.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
                         exam.status === 'closed' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
@@ -487,7 +550,7 @@ export default function ExamsPage() {
                         até {new Date(exam.deadline).toLocaleDateString('pt-BR')}
                       </span>
                     )}
-                    {exam.submission_count != null && exam.total_enrolled != null && (
+                    {user?.role !== 'student' && exam.submission_count != null && exam.total_enrolled != null && (
                       <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
                         {exam.submission_count}/{exam.total_enrolled} entregues
                       </span>
@@ -556,6 +619,23 @@ export default function ExamsPage() {
                     })()
                   ) : (
                     <>
+                      {canManage && (exam.status === 'draft' || exam.status === 'published') && (
+                        <button
+                          type="button"
+                          onClick={() => togglePublish(exam)}
+                          disabled={publishingId === exam.id || (exam.status === 'published' && (exam.submission_count ?? 0) > 0)}
+                          title={exam.status === 'published'
+                            ? ((exam.submission_count ?? 0) > 0 ? 'Já há entregas: não dá para voltar a rascunho' : 'Voltar para rascunho (some para os alunos)')
+                            : 'Liberar a prova para a turma'}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 ${
+                            exam.status === 'published'
+                              ? 'border border-[#E2E8F0] dark:border-[#464554] text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#0f1c37]'
+                              : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                          }`}
+                        >
+                          {publishingId === exam.id ? '…' : exam.status === 'published' ? 'Despublicar' : 'Publicar'}
+                        </button>
+                      )}
                       <Link
                         to={`/exams/${exam.id}/submissions`}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#464554] text-xs font-semibold transition-colors hover:bg-gray-50 dark:hover:bg-[#0f1c37] text-gray-700 dark:text-slate-300"
@@ -1017,7 +1097,7 @@ export default function ExamsPage() {
                             placeholder="Filtrar por enunciado..."
                             value={vqSearch}
                             onChange={(e) => setVqSearch(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleVqSearch()}
+                            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleVqSearch() } }}
                           />
                         </div>
                         {/* Results */}
@@ -1029,9 +1109,7 @@ export default function ExamsPage() {
                             <p className="text-sm text-gray-400 dark:text-slate-400 text-center py-4">Selecione um vestibular para começar.</p>
                           )}
                           {vqResults.map((vq) => {
-                            const alreadyAdded = form.questions.some(
-                              (dq) => draftQuestionDetails.find(d => d.question_id === dq.question_id)?.question?.metadata_?.vestibular_question_id === vq.id
-                            )
+                            const alreadyAdded = vqImported[vq.id] != null && form.questions.some((dq) => dq.question_id === vqImported[vq.id])
                             const importing = vqImporting === vq.id
                             return (
                               <div
@@ -1073,7 +1151,7 @@ export default function ExamsPage() {
                                     style={alreadyAdded ? {} : { background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' }}
                                     title={alreadyAdded ? 'Já adicionada' : 'Importar e adicionar à prova'}
                                   >
-                                    {importing ? '⏳' : alreadyAdded ? '✓' : '+ Importar'}
+                                    {importing ? '⏳' : alreadyAdded ? '✓ Adicionada' : '+ Importar'}
                                   </button>
                                 </div>
                               </div>
@@ -1161,13 +1239,17 @@ export default function ExamsPage() {
                           </span>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm text-gray-700 dark:text-slate-300 truncate">
-                              {dq.question ? stripHtml(dq.question.statement).slice(0, 60) + (stripHtml(dq.question.statement).length > 60 ? '…' : '') : 'Questão não encontrada'}
+                              {dq.question ? stripHtml(dq.question.statement).slice(0, 60) + (stripHtml(dq.question.statement).length > 60 ? '…' : '') : 'Carregando questão…'}
                             </p>
-                            {dq.question?.metadata_?.vestibular_question_id && (
-                              <span className="text-[10px] font-medium text-gray-400 dark:text-slate-500">
-                                {dq.question.metadata_.exam_type?.toUpperCase?.() || 'Vestibular'} {dq.question.metadata_.year || ''}
-                              </span>
-                            )}
+                            {(() => {
+                              const vqId = Object.keys(vqImported).find((k) => vqImported[+k] === dq.question_id)
+                              const vq = vqId ? vqResults.find((r) => r.id === +vqId) : undefined
+                              return vq ? (
+                                <span className="text-[10px] font-medium text-gray-400 dark:text-slate-500">
+                                  {vq.exam_type.toUpperCase()} {vq.year} #{vq.number}
+                                </span>
+                              ) : null
+                            })()}
                           </div>
                           <div className="flex items-center gap-1.5">
                             <input
@@ -1198,6 +1280,20 @@ export default function ExamsPage() {
               </>
             )}
 
+            <label className="flex items-start gap-2 text-sm text-gray-700 dark:text-slate-300 cursor-pointer">
+              <input
+                type="checkbox"
+                className="mt-0.5"
+                checked={publishNow}
+                onChange={(e) => setPublishNow(e.target.checked)}
+              />
+              <span>
+                Publicar agora para a turma
+                <span className="block text-xs text-gray-500 dark:text-slate-400">
+                  Desmarcado, a prova fica como rascunho e os alunos só a veem depois de você clicar em Publicar.
+                </span>
+              </span>
+            </label>
             <div className="flex gap-3 justify-end pt-2 border-t border-[#E2E8F0] dark:border-[#464554]">
               <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancelar</button>
               <button
@@ -1210,7 +1306,7 @@ export default function ExamsPage() {
                   ? 'Criando...'
                   : (() => {
                       const extraCount = examMode === 'redacao' ? redacaoExtraClassIds.length : extraClassIds.length
-                      const base = examMode === 'redacao' ? 'Criar Avaliação de Redação' : 'Criar Prova'
+                      const base = !publishNow ? 'Salvar rascunho' : examMode === 'redacao' ? 'Criar Avaliação de Redação' : 'Criar Prova'
                       return extraCount > 0 ? `${base} (${1 + extraCount} turmas)` : base
                     })()}
               </button>

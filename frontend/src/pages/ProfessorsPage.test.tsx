@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import ProfessorsPage from './ProfessorsPage'
 
 vi.mock('../api', () => ({
@@ -17,6 +17,14 @@ vi.mock('../api', () => ({
   },
 }))
 
+vi.mock('../api/professorsCsv', () => ({
+  importProfessorsCsv: vi.fn((_file: File, dryRun: boolean) => Promise.resolve({
+    data: dryRun
+      ? { created: 2, skipped: 1, errors: [{ row: 3, email: 'dup@x.com', message: 'E-mail já cadastrado — linha ignorada' }], dry_run: true }
+      : { created: 2, skipped: 1, errors: [{ row: 3, email: 'dup@x.com', message: 'E-mail já cadastrado — linha ignorada' }] },
+  })),
+}))
+
 vi.mock('../contexts/AuthContext', () => ({
   useAuth: () => ({
     user: { id: 1, name: 'Admin', email: 'admin@test.com', role: 'admin', institution_id: 1, is_active: true },
@@ -24,7 +32,7 @@ vi.mock('../contexts/AuthContext', () => ({
   }),
 }))
 
-vi.mock('../components/Modal', () => ({ default: ({ children, open }: any) => open ? <div>{children}</div> : null }))
+vi.mock('../components/Modal', () => ({ default: ({ children }: any) => <div>{children}</div> }))
 vi.mock('../components/ConfirmDialog', () => ({ default: ({ open, onConfirm }: any) => open ? <button onClick={onConfirm}>Confirm</button> : null }))
 vi.mock('../components/Skeleton', () => ({ SkeletonTable: () => <div>Loading...</div> }))
 vi.mock('../components/Pagination', () => ({ default: () => <div>Pagination</div> }))
@@ -54,5 +62,23 @@ describe('ProfessorsPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Prof Silva')).toBeInTheDocument()
     })
+  })
+
+  it('imports professors from CSV: verifies first, then imports and shows the summary', async () => {
+    const { importProfessorsCsv } = await import('../api/professorsCsv')
+    render(<ProfessorsPage />)
+    fireEvent.click(await screen.findByRole('button', { name: /importar csv/i }))
+    const file = new File(['nome,email\nA,a@x.com\n'], 'prof.csv', { type: 'text/csv' })
+    fireEvent.change(document.getElementById('csv-upload-prof')!, { target: { files: [file] } })
+    fireEvent.click(screen.getByRole('button', { name: /verificar arquivo/i }))
+
+    await waitFor(() => expect(importProfessorsCsv).toHaveBeenCalledWith(file, true))
+    expect(await screen.findByText('Serão criados')).toBeInTheDocument()
+    expect(screen.getByText(/Linha 3 \(dup@x.com\): E-mail já cadastrado/)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /importar 2 professores/i }))
+    await waitFor(() => expect(importProfessorsCsv).toHaveBeenCalledWith(file, false))
+    expect(await screen.findByText('Criados')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /concluir/i })).toBeInTheDocument()
   })
 })

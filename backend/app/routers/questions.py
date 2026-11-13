@@ -227,9 +227,22 @@ def import_vestibular_to_library(
         if subject_id not in allowed_ids:
             raise HTTPException(403, "Você não leciona esta matéria")
 
-    # Duplicate check skipped: Question model has no metadata_ column.
-    # A professor can import the same vestibular question multiple times
-    # into different subjects or re-import after deletion.
+    # Question não tem coluna de origem, então a mesma questão de vestibular é
+    # reconhecida pelo enunciado: se o professor já a importou nesta matéria,
+    # devolve a cópia existente em vez de gravar outra no banco.
+    statement = vq.html_statement or vq.statement
+    existing = (
+        db.query(Question)
+        .filter(
+            Question.professor_id == current_user.id,
+            Question.subject_id == subject_id,
+            Question.statement == statement,
+        )
+        .order_by(Question.id)
+        .first()
+    )
+    if existing:
+        return existing
 
     # Map vestibular question type to Question.question_type
     q_type = "multiple_choice"  # default; vestibular questions are overwhelmingly MC
@@ -246,7 +259,7 @@ def import_vestibular_to_library(
         img = vq.image_base64
 
     question = Question(
-        statement=vq.html_statement or vq.statement,
+        statement=statement,
         question_type=q_type,
         is_public=False,
         difficulty=None,

@@ -21,6 +21,29 @@ PLAN_PRICE_MAP = {
     "enterprise": settings.STRIPE_PRICE_ENTERPRISE,
 }
 
+# Preço por professor (assento) de cada plano, como anunciado em /plans:
+# Basic R$ 9,90, Pro R$ 24,90, Enterprise R$ 19,90 por professor/mês.
+PLAN_SEAT_PRICE_MAP = {
+    "basic": settings.STRIPE_PRICE_BASIC_SEAT,
+    "pro": settings.STRIPE_PRICE_PRO_SEAT,
+    "enterprise": settings.STRIPE_PRICE_ENTERPRISE_SEAT,
+}
+
+# Pacotes avulsos de IA anunciados em /plans. "credits" é quanto entra no
+# saldo de créditos da instituição (consumido pelo excedente de IA).
+CREDIT_PACKS = {
+    "questions": {"price": settings.STRIPE_PRICE_PACK_QUESTIONS, "credits": 100, "label": "100 questões geradas com IA"},
+    "corrections": {"price": settings.STRIPE_PRICE_PACK_CORRECTIONS, "credits": 200, "label": "200 correções de discursivas com IA"},
+    "mixed": {"price": settings.STRIPE_PRICE_PACK_MIXED, "credits": 300, "label": "Pacote misto (100 questões + 200 correções)"},
+}
+
+
+def _assert_sandbox_unless_live() -> None:
+    """Piloto roda no sandbox do Stripe: recusa chave live sem STRIPE_LIVE_MODE."""
+    key = settings.STRIPE_SECRET_KEY or ""
+    if key.startswith(("sk_live_", "rk_live_")) and not settings.STRIPE_LIVE_MODE:
+        raise ValueError("Cobrança real desativada: use a chave do sandbox (sk_test_) ou ative STRIPE_LIVE_MODE.")
+
 # Valor mensal (R$) de cada plano — espelha o unit_amount configurado nos
 # Price acima no Stripe (conferido em 2026-08-28: 199,00 / 399,00 / 799,00,
 # test mode). Usado pelo dashboard do Owner para simular MRR a partir da
@@ -61,15 +84,24 @@ def _get_or_create_customer(db: Session, institution: Institution, admin: User) 
 def create_subscription_checkout_session(
     db: Session, institution: Institution, admin: User, plan: str, success_url: str, cancel_url: str
 ) -> str:
+    _assert_sandbox_unless_live()
     price_id = PLAN_PRICE_MAP.get(plan)
     if not price_id:
         raise ValueError(f"Plano inválido ou sem price configurado: {plan}")
+
+    # Base do plano + um assento por professor ativo (mínimo 1), como em /plans.
+    line_items = [{"price": price_id, "quantity": 1}]
+    seat_price = PLAN_SEAT_PRICE_MAP.get(plan)
+    if seat_price:
+        from app.services.usage import active_professor_count
+        seats = max(1, active_professor_count(db, institution.id))
+        line_items.append({"price": seat_price, "quantity": seats})
 
     customer_id = _get_or_create_customer(db, institution, admin)
     session = stripe.checkout.Session.create(
         customer=customer_id,
         mode="subscription",
-        line_items=[{"price": price_id, "quantity": 1}],
+        line_items=line_items,
         success_url=success_url,
         cancel_url=cancel_url,
         metadata={"institution_id": str(institution.id), "plan": plan},
@@ -79,22 +111,28 @@ def create_subscription_checkout_session(
 
 
 def create_credits_checkout_session(
-    db: Session, institution: Institution, admin: User, success_url: str, cancel_url: str
+    db: Session, institution: Institution, admin: User, success_url: str, cancel_url: str,
+    pack: str = "questions",
 ) -> str:
-    if not settings.STRIPE_PRICE_CREDITS_PACK:
-        raise ValueError("STRIPE_PRICE_CREDITS_PACK não configurado")
+    _assert_sandbox_unless_live()
+    cfg = CREDIT_PACKS.get(pack)
+    if not cfg:
+        raise ValueError(f"Pacote inválido. Use: {list(CREDIT_PACKS)}")
+    if not cfg["price"]:
+        raise ValueError(f"Preço do pacote '{pack}' não configurado no Stripe")
 
     customer_id = _get_or_create_customer(db, institution, admin)
     session = stripe.checkout.Session.create(
         customer=customer_id,
         mode="payment",
-        line_items=[{"price": settings.STRIPE_PRICE_CREDITS_PACK, "quantity": 1}],
+        line_items=[{"price": cfg["price"], "quantity": 1}],
         success_url=success_url,
         cancel_url=cancel_url,
         metadata={
             "institution_id": str(institution.id),
             "type": "credits_pack",
-            "credits_amount": str(settings.STRIPE_CREDITS_PACK_AMOUNT),
+            "pack": pack,
+            "credits_amount": str(cfg["credits"]),
         },
     )
     return session["url"]

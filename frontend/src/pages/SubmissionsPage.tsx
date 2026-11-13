@@ -360,7 +360,7 @@ export default function SubmissionsPage() {
           </button>
           <div>
             <h1 className="page-title">Submissões</h1>
-            <p className="page-subtitle">{exam.title} · {exam.subject.name}</p>
+            <p className="page-subtitle">{exam.title} · {exam.subject?.name ?? "—"}</p>
           </div>
         </div>
 
@@ -414,7 +414,7 @@ export default function SubmissionsPage() {
         <div className="flex-1">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm font-medium text-[#1E293B] dark:text-slate-100">
-              Turma {exam.class_.name} · {exam.class_.year}
+              Turma {exam.class_?.name ?? "—"} · {exam.class_?.year ?? ""}
             </p>
             <p className="text-sm font-bold text-[#0d9488]">{deliveredPct}%</p>
           </div>

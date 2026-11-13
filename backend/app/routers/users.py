@@ -34,14 +34,15 @@ def list_users(
     if role == UserRole.STUDENT and users:
         user_ids = [u.id for u in users]
         enrollments = (
-            db.query(StudentClass.student_id, Class.name)
+            db.query(StudentClass.student_id, Class.name, Class.year)
             .join(Class, StudentClass.class_id == Class.id)
             .filter(StudentClass.student_id.in_(user_ids))
             .all()
         )
         class_map: dict[int, list[str]] = {}
-        for student_id, class_name in enrollments:
-            class_map.setdefault(student_id, []).append(class_name)
+        for student_id, class_name, class_year in enrollments:
+            label = f"{class_name} · {class_year}" if class_year else class_name
+            class_map.setdefault(student_id, []).append(label)
         return [UserOut.from_user(u, class_names=class_map.get(u.id, [])) for u in users]
     
     return [UserOut.from_user(u) for u in users]
@@ -452,3 +453,188 @@ def confirm_bulk_import(
     
     db.commit()
     return {'created': created, 'failed': failed}
+
+
+# ── Professor CSV import ──────────────────────────────────────────────────────
+
+class ProfessorCsvRowError(BaseModel):
+    row: int
+    email: Optional[str] = None
+    message: str
+
+
+class ProfessorCsvImportResult(BaseModel):
+    created: int
+    skipped: int
+    errors: List[ProfessorCsvRowError]
+    dry_run: bool = False
+
+
+def _csv_get(row: dict, *keys: str) -> str:
+    """Lê a primeira coluna presente entre os aliases (cabeçalho case-insensitive)."""
+    for key in keys:
+        value = row.get(key)
+        if value:
+            return value.strip()
+    return ""
+
+
+def _split_names(value: str) -> List[str]:
+    return [p.strip() for p in value.replace(",", ";").split(";") if p.strip()]
+
+
+@router.post("/professors/import-csv", response_model=ProfessorCsvImportResult)
+def import_professors_csv(
+    file: UploadFile = File(...),
+    dry_run: bool = Query(False, description="Só valida, não grava nada"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    """Importa professores de um CSV (nome, email, materias, turmas).
+
+    Cada professor é criado sem senha e recebe convite por e-mail — mesmo fluxo
+    do cadastro individual. ``materias`` e ``turmas`` são opcionais, separados
+    por ";"; quando os dois vêm preenchidos o professor é atribuído a cada
+    matéria em cada turma. E-mails já cadastrados (em qualquer instituição) ou
+    repetidos no próprio arquivo são pulados. Respeita o limite de professores
+    do plano.
+    """
+    import csv
+    import io
+
+    from app.models import Subject
+    from app.services import usage as usage_service
+
+    if not file.filename or not file.filename.lower().endswith(".csv"):
+        raise HTTPException(400, "Arquivo deve ser CSV")
+    try:
+        raw = file.file.read().decode("utf-8-sig")
+    except UnicodeDecodeError:
+        raise HTTPException(400, "Arquivo deve estar em UTF-8")
+
+    # Excel em pt-BR costuma exportar com ";" — detecta o separador.
+    first_line = raw.splitlines()[0] if raw else ""
+    delimiter = ";" if first_line.count(";") > first_line.count(",") else ","
+    reader = csv.DictReader(io.StringIO(raw), delimiter=delimiter)
+    if reader.fieldnames:
+        reader.fieldnames = [(f or "").strip().lower() for f in reader.fieldnames]
+        if not ({"nome", "name"} & set(reader.fieldnames)) or not (
+            {"email", "e-mail"} & set(reader.fieldnames)
+        ):
+            raise HTTPException(400, "CSV precisa das colunas nome e email")
+
+    inst_id = current_user.institution_id
+    subjects_by_name = {
+        s.name.strip().lower(): s
+        for s in db.query(Subject).filter(Subject.institution_id == inst_id).all()
+    }
+    # Turmas com o mesmo nome em anos diferentes: fica a do ano mais recente.
+    classes_by_name: dict[str, Class] = {}
+    for c in db.query(Class).filter(Class.institution_id == inst_id).order_by(Class.year).all():
+        classes_by_name[c.name.strip().lower()] = c
+        classes_by_name[f"{c.name.strip().lower()} · {c.year}"] = c
+        classes_by_name[f"{c.name.strip().lower()} ({c.year})"] = c
+
+    seen_emails: set[str] = set()
+    # Mesmo critério do cadastro individual (usage_service.can_add_professor),
+    # calculado uma vez para valer também no dry_run.
+    from app.core.plans import get_plan_config
+    from app.models import Institution
+    inst = db.get(Institution, inst_id)
+    max_professors = get_plan_config(inst.plan_type if inst else None)["max_professors"]
+    remaining = (
+        None if max_professors is None
+        else max(0, max_professors - usage_service.active_professor_count(db, inst_id))
+    )
+    created = 0
+    skipped = 0
+    errors: List[ProfessorCsvRowError] = []
+    invites: list[tuple[User, str]] = []
+
+    for i, row in enumerate(reader, start=2):  # linha 1 = cabeçalho
+        name = _csv_get(row, "nome", "name")
+        email = _csv_get(row, "email", "e-mail").lower()
+        if not name and not email:
+            continue  # linha em branco
+        if not name or not email or "@" not in email:
+            errors.append(ProfessorCsvRowError(
+                row=i, email=email or None,
+                message="Nome e e-mail válidos são obrigatórios",
+            ))
+            continue
+        if email in seen_emails or db.query(User.id).filter(func.lower(User.email) == email).first():
+            skipped += 1
+            errors.append(ProfessorCsvRowError(row=i, email=email, message="E-mail já cadastrado — linha ignorada"))
+            continue
+        seen_emails.add(email)
+
+        subject_names = _split_names(_csv_get(row, "materias", "matérias", "subjects"))
+        class_names = _split_names(_csv_get(row, "turmas", "turma", "classes"))
+        row_subjects = []
+        for sn in subject_names:
+            s = subjects_by_name.get(sn.lower())
+            if s:
+                row_subjects.append(s)
+            else:
+                errors.append(ProfessorCsvRowError(row=i, email=email, message=f'Matéria "{sn}" não encontrada'))
+        row_classes = []
+        for cn in class_names:
+            c = classes_by_name.get(cn.lower())
+            if c:
+                row_classes.append(c)
+            else:
+                errors.append(ProfessorCsvRowError(row=i, email=email, message=f'Turma "{cn}" não encontrada'))
+        if (row_subjects and not class_names) or (row_classes and not subject_names):
+            errors.append(ProfessorCsvRowError(
+                row=i, email=email,
+                message="Informe matérias e turmas juntas para atribuir o professor",
+            ))
+
+        if remaining is not None and created >= remaining:
+            errors.append(ProfessorCsvRowError(
+                row=i, email=email,
+                message="Limite de professores do plano atingido — linha não importada",
+            ))
+            continue
+
+        created += 1
+        if dry_run:
+            continue
+
+        token = secrets.token_urlsafe(32)
+        professor = User(
+            name=name,
+            email=email,
+            hashed_password=get_password_hash(secrets.token_urlsafe(16)),
+            role=UserRole.PROFESSOR,
+            institution_id=inst_id,
+            invitation_token=token,
+            invitation_sent_at=datetime.utcnow(),
+            is_active=True,
+        )
+        db.add(professor)
+        db.flush()
+        for s in row_subjects:
+            for c in row_classes:
+                db.add(TeachingAssignment(professor_id=professor.id, subject_id=s.id, class_id=c.id))
+        invites.append((professor, token))
+
+    if dry_run:
+        return ProfessorCsvImportResult(created=created, skipped=skipped, errors=errors, dry_run=True)
+
+    db.commit()
+
+    from app.services import email as email_service
+    institution_name = current_user.institution.name if current_user.institution else ""
+    for professor, token in invites:
+        try:
+            email_service.send_professor_invitation(
+                to_email=professor.email,
+                professor_name=professor.name,
+                institution_name=institution_name,
+                token=token,
+            )
+        except Exception as exc:
+            print(f"⚠️  Falha ao enviar convite para {professor.email}: {exc}")
+
+    return ProfessorCsvImportResult(created=created, skipped=skipped, errors=errors)

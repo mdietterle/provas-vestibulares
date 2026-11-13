@@ -550,7 +550,7 @@ export default function StudentsPage() {
         </div>
         <div>
           <p className="text-sm font-semibold text-[#0d9488] dark:text-slate-400">Insights da IA</p>
-          <p className="text-xs text-[#334155] mt-0.5">
+          <p className="text-xs text-[#334155] dark:text-slate-300 mt-0.5">
             {students.length === 0
               ? 'Comece cadastrando alunos para sua instituição.'
               : <>

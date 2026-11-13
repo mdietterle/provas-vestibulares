@@ -274,15 +274,15 @@ export default function SubjectsPage() {
 
       {/* AI Insights */}
       {subjects.length > 0 && (
-        <div className="rounded-xl p-4 flex items-start gap-3 border" style={{ background: '#EFF6FF', borderColor: '#b6c4ff' }}>
+        <div className="rounded-xl p-4 flex items-start gap-3 border bg-[#EFF6FF] border-[#b6c4ff] dark:bg-[#182543] dark:border-[#464554]">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg,#0d9488,#f59e0b)', color: '#fff' }}>
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#0d9488]">Insights da IA</p>
-            <p className="text-xs text-[#334155] mt-0.5">
+            <p className="text-sm font-semibold text-[#0d9488] dark:text-[#2dd4bf]">Insights da IA</p>
+            <p className="text-xs text-[#334155] dark:text-slate-300 mt-0.5">
               Você tem <strong>{subjects.length}</strong> {subjects.length === 1 ? 'matéria cadastrada' : 'matérias cadastradas'}.
               {' '}Use o Banco de Questões para criar avaliações segmentadas por disciplina e obter análises de desempenho por matéria.
             </p>

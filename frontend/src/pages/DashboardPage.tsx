@@ -191,7 +191,8 @@ function AdminDashboard() {
         const healthScore = classesWithData.length > 0
           ? Math.round(classesWithData.reduce((sum, cs) => sum + (cs.avg_pass_rate! * 0.5 + cs.submission_rate * 0.5), 0) / classesWithData.length)
           : null
-        const highAlerts = (Array.isArray(monitoring?.alerts) ? monitoring!.alerts : []).filter(a => a.severity === 'high').length
+        const alerts = Array.isArray(monitoring?.alerts) ? monitoring!.alerts : []
+        const highAlerts = alerts.filter(a => a.severity === 'high').length
 
         const healthTone: Tone  = healthScore == null ? 'gray' : healthScore >= 70 ? 'green' : healthScore >= 50 ? 'amber' : 'red'
         const healthLabel = healthScore == null ? 'sem dados' : healthScore >= 70 ? 'Saudável' : healthScore >= 50 ? 'Atenção' : 'Crítico'
@@ -480,6 +481,7 @@ function ProfessorDashboard() {
   }, [])
 
   const hasData = !loading && data != null
+  const weekSubmissions = hasData ? (data!.correction_by_class ?? []).reduce((s, t) => s + t.total, 0) : 0
   const aiProgress = hasData ? (data!.ai_progress ?? 0) : 0
 
   return (
@@ -496,7 +498,7 @@ function ProfessorDashboard() {
           </p>
         </div>
         <div className="flex gap-3">
-          <QuickAction to="/exams" label="Nova Prova" icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>} />
+          <QuickAction to="/exams?new=1" label="Nova Prova" icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>} />
           <QuickAction to="/questions" label="✦ Criar com IA" gradient icon={null} />
         </div>
       </div>
@@ -542,14 +544,14 @@ function ProfessorDashboard() {
           </div>
 
           <div className="flex items-center gap-6 mb-5">
-            <CircleProgress pct={aiProgress} size={88} stroke={8} color={hasData ? '#f59e0b' : '#9ca3af'} label={hasData ? 'corrigido' : undefined} />
+            <CircleProgress pct={aiProgress} size={88} stroke={8} color={hasData && weekSubmissions > 0 ? '#f59e0b' : '#9ca3af'} label={hasData && weekSubmissions > 0 ? 'corrigido' : undefined} />
             <div className="flex-1 space-y-1 text-sm">
               <p className="text-[#334155] dark:text-slate-300">
-                {hasData ? (
+                {!hasData ? 'Carregando dados de correção…' : weekSubmissions === 0 ? 'Nenhuma entrega para corrigir esta semana.' : (
                   <>
                     <span className="font-bold text-[#1E293B] dark:text-[#F8FAFC]">{aiProgress}%</span> das submissões desta semana já foram processadas pela IA.
                   </>
-                ) : 'Carregando dados de correção…'}
+                )}
               </p>
               {hasData && data!.correction_by_class && data!.correction_by_class.length > 0 && (
                 <p className="text-xs text-[#64748B] dark:text-slate-400">
@@ -618,7 +620,7 @@ function ProfessorDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <ActionTile to="/questions" label="Banco de Questões" sub="Criar e gerenciar questões com IA"
             icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>} />
-          <ActionTile to="/exams" label="Criar Nova Prova" sub="Monte e publique sua próxima avaliação"
+          <ActionTile to="/exams?new=1" label="Criar Nova Prova" sub="Monte e publique sua próxima avaliação"
             icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4"/></svg>} />
           <ActionTile to="/corrections" label="Painel de Correções" sub="Revisar respostas e liberar resultados"
             icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>} />

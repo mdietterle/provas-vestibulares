@@ -133,9 +133,9 @@ export default function ExamDetailPage() {
 
       <div className="card mb-6">
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div><span className="text-gray-500">Matéria:</span> <span className="font-medium">{exam.subject.name}</span></div>
-          <div><span className="text-gray-500">Turma:</span> <span className="font-medium">{exam.class_.name} — {exam.class_.year}</span></div>
-          <div><span className="text-gray-500">Professor:</span> <span className="font-medium">{exam.professor.name}</span></div>
+          <div><span className="text-gray-500">Matéria:</span> <span className="font-medium">{exam.subject?.name ?? "—"}</span></div>
+          <div><span className="text-gray-500">Turma:</span> <span className="font-medium">{exam.class_?.name ?? "—"} — {exam.class_?.year ?? ""}</span></div>
+          <div><span className="text-gray-500">Professor:</span> <span className="font-medium">{exam.professor?.name ?? "—"}</span></div>
           <div><span className="text-gray-500">Total:</span> <span className="font-medium">{totalPoints} pontos</span></div>
         </div>
         {exam.instructions && (

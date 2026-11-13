@@ -452,7 +452,7 @@ export default function PlansPage() {
               },
               {
                 q: 'O que acontece quando acabo os créditos de IA?',
-                a: 'A geração e correção por IA ficam pausadas até o próximo ciclo ou até comprar um pacote avulso. As outras funcionalidades continuam normais.',
+                a: 'O uso não é bloqueado: o que passar da cota do mês é registrado para faturamento de créditos avulsos conforme o plano contratado (ou descontado de um pacote já comprado). As outras funcionalidades continuam normais.',
               },
               {
                 q: 'Há fidelidade?',

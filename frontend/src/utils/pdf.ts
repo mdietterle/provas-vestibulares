@@ -3,10 +3,12 @@ import autoTable from 'jspdf-autotable'
 import type { Class, Exam, Question, Subject, TeachingAssignment, User } from '../types'
 import type { Submission, SubmissionList } from '../types/submission'
 import type { DashboardStats } from '../api'
+import { stripHtmlInline } from './format'
 
 export function stripHtml(html: string): string {
   if (!html || !html.includes('<')) return html
-  return html.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').trim()
+  // Células do PDF são de uma linha só: blocos viram espaço (não "colam").
+  return stripHtmlInline(html)
 }
 
 // ─── Design tokens ────────────────────────────────────────────────────────────

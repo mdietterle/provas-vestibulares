@@ -64,7 +64,7 @@ def generate_questions(
     quota = usage_service.check_quota(
         db, current_user, UsageEventType.AI_GENERATION.value, quantity=payload.count
     )
-    if not quota["allowed"]:
+    if not usage_service.can_use_ai(quota):
         raise HTTPException(
             402,
             {
@@ -73,10 +73,7 @@ def generate_questions(
                 "used": quota["used"],
                 "limit": quota["limit"],
                 "remaining": quota["remaining"],
-                "message": (
-                    f"Você utilizou {quota['used']} de {quota['limit']} gerações por IA "
-                    f"disponíveis neste mês. Adquira um pacote avulso para continuar."
-                ),
+                "message": "A geração de questões por IA está disponível a partir do plano Pro.",
             },
         )
 

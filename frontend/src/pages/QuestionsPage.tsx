@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import type { Question, Subject, TeachingAssignment } from '../types'
 import ConfirmDialog from '../components/ConfirmDialog'
 import { exportQuestions } from '../utils/pdf'
+import { stripHtmlInline } from '../utils/format'
 import Pagination from '../components/Pagination'
 import QuestionCard from './questions/QuestionCard'
 import QuestionFormModal from './questions/QuestionFormModal'
@@ -75,7 +76,8 @@ export default function QuestionsPage() {
     if (filterSubject && q.subject_id !== filterSubject) return false
     if (filterType && q.question_type !== filterType) return false
     if (filterDifficulty && q.difficulty !== filterDifficulty) return false
-    if (search && !q.statement.toLowerCase().includes(search.toLowerCase())) return false
+    // Busca no texto visível (sem tags), com os blocos separados por espaço
+    if (search && !stripHtmlInline(q.statement).toLowerCase().includes(search.toLowerCase())) return false
     return true
   })
 
@@ -88,7 +90,7 @@ export default function QuestionsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="page-title">Banco de Questões</h1>
-          <p className="page-subtitle">{questions.length} {questions.length !== 1 ? 'questões' : 'questão'} cadastrada{questions.length !== 1 ? 's' : ''}</p>
+          <p className="page-subtitle">{loading ? 'Carregando questões…' : `${questions.length} ${questions.length !== 1 ? 'questões' : 'questão'} cadastrada${questions.length !== 1 ? 's' : ''}`}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button

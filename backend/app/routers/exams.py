@@ -1,4 +1,5 @@
 import io
+from datetime import datetime
 import re
 import zipfile
 from html.parser import HTMLParser
@@ -32,6 +33,9 @@ from app.vestibular.models import VestibularQuestion
 from app.schemas import ExamApply, ExamCreate, ExamCreateRedacao, ExamListOut, ExamOut, ExamUpdate
 
 router = APIRouter(prefix="/exams", tags=["exams"])
+
+# Status em que a prova aparece para o aluno. "draft" só o professor/admin vê.
+STUDENT_VISIBLE_STATUSES = ("published", "closed")
 
 
 # Questões importadas de bancos públicos têm a origem embutida no fim do
@@ -84,6 +88,8 @@ def _assert_exam_view_access(db: Session, exam: Optional[Exam], current_user: Us
         )
         if not enrolled:
             raise HTTPException(403, "Sem acesso")
+        if exam.status not in STUDENT_VISIBLE_STATUSES:
+            raise HTTPException(404, "Prova não encontrada")
 
 
 def _assert_professor_teaches(db: Session, professor_id: int, subject_id: int, class_id: int):
@@ -100,7 +106,7 @@ def _assert_professor_teaches(db: Session, professor_id: int, subject_id: int, c
         raise HTTPException(403, "Você não leciona esta matéria nesta turma")
 
 
-@router.get("", response_model=List[ExamListOut])
+@router.get("")
 def list_exams(
     subject_id: Optional[int] = Query(None),
     class_id: Optional[int] = Query(None),
@@ -127,6 +133,8 @@ def list_exams(
             .subquery()
         )
         q = q.filter(Exam.class_id.in_(enrolled_class_ids))
+        # Rascunho fica invisível para o aluno até o professor publicar.
+        q = q.filter(Exam.status.in_(STUDENT_VISIBLE_STATUSES))
     if subject_id:
         q = q.filter(Exam.subject_id == subject_id)
     if class_id:
@@ -171,16 +179,27 @@ def list_exams(
         .all()
     ) if class_ids else {}
 
+    is_student = current_user.role == UserRole.STUDENT
     result = []
     for exam in q.all():
         item = ExamListOut.model_validate(exam)
         item.question_count = counts.get(exam.id, 0)
-        item.submission_count = sub_counts.get(exam.id, 0)
-        item.total_enrolled = enrolled_counts.get(exam.class_id, 0)
-        if current_user.role == UserRole.STUDENT:
+        if is_student:
+            # Prova sem questões não tem o que responder: não aparece para o aluno.
+            if item.question_count == 0:
+                continue
             sa = my_submitted.get(exam.id)
             item.submitted_at = sa.isoformat() if sa else None
-        result.append(item)
+        else:
+            item.submission_count = sub_counts.get(exam.id, 0)
+            item.total_enrolled = enrolled_counts.get(exam.class_id, 0)
+        data = item.model_dump(mode="json")
+        if is_student:
+            # Contadores e dados do professor são informação de gestão.
+            data.pop("submission_count", None)
+            data.pop("total_enrolled", None)
+            _strip_professor_details(data)
+        result.append(data)
     return result
 
 
@@ -315,8 +334,11 @@ def get_exam(
 ):
     exam = db.get(Exam, exam_id)
     _assert_exam_view_access(db, exam, current_user)
-    
-    # For students, check submission status and filter answer keys if not released
+
+    # Serializa sempre pelo ExamOut: sem isso o professor recebia só as colunas
+    # da tabela (sem subject, class_, professor e questões) e a tela quebrava.
+    exam_dict = ExamOut.model_validate(exam).model_dump(mode="json")
+
     if current_user.role == UserRole.STUDENT:
         submission = (
             db.query(ExamSubmission)
@@ -324,19 +346,20 @@ def get_exam(
             .first()
         )
         submission_status = submission.status if submission else None
-        
-        # Serialize exam to dict and filter sensitive fields
-        from app.schemas import ExamOut
-        exam_out = ExamOut.model_validate(exam)
-        exam_dict = exam_out.model_dump(mode="json")
-        
+
         # Strip answer keys unless submission is RELEASED
         if submission_status != SubmissionStatus.RELEASED:
             _strip_answer_keys(exam_dict)
-        
-        return exam_dict
-    
-    return exam
+        _strip_professor_details(exam_dict)
+
+    return exam_dict
+
+
+def _strip_professor_details(data: dict) -> None:
+    """O aluno só precisa do nome do professor: remove e-mail, papel, datas etc."""
+    prof = data.get("professor")
+    if isinstance(prof, dict):
+        data["professor"] = {"id": prof.get("id"), "name": prof.get("name")}
 
 
 def _strip_answer_keys(exam_dict: dict) -> None:
@@ -433,6 +456,9 @@ def apply_exam(
         professor_id=current_user.id,
         subject_id=exam.subject_id,
         class_id=payload.class_id,
+        # A cópia nasce no mesmo estado da original (rascunho continua rascunho).
+        status=exam.status if exam.status in ("draft", "published") else "draft",
+        published_at=datetime.utcnow() if exam.status == "published" else None,
     )
     db.add(new_exam)
     db.flush()
@@ -451,6 +477,47 @@ def apply_exam(
     db.commit()
     db.refresh(new_exam)
     return new_exam
+
+
+@router.post("/{exam_id}/publish", response_model=ExamOut)
+def publish_exam(
+    exam_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_professor),
+):
+    """Libera a prova para os alunos da turma."""
+    exam = db.get(Exam, exam_id)
+    _assert_exam_manage_access(db, exam, current_user)
+    has_questions = (
+        db.query(ExamQuestion.id).filter(ExamQuestion.exam_id == exam_id).first()
+        or db.query(ExamVestibularQuestion.id).filter(ExamVestibularQuestion.exam_id == exam_id).first()
+    )
+    if not has_questions:
+        raise HTTPException(400, "Adicione pelo menos uma questão antes de publicar")
+    if exam.status != "published":
+        exam.status = "published"
+        exam.published_at = datetime.utcnow()
+        db.commit()
+        db.refresh(exam)
+    return exam
+
+
+@router.post("/{exam_id}/unpublish", response_model=ExamOut)
+def unpublish_exam(
+    exam_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_professor),
+):
+    """Volta a prova para rascunho, desde que nenhum aluno tenha entregado."""
+    exam = db.get(Exam, exam_id)
+    _assert_exam_manage_access(db, exam, current_user)
+    if db.query(ExamSubmission.id).filter(ExamSubmission.exam_id == exam_id).first():
+        raise HTTPException(400, "A prova já tem entregas e não pode voltar para rascunho")
+    exam.status = "draft"
+    exam.published_at = None
+    db.commit()
+    db.refresh(exam)
+    return exam
 
 
 @router.delete("/{exam_id}", status_code=204)

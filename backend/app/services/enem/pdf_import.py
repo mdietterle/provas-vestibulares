@@ -462,6 +462,18 @@ def _split_options(lines: list[str]) -> tuple[str, list[str]]:
     às vezes começa com uma frase iniciada por uma letra maiúscula isolada).
 
     Supports formats: "A text", "A) text", "(A) text", "A. text"."""
+    idx_a, options = _locate_options(lines)
+    if idx_a is None:
+        return "\n".join(lines).strip(), []
+    return "\n".join(lines[:idx_a]).strip(), options
+
+
+def _locate_options(lines: list[str]) -> tuple[Optional[int], list[str]]:
+    """Como `_split_options`, mas devolve o índice da linha onde começa a
+    alternativa A (ou None se não houver as 5 alternativas). O chamador usa
+    esse índice para cortar TAMBÉM as linhas HTML paralelas — sem isso o
+    `html_statement` (e o enunciado em texto puro derivado dele) carregava as
+    alternativas grudadas no fim ("... é A 0,16 m. B 0,50 m. ...")."""
     n = len(lines)
 
     def find_before(upper_bound: int, letter: str) -> Optional[int]:
@@ -472,22 +484,213 @@ def _split_options(lines: list[str]) -> tuple[str, list[str]]:
 
     idx_e = find_before(n, "E")
     if idx_e is None:
-        return "\n".join(lines).strip(), []
+        return None, []
     idx_d = find_before(idx_e, "D")
     idx_c = find_before(idx_d, "C") if idx_d is not None else None
     idx_b = find_before(idx_c, "B") if idx_c is not None else None
     idx_a = find_before(idx_b, "A") if idx_b is not None else None
     if None in (idx_d, idx_c, idx_b, idx_a):
-        return "\n".join(lines).strip(), []
+        return None, []
 
-    statement = "\n".join(lines[:idx_a]).strip()
     bounds = [idx_a, idx_b, idx_c, idx_d, idx_e, n]
     options = []
     for k in range(5):
         seg = lines[bounds[k]:bounds[k + 1]]
         first = re.sub(r"^\(?[A-E]\)?\.?\s*|\)\s*", "", seg[0], count=1)
         options.append(" ".join([first] + seg[1:]).strip())
-    return statement, options
+    return idx_a, options
+
+
+# ── Sobrescrito / subscrito ─────────────────────────────────────────────────
+#
+# O PDF do ENEM não usa caracteres Unicode de expoente: "10⁴ Pa" é desenhado
+# como um span "10" + um span "4" menor e acima da linha de base. Juntar os
+# spans às cegas produzia "104 Pa" / "50 m2" (com 104 Pa nenhuma alternativa
+# da questão fica correta). Cada span é classificado aqui como sobrescrito
+# ou subscrito — pela flag de sobrescrito do PyMuPDF ou, como fallback, por
+# fonte menor deslocada da linha de base do span dominante da linha — e vira
+# <sup>/<sub> no HTML e o caractere Unicode equivalente no texto puro.
+_SPAN_FLAG_SUPERSCRIPT = 1  # fitz.TEXT_FONT_SUPERSCRIPT
+_SPAN_FLAG_ITALIC = 1 << 1
+_SPAN_FLAG_BOLD = 1 << 4
+
+_SUPERSCRIPT_TABLE = str.maketrans("0123456789+-−=()ni", "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁻⁼⁽⁾ⁿⁱ")
+_SUBSCRIPT_TABLE = str.maketrans("0123456789+-−=()", "₀₁₂₃₄₅₆₇₈₉₊₋₋₌₍₎")
+
+
+def _to_script_chars(text: str, kind: str) -> Optional[str]:
+    """Converte `text` para sobrescrito/subscrito Unicode, ou None se algum
+    caractere não tiver equivalente (aí o texto puro fica com o original)."""
+    table = _SUPERSCRIPT_TABLE if kind == "sup" else _SUBSCRIPT_TABLE
+    converted = text.translate(table)
+    if any(not c.isspace() and c == o for c, o in zip(converted, text)):
+        return None
+    return converted
+
+
+def _span_script(span: dict, base_size: float, base_y: Optional[float]) -> Optional[str]:
+    """'sup', 'sub' ou None para um span, relativo ao span dominante da linha."""
+    if not (span.get("text") or "").strip():
+        return None
+    size = float(span.get("size") or 0)
+    smaller = bool(base_size and size and size < base_size * 0.85)
+    origin = span.get("origin")
+    dy = (origin[1] - base_y) if (origin and base_y is not None) else None
+    if span.get("flags", 0) & _SPAN_FLAG_SUPERSCRIPT:
+        # A flag só é confiável quando o span é de fato menor que o texto da
+        # linha (um span isolado numa linha própria pode vir marcado sozinho).
+        if smaller or base_size == 0 or (dy is not None and dy < -0.15 * base_size):
+            return "sup"
+    if smaller and dy is not None:
+        if dy < -0.15 * base_size:
+            return "sup"
+        if dy > 0.1 * base_size:
+            return "sub"
+    return None
+
+
+def _line_base(spans: list[dict]) -> tuple[float, Optional[float]]:
+    """(tamanho, y da linha de base) do span dominante: o de maior fonte com
+    texto, desempatando pelo mais longo."""
+    candidates = [s for s in spans if (s.get("text") or "").strip()]
+    if not candidates:
+        return 0.0, None
+    dominant = max(candidates, key=lambda s: (float(s.get("size") or 0), len(s["text"].strip())))
+    origin = dominant.get("origin")
+    return float(dominant.get("size") or 0), (origin[1] if origin else None)
+
+
+def _render_spans(spans: list[dict], base: Optional[tuple[float, Optional[float]]] = None) -> tuple[str, str]:
+    """Monta (texto puro, HTML) de uma linha a partir dos spans do PyMuPDF,
+    preservando negrito/itálico e convertendo sobrescrito/subscrito."""
+    base_size, base_y = base if base is not None else _line_base(spans)
+    plain_parts: list[str] = []
+    html_parts: list[str] = []
+    for s in spans:
+        txt = s.get("text") or ""
+        if not txt:
+            continue
+        flags = s.get("flags", 0)
+        script = _span_script(s, base_size, base_y)
+        if script:
+            converted = _to_script_chars(txt, script)
+            plain_parts.append(converted if converted is not None else txt)
+            inner = f"<{script}>{txt.strip()}</{script}>"
+            # Mantém espaços nas bordas fora da tag.
+            inner = txt[: len(txt) - len(txt.lstrip())] + inner + txt[len(txt.rstrip()):]
+        else:
+            plain_parts.append(txt)
+            inner = txt
+        is_bold = bool(flags & _SPAN_FLAG_BOLD)
+        is_italic = bool(flags & _SPAN_FLAG_ITALIC)
+        if is_bold and is_italic:
+            html_parts.append(f"<b><i>{inner}</i></b>")
+        elif is_bold:
+            html_parts.append(f"<b>{inner}</b>")
+        elif is_italic:
+            html_parts.append(f"<i>{inner}</i>")
+        else:
+            html_parts.append(inner)
+    return "".join(plain_parts).strip(), "".join(html_parts).strip()
+
+
+def _merge_script_only_lines(lines: list[dict]) -> tuple[list[list[dict]], list[list[float]]]:
+    """Agrupa as linhas de um bloco em linhas visuais (listas de spans + bbox).
+
+    O MuPDF às vezes quebra uma mesma linha visual em duas "linhas" por causa
+    do expoente: ou o "4" de "10⁴" vira uma linha só dele (outra linha de
+    base), ou o texto depois do expoente ("⁴ Pa.") começa uma linha nova. Nos
+    dois casos o resultado era "10" e "4 Pa." em parágrafos separados. Aqui a
+    linha é fundida na anterior, na posição x correta, quando:
+    - é só um expoente/índice curto e menor, sobreposto verticalmente; ou
+    - tem a mesma linha de base e continua horizontalmente a anterior."""
+    merged: list[tuple[list[dict], list[float]]] = []
+    for line in lines:
+        spans = [s for s in line.get("spans", []) if s.get("text")]
+        if not spans:
+            continue
+        bbox = list(line.get("bbox") or (0, 0, 0, 0))
+        if merged:
+            prev_spans, prev_bbox = merged[-1]
+            prev_size, prev_y = _line_base(prev_spans)
+            this_size, this_y = _line_base(spans)
+            text = "".join(s["text"] for s in spans).strip()
+            overlaps = bbox[1] < prev_bbox[3] and bbox[3] > prev_bbox[1]
+            script_only = bool(
+                text and len(text) <= 4 and prev_size
+                and this_size < prev_size * 0.85 and overlaps
+            )
+            same_baseline = bool(
+                prev_size and prev_y is not None and this_y is not None
+                and abs(this_y - prev_y) <= 0.2 * prev_size
+                and abs(this_size - prev_size) <= 0.15 * prev_size
+                and prev_bbox[2] - prev_size <= bbox[0] <= prev_bbox[2] + 2 * prev_size
+            )
+            if script_only or same_baseline:
+                combined = sorted(prev_spans + spans, key=lambda s: (s.get("bbox") or (0,))[0])
+                new_bbox = [
+                    min(prev_bbox[0], bbox[0]), min(prev_bbox[1], bbox[1]),
+                    max(prev_bbox[2], bbox[2]), max(prev_bbox[3], bbox[3]),
+                ]
+                merged[-1] = (combined, new_bbox)
+                continue
+        merged.append((spans, bbox))
+    return [spans for spans, _ in merged], [bbox for _, bbox in merged]
+
+
+# ── Créditos de imagem ──────────────────────────────────────────────────────
+#
+# A linha de crédito da figura ("Disponível em: www.... Acesso em: ...") fica
+# logo abaixo da imagem no PDF. Como a imagem é extraída à parte, o crédito
+# acabava sendo a PRIMEIRA linha do enunciado. Linhas de crédito que aparecem
+# no início da questão ou logo após uma figura são tiradas do fluxo do texto
+# e reanexadas ao FIM do enunciado (e guardadas em metadata.image_credit).
+_CREDIT_START_RE = re.compile(
+    r"^\s*(?:Dispon[ií]vel\s+em\s*:|Acesso\s+em\s*:|Fonte\s*:|Foto\s*:|Imagem\s*:|Ilustra[çc][ãa]o\s*:)",
+    re.I,
+)
+
+
+def _is_credit_line(text: str, previous_credit: Optional[str]) -> bool:
+    if _CREDIT_START_RE.match(text):
+        return True
+    if previous_credit is None:
+        return False
+    stripped = text.strip()
+    # Continuação de um crédito quebrado em mais de uma linha (URL longa,
+    # "Acesso em" na linha de baixo, "(adaptado)").
+    if re.match(r"^\(?adaptad", stripped, re.I):
+        return True
+    # URL quebrada no meio: a continuação é um "pedaço" sem espaços, e a
+    # linha anterior não terminou a frase.
+    if " " not in stripped and not re.search(r"[.)]\s*$", previous_credit.strip()):
+        return True
+    return False
+
+
+def _html_to_plain(html: str) -> str:
+    """HTML do enunciado → texto puro: parágrafos viram quebras de linha e
+    <sup>/<sub> viram caracteres Unicode (quando possível)."""
+    text = re.sub(r"</p>\s*<p>", "\n", html, flags=re.I)
+
+    def _conv(kind: str):
+        def inner(m: re.Match) -> str:
+            converted = _to_script_chars(m.group(1), kind)
+            return converted if converted is not None else m.group(1)
+        return inner
+
+    text = re.sub(r"<sup>(.*?)</sup>", _conv("sup"), text, flags=re.I | re.S)
+    text = re.sub(r"<sub>(.*?)</sub>", _conv("sub"), text, flags=re.I | re.S)
+    return re.sub(r"<[^>]+>", "", text).strip()
+
+
+def _statement_ends_with_options(statement: str, options: list[str]) -> bool:
+    """Salvaguarda: o enunciado ainda termina com as 5 alternativas inline?"""
+    if len(options) != 5:
+        return False
+    norm = lambda s: re.sub(r"\s+", " ", s).strip()
+    tail = norm(" ".join(f"{letter} {opt}" for letter, opt in zip("ABCDE", options)))
+    return bool(tail) and norm(statement).endswith(tail)
 
 
 _INSTRUCTIONS_START_RE = re.compile(r"LEIA\s+ATENTAMENTE\s+AS\s+INSTRU", re.I)
@@ -584,31 +787,16 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
         for block in page_dict["blocks"]:
             if block["type"] != 0:
                 continue
-            for line in block["lines"]:
-                line_text = "".join(s["text"] for s in line["spans"]).strip()
+            line_spans, line_bboxes = _merge_script_only_lines(block["lines"])
+            for spans, bbox in zip(line_spans, line_bboxes):
+                # Texto puro e HTML saem dos spans: negrito/itálico viram
+                # tags e expoentes/índices viram <sup>/<sub> (HTML) e
+                # caracteres Unicode (texto puro) — ver `_render_spans`.
+                line_text, line_html = _render_spans(spans)
                 if not line_text:
                     continue
-                x, y = line["bbox"][0], line["bbox"][1]
+                x, y = bbox[0], bbox[1]
                 col = 0 if x < mid_x else 1
-
-                # Build HTML with formatting preserved (bold/italic from spans)
-                html_parts = []
-                for s in line["spans"]:
-                    txt = s["text"]
-                    if not txt:
-                        continue
-                    flags = s.get("flags", 0)
-                    is_bold = bool(flags & 2**4)   # bit 4 = bold
-                    is_italic = bool(flags & 2**1)  # bit 1 = italic
-                    if is_bold and is_italic:
-                        html_parts.append(f"<b><i>{txt}</i></b>")
-                    elif is_bold:
-                        html_parts.append(f"<b>{txt}</b>")
-                    elif is_italic:
-                        html_parts.append(f"<i>{txt}</i>")
-                    else:
-                        html_parts.append(txt)
-                line_html = "".join(html_parts).strip()
 
                 area = _match_area(line_text)
                 if area:
@@ -672,21 +860,48 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
 
     from app.services.pdf_text_utils import join_lines_smart as _join_lines_smart, join_html_smart as _join_html_smart
 
-    from app.services.pdf_text_utils import _html_to_plain_preserve_exponents as _html_to_plain
+    # Créditos de imagem retirados do início da questão / de logo após uma
+    # figura (ver `_is_credit_line`); reanexados ao fim do enunciado no flush.
+    credit_lines: list[str] = []
+    credit_html_lines: list[str] = []
+    credit_zone = False
 
     def flush():
         nonlocal q_num, statement_lines, statement_html_lines, pending_images
+        nonlocal credit_lines, credit_html_lines, credit_zone
         if q_num is None:
             statement_lines, statement_html_lines, pending_images = [], [], []
+            credit_lines, credit_html_lines, credit_zone = [], [], False
             return
-        stmt, opts = _split_options(statement_lines)
-        html_stmt = _join_html_smart(statement_html_lines) if statement_html_lines else None
+        idx_a, opts = _locate_options(statement_lines)
+        # Linhas HTML são paralelas às de texto puro; um passage injetado sem
+        # HTML deixaria a lista HTML mais curta no início — o offset corrige.
+        offset = len(statement_lines) - len(statement_html_lines)
+        if idx_a is None:
+            plain_lines, html_lines = statement_lines, statement_html_lines
+        else:
+            # Corta as alternativas das DUAS listas: antes só o texto puro era
+            # cortado, e o HTML (de onde o texto final é derivado) ficava com
+            # "... é A 0,16 m. B 0,50 m. ..." grudado no fim.
+            plain_lines = statement_lines[:idx_a]
+            html_lines = statement_html_lines[: max(idx_a - offset, 0)]
+        html_stmt = _join_html_smart(html_lines) if html_lines else None
         if html_stmt:
-            # Use HTML as source of truth but preserve <sup>/<sub> as Unicode
+            # HTML é a fonte de verdade; <sup>/<sub> viram Unicode no texto puro.
             stmt = _html_to_plain(html_stmt)
-        # Validate: statement must not contain option markers; need exactly 5 options
-        has_option_in_stmt = bool(re.search(r'(?:^|\n)\s*\(?[A-E]\)?\.?\s+\S', stmt))
-        parse_error = not stmt or len(opts) != 5 or has_option_in_stmt
+        else:
+            stmt = _join_lines_smart(plain_lines)
+        # Salvaguarda: precisa de 5 alternativas e nenhuma delas pode ter
+        # sobrado grudada no fim do enunciado.
+        parse_error = not stmt or len(opts) != 5 or _statement_ends_with_options(stmt, opts)
+        image_credit = None
+        if credit_lines:
+            image_credit = _join_lines_smart(credit_lines)
+            stmt = f"{stmt}\n{image_credit}" if stmt else image_credit
+            credit_html = _join_html_smart(credit_html_lines)
+            credit_html = re.sub(r"<p>", '<p class="image-credit"><small>', credit_html)
+            credit_html = credit_html.replace("</p>", "</small></p>")
+            html_stmt = (html_stmt or "") + credit_html
         img_b64 = None
         extra_images = []
         if pending_images:
@@ -702,9 +917,11 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
             "options": opts,
             "image_base64": img_b64,
             "extra_images": extra_images,
+            "image_credit": image_credit,
             "parse_error": parse_error,
         })
         q_num, statement_lines, statement_html_lines, pending_images = None, [], [], []
+        credit_lines, credit_html_lines, credit_zone = [], [], False
 
     for _page_idx, _y, etype, val in events:
         if etype == "area":
@@ -748,6 +965,7 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
                 active_passage_lines = []
                 active_passage_html_lines = []
             q_num = val
+            credit_zone = True
             # Injeta passage compartilhado se questão está no range declarado
             if shared_passage_range and shared_passage_text and shared_passage_range[0] <= val <= shared_passage_range[1]:
                 statement_lines = [shared_passage_text]
@@ -757,7 +975,13 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
                 statement_html_lines = ([current_passage_html] if current_passage_html else [])
         elif etype == "text":
             plain_val, html_val = val
-            if q_num is not None:
+            if q_num is not None and credit_zone and _is_credit_line(
+                plain_val, credit_lines[-1] if credit_lines else None
+            ):
+                credit_lines.append(plain_val)
+                credit_html_lines.append(html_val)
+            elif q_num is not None:
+                credit_zone = False
                 statement_lines.append(plain_val)
                 statement_html_lines.append(html_val)
             elif shared_passage_range is not None and not shared_passage_text:
@@ -769,6 +993,7 @@ def parse_exam_pdf(path: Path) -> tuple[list[dict], Optional[str], str]:
         elif etype == "image":
             if q_num is not None:
                 pending_images.append(val)
+                credit_zone = True
 
     flush()
     return questions, detected_color, instructions
@@ -984,6 +1209,8 @@ def import_enem_pdf(
                 "subject": subject,
                 "difficulty": difficulty,
             }
+            if q.get("image_credit"):
+                metadata["image_credit"] = q["image_credit"]
 
             extra = q.get("extra_images")
             images = [{"image_base64": img["image_base64"], "order": idx + 1} for idx, img in enumerate(extra)] if extra else None

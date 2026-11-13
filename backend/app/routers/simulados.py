@@ -1,25 +1,36 @@
 """Router for Simulado (mock exam) feature."""
 import json
 import random
+import re
 from collections import deque
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import BaseModel, Field
-from sqlalchemy import func
+from sqlalchemy import exists, func, or_
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.deps import get_current_user
-import app.models
 from app.models import (
     QuestionReport,
     Simulado,
     SimuladoQuestion,
     User,
 )
-from app.services.simulado_corrector import correct_simulado, _option_letter
+from app.services.simulado_corrector import (
+    LEGACY_EXAM_TYPE_MODELS,
+    _option_letter,
+    attach_underlying_questions,
+    correct_simulado,
+    get_underlying_question,
+    get_underlying_ref,
+    question_metadata,
+    question_type_of,
+    sorted_options,
+)
+from app.vestibular.models import VestibularQuestion, VestibularQuestionOption
 
 router = APIRouter(prefix="/simulados", tags=["simulados"])
 
@@ -32,18 +43,19 @@ UNLIMITED_SIMULADOS_EMAIL = "dietterle@gmail.com"
 # Cada banco público de questões vira um "exam_type" de simulado. Não é
 # permitido misturar bancos num mesmo simulado — o exam_type escolhido
 # define de qual banco (e só dele) as questões são sorteadas.
-EXAM_TYPE_MODELS: Dict[str, Any] = {}
-for name, obj in vars(app.models).items():
-    if name.endswith("Question") and name not in ("Question", "SimuladoQuestion", "BaseQuestion", "ExamQuestion"):
-        if hasattr(obj, "__tablename__"):
-            exam_type = name[:-8].lower()
-            EXAM_TYPE_MODELS[exam_type] = obj
+#
+# As questões são sorteadas da tabela unificada `vestibular_questions` (onde
+# todos os importadores gravam hoje). EXAM_TYPE_MODELS = tabelas legadas por
+# banco, usadas só pra continuar exibindo simulados antigos e pelo painel de
+# denúncias do owner (app/routers/question_reports.py) / migrations.py.
+EXAM_TYPE_MODELS: Dict[str, Any] = LEGACY_EXAM_TYPE_MODELS
 
-# Nome da coluna FK em SimuladoQuestion para cada tabela de origem.
-_FK_FIELD_BY_TABLE = {
-    obj.__tablename__: f"{exam_type}_question_id"
-    for exam_type, obj in EXAM_TYPE_MODELS.items()
-}
+# Denúncias de questões da tabela unificada usam exam_type com este prefixo
+# ("vq:enem"), pra não colidir com IDs das tabelas legadas — o mesmo
+# question_id pode existir em enem_questions e em vestibular_questions.
+VQ_REPORT_PREFIX = "vq:"
+
+_EXAM_TYPE_RE = re.compile(r"^[a-z0-9_]{1,30}$")
 
 
 # Motivos fixos oferecidos ao aluno no "Reportar problema" — cobrem os
@@ -107,31 +119,30 @@ def _serialize_option(opt, include_is_correct: bool = False) -> Dict[str, Any]:
 
 
 def _underlying_question(sq: SimuladoQuestion):
-    for exam_type in EXAM_TYPE_MODELS:
-        q = getattr(sq, f"{exam_type}_question", None)
-        if q is not None:
-            return q
-    return None
+    return get_underlying_question(sq)
 
 
 def _underlying_exam_type_and_id(sq: SimuladoQuestion) -> tuple[Optional[str], Optional[int]]:
     """(exam_type, question_id) da questão real por trás deste SimuladoQuestion
     — usado pra reportar/bloquear a questão no banco de origem, não só nesta
-    tentativa de simulado."""
-    for exam_type in EXAM_TYPE_MODELS:
-        qid = getattr(sq, f"{exam_type}_question_id", None)
-        if qid is not None:
-            return exam_type, qid
-    return None, None
+    tentativa de simulado. Questões da tabela unificada voltam com o prefixo
+    VQ_REPORT_PREFIX no exam_type."""
+    exam_type, qid, unified = get_underlying_ref(sq)
+    if not exam_type or qid is None:
+        return None, None
+    return (f"{VQ_REPORT_PREFIX}{exam_type}" if unified else exam_type), qid
 
 
 def _blocked_question_ids(db: Session, exam_type: str) -> set[int]:
-    """IDs de questões deste banco com denúncia pendente — excluídas do
-    sorteio de novos simulados até o owner revisar (corrigir e liberar, ou
-    excluir em definitivo)."""
+    """IDs (vestibular_questions.id) de questões deste banco com denúncia
+    pendente — excluídas do sorteio de novos simulados até o owner revisar
+    (corrigir e liberar, ou excluir em definitivo)."""
     rows = (
         db.query(QuestionReport.question_id)
-        .filter(QuestionReport.exam_type == exam_type, QuestionReport.status == "pending")
+        .filter(
+            QuestionReport.exam_type == f"{VQ_REPORT_PREFIX}{exam_type}",
+            QuestionReport.status == "pending",
+        )
         .distinct()
         .all()
     )
@@ -150,7 +161,7 @@ def _normalize_selected_letters(sq: SimuladoQuestion, raw: str) -> str:
     mais de 5 alternativas)."""
     q = _underlying_question(sq)
     valid_letters = {_option_letter(opt) for opt in q.options} if q else set("ABCDE")
-    is_summation = bool(q) and getattr(q, "question_type", None) == "summation"
+    is_summation = bool(q) and question_type_of(q) == "summation"
 
     letters = [l.strip().upper() for l in raw.split(",") if l.strip()]
     if not letters:
@@ -173,7 +184,7 @@ def _serialize_sq(sq: SimuladoQuestion, include_result: bool = False) -> Dict[st
     if q is None:
         return {"id": sq.id, "order": sq.order, "area": sq.area}
 
-    options = [_serialize_option(opt, include_is_correct=include_result) for opt in q.options]
+    options = [_serialize_option(opt, include_is_correct=include_result) for opt in sorted_options(q)]
 
     def _as_data_uri(raw: str) -> str:
         # A maioria dos importadores já grava a data URI completa
@@ -191,7 +202,7 @@ def _serialize_sq(sq: SimuladoQuestion, include_result: bool = False) -> Dict[st
     if main_img:
         images.append(_as_data_uri(main_img))
 
-    for img in getattr(q, "images", []):
+    for img in sorted(getattr(q, "images", None) or [], key=lambda i: getattr(i, "order", None) or 0):
         img_val = getattr(img, "image_url", None) or getattr(img, "image_base64", None)
         if img_val:
             images.append(_as_data_uri(img_val))
@@ -206,7 +217,7 @@ def _serialize_sq(sq: SimuladoQuestion, include_result: bool = False) -> Dict[st
         "selected_letter": sq.selected_letter,
         # "summation" (UFSC) = múltipla marcação, soma dos valores das
         # afirmativas marcadas; senão, alternativa única de sempre.
-        "question_type": getattr(q, "question_type", "single"),
+        "question_type": question_type_of(q),
     }
 
     if include_result:
@@ -235,100 +246,115 @@ def _serialize_simulado(simulado: Simulado, include_result: bool = False) -> Dic
         "created_at": simulado.created_at.isoformat() if simulado.created_at else None,
         "finished_at": simulado.finished_at.isoformat() if simulado.finished_at else None,
         "question_count": len(simulado.questions),
-        "questions": [_serialize_sq(sq, include_result=include_result) for sq in simulado.questions],
+        "questions": _serialize_questions(simulado, include_result),
     }
 
 
-def _base_filters(model: Any, exam_type: str) -> List[Any]:
-    """Filtros comuns: só questões com área definida, excluindo eletivas de
-    língua estrangeira (nem todo banco tem esse campo — ex.: UfrgsQuestion) e,
-    no caso da UFSC, restringindo ao formato somatório (objetivas)."""
-    filters = [model.area.isnot(None)]
-    if hasattr(model, "language"):
-        filters.append(model.language.is_(None))
-    if exam_type == "ufsc":
-        filters.append(model.question_type == "summation")
-    return filters
+def _serialize_questions(simulado: Simulado, include_result: bool) -> List[Dict[str, Any]]:
+    from sqlalchemy.orm import object_session
+
+    db = object_session(simulado)
+    if db is not None:
+        # Simulados antigos: resolve as questões legadas em lote (evita N+1).
+        attach_underlying_questions(db, simulado.questions)
+    return [_serialize_sq(sq, include_result=include_result) for sq in simulado.questions]
+
+
+def _vq_area(meta: Dict[str, Any]) -> Optional[str]:
+    """Área da questão na tabela unificada. Os importadores gravam a área em
+    metadata["area"] (ENEM, UFSC, UFPR, ACAFE, PUCPR, ...); alguns (ex.:
+    concurso_fepese) só têm metadata["subject"]."""
+    for key in ("area", "subject"):
+        val = meta.get(key)
+        if isinstance(val, str) and val.strip():
+            return val.strip()
+    return None
+
+
+def _vq_is_strict(meta: Dict[str, Any], exam_type: str) -> bool:
+    """Filtros "estritos" (mesmas regras das tabelas legadas): área definida,
+    sem eletivas de língua estrangeira (metadata["language"] preenchido) e, na
+    UFSC, só o formato somatório (objetivas)."""
+    if _vq_area(meta) is None:
+        return False
+    if meta.get("language"):
+        return False
+    if exam_type == "ufsc" and meta.get("question_type") != "summation":
+        return False
+    return True
+
+
+def _vq_candidates(db: Session, exam_type: str) -> List[tuple]:
+    """(id, metadata) das questões sorteáveis do banco: com alternativas, não
+    anuladas e sem denúncia pendente."""
+    has_options = exists().where(VestibularQuestionOption.question_id == VestibularQuestion.id)
+    rows = (
+        db.query(VestibularQuestion.id, VestibularQuestion.metadata_)
+        .filter(
+            VestibularQuestion.exam_type == exam_type,
+            or_(VestibularQuestion.is_annulled.is_(False), VestibularQuestion.is_annulled.is_(None)),
+            has_options,
+        )
+        .all()
+    )
+    blocked = _blocked_question_ids(db, exam_type)
+    return [(qid, meta if isinstance(meta, dict) else {}) for qid, meta in rows if qid not in blocked]
 
 
 def _pick_questions(db: Session, exam_type: str, area: Optional[str], num_questions: int):
-    """Sorteia até num_questions questões de um único banco (exam_type).
+    """Sorteia até num_questions questões de um único banco (exam_type) da
+    tabela unificada vestibular_questions.
 
     Se `area` for informada, todas as questões vêm dessa área. Caso contrário,
     distribui o total entre as áreas disponíveis em rodízio (round-robin), para
     não concentrar o simulado numa única área quando o aluno não escolhe uma.
 
-    Fallback: se os filtros estritos (_base_filters) não retornarem questões
+    Fallback: se os filtros estritos (_vq_is_strict) não retornarem questões
     suficientes, tenta novamente sem eles (aceita questões sem área definida,
     com língua estrangeira, etc.) — melhor entregar um simulado "imperfeito"
-    do que bloquear o aluno com erro 400.
+    do que bloquear o aluno com erro 400. Sem área nenhuma no banco, vira um
+    pool único.
     """
-    model = EXAM_TYPE_MODELS.get(exam_type)
-    if model is None:
-        raise ValueError(f"Unknown exam_type: {exam_type}")
+    candidates = _vq_candidates(db, exam_type)
 
-    blocked_ids = _blocked_question_ids(db, exam_type)
-    options_model = getattr(model, "options").property.mapper.class_
-    has_options_subq = (
-        db.query(options_model.id)
-        .filter(options_model.question_id == model.id)
-        .exists()
-    )
-
-    def _try_pick(filters: List[Any], use_area: bool) -> tuple[List[int], List[str]]:
-        """Tenta sortear questões com os filtros dados. Retorna (picked_ids, areas)."""
-        if use_area and area:
-            areas_list = [area]
-        else:
-            area_rows = db.query(model.area).distinct().filter(*filters).all()
-            areas_list = [r[0] for r in area_rows if r[0] is not None]
-            if not areas_list and not use_area:
-                # Sem área definida nos filtros estritos — busca sem filtro de área
-                area_rows = db.query(model.area).distinct().all()
-                areas_list = [r[0] for r in area_rows if r[0] is not None]
-
-        pools: Dict[str, List[int]] = {}
-        for a in areas_list:
-            q = db.query(model.id).filter(has_options_subq)
-            for f in filters:
-                q = q.filter(f)
-            if a is not None:
-                q = q.filter(model.area == a)
-            id_rows = q.all()
-            ids = [r[0] for r in id_rows if r[0] not in blocked_ids]
+    def _try_pick(cands: List[tuple]) -> tuple[List[int], List[Optional[str]]]:
+        pools: Dict[Optional[str], List[int]] = {}
+        for qid, meta in cands:
+            a = _vq_area(meta)
+            if area and a != area:
+                continue
+            pools.setdefault(a, []).append(qid)
+        areas_list = sorted(pools, key=lambda a: (a is None, a or ""))
+        for ids in pools.values():
             random.shuffle(ids)
-            pools[a] = ids
 
         picked: List[int] = []
         queue = deque(areas_list)
         while queue and len(picked) < num_questions:
             a = queue.popleft()
-            pool = pools.get(a, [])
+            pool = pools[a]
             if pool:
                 picked.append(pool.pop())
                 queue.append(a)
-
         return picked, areas_list
 
-    # Tentativa 1: filtros estritos (área obrigatória, sem língua estrangeira, etc.)
-    strict_filters = _base_filters(model, exam_type)
-    picked_ids, areas = _try_pick(strict_filters, use_area=True)
+    # Tentativa 1: filtros estritos
+    strict = [c for c in candidates if _vq_is_strict(c[1], exam_type)]
+    picked_ids, areas = _try_pick(strict)
 
-    # Fallback: se não conseguiu questões suficientes, relaxa os filtros
+    # Fallback: relaxa os filtros se não houver questões suficientes
     if len(picked_ids) < num_questions:
-        relaxed_filters: List[Any] = []  # sem filtros de área/language/question_type
-        fallback_ids, fallback_areas = _try_pick(relaxed_filters, use_area=bool(area))
-        # Usa o resultado do fallback se ele conseguiu mais questões
+        fallback_ids, fallback_areas = _try_pick(candidates)
         if len(fallback_ids) > len(picked_ids):
-            picked_ids = fallback_ids
-            areas = fallback_areas
+            picked_ids, areas = fallback_ids, fallback_areas
 
-    # Carrega as linhas inteiras só das questões escolhidas
     if not picked_ids:
         return [], areas
-    rows_by_id = {q.id: q for q in db.query(model).filter(model.id.in_(picked_ids)).all()}
+    rows_by_id = {
+        q.id: q
+        for q in db.query(VestibularQuestion).filter(VestibularQuestion.id.in_(picked_ids)).all()
+    }
     picked = [rows_by_id[qid] for qid in picked_ids if qid in rows_by_id]
-
     return picked, areas
 
 
@@ -369,15 +395,38 @@ def list_exam_type_areas(
     db: Session = Depends(get_db),
 ):
     """Lista as áreas/matérias disponíveis no banco de um exam_type, para o
-    aluno escolher antes de iniciar o simulado."""
-    exam_type = exam_type.lower()
-    model = EXAM_TYPE_MODELS.get(exam_type)
-    if model is None:
-        raise HTTPException(400, f"exam_type deve ser um de: {', '.join(EXAM_TYPE_MODELS)}")
+    aluno escolher antes de iniciar o simulado. Vem do que existe de fato em
+    vestibular_questions (banco sem questões = lista vazia)."""
+    exam_type = exam_type.strip().lower()
+    if not _EXAM_TYPE_RE.match(exam_type):
+        raise HTTPException(400, "exam_type inválido")
 
-    filters = _base_filters(model, exam_type)
-    rows = db.query(model.area).distinct().filter(*filters).order_by(model.area).all()
-    return [r[0] for r in rows]
+    candidates = _vq_candidates(db, exam_type)
+    areas = {_vq_area(meta) for _, meta in candidates if _vq_is_strict(meta, exam_type)}
+    if not areas:
+        areas = {_vq_area(meta) for _, meta in candidates}
+    return sorted(a for a in areas if a)
+
+
+@router.get("/exam-types")
+def list_exam_types(
+    _: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Bancos (exam_type) que têm questões sorteáveis em vestibular_questions,
+    com a contagem — pro frontend mostrar só o que de fato dá pra simular."""
+    has_options = exists().where(VestibularQuestionOption.question_id == VestibularQuestion.id)
+    rows = (
+        db.query(VestibularQuestion.exam_type, func.count(VestibularQuestion.id))
+        .filter(
+            or_(VestibularQuestion.is_annulled.is_(False), VestibularQuestion.is_annulled.is_(None)),
+            has_options,
+        )
+        .group_by(VestibularQuestion.exam_type)
+        .order_by(VestibularQuestion.exam_type)
+        .all()
+    )
+    return [{"exam_type": et, "question_count": n} for et, n in rows]
 
 
 @router.get("/dashboard")
@@ -476,9 +525,9 @@ def create_simulado(
     db: Session = Depends(get_db),
 ):
     """Create a new simulado for the current student (1 por dia, de um único banco)."""
-    exam_type = payload.exam_type.lower()
-    if exam_type not in EXAM_TYPE_MODELS:
-        raise HTTPException(400, f"exam_type deve ser um de: {', '.join(EXAM_TYPE_MODELS)}")
+    exam_type = payload.exam_type.strip().lower()
+    if not _EXAM_TYPE_RE.match(exam_type):
+        raise HTTPException(400, "exam_type inválido")
 
     area = payload.area.strip() if payload.area and payload.area.strip() else None
 
@@ -526,13 +575,14 @@ def create_simulado(
 
     # Create SimuladoQuestion records
     for order, q in enumerate(questions, start=1):
-        table = q.__class__.__tablename__
+        area_value = _vq_area(question_metadata(q))
         sq = SimuladoQuestion(
             simulado_id=simulado.id,
             order=order,
-            area=q.area,
+            area=area_value[:100] if area_value else None,
+            vestibular_question_id=q.id,
+            vq_exam_type=exam_type,
         )
-        setattr(sq, _FK_FIELD_BY_TABLE[table], q.id)
         db.add(sq)
 
     db.commit()
@@ -674,11 +724,7 @@ def format_question_statement(
     if not sq:
         raise HTTPException(status_code=404, detail="Questão não encontrada no simulado")
 
-    q = None
-    for exam_type in EXAM_TYPE_MODELS:
-        q = getattr(sq, f"{exam_type}_question", None)
-        if q is not None:
-            break
+    q = _underlying_question(sq)
 
     if not q:
         raise HTTPException(status_code=404, detail="Questão base não encontrada")
