@@ -207,14 +207,14 @@ class Question(Base):
     options: Mapped[List["QuestionOption"]] = relationship(
         back_populates="question", cascade="all, delete-orphan"
     )
-    exam_questions: Mapped[List["ExamQuestion"]] = relationship(back_populates="question")
+    exam_questions: Mapped[List["ExamQuestion"]] = relationship(back_populates="question", cascade="all, delete-orphan")
 
 
 class QuestionOption(Base):
     __tablename__ = "question_options"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    question_id: Mapped[int] = mapped_column(ForeignKey("questions.id"), nullable=False)
+    question_id: Mapped[int] = mapped_column(ForeignKey("questions.id", ondelete="CASCADE"), nullable=False)
     text: Mapped[str] = mapped_column(Text, nullable=False)
     is_correct: Mapped[bool] = mapped_column(Boolean, default=False)
     order: Mapped[int] = mapped_column(Integer, default=0)
@@ -252,13 +252,13 @@ class ExamQuestion(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     exam_id: Mapped[int] = mapped_column(ForeignKey("exams.id"), nullable=False)
-    question_id: Mapped[int] = mapped_column(ForeignKey("questions.id"), nullable=False)
+    question_id: Mapped[int] = mapped_column(ForeignKey("questions.id", ondelete="CASCADE"), nullable=False)
     order: Mapped[int] = mapped_column(Integer, default=0)
     points: Mapped[float] = mapped_column(default=1.0)
 
     exam: Mapped["Exam"] = relationship(back_populates="exam_questions")
     question: Mapped["Question"] = relationship(back_populates="exam_questions")
-    submission_answers: Mapped[List["SubmissionAnswer"]] = relationship(back_populates="exam_question")
+    submission_answers: Mapped[List["SubmissionAnswer"]] = relationship(back_populates="exam_question", cascade="all, delete-orphan")
 
     __table_args__ = (UniqueConstraint("exam_id", "question_id"),)
 
@@ -318,7 +318,7 @@ class SubmissionAnswer(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     submission_id: Mapped[int] = mapped_column(ForeignKey("exam_submissions.id"), nullable=False, index=True)
-    exam_question_id: Mapped[int] = mapped_column(ForeignKey("exam_questions.id"), nullable=False, index=True)
+    exam_question_id: Mapped[int] = mapped_column(ForeignKey("exam_questions.id", ondelete="CASCADE"), nullable=False, index=True)
     selected_option_id: Mapped[Optional[int]] = mapped_column(ForeignKey("question_options.id"), nullable=True)
     essay_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     essay_image_base64: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
@@ -327,7 +327,7 @@ class SubmissionAnswer(Base):
     is_auto_corrected: Mapped[bool] = mapped_column(Boolean, default=False)
 
     submission: Mapped["ExamSubmission"] = relationship(back_populates="answers")
-    exam_question: Mapped["ExamQuestion"] = relationship(back_populates="submission_answers")
+    exam_question: Mapped["ExamQuestion"] = relationship(back_populates="submission_answers", cascade="all, delete-orphan")
     selected_option: Mapped[Optional["QuestionOption"]] = relationship()
 
 
