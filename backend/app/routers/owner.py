@@ -560,51 +560,86 @@ def delete_questions(
     db: Session = Depends(get_db),
     _: User = Depends(require_owner),
 ):
-    from fastapi import HTTPException
     from app.database import Base
     from sqlalchemy import select
-    
-    # Prefix tables
-    q_table = Base.metadata.tables.get(f"{university}_questions")
-    if q_table is None:
-        raise HTTPException(status_code=404, detail=f"Universidade não encontrada ou sem tabela de questões ({university}_questions)")
 
-    opt_table = Base.metadata.tables.get(f"{university}_question_options")
-    img_table = Base.metadata.tables.get(f"{university}_question_images")
     simulado_table = Base.metadata.tables.get("simulado_questions")
-    
-    # Find IDs
-    query = select(q_table.c.id)
-    if year:
-        query = query.where(q_table.c.year == year)
-    if since_year:
-        query = query.where(q_table.c.year >= since_year)
-    if until_year:
-        query = query.where(q_table.c.year <= until_year)
-        
-    ids = db.execute(query).scalars().all()
-    if not ids:
+    reports_table = Base.metadata.tables.get("question_reports")
+    deleted = 0
+
+    def _year_filters(table):
+        conds = []
+        if year:
+            conds.append(table.c.year == year)
+        if since_year:
+            conds.append(table.c.year >= since_year)
+        if until_year:
+            conds.append(table.c.year <= until_year)
+        return conds
+
+    # 1. Tabela unificada vestibular_questions (importadores atuais gravam aqui
+    #    com exam_type == university, ex.: "enem")
+    vq_table = Base.metadata.tables.get("vestibular_questions")
+    if vq_table is not None:
+        vq_ids = db.execute(
+            select(vq_table.c.id)
+            .where(vq_table.c.exam_type == university)
+            .where(*_year_filters(vq_table))
+        ).scalars().all()
+        if vq_ids:
+            # Desvincula simulados que apontam para essas questões unificadas
+            if simulado_table is not None and "vestibular_question_id" in simulado_table.c:
+                db.execute(
+                    simulado_table.update()
+                    .where(simulado_table.c.vestibular_question_id.in_(vq_ids))
+                    .values(vestibular_question_id=None)
+                )
+            # Denúncias de simulado usam exam_type "vq:<university>"
+            if reports_table is not None:
+                db.execute(
+                    reports_table.delete().where(
+                        reports_table.c.exam_type == f"vq:{university}",
+                        reports_table.c.question_id.in_(vq_ids),
+                    )
+                )
+            # exam_vestibular_questions tem ON DELETE CASCADE no banco
+            db.execute(vq_table.delete().where(vq_table.c.id.in_(vq_ids)))
+            deleted += len(vq_ids)
+
+    # 2. Tabelas legadas por universidade (<university>_questions), se existirem
+    q_table = Base.metadata.tables.get(f"{university}_questions")
+    if q_table is not None:
+        opt_table = Base.metadata.tables.get(f"{university}_question_options")
+        img_table = Base.metadata.tables.get(f"{university}_question_images")
+
+        ids = db.execute(
+            select(q_table.c.id).where(*_year_filters(q_table))
+        ).scalars().all()
+        if ids:
+            if simulado_table is not None and f"{university}_question_id" in simulado_table.c:
+                fk_col = simulado_table.c[f"{university}_question_id"]
+                db.execute(
+                    simulado_table.update().where(fk_col.in_(ids)).values({fk_col.name: None})
+                )
+            if reports_table is not None:
+                db.execute(
+                    reports_table.delete().where(
+                        reports_table.c.exam_type == university,
+                        reports_table.c.question_id.in_(ids),
+                    )
+                )
+            if img_table is not None:
+                db.execute(img_table.delete().where(img_table.c.question_id.in_(ids)))
+            if opt_table is not None:
+                db.execute(opt_table.delete().where(opt_table.c.question_id.in_(ids)))
+            db.execute(q_table.delete().where(q_table.c.id.in_(ids)))
+            deleted += len(ids)
+
+    if not deleted:
         return {"deleted": 0, "message": "Nenhuma questão encontrada para os critérios informados"}
-        
-    # Unlink from simulados to avoid FK violation
-    if simulado_table is not None and f"{university}_question_id" in simulado_table.c:
-        fk_col = simulado_table.c[f"{university}_question_id"]
-        db.execute(
-            simulado_table.update().where(fk_col.in_(ids)).values({fk_col.name: None})
-        )
-        
-    # Delete dependents
-    if img_table is not None:
-        db.execute(img_table.delete().where(img_table.c.question_id.in_(ids)))
-        
-    if opt_table is not None:
-        db.execute(opt_table.delete().where(opt_table.c.question_id.in_(ids)))
-        
-    # Delete main
-    db.execute(q_table.delete().where(q_table.c.id.in_(ids)))
-    
+
     db.commit()
-    return {"deleted": len(ids), "message": f"{len(ids)} questões removidas com sucesso"}
+    return {"deleted": deleted, "message": f"{deleted} questões removidas com sucesso"}
 
 @router.get("/stats/detailed")
 def get_detailed_stats(
