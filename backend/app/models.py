@@ -327,7 +327,7 @@ class SubmissionAnswer(Base):
     is_auto_corrected: Mapped[bool] = mapped_column(Boolean, default=False)
 
     submission: Mapped["ExamSubmission"] = relationship(back_populates="answers")
-    exam_question: Mapped["ExamQuestion"] = relationship(back_populates="submission_answers", cascade="all, delete-orphan")
+    exam_question: Mapped["ExamQuestion"] = relationship(back_populates="submission_answers")
     selected_option: Mapped[Optional["QuestionOption"]] = relationship()
 
 
