@@ -353,6 +353,46 @@ def run_migrations() -> None:
     migrations.append("ALTER TABLE IF EXISTS simulados ADD COLUMN IF NOT EXISTS current_index INTEGER DEFAULT 0")
     migrations.append("ALTER TABLE IF EXISTS simulado_questions ALTER COLUMN selected_letter TYPE VARCHAR(40)")
 
+    # FK CASCADE para deletar questões vinculadas a provas/respostas
+    migrations.append("""
+        DO $$
+        BEGIN
+            -- exam_questions.question_id -> questions.id
+            IF EXISTS (
+                SELECT 1 FROM information_schema.table_constraints tc
+                JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+                WHERE tc.table_name = 'exam_questions' AND kcu.column_name = 'question_id'
+                  AND tc.constraint_type = 'FOREIGN KEY'
+            ) THEN
+                ALTER TABLE exam_questions DROP CONSTRAINT IF EXISTS exam_questions_question_id_fkey;
+                ALTER TABLE exam_questions ADD CONSTRAINT exam_questions_question_id_fkey
+                    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE;
+            END IF;
+            -- submission_answers.exam_question_id -> exam_questions.id
+            IF EXISTS (
+                SELECT 1 FROM information_schema.table_constraints tc
+                JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+                WHERE tc.table_name = 'submission_answers' AND kcu.column_name = 'exam_question_id'
+                  AND tc.constraint_type = 'FOREIGN KEY'
+            ) THEN
+                ALTER TABLE submission_answers DROP CONSTRAINT IF EXISTS submission_answers_exam_question_id_fkey;
+                ALTER TABLE submission_answers ADD CONSTRAINT submission_answers_exam_question_id_fkey
+                    FOREIGN KEY (exam_question_id) REFERENCES exam_questions(id) ON DELETE CASCADE;
+            END IF;
+            -- question_options.question_id -> questions.id
+            IF EXISTS (
+                SELECT 1 FROM information_schema.table_constraints tc
+                JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+                WHERE tc.table_name = 'question_options' AND kcu.column_name = 'question_id'
+                  AND tc.constraint_type = 'FOREIGN KEY'
+            ) THEN
+                ALTER TABLE question_options DROP CONSTRAINT IF EXISTS question_options_question_id_fkey;
+                ALTER TABLE question_options ADD CONSTRAINT question_options_question_id_fkey
+                    FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE;
+            END IF;
+        END $$
+    """)
+
     # Question reports
     migrations.append("""CREATE TABLE IF NOT EXISTS question_reports (
         id SERIAL PRIMARY KEY,
