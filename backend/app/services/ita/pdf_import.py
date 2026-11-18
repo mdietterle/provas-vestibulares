@@ -25,6 +25,16 @@ from app.services.pdf_text_utils import join_lines_smart
 import requests
 
 
+# Uma sessão HTTP compartilhada mantém conexões e cookies entre requisições.
+# O servidor do ITA às vezes cai a conexão na primeira tentativa (timeouts
+# intermitentes de rede/WAF); a sessão reusa o TCP e o retry com backoff
+# evita abortar a importação inteira por um único download falho.
+_ita_session = requests.Session()
+_ita_session.headers.update({"User-Agent": "Mozilla/5.0"})
+
+_MAX_RETRIES = 3
+_BACKOFF_BASE = 2  # segundos: 2, 4, 8
+
 # ── OCR Support for scanned PDFs ──────────────────────────────────────────────
 _ocr_ready: Optional[bool] = None
 _OCR_DPI = 300
@@ -168,16 +178,25 @@ def _map_filename_subject(subj_raw: str) -> Optional[str]:
 
 
 def download_pdf(url: str, dest: Path) -> None:
+    """Baixa um PDF do ITA com retry em timeout/falha de conexão.
+
+    O servidor do ITA às vezes cai a conexão na primeira tentativa
+    (ConnectTimeout intermitente de rede/WAF). Tenta até _MAX_RETRIES vezes
+    com backoff exponencial antes de desistir. Cada tentativa recicla a sessão
+    compartilhada (conexões TCP reusadas).
+    """
+    import time
     headers = {"User-Agent": "Mozilla/5.0"}
     last_error: Optional[Exception] = None
-    for _attempt in range(2):
+    for attempt in range(_MAX_RETRIES):
         try:
-            resp = requests.get(url, timeout=60, headers=headers, verify=False)
+            resp = _ita_session.get(url, timeout=60, headers=headers, verify=False)
             resp.raise_for_status()
             dest.write_bytes(resp.content)
             return
         except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
             last_error = e
+            time.sleep(_BACKOFF_BASE ** attempt)
     raise last_error
 
 
