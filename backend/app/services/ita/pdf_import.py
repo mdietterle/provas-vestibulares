@@ -170,9 +170,9 @@ def _map_filename_subject(subj_raw: str) -> Optional[str]:
 def download_pdf(url: str, dest: Path) -> None:
     headers = {"User-Agent": "Mozilla/5.0"}
     last_error: Optional[Exception] = None
-    for _attempt in range(3):
+    for _attempt in range(2):
         try:
-            resp = requests.get(url, timeout=120, headers=headers, verify=False)
+            resp = requests.get(url, timeout=60, headers=headers, verify=False)
             resp.raise_for_status()
             dest.write_bytes(resp.content)
             return
@@ -658,7 +658,7 @@ def fetch_ita_exam_links(html: Optional[str] = None) -> list[dict]:
 
 def import_all_ita_exams(
     since_year: Optional[int] = None, until_year: Optional[int] = None,
-    task_id: Optional[str] = None, db=None, **kwargs
+    task_id: Optional[str] = None, db=None, force_reimport: bool = False, **kwargs
 ) -> dict:
     from app.database import SessionLocal
     from app.services.progress import update_task_progress, complete_task, fail_task
