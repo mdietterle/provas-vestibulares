@@ -22,6 +22,7 @@ com certificado válido nunca passam por esse fallback).
 """
 
 
+import logging
 import re
 import tempfile
 from collections import defaultdict
@@ -31,6 +32,8 @@ from typing import Optional
 from urllib.parse import urljoin
 
 import requests
+
+logger = logging.getLogger(__name__)
 
 from app.services.ufsc.seed import _parse_exam, _parse_filename, _parse_gabarito, _persist_parsed_questions
 
@@ -44,7 +47,20 @@ from app.services.ufsc.seed import _parse_exam, _parse_filename, _parse_gabarito
 # domínio conhecido caso a descoberta falhe (site fora do ar, HTML mudou).
 _COPERVE_URL = "https://coperve.ufsc.br/"
 _CURRENT_DOMAIN_RE = re.compile(r'href="(https://vestibularunificado(\d{4})\.ufsc\.br)/?"', re.I)
-_FALLBACK_PROVAS_ANTERIORES_URL = "https://vestibularunificado2025.ufsc.br/provas-anteriores/"
+_FALLBACK_PROVAS_ANTERIORES_URL = "https://vestibularunificado2027.ufsc.br/provas-anteriores/"
+
+# Headers de navegador usados em todas as requisições aos servidores da
+# UFSC/COPERVE: o WAF deles bloqueia (403) User-Agent de script e requisições
+# sem contexto de navegação (sem Accept-Language/Referer).
+_BROWSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+}
+_PDF_HEADERS = {
+    **_BROWSER_HEADERS,
+    "Accept": "application/pdf,*/*;q=0.8",
+}
 
 _YEAR_SECTION_RE = re.compile(r'title="(Vestibular[^"]*)"', re.I)
 _ROW_RE = re.compile(r"<tr[^>]*>(.*?)</tr>", re.I | re.S)
@@ -142,11 +158,14 @@ def download_pdf(url: str, dest: Path) -> None:
     certificado falhar, refaz a mesma requisição sem verificar o certificado
     (só nesse caso específico; hosts com certificado válido nunca caem aqui).
     """
-    headers = {"User-Agent": "Mozilla/5.0"}
+    headers = dict(_PDF_HEADERS)
+    headers["Referer"] = current_provas_anteriores_url()
     try:
         resp = requests.get(url, timeout=120, headers=headers)
     except requests.exceptions.SSLError:
         resp = requests.get(url, timeout=120, headers=headers, verify=False)
+    if not resp.ok:
+        logger.warning("UFSC download falhou: %s status=%s body=%.200s", url, resp.status_code, resp.text)
     resp.raise_for_status()
     dest.write_bytes(resp.content)
 
@@ -157,7 +176,7 @@ def current_provas_anteriores_url() -> str:
     comentário acima de `_FALLBACK_PROVAS_ANTERIORES_URL`). Cai no último
     domínio conhecido se a descoberta falhar por qualquer motivo."""
     try:
-        resp = requests.get(_COPERVE_URL, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+        resp = requests.get(_COPERVE_URL, timeout=15, headers=_BROWSER_HEADERS)
         resp.raise_for_status()
         m = _CURRENT_DOMAIN_RE.search(resp.text)
         if m:
@@ -178,7 +197,9 @@ def fetch_exam_links(html: Optional[str] = None, url: Optional[str] = None) -> l
     if html is None:
         if url is None:
             url = current_provas_anteriores_url()
-        resp = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
+        resp = requests.get(url, timeout=30, headers=_BROWSER_HEADERS)
+        if not resp.ok:
+            logger.warning("UFSC provas-anteriores falhou: %s status=%s body=%.200s", url, resp.status_code, resp.text)
         resp.raise_for_status()
         html = resp.text
 
