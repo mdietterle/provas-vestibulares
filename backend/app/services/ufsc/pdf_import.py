@@ -56,11 +56,29 @@ _BROWSER_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
     "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+    "Referer": "https://coperve.ufsc.br/",
+    "Origin": "https://coperve.ufsc.br",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "same-origin",
+    "Sec-Fetch-User": "?1",
+    "Upgrade-Insecure-Requests": "1",
 }
 _PDF_HEADERS = {
     **_BROWSER_HEADERS,
     "Accept": "application/pdf,*/*;q=0.8",
+    "Sec-Fetch-Dest": "",
+    "Sec-Fetch-Mode": "no-cors",
+    "Sec-Fetch-Site": "cross-site",
 }
+
+# Uma sessão HTTP mantém cookies entre requisições: o WAF da UFSC/COPERVE costuma
+# exigir um cookie de sessão obtido ao carregar a página antes de liberar o PDF.
+_session = requests.Session()
+_session.headers.update(_BROWSER_HEADERS)
+
+_MAX_RETRIES = 3
+_BACKOFF_BASE = 2  # segundos: 2, 4, 8
 
 _YEAR_SECTION_RE = re.compile(r'title="(Vestibular[^"]*)"', re.I)
 _ROW_RE = re.compile(r"<tr[^>]*>(.*?)</tr>", re.I | re.S)
@@ -150,6 +168,33 @@ def _parse_gabarito_html(gabarito_html: Path) -> dict[int, int]:
     return answers
 
 
+def _get_with_retry(url: str, headers: dict, timeout: int, verify: bool = True) -> requests.Response:
+    """Requisição GET com retry em 403/429 (WAF/rate-limit).
+
+    O WAF da UFSC/COPERVE devolve 403 quando não há sessão/cookie válido ou
+    quando detecta padrão de script. Cada tentativa recarrega a página de
+    provas-anteriores para (re)obter cookies antes de tentar novamente.
+    """
+    import time
+
+    last_resp: Optional[requests.Response] = None
+    for attempt in range(_MAX_RETRIES):
+        try:
+            resp = _session.get(url, timeout=timeout, headers=headers, verify=verify)
+        except requests.exceptions.SSLError:
+            resp = _session.get(url, timeout=timeout, headers=headers, verify=False)
+        last_resp = resp
+        if resp.status_code not in (403, 429):
+            return resp
+        # 403/429: recarrega a página para renovar cookies e espera antes de tentar de novo
+        try:
+            _session.get(current_provas_anteriores_url(), timeout=15, headers=_BROWSER_HEADERS)
+        except Exception:
+            pass
+        time.sleep(_BACKOFF_BASE ** attempt)
+    return last_resp
+
+
 def download_pdf(url: str, dest: Path) -> None:
     """Baixa um arquivo (PDF ou HTML) de uma URL pública.
 
@@ -157,13 +202,14 @@ def download_pdf(url: str, dest: Path) -> None:
     certificado SSL inválido, mas respondem normalmente — se a validação do
     certificado falhar, refaz a mesma requisição sem verificar o certificado
     (só nesse caso específico; hosts com certificado válido nunca caem aqui).
+
+    Usa uma sessão compartilhada (cookies persistem entre requisições) com retry
+    em 403/429, porque o WAF da UFSC/COPERVE costuma exigir um cookie de sessão
+    obtido ao carregar a página antes de liberar o PDF.
     """
     headers = dict(_PDF_HEADERS)
     headers["Referer"] = current_provas_anteriores_url()
-    try:
-        resp = requests.get(url, timeout=120, headers=headers)
-    except requests.exceptions.SSLError:
-        resp = requests.get(url, timeout=120, headers=headers, verify=False)
+    resp = _get_with_retry(url, headers, timeout=120)
     if not resp.ok:
         logger.warning("UFSC download falhou: %s status=%s body=%.200s", url, resp.status_code, resp.text)
     resp.raise_for_status()
@@ -176,7 +222,7 @@ def current_provas_anteriores_url() -> str:
     comentário acima de `_FALLBACK_PROVAS_ANTERIORES_URL`). Cai no último
     domínio conhecido se a descoberta falhar por qualquer motivo."""
     try:
-        resp = requests.get(_COPERVE_URL, timeout=15, headers=_BROWSER_HEADERS)
+        resp = _get_with_retry(_COPERVE_URL, _BROWSER_HEADERS, timeout=15)
         resp.raise_for_status()
         m = _CURRENT_DOMAIN_RE.search(resp.text)
         if m:
@@ -197,7 +243,7 @@ def fetch_exam_links(html: Optional[str] = None, url: Optional[str] = None) -> l
     if html is None:
         if url is None:
             url = current_provas_anteriores_url()
-        resp = requests.get(url, timeout=30, headers=_BROWSER_HEADERS)
+        resp = _get_with_retry(url, _BROWSER_HEADERS, timeout=30)
         if not resp.ok:
             logger.warning("UFSC provas-anteriores falhou: %s status=%s body=%.200s", url, resp.status_code, resp.text)
         resp.raise_for_status()
