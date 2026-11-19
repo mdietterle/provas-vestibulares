@@ -515,18 +515,24 @@ def fetch_uem_exam_links(html: Optional[str] = None) -> list[dict]:
         resp.raise_for_status()
         html = resp.text
         
-    # We look for P1G1 (Prova 1) and GabDef1 (Gabarito Definitivo 1) for Vestibular Inverno (in) and Verão (ve)
-    link_re = re.compile(r'href=[\"\'](https?://www\.vestibular\.uem\.br/provas/(in|ve)(\d{2})/(P1G1|GabDef1)\.pdf)[\"\']', re.IGNORECASE)
+    # We look for Prova 1 (P1G1 ou P1) and Gabarito Definitivo (GabDef1/2/3, gabdef, GabDef)
+    # for Vestibular Inverno (in) and Verão (ve). O portal publica nomes de arquivo
+    # variados por ano: anos antigos usam P1G1 + gabdef/GabDef1, anos recentes usam
+    # P1 + gabdef, e ve16 publica GabDef1/2/3 separados por prova.
+    link_re = re.compile(
+        r'href=[\"\'](https?://www\.vestibular\.uem\.br/provas/(in|ve)(\d{2})/(P1G1|P1|GabDef1|GabDef2|GabDef3|gabdef|GabDef)\.pdf)[\"\']',
+        re.IGNORECASE,
+    )
     hrefs = link_re.findall(html)
-    
+
     exams = {}
     for url, season_code, year_code, doc_type in hrefs:
         url_decoded = urllib.parse.unquote(url)
         year = 2000 + int(year_code)
         season = "Inverno" if season_code.lower() == "in" else "Verão"
-        
+
         key = f"{year}_{season}"
-        
+
         if key not in exams:
             exams[key] = {
                 "exam_name": f"UEM {season} {year} - Prova 1",
@@ -536,11 +542,12 @@ def fetch_uem_exam_links(html: Optional[str] = None) -> list[dict]:
                 "prova_url": None,
                 "gabarito_url": None
             }
-            
-        doc_type = doc_type.lower()
-        if doc_type == "p1g1":
+
+        dt = doc_type.lower()
+        if dt in ("p1g1", "p1"):
             exams[key]["prova_url"] = url
-        elif doc_type == "gabdef1":
+        elif "gabdef" in dt and not exams[key]["gabarito_url"]:
+            # Pega o primeiro gabarito encontrado (para ve16, vem GabDef1 antes de 2/3)
             exams[key]["gabarito_url"] = url
 
     valid_exams = [e for e in exams.values() if e["prova_url"] and e["gabarito_url"]]
