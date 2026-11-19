@@ -21,6 +21,7 @@ from typing import Optional
 from urllib.parse import urljoin
 
 import fitz  # PyMuPDF
+import requests
 
 from app.services.pdf_figures import extract_figure_events
 from app.services.pdf_text_utils import join_lines_smart
@@ -510,7 +511,6 @@ def fetch_uem_exam_links(html: Optional[str] = None) -> list[dict]:
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
             "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
         }
-        import requests
         resp = requests.get("https://www.cvu.uem.br/provas-gabaritos.html", timeout=30, headers=headers, verify=False)
         resp.raise_for_status()
         html = resp.text
