@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import urljoin
 
+import requests
 import fitz  # PyMuPDF
 
 from app.services.pdf_figures import extract_figure_events
@@ -519,7 +520,6 @@ def fetch_ufgd_exam_links(html: Optional[str] = None) -> list[dict]:
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
             "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
         }
-        import requests
         resp = requests.get("https://portal.ufgd.edu.br/vestibular/processo-seletivo-vestibular-psv/provas-anteriores", timeout=30, headers=headers, verify=False)
         resp.raise_for_status()
         html = resp.text
