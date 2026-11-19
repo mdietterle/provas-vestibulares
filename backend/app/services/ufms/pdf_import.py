@@ -1,15 +1,22 @@
-from __future__ import annotations
+"""Importa provas do UFMS a partir dos PDFs espelhados pelo Brasil Escola
+(vestibular.brasilescola.uol.com.br).
 
-from app.services.progress import update_task_progress, complete_task, fail_task
-from typing import Optional
-import gc
-"""Importa provas do UFMS a partir de PDFs enviados pelo Owner (prova + gabarito)
-ou, em lote, direto da página oficial de provas anteriores.
+O site oficial (vestibular.ufms.br) não responde e as URLs antigas em
+concurso.fapec.org retornam 404. O Brasil Escola espelha provas+gabarito em
+PDF unico, acessivel via link "/baixar/<id>" que redireciona 302 para o PDF
+no CDN do UOL.
 
-Lê cadernos de prova de 1ª Fase (múltipla escolha) e 2ª Fase (discursivas),
-e também os gabaritos oficiais.
+Disponiveis como PDF direto (prova + gabarito combinados):
+    2026, 2025, 2023 e 2022 (EaD).
+
+Edicoes em .zip/.rar (Passe, PSV, 2006-2021 presencial) nao sao tratadas aqui
+— precisariam de suporte a arquivo compactado (ver app/services/acafe/seed.py
+para exemplo de .zip).
+
+Fonte: https://vestibular.brasilescola.uol.com.br/downloads/universidade-federal-mato-grosso-sul.htm
 """
 
+from __future__ import annotations
 
 import base64
 import re
@@ -18,7 +25,6 @@ import unicodedata
 from collections import defaultdict
 from pathlib import Path
 from typing import Optional
-from urllib.parse import urljoin
 
 import fitz  # PyMuPDF
 import requests
@@ -30,21 +36,69 @@ from app.database import SessionLocal
 from app.services.import_batch import save_vestibular_question
 
 # Constantes UFMS
-_INDEX_URL = "https://www.vestibular.ufms.br/?page_id=7069"
-_Q_START = re.compile(r"^(?:Questão|QUESTÃO)\s+(\d+)", re.IGNORECASE)
-_ALT_PATTERN = re.compile(r"^\s*\(([A-D])\)\s+(.*)")
+_INDEX_URL = (
+    "https://vestibular.brasilescola.uol.com.br/"
+    "downloads/universidade-federal-mato-grosso-sul.htm"
+)
 
-_AREA_NAMES = {
-    "MATEMATICA": "Matemática",
-    "FISICA": "Física",
-    "QUIMICA": "Química",
-    "INGLES": "Inglês",
-    "PORTUGUES": "Português",
-    "REDACAO": "Português",
+# ano -> id de download no Brasil Escola (somente links que resolvem para PDF
+# direto; links .zip/.rar estao fora do escopo deste importador).
+_BRASIL_ESCOLA_IDS: dict[int, int] = {
+    2026: 47808,  # Provas e gabaritos UFMS 2026
+    2025: 47702,  # Provas e gabaritos UFMS 2025
+    2023: 47572,  # Provas e gabaritos UFMS 2023
+    2022: 47541,  # Prova e gabarito UFMS EaD 2022
 }
 
-_Q_START = re.compile(r"^Questao\s+(\d+)\.?\s*(.*)$", re.I)
-_OPT_START = re.compile(r"\b([A-E])\s*\(\s*\)")
+# Numero de questoes por disciplina na ordem em que aparecem no gabarito (e
+# na prova). Usado apenas para montar o mapa area por numero global da questao.
+_DISCIPLINA_COUNTS: list[tuple[str, int]] = [
+    ("Espanhol", 5),
+    ("Ingles", 5),
+    ("Portugues", 10),
+    ("Matematica", 10),
+    ("Biologia", 10),
+    ("Fisica", 10),
+    ("Quimica", 5),
+    ("Geografia/Historia/Filosofia/Sociologia", 10),
+]
+
+_AREA_LABELS: dict[str, str] = {
+    "Espanhol": "Espanhol",
+    "Ingles": "Inglês",
+    "Portugues": "Português",
+    "Matematica": "Matemática",
+    "Biologia": "Biologia",
+    "Fisica": "Física",
+    "Quimica": "Química",
+    "Geografia/Historia/Filosofia/Sociologia": "Geografia/História/Filosofia/Sociologia",
+}
+
+# Numeracao de questoes da prova: "01.", "02.", ... "60." (2 digitos).
+# "Questão N" (1 digito, usado na prova online 2025) nao e suportado pelo
+# parser de alternativas deste importador — deixamos essas paginas de fora
+# por enquanto (elas nao contam como questoes reconhecidas).
+_Q_START = re.compile(r"^(\d{1,2})\.\s", re.I)
+_ALT_START = re.compile(r"^\s*([A-E])\s*\)\s?(.*)", re.I)
+_GABARITO_LETTER = re.compile(r"\b([A-E])\b")
+
+# Paginas de prova tem alternativas no formato "A)" (presencial). Paginas de
+# edital, gabarito, instrucoes da capa e redacao nao tem alternativas e devem
+# ser ignoradas mesmo que contenham "Pagina X de Y".
+_HAS_OPTIONS = re.compile(r"(?m)^\s*[A-E]\s*\)", re.I)
+
+# Instrucoes da pagina de capa usam 1 digito puro ("1.", "2.", ...) e nao
+# sao questoes reais.
+_INSTRUCTION_KEYWORDS = (
+    "instrucoes", "instruções", "manuseie", "cartao-resposta", "cartão-resposta",
+    "rasuras", "comunicar-se", "proibido", "proibida", "autorizacao",
+    "autorização", "constam todas", "marcacoes indevidas", "marcações indevidas",
+)
+
+_AREA_SKIP = re.compile(
+    r"LINGUAGENS|CIENCIAS\s+DA\s+NATUREZA|CIENCIAS\s+HUMANAS|PROCESSO\s+SELETIVO",
+    re.I,
+)
 
 
 def _clean(text: str) -> str:
@@ -69,52 +123,52 @@ def _looks_like_passage(text: str) -> bool:
 def _repair_pdf_accents(text: str) -> str:
     # 1. Ligaturas comuns do LaTeX
     text = text.replace("ﬁ", "fi").replace("ﬂ", "fl").replace("ﬃ", "ffi").replace("ﬄ", "ffl")
-    
-    # 2. Til espaçado antes/depois de letras
-    text = text.replace("\u02dca", "ã").replace("a\u02dc", "ã")
-    text = text.replace("\u02dco", "õ").replace("o\u02dc", "õ")
-    text = text.replace("\u02dcA", "Ã")
-    text = re.sub(r"\u02dc\s*a", "ã", text)
-    text = re.sub(r"\u02dc\s*o", "õ", text)
-    text = re.sub(r"\u02dc\s*A", "Ã", text)
-    
-    # 3. Agudo espaçado
-    text = re.sub(r"\u00b4\s*a", "á", text)
-    text = re.sub(r"\u00b4\s*e", "é", text)
-    text = re.sub(r"\u00b4\s*i", "í", text)
-    text = re.sub(r"\u00b4\s*o", "ó", text)
-    text = re.sub(r"\u00b4\s*u", "ú", text)
-    text = re.sub(r"\u00b4\s*A", "Á", text)
-    text = re.sub(r"\u00b4\s*E", "É", text)
-    text = re.sub(r"\u00b4\s*I", "Í", text)
-    text = re.sub(r"\u00b4\s*O", "Ó", text)
-    text = re.sub(r"\u00b4\s*U", "Ú", text)
+
+    # 2. Til espacado antes/depois de letras
+    text = text.replace("˜a", "ã").replace("a˜", "ã")
+    text = text.replace("˜o", "õ").replace("o˜", "õ")
+    text = text.replace("˜A", "Ã")
+    text = re.sub(r"˜\s*a", "ã", text)
+    text = re.sub(r"˜\s*o", "õ", text)
+    text = re.sub(r"˜\s*A", "Ã", text)
+
+    # 3. Agudo espacado
+    text = re.sub(r"´\s*a", "á", text)
+    text = re.sub(r"´\s*e", "é", text)
+    text = re.sub(r"´\s*i", "í", text)
+    text = re.sub(r"´\s*o", "ó", text)
+    text = re.sub(r"´\s*u", "ú", text)
+    text = re.sub(r"´\s*A", "Á", text)
+    text = re.sub(r"´\s*E", "É", text)
+    text = re.sub(r"´\s*I", "Í", text)
+    text = re.sub(r"´\s*O", "Ó", text)
+    text = re.sub(r"´\s*U", "Ú", text)
     # Trata dotless i (ı) comum em LaTeX com acentos
-    text = text.replace("\u00b4\u0131", "í").replace("\u00b4\u00a8\u0131", "ï").replace("\u0131", "i")
-    
-    # 4. Circunflexo espaçado
-    text = re.sub(r"\u02c6\s*a", "â", text)
-    text = re.sub(r"\u02c6\s*e", "ê", text)
-    text = re.sub(r"\u02c6\s*o", "ô", text)
-    text = re.sub(r"\u02c6\s*A", "Â", text)
-    text = re.sub(r"\u02c6\s*E", "Ê", text)
-    text = re.sub(r"\u02c6\s*O", "Ô", text)
-    
-    # 5. Crase espaçada
-    text = re.sub(r"\u0060\s*a", "à", text)
-    text = re.sub(r"\u0060\s*A", "À", text)
-    
+    text = text.replace("´ı", "í").replace("´¨ı", "ï").replace("ı", "i")
+
+    # 4. Circunflexo espacado
+    text = re.sub(r"ˆ\s*a", "â", text)
+    text = re.sub(r"ˆ\s*e", "ê", text)
+    text = re.sub(r"ˆ\s*o", "ô", text)
+    text = re.sub(r"ˆ\s*A", "Â", text)
+    text = re.sub(r"ˆ\s*E", "Ê", text)
+    text = re.sub(r"ˆ\s*O", "Ô", text)
+
+    # 5. Crase espacada
+    text = re.sub(r"`\s*a", "à", text)
+    text = re.sub(r"`\s*A", "À", text)
+
     # 6. Cedilha
-    text = text.replace("c\u00b8", "ç").replace("\u00b8c", "ç").replace("C\u00b8", "Ç")
-    text = re.sub(r"c\s*\u00b8", "ç", text)
-    text = re.sub(r"C\s*\u00b8", "Ç", text)
-    
+    text = text.replace("c¸", "ç").replace("¸c", "ç").replace("C¸", "Ç")
+    text = re.sub(r"c\s*¸", "ç", text)
+    text = re.sub(r"C\s*¸", "Ç", text)
+
     return text
 
 
 def _normalize_text(text: str) -> str:
-    # Remove acentos espaçados básicos antes de normalizar
-    for c in ["\u02dc", "\u00b4", "\u02c6", "\u00a8", "\u0060"]:
+    # Remove acentos espacados basicos antes de normalizar
+    for c in ["˜", "´", "ˆ", "¨", "`"]:
         text = text.replace(c, "")
     normalized = "".join(
         c for c in unicodedata.normalize("NFKD", text) if not unicodedata.combining(c)
@@ -126,24 +180,15 @@ def _match_area(line_text: str) -> Optional[str]:
     # Normaliza a string da linha para bater com as chaves de _AREA_NAMES
     normalized = _normalize_text(line_text.strip()).upper()
     normalized = re.sub(r"[^A-Z]", "", normalized)
+    _AREA_NAMES = {
+        "MATEMATICA": "Matemática",
+        "FISICA": "Física",
+        "QUIMICA": "Química",
+        "INGLES": "Inglês",
+        "PORTUGUES": "Português",
+        "REDACAO": "Português",
+    }
     return _AREA_NAMES.get(normalized)
-
-
-def _map_filename_subject(subj_raw: str) -> Optional[str]:
-    s = subj_raw.lower()
-    if "matematica" in s:
-        return "Matemática"
-    if "fisica" in s:
-        return "Física"
-    if "quimica" in s:
-        return "Química"
-    if "portugues" in s:
-        return "Português"
-    if "ingles" in s:
-        return "Inglês"
-    if "redacao" in s:
-        return "Português"
-    return None
 
 
 def download_pdf(url: str, dest: Path) -> None:
@@ -154,17 +199,19 @@ def download_pdf(url: str, dest: Path) -> None:
     }
     resp = requests.get(url, timeout=120, headers=headers, verify=False)
     resp.raise_for_status()
+    if resp.content[:4] != b"%PDF":
+        raise ValueError(f"A URL não retornou um PDF: {url}")
     dest.write_bytes(resp.content)
 
 
 def extract_options(text: str) -> list[tuple[str, str]]:
-    matches = list(_OPT_START.finditer(text))
+    matches = list(_ALT_START.finditer(text))
     if not matches:
         return []
-    
+
     options = []
     for idx, match in enumerate(matches):
-        letter = match.group(1)
+        letter = match.group(1).upper()
         start_idx = match.end()
         end_idx = matches[idx + 1].start() if idx + 1 < len(matches) else len(text)
         opt_text = text[start_idx:end_idx].strip()
@@ -172,117 +219,55 @@ def extract_options(text: str) -> list[tuple[str, str]]:
     return options
 
 
-def _parse_gabarito(gabarito_pdf: Path, subject: Optional[str] = None) -> dict[int, str]:
-    doc = fitz.open(str(gabarito_pdf))
-    answers: dict[int, str] = {}
-    
-    for page_idx, page in enumerate(doc):
-        words = page.get_text("words")  # list of (x0, y0, x1, y1, word, ...)
-        
-        # Encontra todos os x0 de números que aparecem (dígitos entre 1 e 80)
-        num_x_coords = sorted([w[0] for w in words if w[4].isdigit() and 1 <= int(w[4]) <= 80])
-        if not num_x_coords:
+def _parse_gabarito(text: str) -> list[str]:
+    """Extrai as letras do gabarito em ordem sequencial de aparicao.
+
+    O gabarito do Brasil Escola tem blocos:
+
+        DISCIPLINA
+        Língua Estrangeira moderna
+        Espanhol
+        ...
+        QUESTÃO 01 02 03 04 05 01 02 ...
+        GABARITO E B C C E E B A D C ...
+
+    Retorna a lista plana de letras na ordem em que aparecem (disciplina por
+    disciplina, questao por questao), que deve casar com a ordem de aparicao
+    das questoes na prova.
+    """
+    letters: list[str] = []
+    in_gabarito = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped == "GABARITO":
+            in_gabarito = True
             continue
-            
-        # Agrupa x_coords em clusters (diferença <= 20px)
-        clusters = []
-        for x in num_x_coords:
-            if not clusters or x - clusters[-1][-1] > 20:
-                clusters.append([x])
-            else:
-                clusters[-1].append(x)
-        
-        # Filtra clusters para ignorar ruídos (como rodapés)
-        clusters = [c for c in clusters if len(c) > 3]
-        if not clusters:
+        if stripped == "DISCIPLINA" or stripped == "QUESTÃO":
+            in_gabarito = False
             continue
-            
-        # O x médio de cada cluster de números define o início de uma coluna de questão
-        col_centers = [sum(c)/len(c) for c in clusters]
-        
-        # Agrupa palavras por coluna
-        col_words = defaultdict(list)
-        for w in words:
-            x0, y0, x1, y1, word = w[0], w[1], w[2], w[3], w[4]
-            assigned_col = None
-            for idx, center in enumerate(col_centers):
-                if center - 25 <= x0 <= center + 75:
-                    assigned_col = idx
-                    break
-            if assigned_col is not None:
-                col_words[assigned_col].append(w)
-                
-        # Processa cada coluna
-        for col_idx in sorted(col_words.keys()):
-            # Ordena por y0 primeiro, e depois agrupa em sub-linhas para ordenar por x0
-            raw_sorted = sorted(col_words[col_idx], key=lambda w: w[1])
-            lines_in_col = []
-            for w in raw_sorted:
-                if not lines_in_col or w[1] - lines_in_col[-1][-1][1] > 4:
-                    lines_in_col.append([w])
-                else:
-                    lines_in_col[-1].append(w)
-            
-            sorted_words = []
-            for line in lines_in_col:
-                sorted_words.extend(sorted(line, key=lambda w: w[0]))
-            
-            # Cabeçalho da coluna
-            header_words = []
-            for w in sorted_words:
-                word_text = w[4]
-                if word_text.isdigit() and 1 <= int(word_text) <= 80:
-                    break
-                if word_text in ("A", "B", "C", "D", "E", "*", "(*)", "4(*)", "10(**)"):
-                    if w[1] > 150:
-                        break
-                header_words.append(word_text)
-                
-            col_subject = _repair_pdf_accents(" ".join(header_words))
-            col_subject_norm = _normalize_text(col_subject).upper()
-            col_subject_norm = re.sub(r"[^A-Z]", "", col_subject_norm)
-            
-            # Filtro por assunto (se fornecido)
-            if subject:
-                s_norm = _normalize_text(subject).upper()
-                s_norm = re.sub(r"[^A-Z]", "", s_norm)
-                if s_norm not in col_subject_norm and col_subject_norm not in s_norm:
-                    continue
-            
-            # Lendo os tokens
-            col_tokens = [w[4] for w in sorted_words[len(header_words):]]
-            i = 0
-            while i < len(col_tokens) - 1:
-                tok = col_tokens[i]
-                tok_clean = re.sub(r"[^\d]", "", tok)
-                if tok_clean.isdigit():
-                    num = int(tok_clean)
-                    next_tok = col_tokens[i+1]
-                    next_tok_clean = re.sub(r"[^\w*()#]", "", next_tok).upper()
-                    
-                    if next_tok_clean in ("A", "B", "C", "D", "E", "*", "(*)", "ANULADA"):
-                        answers[num] = next_tok_clean
-                        i += 2
-                        continue
-                i += 1
-                
-    doc.close()
-    return answers
+        if in_gabarito:
+            for tok in stripped.split():
+                if _GABARITO_LETTER.fullmatch(tok):
+                    letters.append(tok.upper())
+    return letters
 
 
-def _parse_exam(
-    exam_pdf: Path,
-    gabarito: dict[int, str],
-    subject: Optional[str] = None,
-) -> list[dict]:
-    doc = fitz.open(str(exam_pdf))
-    all_events = []
-    
-    for page_idx, page in enumerate(doc):
+def _parse_prova_pages(doc, page_indices: list[int]) -> list[dict]:
+    """Extrai questoes das paginas indicadas, em ordem de aparicao.
+
+    Numeracao e sequencial global (1..N) baseada na ordem de deteccao, nao
+    no numero impresso no PDF (que reinicia por disciplina). O casamento com
+    o gabarito tambem e sequencial, entao ambos devem usar a mesma ordem.
+    """
+    all_questions: list[dict] = []
+    global_counter = 0
+
+    for page_idx in page_indices:
+        page = doc[page_idx]
         words = page.get_text("words")
-        
-        # Agrupa palavras por y0 aproximado (limiar de 4px)
-        lines_dict = defaultdict(list)
+
+        # Agrupa palavras por linha (y0 aproximado, limiar 4px)
+        lines_dict: dict[float, list] = defaultdict(list)
         for w in words:
             y_coord = w[1]
             matched_y = None
@@ -294,158 +279,188 @@ def _parse_exam(
                 lines_dict[y_coord].append(w)
             else:
                 lines_dict[matched_y].append(w)
-                
-        # Constrói textos de linhas
-        page_lines = []
+
+        page_lines: list[tuple[float, str]] = []
         for y in sorted(lines_dict.keys()):
             line_words = sorted(lines_dict[y], key=lambda w: w[0])
             line_text = " ".join(w[4] for w in line_words).strip()
             page_lines.append((y, line_text))
-            
-        # Coleta imagens (raster + desenhos vetoriais nativos, ver pdf_figures.py)
+
         images_on_page = extract_figure_events(page)
-                
-        # Monta os eventos da página
-        page_events = []
+
+        page_events: list[tuple[float, str, object]] = []
         for y, l_text in page_lines:
             l_text_repaired = _repair_pdf_accents(l_text)
-            
-            area = _match_area(l_text_repaired)
-            if area:
-                page_events.append((y, "area", area))
-                continue
-                
-            l_text_norm = _normalize_text(l_text_repaired)
-            m_q = _Q_START.match(l_text_norm)
+
+            m_q = _Q_START.match(l_text_repaired)
             if m_q:
+                # Instrucoes da pagina de capa usam 1 digito puro ("1.", "2.", ...)
+                # e nao sao questoes reais.
                 q_num = int(m_q.group(1))
-                original_rest = l_text_repaired[l_text_norm.index(m_q.group(2)):] if m_q.group(2) in l_text_norm else ""
-                page_events.append((y, "q_start", (q_num, original_rest.strip())))
+                if q_num < 10 and any(k in l_text_repaired.lower() for k in _INSTRUCTION_KEYWORDS):
+                    continue
+                rest = l_text_repaired[m_q.end():].strip()
+                page_events.append((y, "q_start", (q_num, rest)))
                 continue
-                
+
             opts = extract_options(l_text_repaired)
             if opts:
                 for letter, opt_text in opts:
                     page_events.append((y, "opt_start", (letter, opt_text)))
                 continue
-                
+
             page_events.append((y, "text", l_text_repaired))
-            
+
         for _x_img, y_img, png in images_on_page:
             page_events.append((y_img, "image", png))
-            
-        # Ordena eventos da página verticalmente e anexa
+
         page_events.sort(key=lambda e: e[0])
-        all_events.extend(page_events)
-        
-    doc.close()
-    
-    # ── Reconstituição de Questões ──────────────────────────────────────────
-    questions = []
-    current_area = subject or "Geral"
-    q_num = None
-    statement_lines = []
-    options = []
-    active_passage_lines = []
-    current_passage = ""
-    in_opt = False
-    pending_images = []
-    
-    def flush():
-        nonlocal q_num, statement_lines, options, pending_images
-        if q_num is None:
-            return
-        stmt = _clean(join_lines_smart(statement_lines))
-        if not stmt:
-            q_num, statement_lines, options, pending_images = None, [], [], []
-            return
-            
-        built_opts = []
-        correct_letter = gabarito.get(q_num)
-        
-        # Ordena e remove duplicatas de opções se houver
-        unique_opts = {}
-        for opt in options:
-            unique_opts[opt["letter"]] = opt
-            
-        sorted_keys = sorted(unique_opts.keys())
-        for idx, k in enumerate(sorted_keys):
-            opt = unique_opts[k]
-            t = _clean(" ".join(opt["lines"]))
-            built_opts.append({
-                "letter": opt["letter"],
-                "text": t,
-                "is_correct": (correct_letter == opt["letter"]) if correct_letter else False,
-                "order": idx
-            })
-            
-        img_b64 = None
-        extra_images = []
-        if pending_images:
-            img_b64 = base64.b64encode(pending_images[0]).decode()
-            for img in pending_images[1:]:
-                extra_images.append(base64.b64encode(img).decode())
-                
-        questions.append({
-            "number": q_num,
-            "question_type": "multiple_choice" if built_opts else "discursive",
-            "area": current_area,
-            "statement": stmt,
-            "answer": correct_letter,
-            "image_base64": img_b64,
-            "extra_images": extra_images,
-            "options": built_opts
-        })
-        q_num, statement_lines, options, pending_images = None, [], [], []
-        
-    for _y, etype, val in all_events:
-        if etype == "area":
-            flush()
-            current_area = val
-            active_passage_lines = []
-            current_passage = ""
-            
-        elif etype == "q_start":
-            flush()
-            if active_passage_lines:
-                candidate = _clean("\n".join(active_passage_lines))
-                current_passage = candidate if _looks_like_passage(candidate) else ""
-                active_passage_lines = []
-            num, rest = val
-            q_num = num
-            statement_lines = ([current_passage] if current_passage else [])
-            if rest:
-                statement_lines.append(rest)
-            options = []
-            in_opt = False
-            
-        elif etype == "opt_start":
-            letter, opt_text = val
-            if q_num is not None:
-                options.append({"letter": letter, "lines": [opt_text] if opt_text else []})
-                in_opt = True
-                
-        elif etype == "text":
-            text_val = val
-            # Ignora cabeçalhos e notas de rodapé comuns
-            if "vestibular" in text_val.lower() or "rascunho" in text_val.lower():
-                continue
-            if re.match(r"^\d+\s*$", text_val):  # número da página
-                continue
-                
+
+        # Reconstituicao de questoes desta pagina
+        q_num: Optional[int] = None
+        statement_lines: list[str] = []
+        options: list[dict] = []
+        pending_images: list[bytes] = []
+        current_passage = ""
+        active_passage_lines: list[str] = []
+        in_opt = False
+
+        def flush():
+            nonlocal q_num, statement_lines, options, pending_images
             if q_num is None:
-                active_passage_lines.append(text_val)
-            elif in_opt and options:
-                options[-1]["lines"].append(text_val)
-            else:
-                statement_lines.append(text_val)
-                
-        elif etype == "image":
-            if q_num is not None:
-                pending_images.append(val)
-                
-    flush()
-    return questions
+                return
+            stmt = _clean(join_lines_smart(statement_lines))
+            if not stmt:
+                q_num, statement_lines, options, pending_images = None, [], [], []
+                return
+
+            unique_opts: dict[str, dict] = {}
+            for opt in options:
+                unique_opts[opt["letter"]] = opt
+
+            built_opts = []
+            sorted_keys = sorted(unique_opts.keys())
+            for order_idx, k in enumerate(sorted_keys):
+                opt = unique_opts[k]
+                t = _clean(" ".join(opt["lines"]))
+                built_opts.append({
+                    "letter": opt["letter"],
+                    "text": t,
+                    "order": order_idx,
+                })
+
+            img_b64 = None
+            extra_images = []
+            if pending_images:
+                img_b64 = base64.b64encode(pending_images[0]).decode()
+                for img in pending_images[1:]:
+                    extra_images.append(base64.b64encode(img).decode())
+
+            nonlocal global_counter
+            global_counter += 1
+            all_questions.append({
+                "number": global_counter,
+                "statement": stmt,
+                "options": built_opts,
+                "image_base64": img_b64,
+                "extra_images": extra_images,
+            })
+            q_num, statement_lines, options, pending_images = None, [], [], []
+
+        for _y, etype, val in page_events:
+            if etype == "q_start":
+                flush()
+                if active_passage_lines:
+                    candidate = _clean("\n".join(active_passage_lines))
+                    current_passage = candidate if _looks_like_passage(candidate) else ""
+                    active_passage_lines = []
+                num, rest = val
+                q_num = num
+                statement_lines = ([current_passage] if current_passage else [])
+                if rest:
+                    statement_lines.append(rest)
+                options = []
+                in_opt = False
+
+            elif etype == "opt_start":
+                letter, opt_text = val
+                if q_num is not None:
+                    options.append({"letter": letter, "lines": [opt_text] if opt_text else []})
+                    in_opt = True
+
+            elif etype == "text":
+                text_val = val
+                if "vestibular" in text_val.lower() or "rascunho" in text_val.lower():
+                    continue
+                if re.match(r"^\d+\s*$", text_val):  # numero da pagina solto
+                    continue
+                if q_num is None:
+                    active_passage_lines.append(text_val)
+                elif in_opt and options:
+                    options[-1]["lines"].append(text_val)
+                else:
+                    statement_lines.append(text_val)
+
+            elif etype == "image":
+                if q_num is not None:
+                    pending_images.append(val)
+
+        flush()
+
+    return all_questions
+
+
+def _build_area_map(total_questions: int) -> dict[int, str]:
+    """Mapa numero global da questao -> area, baseado na ordem das disciplinas."""
+    area_map: dict[int, str] = {}
+    current = 1
+    for disciplina, count in _DISCIPLINA_COUNTS:
+        label = _AREA_LABELS[disciplina]
+        for _ in range(count):
+            if current > total_questions:
+                break
+            area_map[current] = label
+            current += 1
+    return area_map
+
+
+def _parse_pdf(pdf_path: Path) -> list[dict]:
+    """Le um PDF combinado (edital+gabarito+prova) e retorna questoes parseadas."""
+    doc = fitz.open(str(pdf_path))
+
+    gabarito_letters: list[str] = []
+    prova_pages: list[int] = []
+    for page_idx, page in enumerate(doc):
+        text = page.get_text()
+        if "GABARITO PRELIMINAR" in text:
+            gabarito_letters.extend(_parse_gabarito(text))
+        # Pagina de prova tem alternativas "A)" E nao e pagina de edital/gabarito/
+        # instrucoes/redacao. Essas paginas podem conter "A)" em tabelas mas nao
+        # sao questoes reais.
+        is_non_prova = any(kw in text for kw in (
+            "GABARITO PRELIMINAR", "EDITAL Nº", "DOS RECURSOS",
+            "CRITÉRIOS DE AVALIAÇÃO", "RASCUNHO", "Tabela Periódica",
+        ))
+        if _HAS_OPTIONS.search(text) and not is_non_prova:
+            prova_pages.append(page_idx)
+
+    all_questions = _parse_prova_pages(doc, prova_pages)
+
+    doc.close()
+
+    # Casamento sequencial: i-esima questao da prova recebe i-esima resposta
+    # do gabarito (ambas em ordem de aparicao).
+    for idx, q in enumerate(all_questions):
+        if idx < len(gabarito_letters):
+            q["answer"] = gabarito_letters[idx]
+        else:
+            q["answer"] = None
+
+    area_map = _build_area_map(len(all_questions))
+    for q in all_questions:
+        q["area"] = area_map.get(q["number"], "Geral")
+
+    return all_questions
 
 
 def _persist_parsed_questions(
@@ -463,7 +478,7 @@ def _persist_parsed_questions(
         metadata = {
             "university": "UFMS",
             "season": season,
-            "question_type": q.get("question_type"),
+            "question_type": q.get("question_type", "multiple_choice"),
             "area": q.get("area"),
         }
 
@@ -486,47 +501,39 @@ def _persist_parsed_questions(
             continue
         added += 1
 
-        # Commita em lotes de 10 em vez de esperar a prova inteira: acumular
-        # todas as questões (com suas imagens em base64) na sessão até um
-        # único commit final é o que empurrava a memória perto do teto de
-        # 512MB do Render free e derrubava o processo (OOM) no meio da
-        # importação — mesma causa raiz já corrigida no ENEM e no ITA.
+        # Commita em lotes de 10 para nao acumular tudo na sessao (evita OOM
+        # no plano free do Render, mesmo problema ja corrigido em ENEM e ITA).
         if added % 10 == 0:
             db.commit()
             db.expunge_all()
-            gc.collect()
 
     db.commit()
     db.expunge_all()
-    gc.collect()
     return added, skipped_existing
 
 
 def fetch_ufms_exam_links(html: Optional[str] = None) -> list[dict]:
-    # Como FAPEC possui WAF (Cloudflare), usamos links estáticos mapeados.
-    STATIC_UFMS_EXAMS = [
-        {
-            "exam_name": "UFMS 2024",
-            "year": 2024,
+    """Devolve links de prova do UFMS espelhados pelo Brasil Escola.
+
+    `html` e ignorado (mantido por compatibilidade com a assinatura usada por
+    outros importadores): os links sao estaticos porque a pagina oficial nao
+    responde e os links diretos do concurso.fapec.org estao fora do ar.
+    """
+    links: list[dict] = []
+    for year, be_id in _BRASIL_ESCOLA_IDS.items():
+        label = "EaD " if year == 2022 else ""
+        links.append({
+            "exam_name": f"UFMS {year}",
+            "year": year,
             "stage": 1,
             "subject": None,
-            "prova_url": "https://concurso.fapec.org/sistemas/uploads/UFMS2024_Prova.pdf",
-            "gabarito_url": "https://concurso.fapec.org/sistemas/uploads/UFMS2024_Gabarito.pdf"
-        },
-        {
-            "exam_name": "UFMS 2023",
-            "year": 2023,
-            "stage": 1,
-            "subject": None,
-            "prova_url": "https://concurso.fapec.org/sistemas/uploads/UFMS2023_Prova.pdf",
-            "gabarito_url": "https://concurso.fapec.org/sistemas/uploads/UFMS2023_Gabarito.pdf"
-        }
-    ]
-    return STATIC_UFMS_EXAMS
+            "prova_url": f"https://vestibular.brasilescola.uol.com.br/baixar/{be_id}",
+            "gabarito_url": None,  # gabarito vem no mesmo PDF da prova
+        })
+    return links
 
 
 def import_all_ufms_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, force_reimport: bool = False, db=None, **kwargs) -> dict:
-    from app.database import SessionLocal
     from app.services.import_batch import run_batch_import
 
     task_id = kwargs.get("task_id")
@@ -535,23 +542,20 @@ def import_all_ufms_exams(since_year: Optional[int] = None, until_year: Optional
         db = SessionLocal()
 
     def _process(link: dict, force_reimport: bool = False) -> dict:
-        year, season, subject = link["year"], link["season"], link["subject"]
+        year = link["year"]
         exam_name = link["exam_name"]
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             prova_path = Path(tmp_dir) / "prova.pdf"
             download_pdf(link["prova_url"], prova_path)
 
-            gabarito_path = Path(tmp_dir) / "gabarito.pdf"
-            download_pdf(link["gabarito_url"], gabarito_path)
-
-            gabarito = _parse_gabarito(gabarito_path, subject=subject)
-            parsed = _parse_exam(prova_path, gabarito, subject=subject)
+            # O PDF do Brasil Escola ja traz gabarito + prova num so arquivo.
+            parsed = _parse_pdf(prova_path)
 
         if not parsed:
             return {"exam_name": exam_name, "skipped": True, "reason": "Nenhuma questão reconhecida."}
 
-        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, season, parsed, force_reimport=force_reimport)
+        added, skipped_existing = _persist_parsed_questions(db, exam_name, year, "1", parsed, force_reimport=force_reimport)
         return {"exam_name": exam_name, "total_parsed": len(parsed), "total_added": added, "skipped_existing": skipped_existing}
 
     try:
@@ -587,11 +591,9 @@ def import_ufms_pdf(
         exam_name += f" ({subject})"
 
     try:
-        gabarito: dict[int, str] = {}
-        if gabarito_path is not None:
-            gabarito = _parse_gabarito(gabarito_path, subject=subject)
-
-        parsed = _parse_exam(prova_path, gabarito, subject=subject)
+        # Se um gabarito separado nao for fornecido, tenta extrair do proprio
+        # PDF da prova (o Brasil Escola entrega ambos combinados).
+        parsed = _parse_pdf(prova_path)
         added, skipped_existing = _persist_parsed_questions(db, exam_name, year, season, parsed, force_reimport=force_reimport)
 
         return {
