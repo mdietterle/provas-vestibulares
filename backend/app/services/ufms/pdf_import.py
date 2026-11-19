@@ -21,6 +21,7 @@ from typing import Optional
 from urllib.parse import urljoin
 
 import fitz  # PyMuPDF
+import requests
 
 from app.services.pdf_figures import extract_figure_events
 from app.services.pdf_text_utils import join_lines_smart
