@@ -191,17 +191,54 @@ def _match_area(line_text: str) -> Optional[str]:
     return _AREA_NAMES.get(normalized)
 
 
-def download_pdf(url: str, dest: Path) -> None:
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-        "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-    }
-    resp = requests.get(url, timeout=120, headers=headers, verify=False)
-    resp.raise_for_status()
-    if resp.content[:4] != b"%PDF":
-        raise ValueError(f"A URL não retornou um PDF: {url}")
-    dest.write_bytes(resp.content)
+_USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Safari/605.1.15",
+]
+
+
+def download_pdf(url: str, dest: Path, max_retries: int = 3) -> None:
+    """Download PDF with retry and rotating User-Agent to avoid CDN blocks.
+
+    Brasil Escola uses Cloudflare which may reject datacenter IPs or
+    repeated requests with the same fingerprint. Rotating User-Agent and
+    retrying with exponential backoff mitigates transient connection errors
+    (Errno 101 Network is unreachable, connection reset, etc.).
+    """
+    import time
+    import random
+
+    last_exc: Optional[Exception] = None
+    for attempt in range(max_retries):
+        ua = _USER_AGENTS[attempt % len(_USER_AGENTS)]
+        headers = {
+            "User-Agent": ua,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+        }
+        try:
+            resp = requests.get(
+                url, timeout=120, headers=headers, verify=False,
+                allow_redirects=True,
+            )
+            resp.raise_for_status()
+            if resp.content[:4] != b"%PDF":
+                raise ValueError(f"A URL não retornou um PDF: {url}")
+            dest.write_bytes(resp.content)
+            return
+        except (requests.ConnectionError, requests.Timeout, OSError) as exc:
+            last_exc = exc
+            if attempt < max_retries - 1:
+                wait = (2 ** attempt) + random.uniform(0, 1)
+                time.sleep(wait)
+        except requests.HTTPError:
+            raise  # HTTP errors (4xx/5xx) are not retried
+    raise last_exc  # type: ignore[misc]
 
 
 def extract_options(text: str) -> list[tuple[str, str]]:
