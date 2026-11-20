@@ -194,7 +194,6 @@ function QuestionImportPanel() {
         <select
           value={selectedKey}
           onChange={e => setSelectedKey(e.target.value)}
-          disabled={running !== null}
           className="w-full border border-[#c5c5d3] rounded-lg px-3 py-2 text-sm bg-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
         >
           {IMPORT_SOURCES.map(src => (
@@ -264,14 +263,14 @@ function QuestionImportPanel() {
         <div className="mt-4 flex gap-2">
           <button
             onClick={() => handleImport(selected)}
-            disabled={running !== null}
+            disabled={running === selected.key}
             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-slate-600 text-white text-sm font-semibold hover:bg-[#001a54] transition-colors disabled:opacity-50"
           >
             {running === selected.key ? 'Importando…' : 'Importar'}
           </button>
           <button
             onClick={() => handleDelete(selected)}
-            disabled={running !== null}
+            disabled={running === selected.key}
             className="flex items-center justify-center px-3 py-2 rounded-lg border border-red-200 dark:border-red-800/60 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 text-sm font-semibold hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50"
             title={`Remover questões de ${selected.label}`}
           >
