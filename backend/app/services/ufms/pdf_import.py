@@ -74,18 +74,20 @@ _AREA_LABELS: dict[str, str] = {
     "Geografia/Historia/Filosofia/Sociologia": "Geografia/História/Filosofia/Sociologia",
 }
 
-# Numeracao de questoes da prova: "01.", "02.", ... "60." (2 digitos).
-# "Questão N" (1 digito, usado na prova online 2025) nao e suportado pelo
-# parser de alternativas deste importador — deixamos essas paginas de fora
-# por enquanto (elas nao contam como questoes reconhecidas).
-_Q_START = re.compile(r"^(\d{1,2})\.\s", re.I)
-_ALT_START = re.compile(r"^\s*([A-E])\s*\)\s?(.*)", re.I)
+# Numeracao de questoes da prova: "01.", "02.", ... "60." (2 digitos) ou
+# "Questão N" / "Questao N" (formato usado na prova online 2025).
+_Q_START = re.compile(r"^(?:Quest[aã]o\s+)?(\d{1,2})(?:[\.:\s]\s*|$)", re.I)
+# Alternativas: "A)" (presencial) ou "A texto." / "A “texto”" (digital 2025
+# sem parentese, pode iniciar com aspas tipograficas ou outros simbolos).
+_ALT_START = re.compile(r"^\s*([A-E])(?:\s*\)|\s+(?=\S))(.*)", re.I)
 _GABARITO_LETTER = re.compile(r"\b([A-E])\b")
 
-# Paginas de prova tem alternativas no formato "A)" (presencial). Paginas de
-# edital, gabarito, instrucoes da capa e redacao nao tem alternativas e devem
-# ser ignoradas mesmo que contenham "Pagina X de Y".
+# Paginas de prova tem alternativas no formato "A)" (presencial) ou iniciam
+# com "Questão N" (formato digital on-line 2025, onde opcoes podem estar
+# renderizadas como imagem e nao aparecem no texto extraido). Paginas de
+# edital, gabarito, instrucoes da capa e redacao devem ser ignoradas.
 _HAS_OPTIONS = re.compile(r"(?m)^\s*[A-E]\s*\)", re.I)
+_HAS_QUESTAO_PATTERN = re.compile(r"(?m)^Quest[aã]o\s+\d", re.I)
 
 # Instrucoes da pagina de capa usam 1 digito puro ("1.", "2.", ...) e nao
 # sao questoes reais.
@@ -478,7 +480,8 @@ def _parse_pdf(pdf_path: Path) -> list[dict]:
             "GABARITO PRELIMINAR", "EDITAL Nº", "DOS RECURSOS",
             "CRITÉRIOS DE AVALIAÇÃO", "RASCUNHO", "Tabela Periódica",
         ))
-        if _HAS_OPTIONS.search(text) and not is_non_prova:
+        has_question_marker = _HAS_QUESTAO_PATTERN.search(text)
+        if (_HAS_OPTIONS.search(text) or has_question_marker) and not is_non_prova:
             prova_pages.append(page_idx)
 
     all_questions = _parse_prova_pages(doc, prova_pages)
