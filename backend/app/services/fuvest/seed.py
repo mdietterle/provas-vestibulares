@@ -11,9 +11,7 @@ Cada edição publica o caderno em 1 ou mais "versões" (cadernos embaralhados
 com as mesmas questões em ordem diferente — ex.: V1-V4 nos anos recentes,
 V/K/Q/X/Z em anos mais antigos). Importamos só a PRIMEIRA versão listada na
 página (rotulada a partir do texto do link, ex. "Prova 2026 V1" → "V1";
-"Prova V" → "V"); as demais têm o mesmo conteúdo, from app.services.progress import update_task_progress, complete_task, fail_task
-import gc
-importar todas seria
+"Prova V" → "V"); as demais têm o mesmo conteúdo, importar todas seria
 duplicata.
 
 O gabarito vem sempre separado (não há "comentada" com resposta destacada
