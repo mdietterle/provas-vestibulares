@@ -14,6 +14,7 @@ from app.models import (
     Subject,
     User,
 )
+from app.vestibular.models import VestibularQuestion
 from app.schemas import FuvestImportRequest, FuvestQuestionOut, QuestionOut
 
 router = APIRouter(prefix="/fuvest-questions", tags=["fuvest"])
