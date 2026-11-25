@@ -36,7 +36,8 @@ from typing import Optional
 import fitz  # PyMuPDF
 import requests
 
-from app.services.ufpr.seed import _infer_area, _xref_to_dataurl
+from app.services.acafe.seed import _xref_to_dataurl
+from app.services.ufpr.seed import _infer_area
 
 
 def _page_content_images_xy(page) -> list[tuple[float, float, int]]:
