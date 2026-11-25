@@ -501,141 +501,15 @@ def _locate_options(lines: list[str]) -> tuple[Optional[int], list[str]]:
     return idx_a, options
 
 
-# ── Sobrescrito / subscrito ─────────────────────────────────────────────────
-#
-# O PDF do ENEM não usa caracteres Unicode de expoente: "10⁴ Pa" é desenhado
-# como um span "10" + um span "4" menor e acima da linha de base. Juntar os
-# spans às cegas produzia "104 Pa" / "50 m2" (com 104 Pa nenhuma alternativa
-# da questão fica correta). Cada span é classificado aqui como sobrescrito
-# ou subscrito — pela flag de sobrescrito do PyMuPDF ou, como fallback, por
-# fonte menor deslocada da linha de base do span dominante da linha — e vira
-# <sup>/<sub> no HTML e o caractere Unicode equivalente no texto puro.
-_SPAN_FLAG_SUPERSCRIPT = 1  # fitz.TEXT_FONT_SUPERSCRIPT
-_SPAN_FLAG_ITALIC = 1 << 1
-_SPAN_FLAG_BOLD = 1 << 4
-
-_SUPERSCRIPT_TABLE = str.maketrans("0123456789+-−=()ni", "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁻⁼⁽⁾ⁿⁱ")
-_SUBSCRIPT_TABLE = str.maketrans("0123456789+-−=()", "₀₁₂₃₄₅₆₇₈₉₊₋₋₌₍₎")
-
-
-def _to_script_chars(text: str, kind: str) -> Optional[str]:
-    """Converte `text` para sobrescrito/subscrito Unicode, ou None se algum
-    caractere não tiver equivalente (aí o texto puro fica com o original)."""
-    table = _SUPERSCRIPT_TABLE if kind == "sup" else _SUBSCRIPT_TABLE
-    converted = text.translate(table)
-    if any(not c.isspace() and c == o for c, o in zip(converted, text)):
-        return None
-    return converted
-
-
-def _span_script(span: dict, base_size: float, base_y: Optional[float]) -> Optional[str]:
-    """'sup', 'sub' ou None para um span, relativo ao span dominante da linha."""
-    if not (span.get("text") or "").strip():
-        return None
-    size = float(span.get("size") or 0)
-    smaller = bool(base_size and size and size < base_size * 0.85)
-    origin = span.get("origin")
-    dy = (origin[1] - base_y) if (origin and base_y is not None) else None
-    if span.get("flags", 0) & _SPAN_FLAG_SUPERSCRIPT:
-        # A flag só é confiável quando o span é de fato menor que o texto da
-        # linha (um span isolado numa linha própria pode vir marcado sozinho).
-        if smaller or base_size == 0 or (dy is not None and dy < -0.15 * base_size):
-            return "sup"
-    if smaller and dy is not None:
-        if dy < -0.15 * base_size:
-            return "sup"
-        if dy > 0.1 * base_size:
-            return "sub"
-    return None
-
-
-def _line_base(spans: list[dict]) -> tuple[float, Optional[float]]:
-    """(tamanho, y da linha de base) do span dominante: o de maior fonte com
-    texto, desempatando pelo mais longo."""
-    candidates = [s for s in spans if (s.get("text") or "").strip()]
-    if not candidates:
-        return 0.0, None
-    dominant = max(candidates, key=lambda s: (float(s.get("size") or 0), len(s["text"].strip())))
-    origin = dominant.get("origin")
-    return float(dominant.get("size") or 0), (origin[1] if origin else None)
-
-
-def _render_spans(spans: list[dict], base: Optional[tuple[float, Optional[float]]] = None) -> tuple[str, str]:
-    """Monta (texto puro, HTML) de uma linha a partir dos spans do PyMuPDF,
-    preservando negrito/itálico e convertendo sobrescrito/subscrito."""
-    base_size, base_y = base if base is not None else _line_base(spans)
-    plain_parts: list[str] = []
-    html_parts: list[str] = []
-    for s in spans:
-        txt = s.get("text") or ""
-        if not txt:
-            continue
-        flags = s.get("flags", 0)
-        script = _span_script(s, base_size, base_y)
-        if script:
-            converted = _to_script_chars(txt, script)
-            plain_parts.append(converted if converted is not None else txt)
-            inner = f"<{script}>{txt.strip()}</{script}>"
-            # Mantém espaços nas bordas fora da tag.
-            inner = txt[: len(txt) - len(txt.lstrip())] + inner + txt[len(txt.rstrip()):]
-        else:
-            plain_parts.append(txt)
-            inner = txt
-        is_bold = bool(flags & _SPAN_FLAG_BOLD)
-        is_italic = bool(flags & _SPAN_FLAG_ITALIC)
-        if is_bold and is_italic:
-            html_parts.append(f"<b><i>{inner}</i></b>")
-        elif is_bold:
-            html_parts.append(f"<b>{inner}</b>")
-        elif is_italic:
-            html_parts.append(f"<i>{inner}</i>")
-        else:
-            html_parts.append(inner)
-    return "".join(plain_parts).strip(), "".join(html_parts).strip()
-
-
-def _merge_script_only_lines(lines: list[dict]) -> tuple[list[list[dict]], list[list[float]]]:
-    """Agrupa as linhas de um bloco em linhas visuais (listas de spans + bbox).
-
-    O MuPDF às vezes quebra uma mesma linha visual em duas "linhas" por causa
-    do expoente: ou o "4" de "10⁴" vira uma linha só dele (outra linha de
-    base), ou o texto depois do expoente ("⁴ Pa.") começa uma linha nova. Nos
-    dois casos o resultado era "10" e "4 Pa." em parágrafos separados. Aqui a
-    linha é fundida na anterior, na posição x correta, quando:
-    - é só um expoente/índice curto e menor, sobreposto verticalmente; ou
-    - tem a mesma linha de base e continua horizontalmente a anterior."""
-    merged: list[tuple[list[dict], list[float]]] = []
-    for line in lines:
-        spans = [s for s in line.get("spans", []) if s.get("text")]
-        if not spans:
-            continue
-        bbox = list(line.get("bbox") or (0, 0, 0, 0))
-        if merged:
-            prev_spans, prev_bbox = merged[-1]
-            prev_size, prev_y = _line_base(prev_spans)
-            this_size, this_y = _line_base(spans)
-            text = "".join(s["text"] for s in spans).strip()
-            overlaps = bbox[1] < prev_bbox[3] and bbox[3] > prev_bbox[1]
-            script_only = bool(
-                text and len(text) <= 4 and prev_size
-                and this_size < prev_size * 0.85 and overlaps
-            )
-            same_baseline = bool(
-                prev_size and prev_y is not None and this_y is not None
-                and abs(this_y - prev_y) <= 0.2 * prev_size
-                and abs(this_size - prev_size) <= 0.15 * prev_size
-                and prev_bbox[2] - prev_size <= bbox[0] <= prev_bbox[2] + 2 * prev_size
-            )
-            if script_only or same_baseline:
-                combined = sorted(prev_spans + spans, key=lambda s: (s.get("bbox") or (0,))[0])
-                new_bbox = [
-                    min(prev_bbox[0], bbox[0]), min(prev_bbox[1], bbox[1]),
-                    max(prev_bbox[2], bbox[2]), max(prev_bbox[3], bbox[3]),
-                ]
-                merged[-1] = (combined, new_bbox)
-                continue
-        merged.append((spans, bbox))
-    return [spans for spans, _ in merged], [bbox for _, bbox in merged]
+# Superscript/subscript handling moved to pdf_text_utils (centralized).
+from app.services.pdf_text_utils import (
+    SPAN_FLAG_BOLD,
+    SPAN_FLAG_ITALIC,
+    SPAN_FLAG_SUPERSCRIPT,
+    merge_script_only_lines as _merge_script_only_lines,
+    render_spans as _render_spans,
+    to_script_chars as _to_script_chars,
+)
 
 
 # ── Créditos de imagem ──────────────────────────────────────────────────────
@@ -671,17 +545,11 @@ def _is_credit_line(text: str, previous_credit: Optional[str]) -> bool:
 def _html_to_plain(html: str) -> str:
     """HTML do enunciado → texto puro: parágrafos viram quebras de linha e
     <sup>/<sub> viram caracteres Unicode (quando possível)."""
+    from app.services.pdf_text_utils import html_to_plain_preserve_exponents
     text = re.sub(r"</p>\s*<p>", "\n", html, flags=re.I)
-
-    def _conv(kind: str):
-        def inner(m: re.Match) -> str:
-            converted = _to_script_chars(m.group(1), kind)
-            return converted if converted is not None else m.group(1)
-        return inner
-
-    text = re.sub(r"<sup>(.*?)</sup>", _conv("sup"), text, flags=re.I | re.S)
-    text = re.sub(r"<sub>(.*?)</sub>", _conv("sub"), text, flags=re.I | re.S)
-    return re.sub(r"<[^>]+>", "", text).strip()
+    # Strip remaining tags after converting sup/sub via centralized function.
+    text = html_to_plain_preserve_exponents(text)
+    return text
 
 
 def _statement_ends_with_options(statement: str, options: list[str]) -> bool:
