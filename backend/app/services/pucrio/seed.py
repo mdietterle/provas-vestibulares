@@ -544,7 +544,7 @@ def import_all_pucrio_exams(
         tmp_dir = Path(tmp)
         for idx, year_label in enumerate(years):
             if task_id:
-                update_task_progress(task_id, progress=(idx / total * 100) if total else 0, message=f"Processando {year_label}")
+                update_task_progress(task_id, current=idx + 1, total=total, log=f"Processando {year_label}")
             try:
                 result = import_pucrio_edition(year_label, tmp_dir, since_year=since_year, until_year=until_year, force_reimport=force_reimport)
                 if result.get("skipped"):
