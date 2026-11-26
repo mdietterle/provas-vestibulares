@@ -518,8 +518,15 @@ def _year_candidates(label: str) -> set[int]:
     return {base, base + 1} if label.endswith("-2") else {base}
 
 
-def import_all_pucrio_exams(since_year: Optional[int] = None, until_year: Optional[int] = None, **kwargs) -> dict:
+def import_all_pucrio_exams(
+    since_year: Optional[int] = None,
+    until_year: Optional[int] = None,
+    force_reimport: bool = False,
+    exam_name: Optional[str] = None,
+    task_id: Optional[str] = None,
+) -> dict:
     import tempfile
+    from app.services.progress import update_task_progress
 
     years = fetch_pucrio_years()
 
@@ -528,10 +535,16 @@ def import_all_pucrio_exams(since_year: Optional[int] = None, until_year: Option
     if until_year:
         years = [y for y in years if any(c <= until_year for c in _year_candidates(y))]
 
+    if exam_name:
+        years = [y for y in years if exam_name.lower() in y.lower()]
+
     imported, skipped, errors = [], [], []
+    total = len(years)
     with tempfile.TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
-        for year_label in years:
+        for idx, year_label in enumerate(years):
+            if task_id:
+                update_task_progress(task_id, progress=(idx / total * 100) if total else 0, message=f"Processando {year_label}")
             try:
                 result = import_pucrio_edition(year_label, tmp_dir, since_year=since_year, until_year=until_year, force_reimport=force_reimport)
                 if result.get("skipped"):
@@ -540,5 +553,9 @@ def import_all_pucrio_exams(since_year: Optional[int] = None, until_year: Option
                     imported.append(result)
             except Exception as e:
                 errors.append({"year_label": year_label, "error": str(e)})
+
+    from app.services.progress import complete_task
+    if task_id:
+        complete_task(task_id, {"imported": len(imported), "skipped": len(skipped), "errors": len(errors)})
 
     return {"imported": imported, "skipped": skipped, "errors": errors}
