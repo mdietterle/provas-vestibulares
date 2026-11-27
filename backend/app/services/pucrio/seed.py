@@ -554,8 +554,17 @@ def import_all_pucrio_exams(
             except Exception as e:
                 errors.append({"year_label": year_label, "error": str(e)})
 
-    from app.services.progress import complete_task
+    from app.services.progress import complete_task, fail_task
+    total_questions = sum(r.get("total_questions", 0) for r in imported)
     if task_id:
-        complete_task(task_id, {"imported": len(imported), "skipped": len(skipped), "errors": len(errors)})
+        if not imported and not errors:
+            fail_task(task_id, f"Nenhuma questão importada. {len(skipped)} edições puladas. Verifique logs do servidor para detalhes de parsing/persistência.")
+        else:
+            complete_task(task_id, {
+                "imported": len(imported),
+                "total_questions": total_questions,
+                "skipped": len(skipped),
+                "errors": len(errors),
+            })
 
-    return {"imported": imported, "skipped": skipped, "errors": errors}
+    return {"imported": imported, "skipped": skipped, "errors": errors, "total_questions": total_questions}
